@@ -1,0 +1,170 @@
+[
+  {
+    "id": "math.g3.place_value.to_1000",
+    "subject": "math",
+    "grade": 3,
+    "name": "Place value to 1000",
+    "description": "Read, write, and compare whole numbers up to 1000 using hundreds, tens, and ones."
+  },
+  {
+    "id": "math.g3.multiplication.facts_to_100",
+    "subject": "math",
+    "grade": 3,
+    "name": "Multiplication facts to 100",
+    "description": "Recall products of single-digit factors and relate multiplication to equal groups and arrays."
+  },
+  {
+    "id": "math.g3.fractions.unit_fractions",
+    "subject": "math",
+    "grade": 3,
+    "name": "Unit fractions on a number line",
+    "description": "Understand a unit fraction such as 1/4 as one part of a whole split into equal parts."
+  },
+  {
+    "id": "math.g3.measurement.time_units",
+    "subject": "math",
+    "grade": 3,
+    "name": "Units of time",
+    "description": "Tell time to the minute and solve elapsed time problems in hours, minutes, and seconds."
+  },
+  {
+    "id": "math.g3.measurement.perimeter",
+    "subject": "math",
+    "grade": 3,
+    "name": "Perimeter of polygons",
+    "description": "Find the perimeter of a polygon by adding the lengths of all of its sides."
+  },
+  {
+    "id": "math.g3.data.bar_charts",
+    "subject": "math",
+    "grade": 3,
+    "name": "Reading bar charts",
+    "description": "Read and interpret a scaled bar chart to answer questions about the data it shows."
+  },
+  {
+    "id": "math.g3.patterns.number_patterns",
+    "subject": "math",
+    "grade": 3,
+    "name": "Number patterns",
+    "description": "Identify, extend, and describe the rule of a growing or repeating number pattern."
+  },
+  {
+    "id": "math.g3.rounding.nearest_ten",
+    "subject": "math",
+    "grade": 3,
+    "name": "Rounding to the nearest ten",
+    "description": "Round two-digit and three-digit numbers to the nearest ten using a number line."
+  },
+  {
+    "id": "math.g4.place_value.to_10000",
+    "subject": "math",
+    "grade": 4,
+    "name": "Place value to 10000",
+    "description": "Read, write, and compare whole numbers up to 10000 and explain the value of every digit."
+  },
+  {
+    "id": "math.g4.fractions.equivalence",
+    "subject": "math",
+    "grade": 4,
+    "name": "Equivalent fractions",
+    "description": "Recognize and generate equivalent fractions, explaining why 1/2 and 2/4 name the same amount."
+  },
+  {
+    "id": "math.g4.fractions.addition_same_denominator",
+    "subject": "math",
+    "grade": 4,
+    "name": "Adding fractions with the same denominator",
+    "description": "Add and subtract fractions that share a denominator, such as 3/8 + 2/8, without changing it."
+  },
+  {
+    "id": "math.g4.fractions.comparison",
+    "subject": "math",
+    "grade": 4,
+    "name": "Comparing fractions",
+    "description": "Compare two fractions with different numerators and denominators using common denominators."
+  },
+  {
+    "id": "math.g4.multiplication.multi_digit",
+    "subject": "math",
+    "grade": 4,
+    "name": "Multi-digit multiplication",
+    "description": "Multiply a three-digit number by a one-digit number using place value and partial products."
+  },
+  {
+    "id": "math.g4.division.with_remainder",
+    "subject": "math",
+    "grade": 4,
+    "name": "Division with remainder",
+    "description": "Divide a multi-digit number by a one-digit divisor and interpret the remainder in context."
+  },
+  {
+    "id": "math.g4.decimals.tenths_hundredths",
+    "subject": "math",
+    "grade": 4,
+    "name": "Decimals to tenths and hundredths",
+    "description": "Read, write, and compare decimal numbers to tenths and hundredths on a place value chart."
+  },
+  {
+    "id": "math.g4.geometry.area_rectangles",
+    "subject": "math",
+    "grade": 4,
+    "name": "Area of rectangles",
+    "description": "Find the area of a rectangle by multiplying its side lengths and counting square units."
+  },
+  {
+    "id": "math.g4.measurement.length_conversion",
+    "subject": "math",
+    "grade": 4,
+    "name": "Length unit conversion",
+    "description": "Convert lengths between meters and centimeters and between kilometers and meters."
+  },
+  {
+    "id": "math.g4.word_problems.two_step",
+    "subject": "math",
+    "grade": 4,
+    "name": "Two-step word problems",
+    "description": "Solve two-step word problems with the four operations and judge whether an answer is reasonable."
+  },
+  {
+    "id": "math.g4.geometry.angle_types",
+    "subject": "math",
+    "grade": 4,
+    "name": "Classifying angles",
+    "description": "Classify angles as right, acute, or obtuse and measure them in degrees with a protractor."
+  },
+  {
+    "id": "math.g4.data.line_plots",
+    "subject": "math",
+    "grade": 4,
+    "name": "Line plots with fractions",
+    "description": "Make and read a line plot that displays measurement data in halves and quarters."
+  },
+  {
+    "id": "math.g5.fractions.addition_unlike_denominators",
+    "subject": "math",
+    "grade": 5,
+    "name": "Adding fractions with unlike denominators",
+    "description": "Add and subtract fractions with unlike denominators by rewriting them over a common denominator."
+  },
+  {
+    "id": "math.g5.decimals.multiplication",
+    "subject": "math",
+    "grade": 5,
+    "name": "Multiplying decimals",
+    "description": "Multiply decimal numbers to hundredths and place the decimal point correctly in the product."
+  },
+  {
+    "id": "math.g5.geometry.volume_prisms",
+    "subject": "math",
+    "grade": 5,
+    "name": "Volume of rectangular prisms",
+    "description": "Find the volume of a rectangular prism by multiplying length, width, and height in cubic units."
+  },
+  {
+    "id": "math.g5.operations.order_of_operations",
+    "subject": "math",
+    "grade": 5,
+    "name": "Order of operations",
+    "description": "Evaluate numerical expressions that contain parentheses by following the order of operations."
+  }
+]
