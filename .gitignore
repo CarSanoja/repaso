@@ -1,0 +1,13 @@
+private/
+
+.local_data/
+.env
+.env.*
+!.env.example
+*.pem
+credentials*
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.DS_Store
