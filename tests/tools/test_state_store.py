@@ -14,7 +14,8 @@ from repaso.schemas.review import QuarantineItem, QuarantineKind, QuarantineStat
 from repaso.schemas.schedule import SpacedItemState
 from repaso.schemas.session import PracticeSession
 from repaso.schemas.student import Student
-from repaso.tools.state_store import LocalStateStore, StateStore, build_state_store
+from repaso.tools.state_local import LocalStateStore
+from repaso.tools.state_store import StateStore, build_state_store
 
 NOW = datetime(2026, 9, 1, 19, 0, tzinfo=UTC)
 TODAY = date(2026, 9, 1)

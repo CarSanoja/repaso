@@ -23,6 +23,7 @@ from repaso.schemas.common import (
 )
 from repaso.schemas.competency import Competency, CompetencyMatch
 from repaso.schemas.consent import ConsentRecord
+from repaso.schemas.enrollment import EnrollmentProgress, EnrollmentStep
 from repaso.schemas.escalation import (
     Escalation,
     EscalationKind,
@@ -56,6 +57,8 @@ __all__ = [
     "CostRecord",
     "DailyCloseReport",
     "DomainEvent",
+    "EnrollmentProgress",
+    "EnrollmentStep",
     "Escalation",
     "EscalationId",
     "EscalationKind",
