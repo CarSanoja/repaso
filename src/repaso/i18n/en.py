@@ -86,6 +86,9 @@ MESSAGES = {
         "undone. Are you sure?"
     ),
     "forget_done": "Everything erased. Thank you for trusting Repaso.",
+    "forget_yes": "Yes, erase everything",
+    "forget_no": "No, keep it",
+    "consent_decline": "I do not accept",
     "forget_keep": "Nothing was erased.",
     "help": (
         "/schedule changes the practice time\n/exam registers an exam date\n"

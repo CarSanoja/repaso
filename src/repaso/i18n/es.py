@@ -88,6 +88,9 @@ MESSAGES = {
         "deshacer. ¿Seguro?"
     ),
     "forget_done": "Todo borrado. Gracias por confiar en Repaso.",
+    "forget_yes": "Sí, borrar todo",
+    "forget_no": "No, conservar",
+    "consent_decline": "No acepto",
     "forget_keep": "No borré nada.",
     "help": (
         "/schedule cambia la hora de práctica\n/exam avisa una fecha de examen\n"
