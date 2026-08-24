@@ -103,7 +103,10 @@ def test_plan_never_exceeds_the_limit_or_repeats_an_id():
     planned = plan_items(states, [], items, TODAY)
 
     assert len(planned) == len(set(planned)) == DAILY_ITEM_LIMIT
-    assert set(planned) <= {"i1", "i2", "i3", "i4"}
+    due_picked = [i for i in planned if i in {"i1", "i2", "i3", "i4"}]
+    unseen_picked = [i for i in planned if i in {"i5", "i6"}]
+    assert len(due_picked) == DAILY_ITEM_LIMIT - 1
+    assert len(unseen_picked) == 1
 
 
 def test_plan_returns_nothing_when_nothing_is_due_and_nothing_is_unseen():

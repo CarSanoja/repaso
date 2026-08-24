@@ -8,6 +8,7 @@ from repaso.schemas.schedule import SpacedItemState
 from repaso.schemas.session import PracticeSession, SessionStatus
 
 DAILY_ITEM_LIMIT = 3
+NEW_ITEM_RESERVE = 1
 UNKNOWN_EMA = 0.5
 
 
@@ -20,11 +21,13 @@ def plan_items(
 ) -> list[str]:
     if limit < 1:
         return []
-    planned = [state.item_id for state in due_items(spaced_states, today, limit)]
+    unseen = _weakest_unseen(spaced_states, mastery_states, active_items, limit)
+    due_limit = max(1, limit - NEW_ITEM_RESERVE) if unseen else limit
+    planned = [state.item_id for state in due_items(spaced_states, today, due_limit)]
     remaining = limit - len(planned)
     if remaining < 1:
         return planned
-    return planned + _weakest_unseen(spaced_states, mastery_states, active_items, remaining)
+    return planned + unseen[:remaining]
 
 
 def _weakest_unseen(
