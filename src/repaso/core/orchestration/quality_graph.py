@@ -1,13 +1,20 @@
 from strands.multiagent.graph import GraphBuilder
 
-from repaso.agents.escalation_composer import compose_cohort
+from repaso.agents.escalation_composer import compose_cohort, compose_engagement
 from repaso.agents.goal_verifier import verify_daily
 from repaso.agents.item_optimizer import retire, retirement_candidates
 from repaso.config.models import ModelRole
 from repaso.core.cohort.signal import CohortFailure, evaluate, signal_claim_key
 from repaso.core.harness.budgets import BoundedAttempts
+from repaso.core.harness.escalation_triggers import (
+    DEFAULT_MIN_ACTIVE_DAYS,
+    DEFAULT_SILENT_DAYS,
+    engagement_trigger,
+    trailing_silent_days,
+)
 from repaso.core.orchestration.context import CloseRun, Services
 from repaso.core.orchestration.nodes import StepNode
+from repaso.core.orchestration.response_graph import daily_counts
 from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.mastery import MasteryLevel
 
@@ -48,7 +55,8 @@ def build_quality_graph(services: Services, run: CloseRun):
             for student in services.store.list_students(family.id):
                 families_by_section.setdefault(student.section_key, set()).add(family.id)
                 for mastery in services.store.list_mastery(student.id):
-                    if mastery.level is MasteryLevel.STRUGGLING:
+                    established = mastery.attempts >= services.settings.escalation_min_samples
+                    if mastery.level is MasteryLevel.STRUGGLING and established:
                         failures.append(
                             CohortFailure(
                                 family_id=family.id,
@@ -85,6 +93,31 @@ def build_quality_graph(services: Services, run: CloseRun):
                     )
                 )
 
+    async def engagement() -> None:
+        today = services.clock.today()
+        week = today.isocalendar()
+        for family in services.store.list_families():
+            for student in services.store.list_students(family.id):
+                counts = daily_counts(services, student.id)
+                if not engagement_trigger(
+                    counts, DEFAULT_MIN_ACTIVE_DAYS, DEFAULT_SILENT_DAYS
+                ):
+                    continue
+                claim_key = f"engage#{student.id}#{week.year}-W{week.week}"
+                if not services.store.claim(claim_key, SIGNAL_OWNER):
+                    continue
+                escalation = compose_engagement(
+                    family.id, student.id, student.alias,
+                    trailing_silent_days(counts), family.lang, services.clock.now(),
+                )
+                services.store.put_escalation(escalation)
+                run.outbound.append(
+                    OutboundMessage(
+                        channel=family.channel, chat_ref=family.chat_ref,
+                        text=escalation.summary,
+                    )
+                )
+
     async def optimize() -> None:
         grades = _all_grades(services)
         item_ids = {grade.item_id for grade in grades}
@@ -97,10 +130,12 @@ def build_quality_graph(services: Services, run: CloseRun):
 
     builder = GraphBuilder()
     builder.add_node(StepNode("verify", verify), "verify")
+    builder.add_node(StepNode("engagement", engagement), "engagement")
     builder.add_node(StepNode("cohort", cohort), "cohort")
     builder.add_node(StepNode("optimize", optimize), "optimize")
-    builder.add_edge("verify", "cohort")
+    builder.add_edge("verify", "engagement")
+    builder.add_edge("engagement", "cohort")
     builder.add_edge("cohort", "optimize")
     builder.set_entry_point("verify")
-    builder.set_max_node_executions(5)
+    builder.set_max_node_executions(6)
     return builder.build()

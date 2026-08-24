@@ -17,7 +17,7 @@ def seed_struggling_family(services, family_id: str, chat_ref: str) -> None:
     services.store.put_mastery(
         MasteryState(
             student_id=student.id, competency_id=FRACTIONS,
-            ema_accuracy=0.2, attempts=6, correct=1, level=MasteryLevel.STRUGGLING,
+            ema_accuracy=0.2, attempts=9, correct=1, level=MasteryLevel.STRUGGLING,
         )
     )
 

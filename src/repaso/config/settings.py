@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
     cohort_min_families: int = Field(default=3, ge=2)
     grader_confidence_threshold: float = Field(default=0.85, ge=0.5, le=1.0)
-    escalation_min_samples: int = Field(default=5, ge=1)
+    escalation_min_samples: int = Field(default=8, ge=1)
     legibility_blur_floor: float = Field(default=300.0, gt=0.0)
     daily_llm_budget_calls: int = Field(default=40, ge=1)
     rework_max_iterations: int = Field(default=2, ge=0)

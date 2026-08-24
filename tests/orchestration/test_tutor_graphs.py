@@ -157,7 +157,7 @@ async def test_struggle_hard_rule_escalates_even_when_model_says_continue(settin
     services.store.put_mastery(
         MasteryState(
             student_id=student.id, competency_id=FRACTIONS,
-            ema_accuracy=0.2, attempts=6, correct=1, streak=-4,
+            ema_accuracy=0.2, attempts=9, correct=1, streak=-4,
             level=MasteryLevel.STRUGGLING,
         )
     )
