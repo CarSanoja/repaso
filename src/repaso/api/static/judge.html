@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repaso Judge Mirror</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    margin: 0 auto; max-width: 60rem; padding: 1.5rem; line-height: 1.5;
+  }
+  h1 { font-size: 1.25rem; margin: 0 0 1rem; }
+  .row { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .75rem; }
+  input, button {
+    font: inherit; padding: .4rem .6rem; border-radius: .3rem;
+    border: 1px solid currentColor; background: transparent; color: inherit;
+  }
+  button { cursor: pointer; }
+  pre {
+    overflow-x: auto; padding: 1rem; border-radius: .3rem;
+    border: 1px solid currentColor; white-space: pre-wrap; word-break: break-word;
+  }
+  .hint { opacity: .7; font-size: .85rem; }
+</style>
+</head>
+<body>
+<h1>Repaso judge mirror</h1>
+<p class="hint">Read-only view of enrolled students and pending human decisions.</p>
+
+<div class="row">
+  <input id="code" type="password" placeholder="Judge access code" autocomplete="off">
+  <button id="login">Use code</button>
+  <span id="status" class="hint"></span>
+</div>
+
+<div class="row">
+  <button id="students">List students</button>
+  <input id="family" type="text" placeholder="family id" autocomplete="off">
+  <button id="transcript">View transcript</button>
+</div>
+
+<pre id="out">No data loaded yet.</pre>
+
+<script>
+  var judgeCode = "";
+  var out = document.getElementById("out");
+  var statusLabel = document.getElementById("status");
+
+  function render(value) {
+    out.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  }
+
+  function get(path) {
+    if (!judgeCode) {
+      render("Enter the judge access code first.");
+      return Promise.resolve();
+    }
+    return fetch(path, { headers: { "X-Judge-Code": judgeCode } })
+      .then(function (response) {
+        return response.json().then(function (body) {
+          render(response.ok ? body : { status: response.status, body: body });
+        });
+      })
+      .catch(function (error) {
+        render("Request failed: " + error);
+      });
+  }
+
+  document.getElementById("login").addEventListener("click", function () {
+    var code = document.getElementById("code").value;
+    fetch("/judge/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: code })
+    })
+      .then(function (response) {
+        if (!response.ok) {
+          judgeCode = "";
+          statusLabel.textContent = "Rejected (" + response.status + ")";
+          return;
+        }
+        judgeCode = code;
+        statusLabel.textContent = "Code accepted.";
+      })
+      .catch(function (error) {
+        statusLabel.textContent = "Login failed: " + error;
+      });
+  });
+
+  document.getElementById("students").addEventListener("click", function () {
+    get("/judge/students");
+  });
+
+  document.getElementById("transcript").addEventListener("click", function () {
+    var familyId = document.getElementById("family").value.trim();
+    if (!familyId) {
+      render("Enter a family id.");
+      return;
+    }
+    get("/judge/transcript/" + encodeURIComponent(familyId));
+  });
+</script>
+</body>
+</html>
