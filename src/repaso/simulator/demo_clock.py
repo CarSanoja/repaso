@@ -11,6 +11,7 @@ from repaso.core.orchestration.runner import (
     run_daily_close,
     start_daily_session,
 )
+from repaso.core.telemetry.sink import build_telemetry_sink
 from repaso.schemas.escalation import EscalationKind
 from repaso.schemas.item import ItemKind
 from repaso.schemas.review import QuarantineKind
@@ -22,6 +23,7 @@ from repaso.tools.event_bus import build_event_publisher
 from repaso.tools.grade_log import build_grade_log
 from repaso.tools.guardrails import build_screener
 from repaso.tools.knowledge import build_knowledge_retriever
+from repaso.tools.llm import instrument_models
 from repaso.tools.media_store import build_media_store
 from repaso.tools.ocr import build_text_extractor
 from repaso.tools.state_store import build_state_store
@@ -46,9 +48,12 @@ class DemoClockResult:
 
 
 def build_offline_services(settings: Settings) -> Services:
+    clock = SimClock(START)
+    telemetry = build_telemetry_sink(settings, clock)
+    models = instrument_models({role: AutoStubModel() for role in ModelRole}, telemetry)
     return Services(
         settings=settings,
-        clock=SimClock(START),
+        clock=clock,
         store=build_state_store(settings),
         grade_log=build_grade_log(settings),
         media=build_media_store(settings),
@@ -57,7 +62,8 @@ def build_offline_services(settings: Settings) -> Services:
         retriever=build_knowledge_retriever(settings),
         publisher=build_event_publisher(settings),
         sender=build_channel_sender(settings),
-        models={role: AutoStubModel() for role in ModelRole},
+        models=models,
+        telemetry=telemetry,
     )
 
 

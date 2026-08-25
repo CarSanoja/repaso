@@ -154,10 +154,10 @@ def build_response_graph(services: Services, run: TutorRun):
         return run.decision_action in ESCALATION_ACTIONS
 
     builder = GraphBuilder()
-    builder.add_node(StepNode("grade", grade), "grade")
-    builder.add_node(StepNode("apply", apply), "apply")
-    builder.add_node(StepNode("adapt", adapt), "adapt")
-    builder.add_node(StepNode("escalate", escalate), "escalate")
+    builder.add_node(StepNode("grade", grade, services.telemetry, "response"), "grade")
+    builder.add_node(StepNode("apply", apply, services.telemetry, "response"), "apply")
+    builder.add_node(StepNode("adapt", adapt, services.telemetry, "response"), "adapt")
+    builder.add_node(StepNode("escalate", escalate, services.telemetry, "response"), "escalate")
     builder.add_edge("grade", "apply", condition=alive)
     builder.add_edge("apply", "adapt", condition=alive)
     builder.add_edge("adapt", "escalate", condition=should_escalate)

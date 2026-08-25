@@ -61,8 +61,8 @@ def build_session_graph(services: Services, run: TutorRun):
         return run.terminal is None
 
     builder = GraphBuilder()
-    builder.add_node(StepNode("plan", plan), "plan")
-    builder.add_node(StepNode("compose", compose), "compose")
+    builder.add_node(StepNode("plan", plan, services.telemetry, "session"), "plan")
+    builder.add_node(StepNode("compose", compose, services.telemetry, "session"), "compose")
     builder.add_edge("plan", "compose", condition=alive)
     builder.set_entry_point("plan")
     builder.set_max_node_executions(4)

@@ -144,11 +144,11 @@ def build_ingest_graph(services: Services, run: IngestRun):
         return run.terminal is None
 
     builder = GraphBuilder()
-    builder.add_node(StepNode("parse", parse), "parse")
-    builder.add_node(StepNode("screen", screen), "screen")
-    builder.add_node(StepNode("map", map_), "map")
-    builder.add_node(StepNode("generate", generate), "generate")
-    builder.add_node(StepNode("validate", validate), "validate")
+    builder.add_node(StepNode("parse", parse, services.telemetry, "ingest"), "parse")
+    builder.add_node(StepNode("screen", screen, services.telemetry, "ingest"), "screen")
+    builder.add_node(StepNode("map", map_, services.telemetry, "ingest"), "map")
+    builder.add_node(StepNode("generate", generate, services.telemetry, "ingest"), "generate")
+    builder.add_node(StepNode("validate", validate, services.telemetry, "ingest"), "validate")
     builder.add_edge("parse", "screen", condition=alive)
     builder.add_edge("screen", "map", condition=alive)
     builder.add_edge("map", "generate", condition=alive)

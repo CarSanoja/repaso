@@ -4,6 +4,7 @@ from typing import Any
 from repaso.config.models import ModelRole
 from repaso.config.settings import Settings
 from repaso.core.harness.clock import Clock
+from repaso.core.telemetry.sink import NullTelemetrySink, TelemetrySink
 from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.competency import Competency, CompetencyMatch
 from repaso.schemas.escalation import Escalation
@@ -37,6 +38,7 @@ class Services:
     publisher: EventPublisher
     sender: ChannelSender
     models: dict[ModelRole, Any]
+    telemetry: TelemetrySink = field(default_factory=NullTelemetrySink)
 
     def model(self, role: ModelRole) -> Any:
         return self.models[role]
