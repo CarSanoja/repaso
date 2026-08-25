@@ -47,18 +47,18 @@ def simulate_answer(
     rng = _rng(seed, student_id, day, item.id)
     if profile.dropout_day is not None and day >= profile.dropout_day:
         return SimulatedAnswer(text="", correct_intent=False, latency_seconds=0.0, responded=False)
-    if rng.random() > profile.response_rate:
-        return SimulatedAnswer(text="", correct_intent=False, latency_seconds=0.0, responded=False)
-    if archetype is Archetype.INJECTOR and day == 2 and rng.random() < 0.9:
+    if archetype is Archetype.INJECTOR and day in (2, 3):
         return SimulatedAnswer(
             text=INJECTION_REPLY, correct_intent=False,
             latency_seconds=profile.latency_mean, responded=True,
         )
+    if rng.random() > profile.response_rate:
+        return SimulatedAnswer(text="", correct_intent=False, latency_seconds=0.0, responded=False)
     knows = rng.random() < ability_on_day(profile, day)
     guessed = not knows and rng.random() < profile.guess_probability
     correct = knows or guessed
     latency = max(2.0, rng.gauss(profile.latency_mean, profile.latency_mean * 0.2))
-    if archetype is Archetype.AMBIGUOUS and item.kind is ItemKind.OPEN and rng.random() < 0.5:
+    if archetype is Archetype.AMBIGUOUS and item.kind is ItemKind.OPEN and rng.random() < 0.8:
         return SimulatedAnswer(
             text="creo que si porque los dos se parecen",
             correct_intent=correct, latency_seconds=latency, responded=True,
