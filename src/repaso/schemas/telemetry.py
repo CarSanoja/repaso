@@ -12,6 +12,18 @@ class TelemetryEvent(FrozenStrictModel):
     at: datetime
 
 
+class TraceEvent(FrozenStrictModel):
+    at: datetime
+    kind: str
+    name: str
+    status: str = "ok"
+    duration_ms: float | None = None
+    family_id: FamilyId | None = None
+    student_id: str | None = None
+    error: str | None = None
+    extra: dict[str, str] = {}
+
+
 class CostRecord(FrozenStrictModel):
     model_id: str
     role: str
