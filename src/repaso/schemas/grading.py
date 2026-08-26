@@ -31,6 +31,7 @@ class GradeResult(StrictBaseModel):
     rubric_points: float | None = Field(default=None, ge=0.0, le=2.0)
     confidence: float = Field(ge=0.0, le=1.0)
     graded_by: GradedBy
+    latency_seconds: float | None = Field(default=None, ge=0.0)
     evidence: EvidenceSpan
     feedback: str
     quarantined: bool = False

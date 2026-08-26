@@ -125,6 +125,9 @@ class LocalStateStore:
     def get_escalation(self, escalation_id: EscalationId) -> Escalation | None:
         return self._get("escalations", escalation_id, Escalation)
 
+    def list_escalations(self, family_id: FamilyId) -> list[Escalation]:
+        return self._where("escalations", Escalation, family_id=family_id)
+
     def list_pending_escalations(self, family_id: FamilyId) -> list[Escalation]:
         pending = EscalationStatus.PENDING
         return self._where("escalations", Escalation, family_id=family_id, status=pending)

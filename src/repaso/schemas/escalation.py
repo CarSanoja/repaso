@@ -31,6 +31,7 @@ class Escalation(StrictBaseModel):
     kind: EscalationKind
     family_id: FamilyId
     student_id: StudentId | None = None
+    competency_id: str | None = None
     summary: str
     evidence: list[EvidenceSpan] = []
     options: list[EscalationOption] = []

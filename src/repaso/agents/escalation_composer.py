@@ -77,6 +77,7 @@ async def compose_struggle(
     return Escalation(
         id=new_escalation_id(),
         kind=EscalationKind.STRUGGLE_TRIAGE,
+        competency_id=competency.id,
         family_id=FamilyId(family_id),
         student_id=StudentId(student_id),
         summary=summary,
@@ -140,6 +141,7 @@ async def compose_cohort(
     return Escalation(
         id=new_escalation_id(),
         kind=EscalationKind.COHORT_SIGNAL,
+        competency_id=competency.id,
         family_id=FamilyId(family_id),
         summary=summary,
         drafted_note=await draft_note(model, request),

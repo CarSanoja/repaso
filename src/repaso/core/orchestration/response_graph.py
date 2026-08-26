@@ -15,7 +15,7 @@ from repaso.core.orchestration.context import Services, TutorRun
 from repaso.core.orchestration.nodes import StepNode
 from repaso.i18n.catalog import msg
 from repaso.schemas.channel import Button, OutboundMessage
-from repaso.schemas.escalation import EscalationKind
+from repaso.schemas.escalation import EscalationKind, EscalationStatus
 from repaso.schemas.item import ItemKind
 from repaso.schemas.mastery import MasteryState
 from repaso.schemas.schedule import SpacedItemState
@@ -23,6 +23,7 @@ from repaso.schemas.session import SessionStatus
 
 EXPECTED_ANSWER_SECONDS = 45.0
 SIGNAL_WINDOW_DAYS = 14
+LATENCY_WINDOW = 20
 ESCALATION_ACTIONS = {"escalate_struggle", "escalate_engagement"}
 
 
@@ -109,21 +110,53 @@ def build_response_graph(services: Services, run: TutorRun):
             _say(run, msg("session_complete", run.family.lang, streak=streak))
         services.store.put_session(run.session)
 
+    def _latency_window(student_id: str) -> list[float]:
+        grades = services.grade_log.by_student(student_id)
+        window = [g.latency_seconds for g in grades if g.latency_seconds is not None]
+        return window[-LATENCY_WINDOW:] + [run.response.latency_seconds]
+
+    def _days_since_struggle(student_id: str) -> int | None:
+        history = [
+            e
+            for e in services.store.list_escalations(run.family.id)
+            if e.kind is EscalationKind.STRUGGLE_TRIAGE and e.student_id == student_id
+        ]
+        if not history:
+            return None
+        if any(e.status is EscalationStatus.PENDING for e in history):
+            return 0
+        latest = max(e.created_at for e in history)
+        return (services.clock.today() - latest.date()).days
+
     async def adapt() -> None:
         item = run.items[0]
         mastery = services.store.get_mastery(run.student.id, item.competency_id)
         if mastery is None:
             run.decision_action = "continue"
             return
-        pending = services.store.list_pending_escalations(run.family.id)
-        blocked = any(e.kind is EscalationKind.STRUGGLE_TRIAGE for e in pending)
         signals = build_signals(
             mastery, daily_counts(services, run.student.id),
-            [run.response.latency_seconds], EXPECTED_ANSWER_SECONDS,
-            settings.escalation_min_samples, 0 if blocked else None, DEFAULT_COOLDOWN_DAYS,
+            _latency_window(run.student.id), EXPECTED_ANSWER_SECONDS,
+            settings.escalation_min_samples,
+            _days_since_struggle(run.student.id), DEFAULT_COOLDOWN_DAYS,
         )
         decision = await decide(signals, services.model(ModelRole.STRUCTURED))
         run.decision_action = decision.action
+        services.telemetry.trace(
+            "decision", decision.action, student_id=run.student.id,
+            family_id=run.family.id, competency=item.competency_id,
+        )
+
+    def _struggle_evidence(student_id: str, competency_id: str) -> list:
+        spans = []
+        for grade in reversed(services.grade_log.by_student(student_id)):
+            if grade.correct is False:
+                item = services.store.get_item(grade.item_id)
+                if item is not None and item.competency_id == competency_id:
+                    spans.append(grade.evidence)
+            if len(spans) == 3:
+                break
+        return list(reversed(spans)) or [run.grade.evidence]
 
     async def escalate() -> None:
         item = run.items[0]
@@ -131,7 +164,7 @@ def build_response_graph(services: Services, run: TutorRun):
         if run.decision_action == "escalate_struggle":
             escalation = await compose_struggle(
                 run.family.id, run.student.id, run.student.alias, competency,
-                [run.grade.evidence], run.family.lang,
+                _struggle_evidence(run.student.id, item.competency_id), run.family.lang,
                 services.model(ModelRole.GENERATE), services.clock.now(),
             )
         else:

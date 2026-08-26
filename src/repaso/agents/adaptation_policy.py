@@ -124,4 +124,6 @@ async def decide(signals: PolicySignals, model) -> PolicyDecision:
         return decision
     if signals.struggle or signals.disengaged:
         return decision
+    if signals.fast_guessing and reply.action == "continue":
+        return decision
     return reply if reply.action in ACTIONS else decision

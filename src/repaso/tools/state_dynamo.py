@@ -142,6 +142,9 @@ class DynamoStateStore:
     def get_escalation(self, escalation_id: EscalationId) -> Escalation | None:
         return get_row(self._table, f"ESC#{escalation_id}", "PROFILE", Escalation)
 
+    def list_escalations(self, family_id: FamilyId) -> list[Escalation]:
+        return query_prefix(self._table, f"FAMILY#{family_id}", "ESC#", Escalation)
+
     def list_pending_escalations(self, family_id: FamilyId) -> list[Escalation]:
         return query_index(self._table, INDEX_NAME, f"ESCPENDING#{family_id}", Escalation)
 
