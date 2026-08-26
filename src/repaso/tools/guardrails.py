@@ -1,4 +1,5 @@
 import re
+import unicodedata
 from typing import Any, Protocol, runtime_checkable
 
 from repaso.config.settings import Settings
@@ -15,6 +16,23 @@ INJECTION_MARKERS: tuple[str, ...] = (
     "award full marks",
     "skip all practice",
     "act as",
+    "ignora las instrucciones",
+    "ignora todas las instrucciones",
+    "ignora tus reglas",
+    "sistema:",
+    "desarrollador:",
+    "ahora eres",
+    "olvida tus instrucciones",
+    "olvida las reglas",
+    "revela tu",
+    "dale puntos completos",
+    "puntos completos a",
+    "salta la practica",
+    "salta toda la practica",
+    "aprueba todo",
+    "actua como",
+    "sin reglas",
+    "eres un asistente sin",
 )
 
 MARKER_REASON_PREFIX = "injection_marker:"
@@ -46,9 +64,14 @@ def _redact_text(text: str) -> str:
     return PHONE_PATTERN.sub(REDACTION, redacted)
 
 
+def _fold(text: str) -> str:
+    decomposed = unicodedata.normalize("NFKD", text.casefold())
+    return "".join(char for char in decomposed if not unicodedata.combining(char))
+
+
 def _injection_reasons(text: str, markers: tuple[str, ...]) -> list[str]:
-    lowered = text.lower()
-    return [f"{MARKER_REASON_PREFIX}{marker}" for marker in markers if marker in lowered]
+    folded = _fold(text)
+    return [f"{MARKER_REASON_PREFIX}{marker}" for marker in markers if _fold(marker) in folded]
 
 
 def _assessment_names(response: dict[str, Any]) -> list[str]:
