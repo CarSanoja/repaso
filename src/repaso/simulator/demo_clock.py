@@ -30,6 +30,11 @@ from repaso.tools.telegram import build_channel_sender
 
 START = datetime(2026, 9, 1, 19, 0, tzinfo=UTC)
 HEDGED_PREFIX = "creo que"
+OPEN_GRADE = "OpenGrade"
+
+
+class StalePrimeError(RuntimeError):
+    pass
 
 
 @dataclass
@@ -46,6 +51,7 @@ class DemoClockResult:
     retired_items: list[str] = field(default_factory=list)
     planted_hedged: int = 0
     planted_injections: int = 0
+    dropped_open_primes: int = 0
     struggle_fires: dict[str, list] = field(default_factory=dict)
     decisions: dict[str, set] = field(default_factory=dict)
     ledger: CohortLedger | None = None
@@ -73,7 +79,7 @@ def build_offline_services(settings: Settings) -> Services:
 
 def _prime_open_grade(services: Services, correct: bool, hedged: bool) -> None:
     services.models[ModelRole.JUDGE].prime(
-        "OpenGrade",
+        OPEN_GRADE,
         {
             "correct": correct,
             "rubric_points": 2.0 if correct else 0.5,
@@ -81,6 +87,23 @@ def _prime_open_grade(services: Services, correct: bool, hedged: bool) -> None:
             "feedback": "Revisemos juntos." if not correct else "Muy bien explicado.",
         },
     )
+
+
+def _settle_open_prime(services: Services, result: DemoClockResult, hedged: bool) -> None:
+    stale = services.models[ModelRole.JUDGE].drop_pending(OPEN_GRADE)
+    if stale:
+        result.dropped_open_primes += stale
+    elif hedged:
+        result.planted_hedged += 1
+
+
+def _assert_primes_drained(services: Services) -> None:
+    pending = services.models[ModelRole.JUDGE].pending(OPEN_GRADE)
+    if pending:
+        raise StalePrimeError(
+            f"{pending} primed open grade(s) never reached the judge; "
+            "every later open answer would be graded with someone else's payload"
+        )
 
 
 async def _play_day(services: Services, result: DemoClockResult, day: int, seed: int) -> None:
@@ -107,14 +130,15 @@ async def _play_day(services: Services, result: DemoClockResult, day: int, seed:
                 break
             if answer.text == INJECTION_REPLY:
                 result.planted_injections += 1
-            if item.kind is ItemKind.OPEN:
-                hedged = answer.text.startswith(HEDGED_PREFIX)
-                if hedged:
-                    result.planted_hedged += 1
+            open_item = item.kind is ItemKind.OPEN
+            hedged = open_item and answer.text.startswith(HEDGED_PREFIX)
+            if open_item:
                 _prime_open_grade(services, answer.correct_intent, hedged)
             outcome = await handle_answer(
                 services, member.family, member.student, answer.text, answer.latency_seconds
             )
+            if open_item:
+                _settle_open_prime(services, result, hedged)
             if outcome is None:
                 break
             result.responses += 1
@@ -165,6 +189,7 @@ async def run_demo_clock(
         services.clock.set_time(hour=19)
         _resolve_pending(services)
         await _play_day(services, result, day, seed)
+        _assert_primes_drained(services)
         close = await run_daily_close(services)
         result.cohort_signals.extend(close.cohort_fired)
         week = services.clock.today().isocalendar()

@@ -31,6 +31,13 @@ class AutoStubModel(Model):
     def prime(self, output_name: str, payload: dict[str, Any]) -> None:
         self.queues.setdefault(output_name, deque()).append(payload)
 
+    def pending(self, output_name: str) -> int:
+        return len(self.queues.get(output_name, ()))
+
+    def drop_pending(self, output_name: str) -> int:
+        queue = self.queues.pop(output_name, None)
+        return len(queue) if queue else 0
+
     def structured_output(
         self, output_model: type, prompt: Any, system_prompt: str | None = None, **kwargs: Any
     ) -> AsyncGenerator[dict[str, Any], None]:
