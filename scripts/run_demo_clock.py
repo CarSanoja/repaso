@@ -7,7 +7,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from repaso.config.settings import Settings
-from repaso.simulator.demo_clock import run_demo_clock, verdict_rows
+from repaso.simulator.demo_clock import run_demo_clock
+from repaso.simulator.verdicts import verdict_rows
 
 
 def main() -> int:
