@@ -1,0 +1,137 @@
+from datetime import UTC, date, datetime
+
+import pytest
+
+from repaso.channel.telegram.commands import handle_command
+from repaso.channel.telegram.exam_dates import parse_exam_date, split_exam_argument
+from repaso.i18n import msg
+from repaso.schemas.channel import ChannelKind
+from repaso.schemas.common import Lang
+from repaso.schemas.events import EventKind
+from repaso.schemas.family import Family
+from repaso.schemas.mastery import MasteryLevel, MasteryState
+from repaso.schemas.student import Student
+from repaso.tools.state_store import build_state_store
+
+NOW = datetime(2026, 8, 20, 12, 0, tzinfo=UTC)
+TODAY = NOW.date()
+ES = Lang.ES
+CHAT = "12345"
+
+
+@pytest.fixture
+def store(settings):
+    return build_state_store(settings)
+
+
+@pytest.fixture
+def family(store):
+    family = Family(
+        id="f1",
+        channel=ChannelKind.TELEGRAM,
+        chat_ref=CHAT,
+        lang=ES,
+        invite_code="PILOTO-1",
+        created_at=NOW,
+    )
+    store.put_family(family)
+    store.put_student(
+        Student(
+            id="s1",
+            family_id="f1",
+            alias="Leo",
+            grade=4,
+            section_key="san-jose-4-b",
+            created_at=NOW,
+        )
+    )
+    return family
+
+
+def said(reply, index: int = 0) -> str:
+    return reply.messages[index].text
+
+
+def mastery(competency_id: str, level: MasteryLevel, attempts: int, streak: int) -> MasteryState:
+    return MasteryState(
+        student_id="s1",
+        competency_id=competency_id,
+        ema_accuracy=0.5,
+        attempts=attempts,
+        correct=attempts // 2,
+        streak=streak,
+        level=level,
+    )
+
+
+def test_parser_accepts_the_four_written_formats():
+    assert parse_exam_date("12-09", TODAY) == date(2026, 9, 12)
+    assert parse_exam_date("12/09", TODAY) == date(2026, 9, 12)
+    assert parse_exam_date("12-09-2026", TODAY) == date(2026, 9, 12)
+    assert parse_exam_date("2026-09-12", TODAY) == date(2026, 9, 12)
+
+
+def test_bare_day_and_month_roll_into_the_next_year_when_already_past():
+    assert parse_exam_date("01-01", TODAY) == date(2027, 1, 1)
+    assert parse_exam_date("20-08", TODAY) == TODAY
+
+
+def test_parser_rejects_garbage():
+    for token in ("viernes", "", "32-13", "2026", "12-09-", "mañana"):
+        assert parse_exam_date(token, TODAY) is None
+
+
+def test_split_takes_the_date_out_of_the_free_text():
+    assert split_exam_argument("fracciones 12/09", TODAY) == ("fracciones", date(2026, 9, 12))
+    assert split_exam_argument("el examen de mate", TODAY) is None
+
+
+def test_exam_stores_a_date_per_student_and_emits_the_event(store, family):
+    reply = handle_command(family, store.list_students("f1"), "/exam fracciones 12/09", store, NOW)
+
+    assert said(reply) == msg("exam_ack", ES, competency="fracciones", date="12/09")
+    stored = store.list_exam_dates("s1")
+    assert [exam.exam_date for exam in stored] == [date(2026, 9, 12)]
+    assert stored[0].competency_id is None
+    event = reply.events[0]
+    assert event.kind is EventKind.EXAM_ANNOUNCED
+    assert event.family_id == "f1"
+    assert event.idempotency_key == "exam#f1#2026-09-12"
+    assert event.payload == {"exam_date": "2026-09-12", "topic": "fracciones"}
+
+
+def test_exam_without_a_readable_date_asks_again_and_stores_nothing(store, family):
+    reply = handle_command(family, store.list_students("f1"), "/exam el viernes", store, NOW)
+
+    assert said(reply) == msg("exam_ask_date", ES)
+    assert reply.events == []
+    assert store.list_exam_dates("s1") == []
+
+
+def test_forget_erases_the_exam_dates(store, family):
+    handle_command(family, store.list_students("f1"), "/exam fracciones 12/09", store, NOW)
+    store.forget_family("f1")
+    assert store.list_exam_dates("s1") == []
+
+
+def test_status_reports_real_numbers(store, family):
+    store.put_mastery(mastery("c1", MasteryLevel.MASTERED, attempts=6, streak=3))
+    store.put_mastery(mastery("c2", MasteryLevel.DEVELOPING, attempts=4, streak=1))
+    store.put_mastery(mastery("c3", MasteryLevel.STRUGGLING, attempts=2, streak=-2))
+
+    reply = handle_command(family, store.list_students("f1"), "/status", store, NOW)
+
+    summary = msg("mastery_summary", ES, mastered=1, developing=1, struggling=1)
+    assert said(reply) == msg(
+        "status_line", ES, alias="Leo", sessions=12, mastery_map=summary, streak=3
+    )
+    assert "-" not in said(reply)
+
+
+def test_status_without_history_shows_zeros_instead_of_placeholders(store, family):
+    reply = handle_command(family, store.list_students("f1"), "/status", store, NOW)
+
+    summary = msg("mastery_summary", ES, mastered=0, developing=0, struggling=0)
+    assert said(reply) == msg(
+        "status_line", ES, alias="Leo", sessions=0, mastery_map=summary, streak=0
+    )

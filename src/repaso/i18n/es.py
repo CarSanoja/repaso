@@ -81,6 +81,11 @@ MESSAGES = {
         "racha de {streak} días. Dominio por tema: {mastery_map}"
     ),
     "exam_ack": "Anotado: examen de {competency} el {date}. Ajusto el plan de repaso.",
+    "exam_ask_date": (
+        "Lo anoto con gusto, pero me falta el día. ¿Cuándo es? Por ejemplo: 12/09 o "
+        "12-09-2026."
+    ),
+    "mastery_summary": "{mastered} dominados · {developing} en camino · {struggling} difíciles",
     "paused": "Pausado. Nada se borra; /resume retoma cuando quieran.",
     "resumed": "¡De vuelta! Mañana a las {time} llega la próxima práctica.",
     "forget_confirm": (

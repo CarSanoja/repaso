@@ -156,7 +156,8 @@ def test_status_reports_one_line_per_student(store, family):
     other = students[0].model_copy(update={"id": "s2", "alias": "Estrella"})
     reply = handle_command(family, [*students, other], "/status", store, NOW)
     assert len(reply.messages) == 2
-    line = msg("status_line", ES, alias="Estrella", sessions="-", mastery_map="-", streak="-")
+    summary = msg("mastery_summary", ES, mastered=0, developing=0, struggling=0)
+    line = msg("status_line", ES, alias="Estrella", sessions=0, mastery_map=summary, streak=0)
     assert said(reply, 1) == line
 
 
@@ -165,7 +166,7 @@ def test_unknown_command_and_exam_acknowledgement(store, family):
     assert said(handle_command(family, [], "/inventado", store, NOW)) == msg("unknown_command", ES)
     assert said(handle_command(family, [], "/help", store, NOW)) == msg("help", ES)
     exam = handle_command(family, [], "/exam fracciones el viernes", store, NOW)
-    assert said(exam) == msg("exam_ack", ES, competency="fracciones el viernes", date="")
+    assert said(exam) == msg("exam_ask_date", ES)
     assert exam.events == []
 
 

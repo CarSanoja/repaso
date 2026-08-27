@@ -1,18 +1,23 @@
+from collections import Counter
 from dataclasses import dataclass, field
-from datetime import datetime, time
+from datetime import date, datetime, time
 
 from repaso.channel.telegram.enrollment import parse_practice_time
+from repaso.channel.telegram.exam_dates import split_exam_argument
 from repaso.i18n import msg
 from repaso.schemas.channel import Button, OutboundMessage
 from repaso.schemas.common import Lang
-from repaso.schemas.events import DomainEvent
+from repaso.schemas.events import DomainEvent, EventKind
 from repaso.schemas.family import Family, FamilyStatus
+from repaso.schemas.mastery import MasteryLevel, MasteryState
+from repaso.schemas.schedule import ExamDate
 from repaso.schemas.student import Student
 from repaso.tools.state_store import StateStore
 
 FORGET_YES = "forget:yes"
 FORGET_NO = "forget:no"
-PLACEHOLDER = "-"
+STRONG_LEVELS = (MasteryLevel.MASTERED, MasteryLevel.SOLID)
+GROWING_LEVELS = (MasteryLevel.DEVELOPING, MasteryLevel.UNKNOWN)
 
 
 @dataclass
@@ -43,11 +48,11 @@ def handle_command(
     if command == "/language":
         return _toggle_language(family, store)
     if command == "/status":
-        return _status(family, students)
+        return _status(family, students, store)
     if command == "/schedule":
         return _schedule(family, store, argument)
     if command == "/exam":
-        return _single(family, "exam_ack", competency=argument, date="")
+        return _exam(family, students, store, argument, now)
     if command == "/forget":
         return _forget_prompt(family)
     return _single(family, "unknown_command")
@@ -103,22 +108,74 @@ def _toggle_language(family: Family, store: StateStore) -> CommandReply:
     return _single(family, "help")
 
 
-def _status(family: Family, students: list[Student]) -> CommandReply:
+def _status(family: Family, students: list[Student], store: StateStore) -> CommandReply:
     return CommandReply(
         messages=[
-            _out(
-                family,
-                "status_line",
-                None,
-                None,
-                alias=student.alias,
-                sessions=PLACEHOLDER,
-                mastery_map=PLACEHOLDER,
-                streak=PLACEHOLDER,
-            )
+            _status_line(family, student, store.list_mastery(student.id))
             for student in students
         ]
     )
+
+
+def _status_line(family: Family, student: Student, states: list[MasteryState]) -> OutboundMessage:
+    return _out(
+        family,
+        "status_line",
+        None,
+        None,
+        alias=student.alias,
+        sessions=sum(state.attempts for state in states),
+        mastery_map=_mastery_summary(states, family.lang),
+        streak=max([state.streak for state in states] + [0]),
+    )
+
+
+def _mastery_summary(states: list[MasteryState], lang: Lang) -> str:
+    counts = Counter(state.level for state in states)
+    return msg(
+        "mastery_summary",
+        lang,
+        mastered=sum(counts[level] for level in STRONG_LEVELS),
+        developing=sum(counts[level] for level in GROWING_LEVELS),
+        struggling=counts[MasteryLevel.STRUGGLING],
+    )
+
+
+def _exam(
+    family: Family,
+    students: list[Student],
+    store: StateStore,
+    argument: str,
+    now: datetime,
+) -> CommandReply:
+    parsed = split_exam_argument(argument, now.date())
+    if parsed is None:
+        return _single(family, "exam_ask_date")
+    topic, exam_date = parsed
+    for student in students:
+        store.put_exam_date(
+            ExamDate(student_id=student.id, competency_id=None, exam_date=exam_date)
+        )
+    return CommandReply(
+        messages=[
+            _out(family, "exam_ack", None, None, competency=topic, date=_day_month(exam_date))
+        ],
+        events=[_exam_event(family, topic, exam_date, now)],
+    )
+
+
+def _exam_event(family: Family, topic: str, exam_date: date, now: datetime) -> DomainEvent:
+    return DomainEvent(
+        kind=EventKind.EXAM_ANNOUNCED,
+        family_id=family.id,
+        idempotency_key=f"exam#{family.id}#{exam_date}",
+        occurred_at=now,
+        payload={"exam_date": exam_date.isoformat(), "topic": topic},
+    )
+
+
+def _day_month(value: date) -> str:
+    return value.strftime("%d/%m")
 
 
 def _schedule(family: Family, store: StateStore, argument: str) -> CommandReply:

@@ -11,6 +11,7 @@ class EventKind(StrEnum):
     DAILY_SESSION_DUE = "daily_session_due"
     RESPONSE_RECEIVED = "response_received"
     ESCALATION_RESOLVED = "escalation_resolved"
+    EXAM_ANNOUNCED = "exam_announced"
     DAILY_CLOSE = "daily_close"
 
 

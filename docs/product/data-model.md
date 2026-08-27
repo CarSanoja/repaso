@@ -23,6 +23,7 @@ attributes exist only for access paths, never as the source of truth.
 | Escalation (profile) | `ESC#<escalation_id>` | `PROFILE` | — |
 | Quarantine item | `FAMILY#<family_id>` | `QUAR#<quarantine_id>` | — |
 | Claim | `CLAIM#<key>` | `CLAIM` | — |
+| Exam date | `STUDENT#<student_id>` | `EXAM#<exam_date>` | — |
 
 The lookup and profile rows are duplicates written in the same call as the primary row: they buy a
 `GetItem` where the primary key alone would force a scan. A resolved escalation is rewritten
@@ -32,7 +33,7 @@ without its `gsi1` attributes, which drops it out of the pending index.
 
 With `REPASO_LOCAL_MODE=1` the same `StateStore` protocol is served by `LocalStateStore`, one JSON
 file per aggregate under `<REPASO_LOCAL_DATA_DIR>/state/` (`families.json`, `students.json`,
-`mastery.json`, `spaced.json`, `items.json`, `materials.json`, `sessions.json`,
+`mastery.json`, `spaced.json`, `exams.json`, `items.json`, `materials.json`, `sessions.json`,
 `escalations.json`, `quarantine.json`, `claims.json`), each keyed by the same identifiers the
 DynamoDB rows use. A write is read-modify-write under a process lock and lands through a temporary
 file plus `os.replace`, so a reader never sees a half-written file and a crash mid-write leaves the

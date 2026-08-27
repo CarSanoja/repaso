@@ -17,7 +17,7 @@ from repaso.schemas.item import Item, ItemStatus
 from repaso.schemas.mastery import MasteryState
 from repaso.schemas.material import Material
 from repaso.schemas.review import QuarantineItem, QuarantineStatus
-from repaso.schemas.schedule import SpacedItemState
+from repaso.schemas.schedule import ExamDate, SpacedItemState
 from repaso.schemas.session import PracticeSession
 from repaso.schemas.student import Student
 from repaso.tools.state_dynamo_io import (
@@ -96,6 +96,15 @@ class DynamoStateStore:
 
     def list_spaced(self, student_id: StudentId) -> list[SpacedItemState]:
         return query_prefix(self._table, f"STUDENT#{student_id}", "SPACED#", SpacedItemState)
+
+    def put_exam_date(self, exam: ExamDate) -> None:
+        put_row(self._table, f"STUDENT#{exam.student_id}", f"EXAM#{exam.exam_date}", exam)
+
+    def list_exam_dates(self, student_id: StudentId) -> list[ExamDate]:
+        return query_prefix(self._table, f"STUDENT#{student_id}", "EXAM#", ExamDate)
+
+    def delete_exam_date(self, student_id: StudentId, exam_date: date) -> None:
+        delete_row(self._table, f"STUDENT#{student_id}", f"EXAM#{exam_date}")
 
     def put_item(self, item: Item) -> None:
         gsi1 = (f"COMP#{item.competency_id}", f"ITEM#{item.id}")
