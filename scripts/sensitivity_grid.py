@@ -17,7 +17,7 @@ GRIDS = {
     "grader_confidence_threshold": [0.7, 0.8, 0.85, 0.9, 0.95],
 }
 DEFAULTS = {
-    "escalation_min_samples": 8,
+    "escalation_min_samples": 9,
     "STRUGGLING_CEILING": 0.4,
     "DEFAULT_COOLDOWN_DAYS": 7,
     "grader_confidence_threshold": 0.85,

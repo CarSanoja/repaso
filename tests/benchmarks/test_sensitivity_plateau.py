@@ -108,7 +108,7 @@ def test_default_points_picks_the_shipped_value_from_every_parameter():
     )
     rows = default_points(report)
     assert [(row["param"], row["value"]) for row in rows] == [
-        (COOLDOWN, 7), ("escalation_min_samples", 8)
+        (COOLDOWN, 7), ("escalation_min_samples", 9)
     ]
 
 
