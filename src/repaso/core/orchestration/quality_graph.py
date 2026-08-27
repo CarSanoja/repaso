@@ -14,7 +14,7 @@ from repaso.core.harness.escalation_triggers import (
 )
 from repaso.core.orchestration.context import CloseRun, Services
 from repaso.core.orchestration.nodes import StepNode
-from repaso.core.orchestration.response_graph import daily_counts
+from repaso.core.orchestration.response_graph import scheduled_counts
 from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.mastery import MasteryLevel
 
@@ -98,7 +98,7 @@ def build_quality_graph(services: Services, run: CloseRun):
         week = today.isocalendar()
         for family in services.store.list_families():
             for student in services.store.list_students(family.id):
-                counts = daily_counts(services, student.id)
+                counts = scheduled_counts(services, student.id, family)
                 if not engagement_trigger(
                     counts, DEFAULT_MIN_ACTIVE_DAYS, DEFAULT_SILENT_DAYS
                 ):

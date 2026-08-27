@@ -1,5 +1,5 @@
 from collections import Counter
-from datetime import timedelta
+from datetime import date, timedelta
 
 from strands.multiagent.graph import GraphBuilder
 
@@ -8,14 +8,20 @@ from repaso.agents.capsule_composer import item_buttons, render_item
 from repaso.agents.escalation_composer import compose_engagement, compose_struggle
 from repaso.agents.grader import grade_mcq, grade_open
 from repaso.config.models import ModelRole
+from repaso.core.harness.calendar import mask_to_scheduled
 from repaso.core.harness.escalation_triggers import DEFAULT_COOLDOWN_DAYS, DEFAULT_SILENT_DAYS
 from repaso.core.harness.mastery import update_mastery
 from repaso.core.harness.sm2 import grade_to_quality, review
 from repaso.core.orchestration.context import Services, TutorRun
 from repaso.core.orchestration.nodes import StepNode
+from repaso.core.orchestration.response_signals import (
+    days_since_struggle,
+    latency_window,
+    struggle_evidence,
+)
 from repaso.i18n.catalog import msg
 from repaso.schemas.channel import Button, OutboundMessage
-from repaso.schemas.escalation import EscalationKind, EscalationStatus
+from repaso.schemas.family import Family
 from repaso.schemas.item import ItemKind
 from repaso.schemas.mastery import MasteryState
 from repaso.schemas.schedule import SpacedItemState
@@ -23,7 +29,6 @@ from repaso.schemas.session import SessionStatus
 
 EXPECTED_ANSWER_SECONDS = 45.0
 SIGNAL_WINDOW_DAYS = 14
-LATENCY_WINDOW = 20
 ESCALATION_ACTIONS = {"escalate_struggle", "escalate_engagement"}
 
 
@@ -38,11 +43,23 @@ def _say(run: TutorRun, text: str, buttons: list[Button] | None = None) -> None:
     )
 
 
-def daily_counts(services: Services, student_id: str) -> list[int]:
+def window_days(services: Services) -> list[date]:
     today = services.clock.today()
+    return [today - timedelta(days=offset) for offset in range(SIGNAL_WINDOW_DAYS - 1, -1, -1)]
+
+
+def daily_counts(services: Services, student_id: str) -> list[int]:
     per_day = Counter(g.graded_at.date() for g in services.grade_log.by_student(student_id))
-    days = [today - timedelta(days=offset) for offset in range(SIGNAL_WINDOW_DAYS - 1, -1, -1)]
-    return [per_day.get(day, 0) for day in days]
+    return [per_day.get(day, 0) for day in window_days(services)]
+
+
+def scheduled_counts(services: Services, student_id: str, family: Family) -> list[int]:
+    return mask_to_scheduled(
+        window_days(services),
+        daily_counts(services, student_id),
+        family.rest_weekdays,
+        services.settings.holiday_dates,
+    )
 
 
 def build_response_graph(services: Services, run: TutorRun):
@@ -111,24 +128,6 @@ def build_response_graph(services: Services, run: TutorRun):
             _say(run, msg("session_complete", run.family.lang, streak=streak))
         services.store.put_session(run.session)
 
-    def _latency_window(student_id: str) -> list[float]:
-        grades = services.grade_log.by_student(student_id)
-        window = [g.latency_seconds for g in grades if g.latency_seconds is not None]
-        return window[-LATENCY_WINDOW:] + [run.response.latency_seconds]
-
-    def _days_since_struggle(student_id: str) -> int | None:
-        history = [
-            e
-            for e in services.store.list_escalations(run.family.id)
-            if e.kind is EscalationKind.STRUGGLE_TRIAGE and e.student_id == student_id
-        ]
-        if not history:
-            return None
-        if any(e.status is EscalationStatus.PENDING for e in history):
-            return 0
-        latest = max(e.created_at for e in history)
-        return (services.clock.today() - latest.date()).days
-
     async def adapt() -> None:
         item = run.items[0]
         mastery = services.store.get_mastery(run.student.id, item.competency_id)
@@ -137,9 +136,10 @@ def build_response_graph(services: Services, run: TutorRun):
             return
         signals = build_signals(
             mastery, daily_counts(services, run.student.id),
-            _latency_window(run.student.id), EXPECTED_ANSWER_SECONDS,
-            settings.escalation_min_samples,
-            _days_since_struggle(run.student.id), DEFAULT_COOLDOWN_DAYS,
+            latency_window(services, run.student.id, run.response.latency_seconds),
+            EXPECTED_ANSWER_SECONDS, settings.escalation_min_samples,
+            days_since_struggle(services, run.family.id, run.student.id),
+            DEFAULT_COOLDOWN_DAYS,
         )
         decision = await decide(signals, services.model(ModelRole.STRUCTURED))
         run.decision_action = decision.action
@@ -148,24 +148,16 @@ def build_response_graph(services: Services, run: TutorRun):
             family_id=run.family.id, competency=item.competency_id,
         )
 
-    def _struggle_evidence(student_id: str, competency_id: str) -> list:
-        spans = []
-        for grade in reversed(services.grade_log.by_student(student_id)):
-            if grade.correct is False:
-                item = services.store.get_item(grade.item_id)
-                if item is not None and item.competency_id == competency_id:
-                    spans.append(grade.evidence)
-            if len(spans) == 3:
-                break
-        return list(reversed(spans)) or [run.grade.evidence]
-
     async def escalate() -> None:
         item = run.items[0]
         competency = services.retriever.get_competency(item.competency_id)
         if run.decision_action == "escalate_struggle":
             escalation = await compose_struggle(
                 run.family.id, run.student.id, run.student.alias, competency,
-                _struggle_evidence(run.student.id, item.competency_id), run.family.lang,
+                struggle_evidence(
+                    services, run.student.id, item.competency_id, run.grade.evidence
+                ),
+                run.family.lang,
                 services.model(ModelRole.GENERATE), services.clock.now(),
             )
         else:
