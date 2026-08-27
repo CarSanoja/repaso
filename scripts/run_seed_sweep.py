@@ -2,6 +2,7 @@ import argparse
 import asyncio
 import json
 import math
+import shutil
 import sys
 import time
 from concurrent.futures import ProcessPoolExecutor
@@ -10,13 +11,31 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 
+def _cohort_signals(store, members) -> list[str]:
+    from repaso.schemas.escalation import EscalationKind
+
+    section_by_family = {m.family.id: m.student.section_key for m in members}
+    signals = set()
+    for member in members:
+        for escalation in store.list_escalations(member.family.id):
+            if escalation.kind is not EscalationKind.COHORT_SIGNAL:
+                continue
+            section = section_by_family[escalation.family_id]
+            fired_on = escalation.created_at.date().isoformat()
+            signals.add(f"{section}#{escalation.competency_id}#{fired_on}")
+    return sorted(signals)
+
+
 def run_one(args: tuple[int, str]) -> dict:
     seed, base_dir = args
     from repaso.config.settings import Settings
     from repaso.simulator.demo_clock import run_demo_clock
     from repaso.simulator.verdicts import verdict_rows
+    from repaso.tools.state_store import build_state_store
 
-    settings = Settings(local_mode=True, local_data_dir=Path(base_dir) / f"seed-{seed}")
+    data_dir = Path(base_dir) / f"seed-{seed}"
+    shutil.rmtree(data_dir, ignore_errors=True)
+    settings = Settings(local_mode=True, local_data_dir=data_dir)
     result = asyncio.run(run_demo_clock(settings, days=14, seed=seed))
     rows = verdict_rows(result)
     low = {
@@ -29,6 +48,7 @@ def run_one(args: tuple[int, str]) -> dict:
         sum(result.escalations_by_kind.values())
         + sum(result.quarantines_by_kind.values())
     )
+    members = result.ledger.members
     return {
         "seed": seed,
         "verdicts": {case: verdict == "as expected" for case, _, _, verdict in rows},
@@ -36,6 +56,13 @@ def run_one(args: tuple[int, str]) -> dict:
         "fp": len(struggle - low),
         "low": len(low),
         "interrupts": interrupts,
+        "archetypes": {m.student.id: m.archetype.value for m in members},
+        "sections": {m.student.id: m.student.section_key for m in members},
+        "struggle_fires": {
+            student: [fired_on.isoformat() for fired_on in sorted(dates)]
+            for student, dates in sorted(result.struggle_fires.items())
+        },
+        "cohort_signals": _cohort_signals(build_state_store(settings), members),
     }
 
 
