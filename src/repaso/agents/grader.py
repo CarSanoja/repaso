@@ -57,12 +57,12 @@ def grade_mcq(item: Item, response: StudentResponse, graded_at: datetime) -> Gra
     )
 
 
-def open_prompt(item: Item, response: StudentResponse, lang: Lang) -> str:
+def open_prompt(item: Item, answer: str, lang: Lang) -> str:
     return (
         f"Question: {item.stem}\n"
         f"Answer key: {item.answer_key}\n"
         f"Rubric: {item.rubric or NO_RUBRIC}\n"
-        f"Student answer, verbatim: {response.text}\n"
+        f"Student answer, verbatim: {answer}\n"
         f"Write the feedback field in {lang.value}, addressed to the child."
     )
 
@@ -116,13 +116,15 @@ async def grade_open(
     confidence_threshold: float,
     graded_at: datetime,
     family_id: FamilyId,
+    *,
+    llm_text: str | None = None,
 ) -> tuple[GradeResult, QuarantineItem | None]:
     try:
         reply = await structured(
             model,
             OpenGrade,
             SYSTEM.format(lang=lang.value),
-            open_prompt(item, response, lang),
+            open_prompt(item, response.text if llm_text is None else llm_text, lang),
         )
     except StructuredCallFailed:
         return held_back(response, family_id, 0.0, graded_at)

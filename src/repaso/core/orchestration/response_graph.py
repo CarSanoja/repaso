@@ -57,6 +57,7 @@ def build_response_graph(services: Services, run: TutorRun):
             run.grade, run.quarantine = await grade_open(
                 item, run.response, run.family.lang, services.model(ModelRole.JUDGE),
                 settings.grader_confidence_threshold, now, run.family.id,
+                llm_text=services.screener.redact(run.response.text),
             )
         services.grade_log.append(run.grade)
         if run.quarantine is not None:
