@@ -4,7 +4,13 @@ import pytest
 from pydantic import ValidationError
 
 from repaso.config.settings import Settings
-from repaso.core.harness.calendar import is_scheduled, mask_to_scheduled
+from repaso.core.harness.calendar import (
+    OUTAGE_BASELINE_DAYS,
+    OUTAGE_COLLAPSE_RATIO,
+    is_scheduled,
+    mask_to_scheduled,
+    outage_days,
+)
 from repaso.core.harness.escalation_triggers import (
     DEFAULT_MIN_ACTIVE_DAYS,
     DEFAULT_SILENT_DAYS,
@@ -125,3 +131,61 @@ def test_settings_without_a_school_calendar_block_nothing():
 
     assert settings.holiday_dates == []
     assert is_scheduled(CARNAVAL[0], [], settings.holiday_dates)
+
+
+def school_days(count: int, first: date = date(2026, 9, 1)) -> list[date]:
+    days, day = [], first
+    while len(days) < count:
+        if is_scheduled(day, WEEKEND, []):
+            days.append(day)
+        day += timedelta(days=1)
+    return days
+
+
+def outages(
+    volumes: list[int],
+    ratio: float = OUTAGE_COLLAPSE_RATIO,
+    window: int = OUTAGE_BASELINE_DAYS,
+) -> set[int]:
+    days = school_days(len(volumes))
+    totals = dict(zip(days, volumes, strict=True))
+    return {days.index(day) for day in outage_days(totals, days, ratio, window)}
+
+
+def test_a_cohort_wide_collapse_on_school_days_is_an_outage():
+    assert outages([60, 58, 61, 59, 57, 0, 0, 0, 62, 60]) == {5, 6, 7}
+
+
+def test_a_partial_dip_is_not_an_outage():
+    assert outages([60, 58, 61, 59, 57, 30, 29, 31, 62, 60]) == set()
+
+
+def test_the_leading_days_have_no_baseline_and_are_never_outage_days():
+    assert outages([0, 0, 60, 58, 61, 59]) == set()
+    assert outage_days({}, school_days(6)) == set()
+
+
+def test_the_recovery_day_counts_again_and_a_later_collapse_is_still_caught():
+    assert outages([60, 58, 61, 59, 0, 0, 62, 60, 59, 61, 0, 58]) == {4, 5, 10}
+
+
+def test_a_long_outage_does_not_drag_its_own_baseline_down():
+    assert outages([60, 58, 61, 59, 0, 0, 0, 0, 0, 60]) == {4, 5, 6, 7, 8}
+
+
+def test_days_the_school_is_shut_are_never_outage_days():
+    days = school_days(10)
+    totals = dict(zip(days, [60, 58, 61, 59, 57, 60, 58, 61, 59, 57], strict=True))
+
+    assert outage_days(totals, days).isdisjoint({SATURDAY, SUNDAY})
+
+
+def test_the_baseline_window_forgets_the_busier_past():
+    assert outages([100, 100, 40, 40, 8], window=7) == {4}
+    assert outages([100, 100, 40, 40, 8], window=2) == set()
+
+
+def test_the_collapse_ratio_is_the_knob_and_defaults_to_a_fifth():
+    assert (OUTAGE_COLLAPSE_RATIO, OUTAGE_BASELINE_DAYS) == (0.2, 7)
+    assert outages([60, 58, 61, 59, 57, 20]) == set()
+    assert outages([60, 58, 61, 59, 57, 20], ratio=0.5) == {5}

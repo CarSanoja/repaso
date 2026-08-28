@@ -67,7 +67,7 @@ MESSAGES = {
     "option_teacher_note": "A note for the teacher (already drafted, you decide to send it)",
     "option_reduce_load": "Slow down and consolidate the previous topic",
     "engagement_alert": (
-        "{alias} hasn't practiced in {days} days. Should we reduce the load or change "
+        "{alias} hasn't practiced in {days} school days. Should we reduce the load or change "
         "the time? /schedule changes the hour, /pause stops without erasing anything."
     ),
     "cohort_note_intro": (

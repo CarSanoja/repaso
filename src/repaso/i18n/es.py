@@ -69,7 +69,7 @@ MESSAGES = {
     "option_teacher_note": "Nota para la maestra (ya está redactada, tú decides enviarla)",
     "option_reduce_load": "Bajar el ritmo y consolidar el tema anterior",
     "engagement_alert": (
-        "{alias} lleva {days} días sin practicar. ¿Reducimos la carga o cambiamos el "
+        "{alias} lleva {days} días de clase sin practicar. ¿Reducimos la carga o cambiamos el "
         "horario? /schedule cambia la hora, /pause detiene sin borrar nada."
     ),
     "cohort_note_intro": (

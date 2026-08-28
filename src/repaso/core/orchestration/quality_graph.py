@@ -1,3 +1,6 @@
+from collections import Counter
+from datetime import date
+
 from strands.multiagent.graph import GraphBuilder
 
 from repaso.agents.escalation_composer import compose_cohort, compose_engagement
@@ -6,6 +9,7 @@ from repaso.agents.item_optimizer import retire, retirement_candidates
 from repaso.config.models import ModelRole
 from repaso.core.cohort.signal import CohortFailure, evaluate, signal_claim_key
 from repaso.core.harness.budgets import BoundedAttempts
+from repaso.core.harness.calendar import is_scheduled, mask_to_scheduled, outage_days
 from repaso.core.harness.escalation_triggers import (
     DEFAULT_MIN_ACTIVE_DAYS,
     DEFAULT_SILENT_DAYS,
@@ -14,8 +18,9 @@ from repaso.core.harness.escalation_triggers import (
 )
 from repaso.core.orchestration.context import CloseRun, Services
 from repaso.core.orchestration.nodes import StepNode
-from repaso.core.orchestration.response_graph import scheduled_counts
+from repaso.core.orchestration.response_graph import daily_counts, window_days
 from repaso.schemas.channel import OutboundMessage
+from repaso.schemas.family import Family
 from repaso.schemas.mastery import MasteryLevel
 
 COHORT_WINDOW_DAYS = 7
@@ -30,6 +35,23 @@ def _all_grades(services: Services) -> list:
         for student in services.store.list_students(family.id):
             grades.extend(services.grade_log.by_student(student.id))
     return grades
+
+
+def _cohort_totals(services: Services) -> dict[date, int]:
+    return Counter(grade.graded_at.date() for grade in _all_grades(services))
+
+
+def _delivers_today(services: Services, family: Family, today: date) -> bool:
+    return is_scheduled(today, family.rest_weekdays, services.settings.holiday_dates)
+
+
+def _closed_days(services: Services, family: Family, totals: dict[date, int]) -> list[date]:
+    open_days = [
+        day
+        for day in window_days(services)
+        if is_scheduled(day, family.rest_weekdays, services.settings.holiday_dates)
+    ]
+    return [*services.settings.holiday_dates, *outage_days(totals, open_days)]
 
 
 def build_quality_graph(services: Services, run: CloseRun):
@@ -52,6 +74,8 @@ def build_quality_graph(services: Services, run: CloseRun):
         today = services.clock.today()
         failures, families_by_section = [], {}
         for family in services.store.list_families():
+            if not _delivers_today(services, family, today):
+                continue
             for student in services.store.list_students(family.id):
                 families_by_section.setdefault(student.section_key, set()).add(family.id)
                 for mastery in services.store.list_mastery(student.id):
@@ -96,9 +120,16 @@ def build_quality_graph(services: Services, run: CloseRun):
     async def engagement() -> None:
         today = services.clock.today()
         week = today.isocalendar()
+        days = window_days(services)
+        totals = _cohort_totals(services)
         for family in services.store.list_families():
+            if not _delivers_today(services, family, today):
+                continue
+            closed = _closed_days(services, family, totals)
             for student in services.store.list_students(family.id):
-                counts = scheduled_counts(services, student.id, family)
+                counts = mask_to_scheduled(
+                    days, daily_counts(services, student.id), family.rest_weekdays, closed
+                )
                 if not engagement_trigger(
                     counts, DEFAULT_MIN_ACTIVE_DAYS, DEFAULT_SILENT_DAYS
                 ):

@@ -122,7 +122,7 @@ def test_rephoto_and_engagement_need_no_model():
     engagement = composer.compose_engagement("fam-1", "st-1", ALIAS, 4, Lang.ES, NOW)
     assert rephoto.kind is EscalationKind.REPHOTO_REQUEST and rephoto.options == []
     assert engagement.kind is EscalationKind.ENGAGEMENT
-    assert "Estrella lleva 4 días sin practicar" in engagement.summary
+    assert "Estrella lleva 4 días de clase sin practicar" in engagement.summary
 
 
 async def test_cohort_escalation_counts_families_and_names_nobody():
