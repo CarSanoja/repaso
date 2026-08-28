@@ -13,26 +13,36 @@ SEMANA_SANTA = tuple(date(2026, 9, 21) + timedelta(days=offset) for offset in ra
 HOLIDAYS = CARNAVAL + SEMANA_SANTA
 OUTAGE = tuple(date(2026, 9, 8) + timedelta(days=offset) for offset in range(3))
 DISENGAGED = "disengaged"
+DROPOUT_DAY = 6
+OUTAGE_DROPOUT = "stu17"
 LATENCY_GATE = 3
 ENGAGEMENT_FP_ROW = "engagement alert never fires for active students"
 CAUSES = ("calendar", "outage", "noise")
 GAPS = ("weekend", "carnaval", "semana_santa", "outage")
 ARMS = {
-    "flat": {"overlay": False, "mask": True},
-    "on": {"overlay": True, "mask": True},
-    "off": {"overlay": True, "mask": False},
+    "flat": {"overlay": False, "mask": True, "health": True},
+    "on": {"overlay": True, "mask": True, "health": True},
+    "off": {"overlay": True, "mask": False, "health": False},
+    "health": {"overlay": True, "mask": False, "health": True},
+    "defer": {"overlay": True, "mask": True, "health": False},
 }
+
+
+def run_days() -> list[date]:
+    return [START + timedelta(days=offset) for offset in range(DAYS)]
 
 
 def school_day(day: date) -> bool:
     return is_scheduled(day, REST_WEEKDAYS, HOLIDAYS)
 
 
-def silent_run(fired_on: date, answered: set[date], masked: bool) -> list[date]:
+def silent_run(
+    fired_on: date, answered: set[date], masked: bool, healthy: bool = False
+) -> list[date]:
     floor = max(START, fired_on - timedelta(days=WINDOW_DAYS - 1))
     silent, day = [], fired_on
     while day >= floor:
-        if masked and not school_day(day):
+        if (masked and not school_day(day)) or (healthy and day in OUTAGE):
             day -= ONE_DAY
             continue
         if day in answered:
@@ -87,6 +97,17 @@ def runs_catching_every_dropout(runs: list[dict]) -> int:
     )
 
 
+def runs_catching_the_outage_dropout(runs: list[dict]) -> int:
+    return sum(
+        1
+        for run in runs
+        if any(
+            found["student"] == OUTAGE_DROPOUT and found["latency"] <= LATENCY_GATE
+            for found in run["detections"]
+        )
+    )
+
+
 def gate_line(name: str, threshold: str, passed: int, total: int, floor: float) -> str:
     verdict = "passed" if total and passed / total >= floor else "FAILED"
     return f"{name:56} {threshold:>18} {passed:>2}/{total:<2} {verdict}"
@@ -100,7 +121,7 @@ def alert_line(arm: str, runs: list[dict], student_weeks: float) -> str:
     )
     split = "".join(f"{causes.get(cause, 0):>10}" for cause in CAUSES)
     return (
-        f"{arm:>4}{len(alerts):>8}{students:>10}{len(alerts) / len(runs):>9.1f}"
+        f"{arm:>6}{len(alerts):>8}{students:>10}{len(alerts) / len(runs):>9.1f}"
         f"{100 * len(alerts) / student_weeks:>10.1f}{split}"
     )
 
@@ -109,76 +130,21 @@ def latency_line(arm: str, runs: list[dict]) -> str:
     found = [detection["latency"] for run in runs for detection in run["detections"]]
     missed = sum(run["dropouts"] for run in runs) - len(found)
     spread = Counter(found)
-    columns = "".join(f"{spread.get(latency, 0):>6}" for latency in (1, 2, 3))
+    columns = "".join(f"{spread.get(latency, 0):>6}" for latency in (0, 1, 2, 3))
     late = sum(count for latency, count in spread.items() if latency > LATENCY_GATE)
-    return f"{arm:>4}{len(found):>6}{columns}{late:>6}{missed:>8}"
+    school = [detection["school_days"] for run in runs for detection in run["detections"]]
+    calendar = [detection["calendar_days"] for run in runs for detection in run["detections"]]
+    means = f"{_mean(school):>9.1f}{_mean(calendar):>10.1f}"
+    return f"{arm:>6}{len(found):>6}{columns}{late:>6}{missed:>8}{means}"
 
 
-def fires_by_date(runs: list[dict]) -> Counter:
-    return Counter(alert["fired_on"] for run in runs for alert in run["false_alerts"])
+def health_line(arm: str, runs: list[dict]) -> str:
+    flagged = [date.fromisoformat(day) for run in runs for day in run["health_days"]]
+    kinds = Counter(kind for day in flagged for kind in gaps_in([day]))
+    split = "".join(f"{kinds.get(kind, 0):>13}" for kind in GAPS)
+    same = len({tuple(run["health_days"]) for run in runs}) == 1
+    return f"{arm:>6}{len(flagged) / len(runs):>9.1f}{split}{'yes' if same else 'no':>8}"
 
 
-def print_report(arms: dict[str, list[dict]], seeds: int, elapsed: float) -> None:
-    on, off = arms["on"], arms["off"]
-    students = on[0]["students"]
-    student_weeks = seeds * students * DAYS / 7
-    print(f"calendar bench: {seeds} held-out seeds x {len(arms)} arms x {DAYS} days x {students}"
-          f" students = {len(arms) * seeds * students * DAYS:,} student-days"
-          f" ({student_weeks:,.0f} student-weeks per arm) in {elapsed:.0f}s")
-    for arm, runs in arms.items():
-        print(f"  {arm:>4}: {runs[0]['scheduled_days']:>2} scheduled days,"
-              f" {runs[0]['sessions_delivered']:>3} sessions, {runs[0]['responses']:>4} responses")
-
-    print()
-    print(gate_line("A  masking ON, zero false alerts per run", ">= 95% of seeds",
-                    clean_runs(on), len(on), 0.95))
-    print(gate_line("A2 masking ON, zero calendar-caused false alerts", "100% of seeds",
-                    runs_without_calendar_alerts(on), len(on), 1.0))
-    print(gate_line(f"B  every dropout alerted <= {LATENCY_GATE} scheduled days",
-                    ">= 90% of seeds", runs_catching_every_dropout(on), len(on), 0.90))
-    print(gate_line("C  masking OFF still fires false alerts", "majority of seeds",
-                    len(off) - clean_runs(off), len(off), 0.51))
-
-    header = "".join(f"{cause:>10}" for cause in CAUSES)
-    print(f"\nfalse engagement alerts on non-disengaged students"
-          f"\n{'arm':>4}{'total':>8}{'students':>10}{'per run':>9}{'per 100sw':>10}{header}")
-    for arm, runs in arms.items():
-        print(alert_line(arm, runs, student_weeks))
-
-    print(f"\nfalse alerts whose silent run touches each gap type (an alert can touch several)"
-          f"\n{'gap':>13}{'flat':>7}{'on':>7}{'off':>7}{'off/100sw':>11}")
-    for gap in GAPS:
-        counts = [
-            sum(1 for run in arms[arm] for alert in run["false_alerts"] if gap in alert["gaps"])
-            for arm in ARMS
-        ]
-        cells = "".join(f"{count:>7}" for count in counts)
-        print(f"{gap:>13}{cells}{100 * counts[-1] / student_weeks:>11.1f}")
-
-    print(f"\ndropout detection latency, scheduled days after the last response"
-          f"\n{'arm':>4}{'found':>6}{'1':>6}{'2':>6}{'3':>6}{'>3':>6}{'missed':>8}")
-    for arm, runs in arms.items():
-        print(latency_line(arm, runs))
-
-    print(f"\nfalse alerts by fire date\n{'date':>12}{'flat':>7}{'on':>7}{'off':>7}")
-    counted = {arm: fires_by_date(runs) for arm, runs in arms.items()}
-    for fired_on in sorted(set().union(*[set(dates) for dates in counted.values()])):
-        cells = "".join(f"{counted[arm].get(fired_on, 0):>7}" for arm in ARMS)
-        print(f"{fired_on:>12}{cells}")
-
-    print(f"\n{'ledger verdict':64}{'flat':>7}{'on':>7}{'off':>7}")
-    for case in on[0]["verdicts"]:
-        cells = "".join(
-            f"{sum(1 for run in arms[arm] if run['verdicts'][case]):>4}/{seeds:<3}"
-            for arm in ARMS
-        )
-        print(f"{case:64}{cells}")
-    rows = [case for case in on[0]["verdicts"] if case != ENGAGEMENT_FP_ROW]
-    identical = sum(
-        1
-        for left, right in zip(on, off, strict=True)
-        for case in rows
-        if left["verdicts"][case] == right["verdicts"][case]
-    )
-    print(f"\nnon-engagement ledger rows identical between masking ON and OFF:"
-          f" {identical}/{len(rows) * len(on)} seed-rows")
+def _mean(values: list[int]) -> float:
+    return sum(values) / len(values) if values else 0.0
