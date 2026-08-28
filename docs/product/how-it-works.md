@@ -4,7 +4,7 @@
 |---|---|
 | **Status** | Maintained — living document, updated with every implementation cycle |
 | **Audience** | Engineers integrating, deploying, or extending Repaso |
-| **Last updated** | 2026-08-20 (Benchmark 001) |
+| **Last updated** | 2026-08-20 (Benchmark 002 — adversarial round) |
 | **Related** | [Product overview](product-overview.md) · [Data model](data-model.md) · [Dev log](../devlog/README.md) · [Reports](../reports/) |
 
 ## The design stance
@@ -52,16 +52,28 @@ interface and raises on any unplanned call, so the offline suite is also a cost 
 
 ## Speed and precision, with receipts
 
-- **420 student-days through the real pipeline in 14.1 s, $0** — the demo clock drives
-  30 deterministic students for 14 days through the actual graphs; same seed,
-  byte-identical transcript ([report](../reports/demo-clock-offline-2026-08-20.md)).
-- **17 interruptions in 420 student-days — all planted, zero false.**
-- **390 offline tests, no credentials, no network**, green in ~1 s; CI needs nothing
-  but Python.
-- **Crash-resume without repaying models**: stage claims + state reload; the benchmark
-  asserts zero repeated paid calls after a mid-pipeline kill.
-- **Exactly-once everywhere**: Telegram `update_id` claims, weekly signal claims,
-  DynamoDB conditional writes.
+- **16,800 virgin-seed student-days**: struggle-interrupt **precision 0.970
+  [0.947–0.983], recall 0.994 [0.980–0.998]** vs a 0.300 random baseline — reached
+  through a pre-registered, out-of-sample pipeline (gates committed to git before any
+  run; calibration chosen on disjoint seeds; validated on seeds no analysis touched).
+  Seven of eight pre-registered gates pass; the eighth stays red on the board
+  ([validation](../reports/calibration-validation-2026-08-20.md)).
+- **The Armor intercepts 400/400 adversarial payloads** across 9 attack families in
+  both languages, including OCR-corrupted variants, at a **0 % false-block rate** on
+  200 clean worksheets ([bench](../reports/armor-bench-2026-08-20.md)); student names
+  and contact data are redacted before any model call on the grading path.
+- **The school calendar cannot fool it**: weekends, Carnaval and Semana Santa produce
+  **zero calendar-caused false disengagement alerts per 100 student-weeks**, while
+  genuine dropouts are still caught within 3 school days
+  ([calendar](../reports/calendar-gaps-2026-08-20.md)).
+- **675 offline tests, no credentials, no network**, green in ~5 s; the demo clock
+  runs 420 student-days through the real graphs in ~14 s, byte-identical per seed.
+- **Crash-resume without repaying models**; **exactly-once everywhere** (update-id
+  claims, weekly signal claims, conditional writes).
+- **Open findings, kept red on purpose**: 11 residual struggle FPs across 40 virgin
+  seeds (G2 below its bar); outage-driven silence needs a delivery-health
+  precondition; recall under a real 5-day school week is being re-audited — every
+  earlier recall number assumed daily practice.
 
 ## The AWS plane
 
@@ -76,7 +88,7 @@ on/off by one script, and costs ≈ $0 at rest.
 ## Running it
 
 ```bash
-pip install -e ".[dev]" && pytest                 # 390 tests, fully offline
+pip install -e ".[dev]" && pytest                 # 675 tests, fully offline
 python scripts/run_demo_clock.py --days 14        # the benchmark, ~14 s
 cd infra && AWS_PROFILE=quanta npx cdk deploy --all   # the isolated cloud plane
 ```

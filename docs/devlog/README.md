@@ -11,3 +11,4 @@ are recorded as new entries, never by editing the past. Naming:
 | 2026-08-20 | [Foundation, tools layer and the 13-agent fleet](2026-08-20-implementation-001-foundation-and-fleet.md) | Implementation |
 | 2026-08-20 | [Orchestration graphs, channel, API and simulator](2026-08-20-implementation-002-orchestration-channel-api.md) | Implementation |
 | 2026-08-20 | [Demo-clock benchmark: 420 student-days, five bugs found](2026-08-20-benchmark-001-demo-clock.md) | Benchmark |
+| 2026-08-20 | [The adversarial round: precision 0.970 on virgin seeds, three reds kept](2026-08-20-benchmark-002-adversarial-round.md) | Benchmark |

@@ -4,7 +4,7 @@
 |---|---|
 | **Status** | Maintained — living document, updated with every implementation cycle |
 | **Audience** | Anyone deciding whether Repaso serves their family, school, or review |
-| **Last updated** | 2026-08-20 (Benchmark 001) |
+| **Last updated** | 2026-08-20 (Benchmark 002 — adversarial round) |
 
 Wealthy families buy reinforcement: a tutor who looks at what the child is studying,
 runs a little practice every day, adapts to their level, and tells the parent when
@@ -60,11 +60,11 @@ day forward through the real pipeline.
 | Moment | Who is interrupted | Guarantee |
 |---|---|---|
 | Low-confidence open answer | Parent, one tap | The system **never guesses**; below the confidence gate no grade exists until a human decides |
-| Persistent measured struggle | Parent, three options | Fires only on ≥ 8 attempts of evidence, once per cooldown; a model opinion cannot veto it — or force it |
-| Quiet disengagement | Parent, weekly | Detected at the daily close, so silence itself is what triggers it |
+| Persistent measured struggle | Parent, three options | Fires only on ≥ 9 attempts of evidence (a slab-validated plateau centre), once per cooldown; a model opinion cannot veto it — or force it |
+| Quiet disengagement | Parent, weekly | Detected at the daily close, counting **school days** — weekends, Carnaval and Semana Santa never read as silence |
 | Section-wide struggle | Each parent of the section | k-anonymous (≥ 3 families), once per week, drafted note carries no identifiers |
 | Illegible or insufficient material | Parent | A retake or an example is requested; garbage is never parsed into practice |
-| Everything else | Nobody | 420 simulated student-days produced 17 interruptions — all planted, zero false |
+| Everything else | Nobody | Across 40 virgin seeds — 16,800 simulated student-days — 97 % of struggle interruptions pointed at genuinely measured difficulty [CI 0.947–0.983] and 99 % of struggling students were reached; every planted injection was intercepted |
 
 ## What Repaso refuses to do
 
