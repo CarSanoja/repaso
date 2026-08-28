@@ -1,9 +1,9 @@
-from collections import Counter
-from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from dataclasses import dataclass
+from datetime import UTC, date, datetime
 
 from repaso.config.models import ModelRole
 from repaso.config.settings import Settings
+from repaso.core.harness.calendar import is_scheduled
 from repaso.core.harness.clock import SimClock
 from repaso.core.orchestration.context import Services
 from repaso.core.orchestration.runner import (
@@ -12,10 +12,10 @@ from repaso.core.orchestration.runner import (
     start_daily_session,
 )
 from repaso.core.telemetry.sink import build_telemetry_sink
-from repaso.schemas.escalation import EscalationKind, EscalationStatus
 from repaso.schemas.item import ItemKind
 from repaso.schemas.session import SessionStatus
 from repaso.simulator.cohort import CohortLedger, build_cohort
+from repaso.simulator.demo_result import DemoClockResult, collect_results, resolve_pending
 from repaso.simulator.stub_model import AutoStubModel
 from repaso.simulator.student_sim import INJECTION_REPLY, simulate_answer
 from repaso.tools.event_bus import build_event_publisher
@@ -37,24 +37,13 @@ class StalePrimeError(RuntimeError):
     pass
 
 
-@dataclass
-class DemoClockResult:
-    days: int
-    students: int
-    sessions_delivered: int = 0
-    responses: int = 0
-    escalations_by_kind: Counter = field(default_factory=Counter)
-    escalated_students: dict[str, set[str]] = field(default_factory=dict)
-    quarantines_by_kind: Counter = field(default_factory=Counter)
-    cohort_signals: list[str] = field(default_factory=list)
-    cohort_weeks: Counter = field(default_factory=Counter)
-    retired_items: list[str] = field(default_factory=list)
-    planted_hedged: int = 0
-    planted_injections: int = 0
-    dropped_open_primes: int = 0
-    struggle_fires: dict[str, list] = field(default_factory=dict)
-    decisions: dict[str, set] = field(default_factory=dict)
-    ledger: CohortLedger | None = None
+@dataclass(frozen=True)
+class CalendarOverlay:
+    rest_weekdays: tuple[int, ...] = ()
+    holiday_dates: tuple[date, ...] = ()
+
+    def is_school_day(self, day: date) -> bool:
+        return is_scheduled(day, self.rest_weekdays, self.holiday_dates)
 
 
 def build_offline_services(settings: Settings) -> Services:
@@ -106,7 +95,26 @@ def _assert_primes_drained(services: Services) -> None:
         )
 
 
-async def _play_day(services: Services, result: DemoClockResult, day: int, seed: int) -> None:
+def _teach_calendar(services: Services, ledger: CohortLedger, rest_weekdays: tuple[int, ...]):
+    if not rest_weekdays:
+        return
+    for member in ledger.members:
+        member.family = member.family.model_copy(
+            update={"rest_weekdays": list(rest_weekdays)}
+        )
+        services.store.put_family(member.family)
+
+
+async def _play_day(
+    services: Services,
+    result: DemoClockResult,
+    day: int,
+    seed: int,
+    overlay: CalendarOverlay,
+) -> None:
+    if not overlay.is_school_day(services.clock.today()):
+        return
+    result.scheduled_days += 1
     for member in result.ledger.members:
         run = await start_daily_session(services, member.family, member.student)
         if run.terminal is not None:
@@ -146,49 +154,29 @@ async def _play_day(services: Services, result: DemoClockResult, day: int, seed:
                 break
 
 
-def _resolve_pending(services: Services) -> None:
-    today = services.clock.today()
-    for family in services.store.list_families():
-        for escalation in services.store.list_pending_escalations(family.id):
-            if escalation.created_at.date() < today:
-                services.store.put_escalation(
-                    escalation.model_copy(
-                        update={
-                            "status": EscalationStatus.RESOLVED,
-                            "resolved_at": services.clock.now(),
-                            "chosen_option": "guided_session",
-                        }
-                    )
-                )
-
-
-def _collect_results(services: Services, result: DemoClockResult) -> None:
-    for member in result.ledger.members:
-        for escalation in services.store.list_escalations(member.family.id):
-            result.escalations_by_kind[escalation.kind.value] += 1
-            student = escalation.student_id or member.student.id
-            result.escalated_students.setdefault(escalation.kind.value, set()).add(student)
-            if escalation.kind is EscalationKind.STRUGGLE_TRIAGE:
-                result.struggle_fires.setdefault(student, []).append(
-                    escalation.created_at.date()
-                )
-        for quarantine in services.store.list_pending_quarantine(member.family.id):
-            result.quarantines_by_kind[quarantine.kind.value] += 1
-    for event in getattr(services.telemetry, "events", []):
-        if event.kind == "decision" and event.student_id:
-            result.decisions.setdefault(event.student_id, set()).add(event.name)
-
-
 async def run_demo_clock(
-    settings: Settings, days: int = 14, seed: int = 20260901
+    settings: Settings,
+    days: int = 14,
+    seed: int = 20260901,
+    rest_weekdays: list[int] | None = None,
+    holiday_dates: list[date] | None = None,
+    mask_scheduled: bool = True,
 ) -> DemoClockResult:
-    services = build_offline_services(settings)
+    overlay = CalendarOverlay(
+        tuple(rest_weekdays or ()),
+        tuple(settings.holiday_dates if holiday_dates is None else holiday_dates),
+    )
+    known = overlay if mask_scheduled else CalendarOverlay()
+    services = build_offline_services(
+        settings.model_copy(update={"holiday_dates": list(known.holiday_dates)})
+    )
     ledger = build_cohort(services, services.clock.now())
+    _teach_calendar(services, ledger, known.rest_weekdays)
     result = DemoClockResult(days=days, students=len(ledger.members), ledger=ledger)
     for day in range(days):
         services.clock.set_time(hour=19)
-        _resolve_pending(services)
-        await _play_day(services, result, day, seed)
+        resolve_pending(services)
+        await _play_day(services, result, day, seed, overlay)
         _assert_primes_drained(services)
         close = await run_daily_close(services)
         result.cohort_signals.extend(close.cohort_fired)
@@ -196,5 +184,5 @@ async def run_demo_clock(
         result.cohort_weeks[f"{week.year}-W{week.week}"] += len(close.cohort_fired)
         result.retired_items.extend(close.retired_items)
         services.clock.advance(days=1)
-    _collect_results(services, result)
+    collect_results(services, result)
     return result

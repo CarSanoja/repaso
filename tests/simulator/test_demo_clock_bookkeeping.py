@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 
 from repaso.config.models import ModelRole
@@ -20,6 +22,8 @@ from repaso.simulator.student_sim import INJECTION_REPLY, SimulatedAnswer
 SEED = 20260910
 HEDGED_TEXT = "creo que si porque los dos se parecen"
 SCRIPTED_MIX = [(Archetype.INJECTOR, 1), (Archetype.AMBIGUOUS, 2)]
+SECOND_DAY = date(2026, 9, 2)
+THIRD_DAY = date(2026, 9, 3)
 
 
 def _scripted_answer(
@@ -105,6 +109,40 @@ def test_a_leaked_prime_fails_the_day_end_tripwire(settings):
 
     with pytest.raises(StalePrimeError, match="never reached the judge"):
         _assert_primes_drained(services)
+
+
+async def test_a_rest_day_starts_no_session_and_takes_no_answer(settings, scripted_cohort):
+    result = await run_demo_clock(settings, days=3, seed=SEED, rest_weekdays=[SECOND_DAY.weekday()])
+    services = build_offline_services(settings)
+    students = [
+        student
+        for family in services.store.list_families()
+        for student in services.store.list_students(family.id)
+    ]
+
+    assert result.scheduled_days == 2
+    assert result.sessions_delivered == 2 * result.students
+    assert all(
+        services.store.get_session_by_date(student.id, SECOND_DAY) is None
+        for student in students
+    )
+    assert all(
+        services.store.get_session_by_date(student.id, THIRD_DAY) is not None
+        for student in students
+    )
+
+
+async def test_a_holiday_is_skipped_the_same_way_a_rest_weekday_is(settings, scripted_cohort):
+    result = await run_demo_clock(settings, days=3, seed=SEED, holiday_dates=[THIRD_DAY])
+    services = build_offline_services(settings)
+
+    assert result.scheduled_days == 2
+    assert result.sessions_delivered == 2 * result.students
+    assert all(
+        services.store.get_session_by_date(student.id, THIRD_DAY) is None
+        for family in services.store.list_families()
+        for student in services.store.list_students(family.id)
+    )
 
 
 def test_pending_and_drop_pending_report_the_queue_honestly():
