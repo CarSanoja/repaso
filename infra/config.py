@@ -4,6 +4,7 @@ import aws_cdk as cdk
 
 PROJECT = "repaso"
 REGION = "us-east-1"
+BOOTSTRAP_QUALIFIER = "repaso01"
 
 
 @dataclass(frozen=True)
@@ -18,6 +19,7 @@ class DeployConfig:
     queue_visibility_minutes: int
     queue_max_receive: int
     log_retention_days: int
+    bootstrap_qualifier: str
 
     @classmethod
     def from_app(cls, app: cdk.App) -> "DeployConfig":
@@ -33,6 +35,7 @@ class DeployConfig:
             queue_visibility_minutes=int(ctx("queue_visibility_minutes") or 15),
             queue_max_receive=int(ctx("queue_max_receive") or 3),
             log_retention_days=int(ctx("log_retention_days") or 30),
+            bootstrap_qualifier=ctx("@aws-cdk/core:bootstrapQualifier") or BOOTSTRAP_QUALIFIER,
         )
 
     @staticmethod
@@ -42,6 +45,10 @@ class DeployConfig:
         if isinstance(raw, str):
             return tuple(int(x) for x in raw.split(",") if x.strip())
         return tuple(int(x) for x in raw)
+
+    @property
+    def synthesizer(self) -> cdk.DefaultStackSynthesizer:
+        return cdk.DefaultStackSynthesizer(qualifier=self.bootstrap_qualifier)
 
     @property
     def env(self) -> cdk.Environment:
