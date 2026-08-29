@@ -42,11 +42,11 @@ def test_legitimate_paths_pass(path):
 @pytest.mark.parametrize(
     ("label", "sample"),
     [
-        ("aws", "AKIAIOSFODNN7EXAMPLE"),
+        ("aws", "AKIA" + "IOSFODNN7EXAMPLE"),
         ("github", "ghp_" + "a" * 36),
         ("openai", "sk-" + "b" * 40),
-        ("slack", "xoxb-123456789012-abcdefghijkl"),
-        ("private key", "-----BEGIN RSA PRIVATE KEY-----"),
+        ("slack", "xoxb" + "-123456789012-abcdefghijkl"),
+        ("private key", "-----BEGIN RSA " + "PRIVATE KEY-----"),
         ("telegram", "123456789:AA" + "c" * 33),
     ],
 )
