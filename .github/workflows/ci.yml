@@ -5,15 +5,28 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"
+
 jobs:
   lint:
     name: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          python-version: "3.12"
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
       - run: pip install ruff
       - run: ruff check .
 
@@ -23,9 +36,38 @@ jobs:
     env:
       REPASO_LOCAL_MODE: "true"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          python-version: "3.12"
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
       - run: pip install -e ".[dev]"
       - run: pytest -q
+
+  hygiene:
+    name: hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: tracked files carry nothing a public repo must not
+        run: python scripts/check_repo_hygiene.py
+      - name: no forbidden path has ever been committed
+        run: |
+          set -euo pipefail
+          found=$(git log --all --pretty=format: --name-only --diff-filter=A \
+            | sort -u \
+            | grep -E '^(private/|\.local_data/|\.env$|\.bedrock_agentcore\.yaml$)' || true)
+          if [ -n "$found" ]; then
+            echo "these paths exist somewhere in history:" >&2
+            echo "$found" >&2
+            exit 1
+          fi
+          echo "history is clean"
