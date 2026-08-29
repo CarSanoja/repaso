@@ -1,8 +1,11 @@
 import json
+import logging
 
 from repaso.lambdas import bootstrap, worker
-from repaso.schemas.events import EventKind
+from repaso.schemas.common import FamilyId
+from repaso.schemas.events import DomainEvent, EventKind
 from tests.lambdas.conftest import (
+    NOW,
     envelope,
     make_batch,
     make_domain_event,
@@ -26,7 +29,7 @@ def test_worker_reports_no_failures_for_a_clean_batch(lambda_env, runtime):
 
 
 def test_worker_reports_only_the_record_the_runtime_rejected(lambda_env, runtime):
-    runtime.failing.add("12345#11")
+    runtime.rejecting.add("12345#11")
     batch = make_batch(
         make_record(make_domain_event(idempotency_key="12345#10"), message_id="m1"),
         make_record(make_domain_event(idempotency_key="12345#11"), message_id="m2"),
@@ -61,6 +64,31 @@ def test_worker_accepts_a_bare_domain_event_body(lambda_env, runtime):
     record = make_record(body=event.model_dump_json())
     assert worker.handler(make_batch(record), None) == NO_FAILURES
     assert runtime.keys == ["12345#77"]
+
+
+def test_worker_reports_a_record_whose_dispatch_raised(lambda_env, runtime):
+    runtime.raising.add("12345#11")
+    batch = make_batch(
+        make_record(make_domain_event(idempotency_key="12345#10"), message_id="m1"),
+        make_record(make_domain_event(idempotency_key="12345#11"), message_id="m2"),
+    )
+    assert failures_of(worker.handler(batch, None)) == ["m2"]
+
+
+def test_worker_reports_a_result_it_cannot_read(lambda_env, monkeypatch):
+    monkeypatch.setattr(worker, "_dispatch", lambda event: "not a result")
+    assert failures_of(worker.handler(make_batch(make_record()), None)) == ["m1"]
+
+
+def test_worker_retries_a_redelivered_record_past_its_own_claim(lambda_env, runtime):
+    runtime.rejecting.add("12345#10")
+    event = make_domain_event(idempotency_key="12345#10")
+    first = worker.handler(make_batch(make_record(event, receive_count=1)), None)
+    runtime.rejecting.clear()
+    second = worker.handler(make_batch(make_record(event, receive_count=2)), None)
+    assert failures_of(first) == ["m1"]
+    assert second == NO_FAILURES
+    assert runtime.keys == ["12345#10", "12345#10"]
 
 
 def test_worker_processes_a_repeated_delivery_once(lambda_env, runtime):
@@ -99,6 +127,26 @@ def test_worker_separates_the_same_key_across_event_kinds(lambda_env, runtime):
     )
     assert worker.handler(batch, None) == NO_FAILURES
     assert [call["kind"] for call in runtime.calls] == ["channel_message", "response_received"]
+
+
+def test_worker_hands_the_real_runtime_a_payload_it_can_parse(lambda_env, caplog):
+    from repaso.runtime.context import reset_runtime_session
+
+    event = DomainEvent(
+        kind=EventKind.DAILY_SESSION_DUE,
+        family_id=FamilyId("ghost"),
+        idempotency_key="job#daily_session#ghost#2026-09-01",
+        occurred_at=NOW,
+        payload={"student_id": "ghost"},
+    )
+    reset_runtime_session()
+    try:
+        with caplog.at_level(logging.ERROR, logger="repaso.lambdas.worker"):
+            response = worker.handler(make_batch(make_record(event)), None)
+    finally:
+        reset_runtime_session()
+    assert failures_of(response) == ["m1"]
+    assert "not_found" in caplog.text
 
 
 def test_worker_hands_the_runtime_the_serialised_event(lambda_env, runtime):
