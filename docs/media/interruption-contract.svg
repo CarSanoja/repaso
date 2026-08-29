@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1520" height="1520" viewBox="0 0 1520 1520" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5f6b7a"/>
+    </marker>
+    <marker id="red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d91515"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1520" height="1520" fill="#ffffff"/>
+
+  <text x="56" y="62" font-size="27" font-weight="bold" fill="#0f1b2a">The interruption contract</text>
+  <text x="56" y="92" font-size="14" fill="#3c4650">Every gate a message must survive before it may interrupt a human, in the order they apply — and what each one stopped.</text>
+
+  <!-- legend -->
+  <rect x="1074" y="26" width="390" height="76" rx="10" fill="#ffffff" stroke="#d5dbe3" stroke-width="1"/>
+  <rect x="1090" y="41" width="12" height="12" rx="3" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.5"/>
+  <text x="1110" y="51" font-size="11" fill="#3c4650">deterministic gate — no model decides this</text>
+  <rect x="1090" y="62" width="12" height="12" rx="3" fill="#fdeceb" stroke="#d91515" stroke-width="1.5"/>
+  <text x="1110" y="72" font-size="11" fill="#3c4650">refusal — what happens instead of a message</text>
+  <rect x="1090" y="83" width="12" height="12" rx="3" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.5"/>
+  <text x="1110" y="93" font-size="11" fill="#3c4650">human surface — the only person messaged</text>
+
+  <text x="64" y="184" font-size="11" font-weight="bold" fill="#8c99a8" letter-spacing="0.8">REFUSED HERE</text>
+  <text x="418" y="184" font-size="11" font-weight="bold" fill="#8c99a8" letter-spacing="0.8">THE CHAIN, IN ORDER</text>
+  <text x="866" y="184" font-size="11" font-weight="bold" fill="#8c99a8" letter-spacing="0.8">WHAT THIS GATE STOPPED — MEASURED</text>
+
+  <!-- ============ GATE 1 : y=214 ============ -->
+  <rect x="418" y="214" width="404" height="86" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="2"/>
+  <text x="438" y="244" font-size="15" font-weight="bold" fill="#0f1b2a">1 · Is today a scheduled day here?</text>
+  <text x="438" y="266" font-size="11.5" fill="#3c4650">rest weekdays + holiday calendar for this family,</text>
+  <text x="438" y="284" font-size="11.5" fill="#3c4650">checked before the close takes any weekly claim</text>
+
+  <line x1="418" y1="257" x2="374" y2="257" stroke="#d91515" stroke-width="2" marker-end="url(#red)"/>
+  <text x="396" y="247" font-size="10.5" font-style="italic" fill="#d91515" text-anchor="middle">no</text>
+  <rect x="64" y="226" width="306" height="62" rx="10" fill="#fdeceb" stroke="#d91515" stroke-width="1.5"/>
+  <text x="80" y="253" font-size="11" fill="#3c4650">Deferred. Nothing sent, no claim spent —</text>
+  <text x="80" y="271" font-size="11" fill="#3c4650">it fires on the next day that can deliver.</text>
+
+  <line x1="826" y1="257" x2="862" y2="257" stroke="#8c99a8" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <rect x="866" y="208" width="598" height="104" rx="8" fill="#f6f8fa"/>
+  <rect x="866" y="208" width="4" height="104" fill="#037f0c"/>
+  <text x="884" y="236" font-size="11.5" fill="#3c4650">Pre-fix, on Carnaval Monday, 540 alerts went out across the twenty seeds —</text>
+  <text x="884" y="255" font-size="11.5" fill="#3c4650">27 in every single run. With the mask the close delivers nothing that morning.</text>
+  <text x="884" y="274" font-size="11.5" fill="#3c4650">Of the 27 packets the deferral held back, 4 were ever sent — 23 had practised.</text>
+  <text x="884" y="296" font-size="10.5" font-style="italic" fill="#5f6b7a">calendar-gaps-2026-08-21 · gate A2, zero calendar-caused alerts: 20/20 seeds</text>
+
+  <line x1="620" y1="302" x2="620" y2="330" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)"/>
+
+  <!-- ============ GATE 2 : y=334 ============ -->
+  <rect x="418" y="334" width="404" height="86" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="2"/>
+  <text x="438" y="364" font-size="15" font-weight="bold" fill="#0f1b2a">2 · Is the cohort answering at all?</text>
+  <text x="438" y="386" font-size="11.5" fill="#3c4650">a day under 0.2 × the trailing 7-day median of graded</text>
+  <text x="438" y="404" font-size="11.5" fill="#3c4650">responses is an outage day, cohort-wide</text>
+
+  <line x1="418" y1="377" x2="374" y2="377" stroke="#d91515" stroke-width="2" marker-end="url(#red)"/>
+  <text x="396" y="367" font-size="10.5" font-style="italic" fill="#d91515" text-anchor="middle">no</text>
+  <rect x="64" y="346" width="306" height="62" rx="10" fill="#fdeceb" stroke="#d91515" stroke-width="1.5"/>
+  <text x="80" y="373" font-size="11" fill="#3c4650">The day is masked out of the silence</text>
+  <text x="80" y="391" font-size="11" fill="#3c4650">count. An outage is not a dropout.</text>
+
+  <line x1="826" y1="377" x2="862" y2="377" stroke="#8c99a8" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <rect x="866" y="328" width="598" height="104" rx="8" fill="#f6f8fa"/>
+  <rect x="866" y="328" width="4" height="104" fill="#037f0c"/>
+  <text x="884" y="356" font-size="11.5" fill="#3c4650">Three days when sessions went out and nobody could answer produced 498</text>
+  <text x="884" y="375" font-size="11.5" fill="#3c4650">alerts on one morning in the pre-fix arm. With the health gate: 0 — that is</text>
+  <text x="884" y="394" font-size="11.5" fill="#3c4650">0.0 false alerts per 100 student-weeks against 70.4, over 2,400 student-weeks.</text>
+  <text x="884" y="416" font-size="10.5" font-style="italic" fill="#5f6b7a">calendar-gaps-2026-08-21 · gate A 20/20 · every genuine dropout still caught, 60/60</text>
+
+  <line x1="620" y1="422" x2="620" y2="450" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)"/>
+
+  <!-- ============ GATE 3 : y=454 ============ -->
+  <rect x="418" y="454" width="404" height="86" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="2"/>
+  <text x="438" y="484" font-size="15" font-weight="bold" fill="#0f1b2a">3 · Is there enough evidence?</text>
+  <text x="438" y="506" font-size="11.5" fill="#3c4650">attempts ≥ 9 on this competency for this student —</text>
+  <text x="438" y="524" font-size="11.5" fill="#3c4650">escalation_min_samples, the slab-validated plateau centre</text>
+
+  <line x1="418" y1="497" x2="374" y2="497" stroke="#d91515" stroke-width="2" marker-end="url(#red)"/>
+  <text x="396" y="487" font-size="10.5" font-style="italic" fill="#d91515" text-anchor="middle">no</text>
+  <rect x="64" y="466" width="306" height="62" rx="10" fill="#fdeceb" stroke="#d91515" stroke-width="1.5"/>
+  <text x="80" y="493" font-size="11" fill="#3c4650">Keep practising. Nobody is told</text>
+  <text x="80" y="511" font-size="11" fill="#3c4650">anything on this competency yet.</text>
+
+  <line x1="826" y1="497" x2="862" y2="497" stroke="#8c99a8" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <rect x="866" y="448" width="598" height="104" rx="8" fill="#f6f8fa"/>
+  <rect x="866" y="448" width="4" height="104" fill="#037f0c"/>
+  <text x="884" y="476" font-size="11.5" fill="#3c4650">One more attempt of evidence (8 → 9) lifted pooled precision 0.918 → 0.970 on</text>
+  <text x="884" y="495" font-size="11.5" fill="#3c4650">forty seeds no analysis had ever touched. It is paid for in latency: first</text>
+  <text x="884" y="514" font-size="11.5" fill="#3c4650">detection moves out to about day 3. The slab says 10 would pay more latency for +0.007.</text>
+  <text x="884" y="536" font-size="10.5" font-style="italic" fill="#5f6b7a">calibration-validation-2026-08-20 · 40 virgin seeds = 16,800 simulated student-days</text>
+
+  <line x1="620" y1="542" x2="620" y2="570" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)"/>
+
+  <!-- ============ GATE 4 : y=574 ============ -->
+  <rect x="418" y="574" width="404" height="86" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="2"/>
+  <text x="438" y="604" font-size="15" font-weight="bold" fill="#0f1b2a">4 · Is the level actually STRUGGLING?</text>
+  <text x="438" y="626" font-size="11.5" fill="#3c4650">EMA accuracy &lt; 0.40 (α = 0.3), level assigned only after</text>
+  <text x="438" y="644" font-size="11.5" fill="#3c4650">3 attempts — the harness classifies, no model does</text>
+
+  <line x1="418" y1="617" x2="374" y2="617" stroke="#d91515" stroke-width="2" marker-end="url(#red)"/>
+  <text x="396" y="607" font-size="10.5" font-style="italic" fill="#d91515" text-anchor="middle">no</text>
+  <rect x="64" y="586" width="306" height="62" rx="10" fill="#fdeceb" stroke="#d91515" stroke-width="1.5"/>
+  <text x="80" y="613" font-size="11" fill="#3c4650">Difficulty adapts instead — the tutor</text>
+  <text x="80" y="631" font-size="11" fill="#3c4650">keeps going without any human.</text>
+
+  <line x1="826" y1="617" x2="862" y2="617" stroke="#8c99a8" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <rect x="866" y="568" width="598" height="104" rx="8" fill="#f6f8fa"/>
+  <rect x="866" y="568" width="4" height="104" fill="#037f0c"/>
+  <text x="884" y="596" font-size="11.5" fill="#3c4650">The judgement is arithmetic, not an opinion: no model ever decides that a child</text>
+  <text x="884" y="615" font-size="11.5" fill="#3c4650">is struggling. It may only choose how to say it, after the harness has decided.</text>
+  <text x="884" y="634" font-size="11.5" fill="#3c4650">Whole-chain precision 0.970 [0.947–0.983] · recall 0.994 [0.980–0.998].</text>
+  <text x="884" y="656" font-size="10.5" font-style="italic" fill="#5f6b7a">same runs — rate-matched random interrupter 0.300 · never interrupt: recall 0.000</text>
+
+  <line x1="620" y1="662" x2="620" y2="690" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)"/>
+
+  <!-- ============ GATE 5 : y=694 ============ -->
+  <rect x="418" y="694" width="404" height="86" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="2"/>
+  <text x="438" y="724" font-size="15" font-weight="bold" fill="#0f1b2a">5 · Is the cooldown clear?</text>
+  <text x="438" y="746" font-size="11.5" fill="#3c4650">≥ 7 days since this student's last escalation on this</text>
+  <text x="438" y="764" font-size="11.5" fill="#3c4650">competency was resolved — per student, not per family</text>
+
+  <line x1="418" y1="737" x2="374" y2="737" stroke="#d91515" stroke-width="2" marker-end="url(#red)"/>
+  <text x="396" y="727" font-size="10.5" font-style="italic" fill="#d91515" text-anchor="middle">no</text>
+  <rect x="64" y="706" width="306" height="62" rx="10" fill="#fdeceb" stroke="#d91515" stroke-width="1.5"/>
+  <text x="80" y="733" font-size="11" fill="#3c4650">Refire suppressed until the seven</text>
+  <text x="80" y="751" font-size="11" fill="#3c4650">days are spent. The parent gets quiet.</text>
+
+  <line x1="826" y1="737" x2="862" y2="737" stroke="#8c99a8" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <rect x="866" y="688" width="598" height="104" rx="8" fill="#f6f8fa"/>
+  <rect x="866" y="688" width="4" height="104" fill="#037f0c"/>
+  <text x="884" y="716" font-size="11.5" fill="#3c4650">A resolved conversation buys the family a week of silence on that student,</text>
+  <text x="884" y="735" font-size="11.5" fill="#3c4650">whatever the practice data does next. This is the gate that keeps a real,</text>
+  <text x="884" y="754" font-size="11.5" fill="#3c4650">correctly-detected struggle from turning into a daily notification.</text>
+  <text x="884" y="776" font-size="10.5" font-style="italic" fill="#5f6b7a">gate G3, every refire gap ≥ 7 days: 40/40 seeds, 100 % of refires</text>
+
+  <line x1="620" y1="782" x2="620" y2="810" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)"/>
+
+  <!-- ============ GATE 6 : y=814 ============ -->
+  <rect x="418" y="814" width="404" height="86" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="2"/>
+  <text x="438" y="844" font-size="15" font-weight="bold" fill="#0f1b2a">6 · Can this run take the claim?</text>
+  <text x="438" y="866" font-size="11.5" fill="#3c4650">engage#student#ISO-week · cohort#section#competency#</text>
+  <text x="438" y="884" font-size="11.5" fill="#3c4650">ISO-week — one conditional write, exactly once</text>
+
+  <line x1="418" y1="857" x2="374" y2="857" stroke="#d91515" stroke-width="2" marker-end="url(#red)"/>
+  <text x="396" y="847" font-size="10.5" font-style="italic" fill="#d91515" text-anchor="middle">no</text>
+  <rect x="64" y="826" width="306" height="62" rx="10" fill="#fdeceb" stroke="#d91515" stroke-width="1.5"/>
+  <text x="80" y="853" font-size="11" fill="#3c4650">Duplicate dropped. A replayed close</text>
+  <text x="80" y="871" font-size="11" fill="#3c4650">cannot ring the same phone twice.</text>
+
+  <line x1="826" y1="857" x2="862" y2="857" stroke="#8c99a8" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <rect x="866" y="808" width="598" height="104" rx="8" fill="#f6f8fa"/>
+  <rect x="866" y="808" width="4" height="104" fill="#037f0c"/>
+  <text x="884" y="836" font-size="11.5" fill="#3c4650">The claim is an idempotency key, not a lock: a worker that crashes mid-close</text>
+  <text x="884" y="855" font-size="11.5" fill="#3c4650">replays the whole close on retry, and the second attempt simply loses the</text>
+  <text x="884" y="874" font-size="11.5" fill="#3c4650">claim. At-least-once delivery becomes at-most-one interruption.</text>
+  <text x="884" y="896" font-size="10.5" font-style="italic" fill="#5f6b7a">core/cohort/signal.py · the engagement and cohort nodes of the daily close</text>
+
+  <line x1="620" y1="902" x2="620" y2="936" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)"/>
+
+  <!-- ============ COMPOSE : y=940 ============ -->
+  <rect x="418" y="940" width="404" height="76" rx="7" fill="#eaf3fd" stroke="#0972d3" stroke-width="2"/>
+  <text x="438" y="970" font-size="15" font-weight="bold" fill="#0f1b2a">7 · Only now: compose</text>
+  <text x="438" y="992" font-size="11.5" fill="#3c4650">Claude Sonnet 4.6 on Bedrock drafts the wording, and</text>
+  <text x="438" y="1010" font-size="11.5" fill="#3c4650">nothing else about the decision</text>
+
+  <line x1="826" y1="978" x2="862" y2="978" stroke="#8c99a8" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <rect x="866" y="936" width="598" height="84" rx="8" fill="#f6f8fa"/>
+  <rect x="866" y="936" width="4" height="84" fill="#0972d3"/>
+  <text x="884" y="964" font-size="11.5" fill="#3c4650">The first model call in the whole chain. It writes sentences; the counts, the</text>
+  <text x="884" y="983" font-size="11.5" fill="#3c4650">level and the decision to interrupt were all fixed before it ran.</text>
+  <text x="884" y="1005" font-size="10.5" font-style="italic" fill="#5f6b7a">if the call fails the escalation still goes out — just without the drafted note</text>
+
+  <line x1="620" y1="1018" x2="620" y2="1052" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)"/>
+
+  <!-- ============ DELIVER : y=1056 ============ -->
+  <rect x="418" y="1056" width="404" height="104" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="2.5"/>
+  <text x="438" y="1086" font-size="15" font-weight="bold" fill="#0f1b2a">8 · Interrupt exactly one human</text>
+  <text x="438" y="1108" font-size="11.5" fill="#3c4650">the parent, with three options — guided session · note for</text>
+  <text x="438" y="1126" font-size="11.5" fill="#3c4650">the teacher · lighter load. The child is never messaged and</text>
+  <text x="438" y="1144" font-size="11.5" fill="#3c4650">the teacher installs nothing.</text>
+
+  <line x1="826" y1="1106" x2="862" y2="1106" stroke="#8c99a8" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <rect x="866" y="1056" width="598" height="104" rx="8" fill="#f6f8fa"/>
+  <rect x="866" y="1056" width="4" height="104" fill="#6b40b2"/>
+  <text x="884" y="1084" font-size="11.5" fill="#3c4650">What survives all eight gates: p50 53 interrupts per 420 student-days, p95 63.</text>
+  <text x="884" y="1103" font-size="11.5" fill="#3c4650">That is a 30-student cohort over a fortnight, counting every struggle triage</text>
+  <text x="884" y="1122" font-size="11.5" fill="#3c4650">and every engagement alert together.</text>
+  <text x="884" y="1144" font-size="10.5" font-style="italic" fill="#5f6b7a">calibration-validation-2026-08-20, pooled over the 40 virgin seeds</text>
+
+  <!-- ============ BASELINES ============ -->
+  <rect x="64" y="940" width="306" height="188" rx="10" fill="#ffffff" stroke="#8c99a8" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="80" y="968" font-size="12.5" font-weight="bold" fill="#0f1b2a">Two baselines it has to beat</text>
+  <text x="80" y="994" font-size="11" fill="#3c4650">Rate-matched random interrupter,</text>
+  <text x="80" y="1012" font-size="11" fill="#3c4650">same volume: precision 0.300.</text>
+  <text x="80" y="1040" font-size="11" fill="#3c4650">Never interrupt anyone: recall 0.000.</text>
+  <text x="80" y="1072" font-size="11.5" font-weight="bold" fill="#037f0c">This chain: 0.970 precision,</text>
+  <text x="80" y="1090" font-size="11.5" font-weight="bold" fill="#037f0c">0.994 recall.</text>
+  <text x="80" y="1114" font-size="10.5" font-style="italic" fill="#5f6b7a">both pre-registered before the sweep ran</text>
+
+  <!-- ============ HONEST BOX ============ -->
+  <rect x="64" y="1192" width="1400" height="182" rx="12" fill="#fdeceb" stroke="#d91515" stroke-width="2"/>
+  <text x="88" y="1224" font-size="15" font-weight="bold" fill="#d91515">What still gets through — and why the fix is not another threshold</text>
+  <text x="88" y="1250" font-size="11.5" fill="#3c4650">11 false-positive students remain across the 40 virgin seeds. Gate G2 (zero false-positive students) reads 30/40 against its own ≥ 95 % bar, and stays red on the board.</text>
+  <text x="88" y="1270" font-size="11.5" fill="#3c4650">Root cause is the EMA cold start: the estimator is seeded from the first outcome, so three consecutive misses multiply it by 0.7³ = 0.343 and reach the struggling band</text>
+  <text x="88" y="1290" font-size="11.5" fill="#3c4650">from any prior history. Threshold-level guards are now exhausted — two swept, one slab-confirmed, and one falsified by its own pre-declared protocol: the corroboration</text>
+  <text x="88" y="1310" font-size="11.5" fill="#3c4650">floor bought precision 0.982 by cutting recall 0.994 → 0.917, failed two of its three declared criteria, and was reverted the same hour. The remaining fix is the estimator</text>
+  <text x="88" y="1330" font-size="11.5" fill="#3c4650">itself — BKT-style slip/guess separation — which is product work on the roadmap, not calibration.</text>
+  <text x="88" y="1356" font-size="10.5" font-style="italic" fill="#5f6b7a">corroboration-floor-falsified-2026-08-21 · fp-residue-2026-08-21 · calibration-validation-2026-08-20</text>
+
+  <text x="64" y="1424" font-size="10.5" font-style="italic" fill="#8c99a8">Gates 1–6 are deterministic code in core/harness and core/orchestration — no model participates in the decision to interrupt. Every number traces to a dated report in docs/reports/.</text>
+</svg>

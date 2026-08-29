@@ -1,0 +1,261 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1820" height="1820" viewBox="0 0 1820 1820">
+  <style>
+    text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; fill: #0f1b2a; }
+    .title { font-size: 27px; font-weight: 700; }
+    .sub { font-size: 14px; fill: #3c4650; }
+    .colh { font-size: 11px; font-weight: 700; fill: #5f6b7a; letter-spacing: 0.6px; }
+    .colhg { font-size: 11px; font-weight: 700; fill: #037f0c; letter-spacing: 0.6px; }
+    .an { font-size: 13px; font-weight: 700; }
+    .as { font-size: 10.5px; fill: #8c99a8; }
+    .cell { font-size: 10.5px; fill: #3c4650; }
+    .cellg { font-size: 10.5px; fill: #14431a; }
+    .pill { font-size: 10.5px; fill: #0f1b2a; }
+    .note { font-size: 10.5px; fill: #5f6b7a; font-style: italic; }
+    .h3 { font-size: 13px; font-weight: 700; }
+    .h4 { font-size: 12.5px; font-weight: 700; }
+    .xs { font-size: 10.5px; fill: #3c4650; }
+    .cap { font-size: 10.5px; fill: #5f6b7a; font-style: italic; }
+    .green { fill: #037f0c; }
+    .mid { text-anchor: middle; }
+    .bold { font-weight: 700; }
+  </style>
+
+  <rect x="0" y="0" width="1820" height="1820" fill="#ffffff"/>
+
+  <text class="title" x="70" y="60">Repaso — the agent fleet, audited</text>
+  <text class="sub" x="70" y="88">Thirteen agents. Every one of them is paired with a green deterministic function that owns the number the agent is not allowed to invent.</text>
+
+  <rect x="1330" y="26" width="420" height="78" rx="10" fill="#f7f9fb" stroke="#cbd3dc"/>
+  <text class="h4" x="1350" y="52">13 agents · 4 graph builders · 1 harness</text>
+  <text class="xs" x="1350" y="72">8 call Bedrock · 5 carry no model at all</text>
+  <text class="xs" x="1350" y="90">100 % Amazon Bedrock — no other provider</text>
+
+  <!-- ===== the green column, drawn as one block ===== -->
+  <rect x="896" y="140" width="508" height="1468" fill="#eaf6ea"/>
+  <line x1="896" y1="140" x2="1404" y2="140" stroke="#037f0c" stroke-width="2.5"/>
+  <line x1="896" y1="1608" x2="1404" y2="1608" stroke="#037f0c" stroke-width="2.5"/>
+
+  <line x1="360" y1="140" x2="360" y2="1608" stroke="#eef1f4"/>
+  <line x1="702" y1="140" x2="702" y2="1608" stroke="#eef1f4"/>
+  <line x1="1408" y1="140" x2="1408" y2="1608" stroke="#eef1f4"/>
+
+  <!-- ===== column headers ===== -->
+  <text class="colh" x="140" y="170">AGENT</text>
+  <text class="colh" x="372" y="170">WHAT IT DECIDES</text>
+  <text class="colh mid" x="798" y="170">MODEL TIER</text>
+  <text class="colhg" x="910" y="170">THE DETERMINISTIC COUNTERPART — what owns the math</text>
+  <text class="colh" x="1418" y="170">WHAT IT CAN REFUSE</text>
+  <line x1="134" y1="186" x2="1750" y2="186" stroke="#8c99a8" stroke-width="1.4"/>
+
+  <!-- ===== row separators ===== -->
+  <line x1="134" y1="294" x2="1750" y2="294" stroke="#e3e8ee"/>
+  <line x1="134" y1="398" x2="1750" y2="398" stroke="#e3e8ee"/>
+  <line x1="134" y1="502" x2="1750" y2="502" stroke="#e3e8ee"/>
+  <line x1="134" y1="606" x2="1750" y2="606" stroke="#e3e8ee"/>
+  <line x1="134" y1="710" x2="1750" y2="710" stroke="#e3e8ee"/>
+  <line x1="134" y1="1044" x2="1750" y2="1044" stroke="#e3e8ee"/>
+  <line x1="134" y1="1170" x2="1750" y2="1170" stroke="#e3e8ee"/>
+  <line x1="134" y1="1274" x2="1750" y2="1274" stroke="#e3e8ee"/>
+  <line x1="134" y1="1504" x2="1750" y2="1504" stroke="#e3e8ee"/>
+
+  <!-- ===== group rails ===== -->
+  <rect x="70" y="190" width="52" height="624" rx="8" fill="#0972d3"/>
+  <text class="h4 mid" x="96" y="502" fill="#ffffff" transform="rotate(-90 96 502)">INGEST</text>
+  <rect x="70" y="836" width="52" height="208" rx="8" fill="#0972d3"/>
+  <text class="h4 mid" x="96" y="940" fill="#ffffff" transform="rotate(-90 96 940)">SESSION</text>
+  <rect x="70" y="1066" width="52" height="312" rx="8" fill="#0972d3"/>
+  <text class="h4 mid" x="96" y="1222" fill="#ffffff" transform="rotate(-90 96 1222)">RESPONSE</text>
+  <rect x="70" y="1400" width="52" height="208" rx="8" fill="#0972d3"/>
+  <text class="h4 mid" x="96" y="1504" fill="#ffffff" transform="rotate(-90 96 1504)">DAILY CLOSE</text>
+
+  <!-- ===== ROW 1 · Intake Screener (T=190) ===== -->
+  <text class="an" x="140" y="220">Intake Screener</text>
+  <text class="as" x="140" y="239">ingest · node screen</text>
+  <text class="cell" x="372" y="220">Whether a photographed worksheet is safe to put in</text>
+  <text class="cell" x="372" y="238">front of a model at all.</text>
+  <rect x="716" y="208" width="164" height="26" rx="13" fill="#fff4e5" stroke="#ff9900" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="225">Nova Lite · classify</text>
+  <text class="note mid" x="798" y="248">after a deterministic pass</text>
+  <text class="cellg" x="910" y="220">tools.guardrails.Screener — a deny-list over canonicalised text (case, accents and</text>
+  <text class="cellg" x="910" y="238">whitespace folded), plus email / national-id / phone redaction before any prompt.</text>
+  <text class="cellg" x="910" y="256">It runs BEFORE the model, and a model error is never read as "safe" — the verdict</text>
+  <text class="cellg" x="910" y="274">returns unsafe. The Armor fails closed by construction.</text>
+  <text class="cell" x="1418" y="220">Quarantines the material with an EvidenceSpan</text>
+  <text class="cell" x="1418" y="238">quoting the payload. 400/400 adversarial payloads</text>
+  <text class="cell" x="1418" y="256">intercepted, 9 families, ES + EN, OCR-corrupted</text>
+  <text class="cell" x="1418" y="274">included; 0 % false block on 200 clean texts.</text>
+
+  <!-- ===== ROW 2 · Material Parser (T=294) ===== -->
+  <text class="an" x="140" y="324">Material Parser</text>
+  <text class="as" x="140" y="343">ingest · node parse</text>
+  <text class="cell" x="372" y="324">Whether the photo is legible enough to build items</text>
+  <text class="cell" x="372" y="342">from, and what the text on it actually says.</text>
+  <rect x="716" y="312" width="164" height="26" rx="13" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="329">no model — deterministic</text>
+  <text class="cellg" x="910" y="324">core.harness.legibility — Laplacian blur variance and contrast standard deviation,</text>
+  <text class="cellg" x="910" y="342">combined with the OCR confidence by effective_confidence() and compared against</text>
+  <text class="cellg" x="910" y="360">the blur floor of 300. Textract supplies characters; the judgement is arithmetic.</text>
+  <text class="cell" x="1418" y="324">Asks for a re-photo rather than guessing at a</text>
+  <text class="cell" x="1418" y="342">smudged digit. An unparsed page ends the graph</text>
+  <text class="cell" x="1418" y="360">before a single model call is paid for.</text>
+
+  <!-- ===== ROW 3 · Competency Mapper (T=398) ===== -->
+  <text class="an" x="140" y="428">Competency Mapper</text>
+  <text class="as" x="140" y="447">ingest · node map</text>
+  <text class="cell" x="372" y="428">Which curriculum competency this material is</text>
+  <text class="cell" x="372" y="446">teaching.</text>
+  <rect x="716" y="416" width="164" height="26" rx="13" fill="#fff4e5" stroke="#ff9900" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="433">Haiku 4.5 · structured</text>
+  <text class="cellg" x="910" y="428">The knowledge retriever proposes the candidate set; _keep_known() drops any id the</text>
+  <text class="cellg" x="910" y="446">model returned that the taxonomy did not offer, and de-duplicates the rest. If the</text>
+  <text class="cellg" x="910" y="464">call fails, the retriever's own confidence ranking is used instead.</text>
+  <text class="cell" x="1418" y="428">No candidate above the retrieval floor means the</text>
+  <text class="cell" x="1418" y="446">material is politely rejected. It cannot invent a</text>
+  <text class="cell" x="1418" y="464">competency the taxonomy does not contain.</text>
+
+  <!-- ===== ROW 4 · Item Generator (T=502) ===== -->
+  <text class="an" x="140" y="532">Item Generator</text>
+  <text class="as" x="140" y="551">ingest · node generate</text>
+  <text class="cell" x="372" y="532">The six practice items drafted from this material.</text>
+  <rect x="716" y="520" width="164" height="26" rx="13" fill="#fff4e5" stroke="#ff9900" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="537">Sonnet 4.6 · generate</text>
+  <text class="note mid" x="798" y="560">holds a stage claim</text>
+  <text class="cellg" x="910" y="532">is_valid_draft() structural validation — stem, options and answer key present and</text>
+  <text class="cellg" x="910" y="550">mutually consistent — plus a Provenance stamp carrying prompt version, model id</text>
+  <text class="cellg" x="910" y="568">and source. The stage claim is why a crash resumes instead of regenerating.</text>
+  <text class="cell" x="1418" y="532">A draft that fails structure never becomes an item.</text>
+  <text class="cell" x="1418" y="550">Zero surviving drafts ends the graph with a request</text>
+  <text class="cell" x="1418" y="568">for one worked example, not with a guess.</text>
+
+  <!-- ===== ROW 5 · Item Critic (T=606) ===== -->
+  <text class="an" x="140" y="636">Item Critic</text>
+  <text class="as" x="140" y="655">ingest · node validate</text>
+  <text class="cell" x="372" y="636">Whether each drafted item is correct, on-grade and</text>
+  <text class="cell" x="372" y="654">unambiguous.</text>
+  <rect x="716" y="624" width="164" height="26" rx="13" fill="#fff4e5" stroke="#ff9900" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="641">Sonnet 4.6 · judge</text>
+  <text class="cellg" x="910" y="636">map_flaws() forces free prose into a typed ItemFlaw enum, and the accept / reject</text>
+  <text class="cellg" x="910" y="654">status is written by code from that verdict. The critic's paragraph is never what</text>
+  <text class="cellg" x="910" y="672">changes an item's status in the store.</text>
+  <text class="cell" x="1418" y="636">Rejects an item outright. If every item in a batch</text>
+  <text class="cell" x="1418" y="654">is rejected, the material itself is refused rather</text>
+  <text class="cell" x="1418" y="672">than half-published.</text>
+
+  <!-- ===== ROW 6 · Answerability Probe (T=710) ===== -->
+  <text class="an" x="140" y="740">Answerability Probe</text>
+  <text class="as" x="140" y="759">ingest · node validate</text>
+  <text class="cell" x="372" y="740">Whether the item can be answered <tspan class="bold">without</tspan> ever seeing</text>
+  <text class="cell" x="372" y="758">the material it came from.</text>
+  <rect x="716" y="728" width="164" height="26" rx="13" fill="#fff4e5" stroke="#ff9900" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="745">Nova Micro · probe</text>
+  <text class="cellg" x="910" y="740">combine(verdict, answered_blind): accepted becomes verdict.accepted AND</text>
+  <text class="cellg" x="910" y="758">answered_blind is not True. A blind-answerable item is force-rejected and flagged</text>
+  <text class="cellg" x="910" y="776">ANSWERABLE_WITHOUT_MATERIAL even when the critic approved it.</text>
+  <text class="cell" x="1418" y="740">Kills an item that measures nothing — the one veto</text>
+  <text class="cell" x="1418" y="758">in the fleet that overrides another model's</text>
+  <text class="cell" x="1418" y="776">approval, and it is arithmetic that applies it.</text>
+
+  <!-- ===== ROW 7 · Session Planner (T=836) ===== -->
+  <text class="an" x="140" y="866">Session Planner</text>
+  <text class="as" x="140" y="885">session · node plan</text>
+  <text class="cell" x="372" y="866">Which items a child practises today, and in what</text>
+  <text class="cell" x="372" y="884">order.</text>
+  <rect x="716" y="854" width="164" height="26" rx="13" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="871">no model — deterministic</text>
+  <text class="cellg" x="910" y="866">core.harness.sm2.due_items() over the SpacedItemState rows, with one slot reserved</text>
+  <text class="cellg" x="910" y="884">for an item the student has never seen. An EXAM# date inside 7 days caps the</text>
+  <text class="cellg" x="910" y="902">capsule at 4 and re-sorts it weakest-EMA first.</text>
+  <text class="cell" x="1418" y="866">Nothing due means no session and no message that</text>
+  <text class="cell" x="1418" y="884">day: silence is a legal output. A second run on the</text>
+  <text class="cell" x="1418" y="902">same date exits idempotently.</text>
+
+  <!-- ===== ROW 8 · Capsule Composer (T=940) ===== -->
+  <text class="an" x="140" y="970">Capsule Composer</text>
+  <text class="as" x="140" y="989">session · node compose</text>
+  <text class="cell" x="372" y="970">The framing words wrapped around today's items.</text>
+  <rect x="716" y="958" width="164" height="26" rx="13" fill="#fff4e5" stroke="#ff9900" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="975">Sonnet 4.6 · generate</text>
+  <text class="cellg" x="910" y="970">render_item() and item_buttons() render the question text and the answer buttons</text>
+  <text class="cellg" x="910" y="988">from the stored Item. The composer's output is concatenated around them and never</text>
+  <text class="cellg" x="910" y="1006">replaces them, so a hallucinated option cannot reach a child.</text>
+  <text class="cell" x="1418" y="970">It has no refusal — and no power either: it cannot</text>
+  <text class="cell" x="1418" y="988">change a question, an option or an answer key.</text>
+  <text class="cell" x="1418" y="1006">It only chooses the greeting.</text>
+
+  <!-- ===== ROW 9 · Grader (T=1066) ===== -->
+  <text class="an" x="140" y="1096">Grader</text>
+  <text class="as" x="140" y="1115">response · node grade</text>
+  <text class="cell" x="372" y="1096">Whether an open answer is correct, and on what</text>
+  <text class="cell" x="372" y="1114">evidence.</text>
+  <rect x="716" y="1084" width="164" height="26" rx="13" fill="#fff4e5" stroke="#ff9900" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="1101">Sonnet 4.6 · judge</text>
+  <text class="note mid" x="798" y="1124">MCQ never reaches a model</text>
+  <text class="cellg" x="910" y="1096">grade_mcq() is exact matching in code. For open answers the confidence gate is 0.85</text>
+  <text class="cellg" x="910" y="1114">and an EvidenceSpan quoting the child is mandatory; the text sent to Bedrock is the</text>
+  <text class="cellg" x="910" y="1132">redacted copy, never the raw reply.</text>
+  <text class="cell" x="1418" y="1096">Below 0.85 the grade does not exist: correct is None,</text>
+  <text class="cell" x="1418" y="1114">mastery and SM-2 are left untouched, and the answer</text>
+  <text class="cell" x="1418" y="1132">is handed to the parent to settle.</text>
+
+  <!-- ===== ROW 10 · Adaptation Policy (T=1170) ===== -->
+  <text class="an" x="140" y="1200">Adaptation Policy</text>
+  <text class="as" x="140" y="1219">response · node adapt</text>
+  <text class="cell" x="372" y="1200">Continue, raise or lower difficulty, switch to open</text>
+  <text class="cell" x="372" y="1218">answers, reduce the load.</text>
+  <rect x="716" y="1188" width="164" height="26" rx="13" fill="#fff4e5" stroke="#ff9900" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="1205">Haiku 4.5 · structured</text>
+  <text class="cellg" x="910" y="1200">core.harness.escalation_triggers — struggle_trigger (9 attempts of evidence, 7-day</text>
+  <text class="cellg" x="910" y="1218">cooldown), engagement_trigger and fast_guess_flag. fallback_decision() is computed</text>
+  <text class="cellg" x="910" y="1236">first, and is what is returned whenever a trigger fired or the model call failed.</text>
+  <text class="cell" x="1418" y="1200">It cannot veto an interrupt and it cannot</text>
+  <text class="cell" x="1418" y="1218">manufacture one. When a trigger fires, the model's</text>
+  <text class="cell" x="1418" y="1236">reply is discarded unread.</text>
+
+  <!-- ===== ROW 11 · Escalation Composer (T=1274) ===== -->
+  <text class="an" x="140" y="1304">Escalation Composer</text>
+  <text class="as" x="140" y="1323">response · escalate — close · cohort</text>
+  <text class="cell" x="372" y="1304">How to word the message that interrupts a parent,</text>
+  <text class="cell" x="372" y="1322">and which triage options it offers.</text>
+  <rect x="716" y="1292" width="164" height="26" rx="13" fill="#fff4e5" stroke="#ff9900" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="1309">Sonnet 4.6 · generate</text>
+  <text class="note mid" x="798" y="1332">engagement notes: template</text>
+  <text class="cellg" x="910" y="1304">The triggers decide IF; triage_options() fixes the reply buttons; evidence_digest()</text>
+  <text class="cellg" x="910" y="1322">carries the quoted spans through unchanged. The cohort note is drafted from a k ≥ 3</text>
+  <text class="cellg" x="910" y="1340">aggregate whose prompt never receives an alias or a name.</text>
+  <text class="cell" x="1418" y="1304">It never decides whether to interrupt — only how to</text>
+  <text class="cell" x="1418" y="1322">say it. The 7-day per-student cooldown is enforced</text>
+  <text class="cell" x="1418" y="1340">upstream, out of its reach.</text>
+
+  <!-- ===== ROW 12 · Goal Verifier (T=1400) ===== -->
+  <text class="an" x="140" y="1430">Goal Verifier</text>
+  <text class="as" x="140" y="1449">close · node verify</text>
+  <text class="cell" x="372" y="1430">Whether today actually closed: every response</text>
+  <text class="cell" x="372" y="1448">graded, every quarantine and escalation accounted for.</text>
+  <rect x="716" y="1418" width="164" height="26" rx="13" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="1435">no model — deterministic</text>
+  <text class="cellg" x="910" y="1430">verify_daily() reconciles sessions, grades, quarantines and escalations into a</text>
+  <text class="cellg" x="910" y="1448">DailyCloseReport, and BoundedAttempts(2) caps the rework it may request.</text>
+  <text class="cell" x="1418" y="1430">Refuses to loop. After two attempts an unresolved</text>
+  <text class="cell" x="1418" y="1448">item is reported as unresolved rather than retried</text>
+  <text class="cell" x="1418" y="1466">until it costs money.</text>
+
+  <!-- ===== ROW 13 · Item Lifecycle Optimizer (T=1504) ===== -->
+  <text class="an" x="140" y="1534">Item Lifecycle Optimizer</text>
+  <text class="as" x="140" y="1553">close · node optimize</text>
+  <text class="cell" x="372" y="1534">Which items leave the bank.</text>
+  <rect x="716" y="1522" width="164" height="26" rx="13" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.4"/>
+  <text class="pill mid" x="798" y="1539">no model — deterministic</text>
+  <text class="cellg" x="910" y="1534">core.harness.psychometrics.should_retire() — point-biserial discrimination below</text>
+  <text class="cellg" x="910" y="1552">0.15, or a p-value outside 0.05–0.95, with at least 8 observed attempts.</text>
+  <text class="cellg" x="910" y="1570">The statistic retires the item; nothing else in the system can.</text>
+  <text class="cell" x="1418" y="1534">Retires an item on its own statistics. No model</text>
+  <text class="cell" x="1418" y="1552">gets a vote on what stays in the bank.</text>
+
+  <!-- ===== FOOTER ===== -->
+  <rect x="70" y="1640" width="1680" height="140" rx="10" fill="#eaf6ea" stroke="#037f0c" stroke-width="2"/>
+  <text class="h3 green" x="94" y="1670">Why the green column is the point of this diagram</text>
+  <text class="xs" x="94" y="1696">Spacing intervals, mastery, escalation thresholds and item statistics are not opinions a model produced — they are functions with unit tests, and the fleet is wired so that no agent</text>
+  <text class="xs" x="94" y="1716">can overrule them. Read that column and you have read the pedagogy. Offline, the whole Bedrock column is replaced by LocalPlaybackModel, a strict playback double that raises on</text>
+  <text class="xs" x="94" y="1736">any unplanned call — which is why 706 tests run in ~5 s with zero credentials and zero network, and why the suite doubles as a cost audit.</text>
+  <text class="cap" x="94" y="1760">Model ids pinned in config/models.py with a per-role fallback chain on throttle. Numbers from calibration-validation 2026-08-20 · armor-bench 2026-08-20 · calendar-gaps 2026-08-21.</text>
+</svg>

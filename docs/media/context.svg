@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1500" viewBox="0 0 1500 1500" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="cPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b40b2"/></marker>
+    <marker id="cBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0972d3"/></marker>
+    <marker id="cOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ff9900"/></marker>
+  </defs>
+
+  <rect x="0" y="0" width="1500" height="1500" fill="#ffffff"/>
+
+  <!-- ================= HEADER ================= -->
+  <text x="40" y="54" font-size="27" font-weight="bold" fill="#0f1b2a">Repaso — who touches it, and who deliberately does not</text>
+  <text x="40" y="80" font-size="14" fill="#3c4650">Level 1 context. One parent, one chat, and a child who has no account of their own.</text>
+  <text x="40" y="99" font-size="14" fill="#3c4650">Every arrow says what actually crosses the boundary.</text>
+
+  <rect x="1146" y="66" width="12" height="12" rx="2" fill="#6b40b2"/><text x="1164" y="77" font-size="11" fill="#3c4650">a person</text>
+  <rect x="1228" y="66" width="12" height="12" rx="2" fill="#0972d3"/><text x="1246" y="77" font-size="11" fill="#3c4650">Repaso</text>
+  <rect x="1302" y="66" width="12" height="12" rx="2" fill="#ff9900"/><text x="1320" y="77" font-size="11" fill="#3c4650">AWS</text>
+  <rect x="1362" y="66" width="12" height="12" rx="2" fill="#d91515"/><text x="1380" y="77" font-size="11" fill="#3c4650">what is refused</text>
+
+  <!-- ================= THE SCHOOL ================= -->
+  <rect x="40" y="126" width="260" height="88" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.8"/>
+  <text x="54" y="152" font-size="16" font-weight="bold" fill="#6b40b2">The school</text>
+  <text x="54" y="174" font-size="11.5" fill="#3c4650">Sets the homework, the worksheet and</text>
+  <text x="54" y="189" font-size="11.5" fill="#3c4650">the date of the exam.</text>
+  <text x="54" y="205" font-size="11.5" fill="#5f6b7a">Repaso has no account there.</text>
+
+  <path d="M170,214 L170,235" stroke="#6b40b2" stroke-width="1.8" marker-end="url(#cPurple)"/>
+  <text x="186" y="231" font-size="11.5" fill="#3c4650">the homework, the worksheet, the date of the exam</text>
+
+  <!-- ================= THE STUDENT ================= -->
+  <rect x="40" y="240" width="260" height="108" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.8"/>
+  <text x="54" y="268" font-size="16" font-weight="bold" fill="#6b40b2">The student</text>
+  <text x="54" y="290" font-size="11.5" fill="#3c4650">No account. No phone number. No real</text>
+  <text x="54" y="305" font-size="11.5" fill="#3c4650">name — an alias is all the system ever</text>
+  <text x="54" y="320" font-size="11.5" fill="#3c4650">stores about the child.</text>
+  <text x="54" y="338" font-size="11.5" fill="#5f6b7a">Practices on the parent's screen.</text>
+
+  <path d="M170,348 L170,383" stroke="#6b40b2" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#cPurple)"/>
+  <text x="186" y="360" font-size="11.5" fill="#3c4650">no account, no phone number;</text>
+  <text x="186" y="375" font-size="11.5" fill="#3c4650">the parent's screen is the only door</text>
+
+  <!-- ================= THE PARENT ================= -->
+  <rect x="40" y="388" width="260" height="240" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="3"/>
+  <text x="54" y="418" font-size="16" font-weight="bold" fill="#6b40b2">The parent</text>
+  <text x="54" y="437" font-size="11.5" font-style="italic" fill="#6b40b2">the only account holder</text>
+  <text x="54" y="462" font-size="11.5" fill="#3c4650">Owns the one Telegram chat Repaso</text>
+  <text x="54" y="477" font-size="11.5" fill="#3c4650">lives in. Installs nothing: there is no app.</text>
+  <text x="54" y="499" font-size="11.5" fill="#3c4650">Sends the material. Answers the two</text>
+  <text x="54" y="514" font-size="11.5" fill="#3c4650">questions the system is allowed to ask.</text>
+  <text x="54" y="536" font-size="11.5" fill="#3c4650">Decides whether the teacher ever sees</text>
+  <text x="54" y="551" font-size="11.5" fill="#3c4650">the note — and can say no.</text>
+  <text x="54" y="576" font-size="11.5" fill="#5f6b7a">Every boundary on this page passes</text>
+  <text x="54" y="591" font-size="11.5" fill="#5f6b7a">through this box. That is the design,</text>
+  <text x="54" y="606" font-size="11.5" fill="#5f6b7a">not a limitation of the build.</text>
+
+  <path d="M300,470 L555,470" stroke="#6b40b2" stroke-width="2" marker-end="url(#cPurple)"/>
+  <text x="429" y="438" font-size="11.5" fill="#3c4650" text-anchor="middle">a photo of the notebook page,</text>
+  <text x="429" y="453" font-size="11.5" fill="#3c4650" text-anchor="middle">the student's answer, a yes or a no</text>
+
+  <path d="M558,555 L305,555" stroke="#0972d3" stroke-width="2" marker-end="url(#cBlue)"/>
+  <text x="429" y="577" font-size="11.5" fill="#3c4650" text-anchor="middle">tonight's capsule — five questions</text>
+  <text x="429" y="592" font-size="11.5" fill="#3c4650" text-anchor="middle">a decision request, never an order</text>
+  <text x="429" y="607" font-size="11.5" fill="#3c4650" text-anchor="middle">a note drafted for the teacher</text>
+
+  <path d="M170,628 L170,695" stroke="#6b40b2" stroke-width="1.8" marker-end="url(#cPurple)"/>
+  <text x="186" y="650" font-size="11.5" fill="#3c4650">the parent reads the note, edits it</text>
+  <text x="186" y="665" font-size="11.5" fill="#3c4650">if they want, and sends it. Repaso</text>
+  <text x="186" y="680" font-size="11.5" fill="#3c4650">never messages the teacher itself.</text>
+
+  <!-- ================= THE TEACHER ================= -->
+  <rect x="40" y="700" width="260" height="132" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.8"/>
+  <text x="54" y="728" font-size="16" font-weight="bold" fill="#6b40b2">The teacher</text>
+  <text x="54" y="750" font-size="11.5" fill="#3c4650">Installs nothing and has no account</text>
+  <text x="54" y="765" font-size="11.5" fill="#3c4650">here. Works at the school above.</text>
+  <text x="54" y="787" font-size="11.5" fill="#3c4650">Receives one drafted note, handed</text>
+  <text x="54" y="802" font-size="11.5" fill="#3c4650">over by a parent: an alias, one</text>
+  <text x="54" y="817" font-size="11.5" fill="#3c4650">competency, one suggestion.</text>
+
+  <rect x="40" y="864" width="500" height="96" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="56" y="892" font-size="14" font-weight="bold" fill="#6b40b2">Nobody installs anything</text>
+  <text x="56" y="914" font-size="11.5" fill="#3c4650">The parent already has Telegram. The student has nothing to install, no</text>
+  <text x="56" y="929" font-size="11.5" fill="#3c4650">password to remember and no profile to fill in. The teacher receives a</text>
+  <text x="56" y="944" font-size="11.5" fill="#3c4650">message from a parent they already know. There is no login screen here.</text>
+
+  <!-- ================= THE LINE THAT DOES NOT EXIST ================= -->
+  <path d="M300,300 L620,300 L620,374" fill="none" stroke="#d91515" stroke-width="1.8" stroke-dasharray="7 5" opacity="0.5"/>
+  <text x="450" y="278" font-size="11.5" font-weight="bold" fill="#d91515" text-anchor="middle">no direct line to the child</text>
+  <circle cx="450" cy="300" r="12" fill="#ffffff" stroke="#d91515" stroke-width="2.6"/>
+  <line x1="441.5" y1="308.5" x2="458.5" y2="291.5" stroke="#d91515" stroke-width="2.6"/>
+
+  <!-- ================= REPASO ================= -->
+  <rect x="560" y="378" width="460" height="260" rx="16" fill="#eaf3fd" stroke="#0972d3" stroke-width="3"/>
+  <text x="590" y="428" font-size="30" font-weight="bold" fill="#0972d3">Repaso</text>
+  <text x="590" y="452" font-size="13" fill="#5f6b7a">a study companion that lives inside one Telegram chat</text>
+  <line x1="590" y1="468" x2="990" y2="468" stroke="#0972d3" stroke-width="1" opacity="0.4"/>
+  <text x="590" y="492" font-size="11.5" fill="#3c4650">Turns the photographed page into practice sized for the child.</text>
+  <text x="590" y="514" font-size="11.5" fill="#3c4650">Watches the answers and decides, on evidence, when a person must</text>
+  <text x="590" y="529" font-size="11.5" fill="#3c4650">be told — and stays quiet when they must not.</text>
+  <text x="590" y="551" font-size="11.5" fill="#3c4650">Asks the parent before it acts. It never acts on the child alone.</text>
+  <rect x="590" y="566" width="400" height="52" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.4"/>
+  <text x="604" y="586" font-size="11.5" font-weight="bold" fill="#037f0c">13 agents, 3 graphs, one deterministic harness</text>
+  <text x="604" y="604" font-size="10.5" fill="#037f0c">the pedagogy is code a school can audit, not a model's opinion</text>
+
+  <!-- ================= AWS ================= -->
+  <path d="M789,638 L789,697" stroke="#ff9900" stroke-width="2.4" marker-start="url(#cOrange)" marker-end="url(#cOrange)"/>
+  <text x="800" y="660" font-size="11.5" fill="#3c4650">every model call, every stored</text>
+  <text x="800" y="675" font-size="11.5" fill="#3c4650">row, every scheduled alarm</text>
+
+  <rect x="560" y="700" width="460" height="260" rx="12" fill="#fff4e5" stroke="#ff9900" stroke-width="2"/>
+  <text x="590" y="732" font-size="16" font-weight="bold" fill="#b26a00">Amazon Web Services</text>
+  <text x="590" y="752" font-size="11" font-style="italic" fill="#5f6b7a">100 % of the model calls · everything namespaced repaso-*</text>
+
+  <rect x="590" y="764" width="400" height="46" rx="7" fill="#ffffff" stroke="#ff9900" stroke-width="1.2"/>
+  <text x="604" y="784" font-size="12" font-weight="bold" fill="#0f1b2a">Amazon Bedrock</text>
+  <text x="604" y="800" font-size="10.5" fill="#5f6b7a">Claude Sonnet 4.6 · Claude Haiku 4.5 · Amazon Nova Lite and Micro</text>
+
+  <rect x="590" y="818" width="400" height="46" rx="7" fill="#ffffff" stroke="#ff9900" stroke-width="1.2"/>
+  <text x="604" y="838" font-size="12" font-weight="bold" fill="#0f1b2a">Bedrock AgentCore</text>
+  <text x="604" y="854" font-size="10.5" fill="#5f6b7a">the runtime that executes the graphs · session memory · full tracing</text>
+
+  <rect x="590" y="872" width="400" height="46" rx="7" fill="#ffffff" stroke="#ff9900" stroke-width="1.2"/>
+  <text x="604" y="892" font-size="12" font-weight="bold" fill="#0f1b2a">The managed plane</text>
+  <text x="604" y="908" font-size="10.5" fill="#5f6b7a">Lambda · API Gateway · EventBridge · SQS · DynamoDB · S3 + KMS</text>
+
+  <text x="590" y="940" font-size="11" font-style="italic" fill="#5f6b7a">No other cloud, and no other model provider.</text>
+
+  <!-- ================= JUDGE ================= -->
+  <path d="M1020,400 L1096,400" stroke="#0972d3" stroke-width="2" marker-end="url(#cBlue)"/>
+  <text x="1058" y="384" font-size="11" fill="#3c4650" text-anchor="middle">read-only</text>
+
+  <rect x="1100" y="300" width="360" height="156" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.8"/>
+  <text x="1124" y="330" font-size="16" font-weight="bold" fill="#6b40b2">A judge or an operator</text>
+  <text x="1124" y="356" font-size="11.5" fill="#3c4650">Opens a read-only web mirror with an</text>
+  <text x="1124" y="371" font-size="11.5" fill="#3c4650">access code — no install, no account.</text>
+  <text x="1124" y="393" font-size="11.5" fill="#3c4650">Sees counts, aliases, gate results and</text>
+  <text x="1124" y="408" font-size="11.5" fill="#3c4650">the trace of every refusal.</text>
+  <text x="1124" y="430" font-size="11.5" fill="#5f6b7a">Cannot send a message, change a grade,</text>
+  <text x="1124" y="445" font-size="11.5" fill="#5f6b7a">or learn the name of a single child.</text>
+
+  <!-- ================= WHAT NEVER CROSSES ================= -->
+  <rect x="1100" y="500" width="360" height="460" rx="12" fill="#fdeceb" stroke="#d91515" stroke-width="2"/>
+  <text x="1124" y="534" font-size="16" font-weight="bold" fill="#d91515">What never crosses</text>
+  <text x="1124" y="554" font-size="10.5" font-style="italic" fill="#5f6b7a">the absences are the design, not an omission</text>
+
+  <text x="1124" y="582" font-size="11.5" fill="#3c4650">No message from Repaso reaches the child</text>
+  <text x="1124" y="597" font-size="11.5" fill="#3c4650">directly. It all arrives on the parent's phone.</text>
+
+  <text x="1124" y="621" font-size="11.5" fill="#3c4650">No message from Repaso reaches the teacher.</text>
+  <text x="1124" y="636" font-size="11.5" fill="#3c4650">The parent forwards a draft, or does not.</text>
+
+  <text x="1124" y="660" font-size="11.5" fill="#3c4650">No real name of a child is stored anywhere —</text>
+  <text x="1124" y="675" font-size="11.5" fill="#3c4650">an alias, a grade level and a section key.</text>
+
+  <text x="1124" y="699" font-size="11.5" fill="#3c4650">No face, no school-wide ranking, no grade table</text>
+  <text x="1124" y="714" font-size="11.5" fill="#3c4650">and no comparison between two children.</text>
+
+  <text x="1124" y="738" font-size="11.5" fill="#3c4650">The cohort note carries counts, never names, and</text>
+  <text x="1124" y="753" font-size="11.5" fill="#3c4650">only when 3 distinct families show the same gap</text>
+  <text x="1124" y="768" font-size="11.5" fill="#3c4650">in the same section, at most once a week.</text>
+
+  <text x="1124" y="792" font-size="11.5" fill="#3c4650">400 of 400 adversarial payloads were intercepted</text>
+  <text x="1124" y="807" font-size="11.5" fill="#3c4650">before any of this ran — 9 attack families, ES and</text>
+  <text x="1124" y="822" font-size="11.5" fill="#3c4650">EN, at 0 % false blocks on 200 clean texts.</text>
+  <text x="1124" y="842" font-size="10.5" font-style="italic" fill="#8c99a8">docs/reports/armor-bench-2026-08-20.md</text>
+
+  <line x1="1124" y1="862" x2="1436" y2="862" stroke="#d91515" stroke-width="1" opacity="0.4"/>
+  <text x="1124" y="886" font-size="11.5" font-weight="bold" fill="#d91515">The rule underneath all of them:</text>
+  <text x="1124" y="905" font-size="11.5" fill="#3c4650">an adult is always the one who decides what</text>
+  <text x="1124" y="920" font-size="11.5" fill="#3c4650">happens to a child's information — and the</text>
+  <text x="1124" y="935" font-size="11.5" fill="#3c4650">child is never asked to be that adult.</text>
+
+  <!-- ================= BOUNDARY LEDGER ================= -->
+  <text x="40" y="1002" font-size="14" font-weight="bold" fill="#0f1b2a">The boundary ledger — every crossing on this page, and exactly what it is allowed to carry</text>
+
+  <text x="54" y="1034" font-size="11" font-weight="bold" fill="#8c99a8">BOUNDARY</text>
+  <text x="410" y="1034" font-size="11" font-weight="bold" fill="#8c99a8">WHAT CROSSES</text>
+  <text x="970" y="1034" font-size="11" font-weight="bold" fill="#8c99a8">WHAT NEVER CROSSES WITH IT</text>
+  <line x1="40" y1="1042" x2="1460" y2="1042" stroke="#8c99a8" stroke-width="1.2"/>
+
+  <rect x="40" y="1046" width="1420" height="52" fill="#f6f8fa"/>
+  <text x="54" y="1078" font-size="12.5" font-weight="bold" fill="#6b40b2">school → student</text>
+  <text x="410" y="1078" font-size="11.5" fill="#3c4650">the homework itself, on paper, in a notebook</text>
+  <text x="970" y="1078" font-size="11.5" fill="#5f6b7a">nothing digital — Repaso reads no school system</text>
+
+  <text x="54" y="1134" font-size="12.5" font-weight="bold" fill="#6b40b2">student → parent</text>
+  <text x="410" y="1134" font-size="11.5" fill="#3c4650">the notebook, and a child sitting beside the phone</text>
+  <text x="970" y="1134" font-size="11.5" fill="#5f6b7a">no login, no device and no account of their own</text>
+
+  <rect x="40" y="1158" width="1420" height="52" fill="#f6f8fa"/>
+  <text x="54" y="1190" font-size="12.5" font-weight="bold" fill="#6b40b2">parent → Repaso</text>
+  <text x="410" y="1190" font-size="11.5" fill="#3c4650">a photo of the page, the student's answer, a yes or a no</text>
+  <text x="970" y="1190" font-size="11.5" fill="#5f6b7a">no real name, no birthday, no face, no school record</text>
+
+  <text x="54" y="1246" font-size="12.5" font-weight="bold" fill="#0972d3">Repaso → parent</text>
+  <text x="410" y="1246" font-size="11.5" fill="#3c4650">a capsule of five questions, a decision request, a drafted note</text>
+  <text x="970" y="1246" font-size="11.5" fill="#5f6b7a">no diagnosis, no ranking, and nothing that sells anything</text>
+
+  <rect x="40" y="1270" width="1420" height="52" fill="#f6f8fa"/>
+  <text x="54" y="1302" font-size="12.5" font-weight="bold" fill="#6b40b2">parent → teacher</text>
+  <text x="410" y="1302" font-size="11.5" fill="#3c4650">a note the parent chose to send: alias, one competency, one idea</text>
+  <text x="970" y="1302" font-size="11.5" fill="#5f6b7a">no grade table, no other family, no name of any child</text>
+
+  <text x="54" y="1358" font-size="12.5" font-weight="bold" fill="#b26a00">Repaso ↔ AWS</text>
+  <text x="410" y="1358" font-size="11.5" fill="#3c4650">the text of the material, the answer, the alias, the competency</text>
+  <text x="970" y="1358" font-size="11.5" fill="#5f6b7a">media stays in S3 under KMS; no contact detail enters a prompt</text>
+
+  <rect x="40" y="1382" width="1420" height="52" fill="#f6f8fa"/>
+  <text x="54" y="1414" font-size="12.5" font-weight="bold" fill="#0972d3">Repaso → judge</text>
+  <text x="410" y="1414" font-size="11.5" fill="#3c4650">counts, aliases, gate results and the trace of every refusal</text>
+  <text x="970" y="1414" font-size="11.5" fill="#5f6b7a">no names, no message sending, no write access of any kind</text>
+
+  <line x1="40" y1="1438" x2="1460" y2="1438" stroke="#8c99a8" stroke-width="1.2"/>
+  <text x="40" y="1466" font-size="10.5" font-style="italic" fill="#5f6b7a">One idea, if you take away nothing else: the person who owns the account is the person who owns the consequences. The child practices; the parent decides; the teacher is offered, never subscribed.</text>
+</svg>

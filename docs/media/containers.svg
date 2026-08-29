@@ -1,0 +1,278 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1700" viewBox="0 0 1700 1700">
+  <style>
+    text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; fill: #0f1b2a; }
+    .title { font-size: 27px; font-weight: 700; }
+    .sub { font-size: 14px; fill: #3c4650; }
+    .h1 { font-size: 15px; font-weight: 700; }
+    .h2 { font-size: 14px; font-weight: 700; }
+    .h3 { font-size: 13px; font-weight: 700; }
+    .h4 { font-size: 12.5px; font-weight: 700; }
+    .s { font-size: 11px; fill: #3c4650; }
+    .xs { font-size: 10.5px; fill: #3c4650; }
+    .cap { font-size: 10.5px; fill: #5f6b7a; font-style: italic; }
+    .capg { font-size: 10.5px; fill: #037f0c; font-style: italic; }
+    .mono { font-size: 10.5px; fill: #3c4650; }
+    .blue { fill: #0972d3; }
+    .green { fill: #037f0c; }
+    .red { fill: #d91515; }
+    .purple { fill: #6b40b2; }
+    .squid { fill: #232f3e; }
+    .grey { fill: #5f6b7a; }
+    .mid { text-anchor: middle; }
+    .bold { font-weight: 700; }
+  </style>
+  <defs>
+    <marker id="arw" markerWidth="9" markerHeight="7" refX="8.6" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 z" fill="#5f6b7a"/>
+    </marker>
+    <marker id="arwd" markerWidth="9" markerHeight="7" refX="8.6" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 z" fill="#232f3e"/>
+    </marker>
+    <marker id="arwsL" markerWidth="9" markerHeight="7" refX="0.4" refY="3.5" orient="auto">
+      <path d="M9,0 L0,3.5 L9,7 z" fill="#5f6b7a"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1700" height="1700" fill="#ffffff"/>
+
+  <!-- ============ TITLE ============ -->
+  <text class="title" x="60" y="60">Repaso — containers on AWS</text>
+  <text class="sub" x="60" y="88">Every deployable unit, the data it owns, and the identity carried on each hop. All resources namespaced repaso-*, one CDK app.</text>
+
+  <rect x="1470" y="18" width="13" height="13" rx="3" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.6"/>
+  <text class="xs" x="1492" y="29">a human surface</text>
+  <rect x="1470" y="40" width="13" height="13" rx="3" fill="#ffffff" stroke="#232f3e" stroke-width="1.8"/>
+  <text class="xs" x="1492" y="51">transport spine</text>
+  <rect x="1470" y="62" width="13" height="13" rx="3" fill="#eaf3fd" stroke="#0972d3" stroke-width="1.8"/>
+  <text class="xs" x="1492" y="73">our code</text>
+  <rect x="1470" y="84" width="13" height="13" rx="3" fill="#fff4e5" stroke="#ff9900" stroke-width="1.8"/>
+  <text class="xs" x="1492" y="95">AWS-managed</text>
+  <rect x="1470" y="106" width="13" height="13" rx="3" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.8"/>
+  <text class="xs" x="1492" y="117">state · deterministic</text>
+
+  <!-- ============ BAND 1 — INGRESS ============ -->
+  <rect x="60" y="208" width="180" height="76" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="2"/>
+  <text class="h2 purple mid" x="150" y="236">Parent</text>
+  <text class="xs mid" x="150" y="255">Telegram · the only</text>
+  <text class="xs mid" x="150" y="271">account holder</text>
+
+  <rect x="60" y="304" width="180" height="76" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="2"/>
+  <text class="h2 purple mid" x="150" y="332">Judge</text>
+  <text class="xs mid" x="150" y="351">read-only web mirror</text>
+  <text class="xs mid" x="150" y="367">nothing to install</text>
+
+  <line x1="240" y1="246" x2="422" y2="246" stroke="#5f6b7a" stroke-width="2" marker-end="url(#arw)"/>
+  <text class="xs mid" x="332" y="237">POST · webhook update</text>
+  <text class="cap mid" x="332" y="263">X-Telegram-Bot-Api-Secret-Token</text>
+
+  <line x1="240" y1="342" x2="422" y2="342" stroke="#5f6b7a" stroke-width="2" marker-end="url(#arw)"/>
+  <text class="xs mid" x="332" y="333">GET · read-only</text>
+  <text class="cap mid" x="332" y="359">X-Judge-Code · 403 otherwise</text>
+
+  <rect x="430" y="220" width="220" height="150" rx="12" fill="#ffffff" stroke="#232f3e" stroke-width="2.2"/>
+  <text class="h2 squid mid" x="540" y="249">API Gateway</text>
+  <text class="s mid" x="540" y="269">HTTP API · repaso</text>
+  <text class="xs mid" x="540" y="297">POST /telegram/webhook</text>
+  <text class="xs mid" x="540" y="315">GET /judge/* · /healthz</text>
+  <text class="cap mid" x="540" y="344">TLS · throttled · no VPC</text>
+
+  <line x1="650" y1="295" x2="752" y2="295" stroke="#5f6b7a" stroke-width="2" marker-end="url(#arw)"/>
+  <text class="xs mid" x="701" y="286">AWS_PROXY</text>
+  <text class="cap mid" x="701" y="312">role repaso-api</text>
+
+  <rect x="760" y="200" width="450" height="200" rx="12" fill="#eaf3fd" stroke="#0972d3" stroke-width="2.2"/>
+  <text class="h1 blue" x="782" y="230">Lambda · repaso-api</text>
+  <text class="s" x="782" y="250">FastAPI behind Mangum — one handler, three surfaces</text>
+  <text class="s" x="782" y="278">· POST /telegram/webhook — dedupe on update id, publish, ACK</text>
+  <text class="s" x="782" y="298">· GET /judge/students · /judge/transcript · static mirror</text>
+  <text class="s" x="782" y="318">· GET /healthz · /readyz</text>
+  <rect x="778" y="334" width="414" height="50" rx="8" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="xs green mid bold" x="985" y="354">ACK &lt; 200 ms · never 500s to Telegram:</text>
+  <text class="xs mid" x="985" y="371">any exception is logged and answered {"ok": true}</text>
+
+  <line x1="1216" y1="280" x2="1282" y2="280" stroke="#5f6b7a" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arw)" marker-start="url(#arwsL)"/>
+  <text class="cap mid" x="1249" y="272">secret</text>
+
+  <rect x="1290" y="220" width="350" height="120" rx="12" fill="#fff4e5" stroke="#ff9900" stroke-width="2.2"/>
+  <text class="h2" x="1310" y="249">Secrets Manager</text>
+  <text class="s" x="1310" y="273">repaso/telegram — webhook secret token</text>
+  <text class="s" x="1310" y="293">repaso/judge — mirror access code</text>
+  <text class="cap" x="1310" y="320">read at cold start, cached in the container</text>
+
+  <!-- ============ BAND 2 — BUS + SCHEDULER ============ -->
+  <line x1="985" y1="400" x2="985" y2="474" stroke="#232f3e" stroke-width="2" marker-end="url(#arwd)"/>
+  <text class="xs" x="1000" y="442">PutEvents · IAM: events:PutEvents on bus repaso only</text>
+
+  <rect x="60" y="478" width="1080" height="118" rx="12" fill="#ffffff" stroke="#232f3e" stroke-width="2.4"/>
+  <text class="h2 squid" x="80" y="506">EventBridge bus · repaso</text>
+
+  <rect x="80" y="520" width="320" height="62" rx="7" fill="#f4f6f8" stroke="#cbd3dc"/>
+  <text class="h4" x="92" y="539">IngestRule</text>
+  <text class="xs" x="92" y="556">detail-type: material_uploaded</text>
+  <text class="cap" x="92" y="573">→ repaso-ingest</text>
+
+  <rect x="420" y="520" width="440" height="62" rx="7" fill="#f4f6f8" stroke="#cbd3dc"/>
+  <text class="h4" x="432" y="539">TutorRule</text>
+  <text class="xs" x="432" y="556">channel_message · daily_session_due ·</text>
+  <text class="xs" x="432" y="573">response_received · escalation_resolved  → repaso-tutor</text>
+
+  <rect x="880" y="520" width="240" height="62" rx="7" fill="#f4f6f8" stroke="#cbd3dc"/>
+  <text class="h4" x="892" y="539">QualityRule</text>
+  <text class="xs" x="892" y="556">detail-type: daily_close</text>
+  <text class="cap" x="892" y="573">→ repaso-quality</text>
+
+  <line x1="1194" y1="537" x2="1146" y2="537" stroke="#232f3e" stroke-width="2" marker-end="url(#arwd)"/>
+
+  <rect x="1200" y="478" width="440" height="118" rx="12" fill="#ffffff" stroke="#232f3e" stroke-width="2.2"/>
+  <text class="h2 squid" x="1220" y="505">EventBridge Scheduler</text>
+  <text class="s" x="1220" y="525">group repaso · one schedule per family</text>
+  <text class="xs" x="1220" y="544">role repaso-scheduler → PutEvents on bus repaso</text>
+  <text class="capg" x="1220" y="566">the agent rewrites its own schedule when</text>
+  <text class="capg" x="1220" y="582">an exam is ≤ 7 days away (exam mode)</text>
+
+  <!-- ============ BAND 3 — QUEUES ============ -->
+  <path d="M 240 586 V 620 H 200 V 656" fill="none" stroke="#232f3e" stroke-width="1.8" marker-end="url(#arwd)"/>
+  <path d="M 640 586 V 620 H 520 V 656" fill="none" stroke="#232f3e" stroke-width="1.8" marker-end="url(#arwd)"/>
+  <path d="M 1000 586 V 620 H 840 V 656" fill="none" stroke="#232f3e" stroke-width="1.8" marker-end="url(#arwd)"/>
+
+  <rect x="60" y="660" width="280" height="152" rx="12" fill="#ffffff" stroke="#232f3e" stroke-width="2"/>
+  <text class="h3 squid mid" x="200" y="688">SQS · repaso-ingest</text>
+  <text class="xs mid" x="200" y="708">visibility 15 min</text>
+  <text class="cap mid" x="200" y="726">material photos and PDFs</text>
+  <rect x="82" y="738" width="236" height="56" rx="7" fill="#fdeceb" stroke="#d91515" stroke-width="1.4"/>
+  <text class="xs red mid bold" x="200" y="758">DLQ · repaso-ingest-dlq</text>
+  <text class="xs mid" x="200" y="777">maxReceiveCount 3 · 14-day retention</text>
+
+  <rect x="380" y="660" width="280" height="152" rx="12" fill="#ffffff" stroke="#232f3e" stroke-width="2"/>
+  <text class="h3 squid mid" x="520" y="688">SQS · repaso-tutor</text>
+  <text class="xs mid" x="520" y="708">visibility 15 min</text>
+  <text class="cap mid" x="520" y="726">replies, alarms, resolutions</text>
+  <rect x="402" y="738" width="236" height="56" rx="7" fill="#fdeceb" stroke="#d91515" stroke-width="1.4"/>
+  <text class="xs red mid bold" x="520" y="758">DLQ · repaso-tutor-dlq</text>
+  <text class="xs mid" x="520" y="777">maxReceiveCount 3 · 14-day retention</text>
+
+  <rect x="700" y="660" width="280" height="152" rx="12" fill="#ffffff" stroke="#232f3e" stroke-width="2"/>
+  <text class="h3 squid mid" x="840" y="688">SQS · repaso-quality</text>
+  <text class="xs mid" x="840" y="708">visibility 15 min</text>
+  <text class="cap mid" x="840" y="726">the nightly close</text>
+  <rect x="722" y="738" width="236" height="56" rx="7" fill="#fdeceb" stroke="#d91515" stroke-width="1.4"/>
+  <text class="xs red mid bold" x="840" y="758">DLQ · repaso-quality-dlq</text>
+  <text class="xs mid" x="840" y="777">maxReceiveCount 3 · 14-day retention</text>
+
+  <!-- ============ IDENTITY PANEL ============ -->
+  <rect x="1200" y="660" width="440" height="380" rx="12" fill="#fbfcfd" stroke="#cbd3dc" stroke-width="1.6"/>
+  <text class="h2" x="1220" y="690">Identity on every hop</text>
+
+  <text class="s bold" x="1220" y="722">Telegram → API Gateway</text>
+  <text class="xs grey" x="1220" y="739">X-Telegram-Bot-Api-Secret-Token · 401 on mismatch</text>
+
+  <text class="s bold" x="1220" y="766">Judge → API Gateway</text>
+  <text class="xs grey" x="1220" y="783">X-Judge-Code · 403 on mismatch · read-only routes</text>
+
+  <text class="s bold" x="1220" y="810">API Gateway → Lambda</text>
+  <text class="xs grey" x="1220" y="827">AWS_PROXY integration · execution role repaso-api</text>
+
+  <text class="s bold" x="1220" y="854">Lambda → bus · worker → state</text>
+  <text class="xs grey" x="1220" y="871">IAM roles scoped to one bus, one table, two buckets</text>
+
+  <text class="s bold" x="1220" y="898">Scheduler → bus</text>
+  <text class="xs grey" x="1220" y="915">role repaso-scheduler, assumed by scheduler.amazonaws.com</text>
+
+  <text class="s bold" x="1220" y="942">AgentCore → Bedrock</text>
+  <text class="xs grey" x="1220" y="959">InvokeModel on the pinned model ids only</text>
+
+  <text class="s bold" x="1220" y="986">S3 media at rest</text>
+  <text class="xs grey" x="1220" y="1003">SSE-KMS with the customer key repaso · BlockPublicAccess ALL</text>
+
+  <!-- ============ BAND 4 — COMPUTE ============ -->
+  <path d="M 200 816 V 876" fill="none" stroke="#232f3e" stroke-width="1.8" marker-end="url(#arwd)"/>
+  <path d="M 520 816 V 832 H 260 V 876" fill="none" stroke="#232f3e" stroke-width="1.8" marker-end="url(#arwd)"/>
+  <path d="M 840 816 V 850 H 320 V 876" fill="none" stroke="#232f3e" stroke-width="1.8" marker-end="url(#arwd)"/>
+
+  <rect x="60" y="880" width="300" height="160" rx="12" fill="#eaf3fd" stroke="#0972d3" stroke-width="2.2"/>
+  <text class="h2 blue" x="80" y="908">Lambda · repaso-worker</text>
+  <text class="s" x="80" y="928">SQS event source mapping</text>
+  <text class="xs" x="80" y="948">resolves the family, builds Services,</text>
+  <text class="xs" x="80" y="965">picks the graph, invokes AgentCore</text>
+  <rect x="78" y="978" width="264" height="50" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.5"/>
+  <text class="xs green mid bold" x="210" y="998">claim on the update id —</text>
+  <text class="xs mid" x="210" y="1015">a duplicate delivery loses and stops</text>
+
+  <line x1="364" y1="960" x2="422" y2="960" stroke="#5f6b7a" stroke-width="2" marker-end="url(#arw)"/>
+  <text class="xs mid" x="393" y="951">invoke</text>
+
+  <rect x="430" y="880" width="340" height="160" rx="12" fill="#fff4e5" stroke="#ff9900" stroke-width="2.2"/>
+  <text class="h2" x="450" y="908">Bedrock AgentCore Runtime</text>
+  <text class="s" x="450" y="930">executes the graphs: ingest · session ·</text>
+  <text class="s" x="450" y="948">response · daily close</text>
+  <text class="xs grey" x="450" y="972">run context = L1 working memory, held</text>
+  <text class="xs grey" x="450" y="989">in the Runtime session</text>
+  <text class="cap" x="450" y="1014">execution limits 8 · 4 · 6 · 6 node runs</text>
+
+  <line x1="774" y1="960" x2="832" y2="960" stroke="#5f6b7a" stroke-width="2" marker-end="url(#arw)"/>
+  <text class="xs mid" x="803" y="951">InvokeModel</text>
+
+  <rect x="840" y="880" width="320" height="160" rx="12" fill="#fff4e5" stroke="#ff9900" stroke-width="2.2"/>
+  <text class="h2" x="860" y="908">Amazon Bedrock</text>
+  <text class="xs" x="860" y="932">Claude Sonnet 4.6 — generate · judge</text>
+  <text class="xs" x="860" y="950">Claude Haiku 4.5 — structured</text>
+  <text class="xs" x="860" y="968">Amazon Nova Lite / Micro — classify · probe</text>
+  <text class="cap" x="860" y="994">100 % Bedrock · per-role fallback chain</text>
+  <text class="cap" x="860" y="1011">on throttle · ids pinned in config/models.py</text>
+
+  <rect x="60" y="1076" width="1580" height="46" rx="8" fill="#f4f6f8" stroke="#cbd3dc"/>
+  <text class="s mid" x="850" y="1104">CloudWatch Logs + Metrics on every Lambda and queue   ·   AgentCore Observability — one span per graph node, one trace per job   ·   two monthly cost budgets, alarm at 100 %</text>
+
+  <!-- ============ BAND 5 — STATE ============ -->
+  <rect x="60" y="1180" width="1580" height="300" rx="12" fill="#eaf6ea" stroke="#037f0c" stroke-width="2"/>
+  <text class="h3 green" x="80" y="1206">State — what each unit owns</text>
+
+  <rect x="80" y="1222" width="790" height="236" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="h3" x="98" y="1250">DynamoDB · repaso — one table, one index gsi1</text>
+  <text class="cap" x="98" y="1268">PAY_PER_REQUEST · PITR on · TTL expires_at · RemovalPolicy RETAIN</text>
+
+  <text class="mono" x="98" y="1298">FAMILY#&lt;id&gt; / PROFILE — family, lang, rest days</text>
+  <text class="mono" x="98" y="1317">FAMILY#&lt;id&gt; / STUDENT#&lt;id&gt; — alias only</text>
+  <text class="mono" x="98" y="1336">STUDENT#&lt;id&gt; / MASTERY#&lt;comp&gt; — EMA, attempts</text>
+  <text class="mono" x="98" y="1355">STUDENT#&lt;id&gt; / SPACED#&lt;item&gt; — SM-2 due date</text>
+  <text class="mono" x="98" y="1374">STUDENT#&lt;id&gt; / SESSION#&lt;date&gt; · EXAM#&lt;date&gt;</text>
+  <text class="mono" x="98" y="1393">SESSION#&lt;id&gt; / PROFILE — capsule, status</text>
+
+  <text class="mono" x="490" y="1298">ITEM#&lt;id&gt; / PROFILE + gsi1 COMP#&lt;comp&gt;</text>
+  <text class="mono" x="490" y="1317">FAMILY#&lt;id&gt; / ESC#&lt;id&gt; + gsi1 ESCPENDING#&lt;family&gt;</text>
+  <text class="mono" x="490" y="1336">FAMILY#&lt;id&gt; / QUAR#&lt;id&gt; — held-back grades</text>
+  <text class="mono" x="490" y="1355">ENROLL#&lt;channel&gt;#&lt;chat&gt; / PROFILE</text>
+  <text class="mono" x="490" y="1374">CLAIM#&lt;key&gt; / CLAIM — exactly-once, conditional put</text>
+  <text class="mono" x="490" y="1393">grade log rows — append-only, by item / by student</text>
+
+  <text class="cap" x="98" y="1424">the doc attribute holds the model; the key attributes exist only as access paths, never as the source of truth</text>
+
+  <rect x="890" y="1222" width="360" height="110" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="h4" x="908" y="1248">S3 · media</text>
+  <text class="xs" x="908" y="1270">homework photos · SSE-KMS, key repaso</text>
+  <text class="xs" x="908" y="1288">90-day lifecycle expiry · RemovalPolicy RETAIN</text>
+  <text class="xs" x="908" y="1306">BlockPublicAccess ALL</text>
+
+  <rect x="890" y="1348" width="360" height="110" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="h4" x="908" y="1374">S3 · curriculum</text>
+  <text class="xs" x="908" y="1396">taxonomy and item bank</text>
+  <text class="xs" x="908" y="1414">→ Bedrock Knowledge Bases (S3 Vectors)</text>
+  <text class="cap" x="908" y="1436">auto-delete: rebuildable, not pilot data</text>
+
+  <rect x="1270" y="1222" width="350" height="236" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="h4" x="1288" y="1248">Memory tiers</text>
+  <text class="xs" x="1288" y="1274">L1 working — run context inside the</text>
+  <text class="xs" x="1288" y="1292">AgentCore Runtime session</text>
+  <text class="xs" x="1288" y="1320">L2 semantic — Bedrock Knowledge Bases</text>
+  <text class="xs" x="1288" y="1338">over the curriculum bucket</text>
+  <text class="xs" x="1288" y="1366">L3 durable — DynamoDB + grade log</text>
+  <text class="xs" x="1288" y="1384">(JSON / JSONL on disk offline)</text>
+  <text class="capg" x="1288" y="1414">the student has no account and no real</text>
+  <text class="capg" x="1288" y="1432">name — an alias is the whole identity</text>
+
+  <!-- ============ BAND 6 — LOCAL MODE ============ -->
+  <rect x="60" y="1520" width="1580" height="90" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="2" stroke-dasharray="7 5"/>
+  <text class="h4 green" x="84" y="1548">Local mode — REPASO_LOCAL_MODE=1 — why 706 offline tests need neither credentials nor network</text>
+  <text class="xs" x="84" y="1570">Every box above sits behind a Python Protocol: StateStore, GradeLog, MediaStore, EventPublisher, KnowledgeRetriever, Screener, Clock, Model. Offline they are served by JSON files under</text>
+  <text class="xs" x="84" y="1589">.local_data/, an in-process bus, and LocalPlaybackModel — a strict playback double that raises on any unplanned model call. The suite runs in ~5 s and doubles as a cost audit: a surprise Bedrock call fails a test.</text>
+</svg>

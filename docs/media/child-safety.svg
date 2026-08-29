@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1520" height="1520" viewBox="0 0 1520 1520" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5f6b7a"/>
+    </marker>
+    <marker id="greyBack" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 10 0 L 0 5 L 10 10 z" fill="#5f6b7a"/>
+    </marker>
+    <marker id="red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d91515"/>
+    </marker>
+    <marker id="purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b40b2"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1520" height="1520" fill="#ffffff"/>
+
+  <text x="56" y="62" font-size="27" font-weight="bold" fill="#0f1b2a">Safety around a child who has no account</text>
+  <text x="56" y="92" font-size="14" fill="#3c4650">The parent is the only account holder. Every layer below says on its face whether it was measured, enforced in code, or only designed.</text>
+
+  <!-- legend -->
+  <rect x="1074" y="26" width="390" height="76" rx="10" fill="#ffffff" stroke="#d5dbe3" stroke-width="1"/>
+  <circle cx="1096" cy="46" r="6" fill="#037f0c"/>
+  <text x="1110" y="50" font-size="11" fill="#3c4650">measured on an adversarial bench</text>
+  <circle cx="1096" cy="67" r="6" fill="#0972d3"/>
+  <text x="1110" y="71" font-size="11" fill="#3c4650">enforced in code, covered by a named unit test</text>
+  <circle cx="1096" cy="88" r="6" fill="#ffffff" stroke="#8c99a8" stroke-width="2"/>
+  <text x="1110" y="92" font-size="11" fill="#3c4650">designed and reachable — not exercised offline</text>
+
+  <!-- ================= BAND A : who the system talks to ================= -->
+  <rect x="56" y="132" width="1408" height="346" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.5"/>
+  <text x="76" y="160" font-size="12" font-weight="bold" fill="#6b40b2" letter-spacing="0.8">WHO THE SYSTEM TALKS TO</text>
+
+  <!-- Repaso -->
+  <rect x="88" y="196" width="210" height="104" rx="10" fill="#eaf3fd" stroke="#0972d3" stroke-width="2"/>
+  <text x="106" y="224" font-size="15" font-weight="bold" fill="#0f1b2a">Repaso</text>
+  <text x="106" y="248" font-size="11.5" fill="#3c4650">one Telegram bot, one chat</text>
+  <text x="106" y="266" font-size="11.5" fill="#3c4650">per family. No app, no web</text>
+  <text x="106" y="284" font-size="11.5" fill="#3c4650">login, no second surface.</text>
+
+  <line x1="304" y1="248" x2="366" y2="248" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)" marker-start="url(#greyBack)"/>
+
+  <!-- Parent -->
+  <rect x="372" y="196" width="300" height="104" rx="10" fill="#ffffff" stroke="#6b40b2" stroke-width="2.5"/>
+  <circle cx="648" cy="220" r="6" fill="#0972d3"/>
+  <text x="392" y="224" font-size="15" font-weight="bold" fill="#0f1b2a">PARENT — the only account</text>
+  <text x="392" y="248" font-size="11.5" fill="#3c4650">chat_ref, consent record, language and</text>
+  <text x="392" y="266" font-size="11.5" fill="#3c4650">practice time. Every message in and out</text>
+  <text x="392" y="284" font-size="11.5" fill="#3c4650">of the system lands in this one chat.</text>
+
+  <!-- parent -> teacher -->
+  <line x1="678" y1="248" x2="1140" y2="248" stroke="#6b40b2" stroke-width="2" stroke-dasharray="7 4" marker-end="url(#purple)"/>
+  <text x="909" y="238" font-size="10.5" font-style="italic" fill="#6b40b2" text-anchor="middle">a drafted note the parent reads and decides to hand over</text>
+  <text x="909" y="268" font-size="10.5" font-style="italic" fill="#8c99a8" text-anchor="middle">the system never contacts a teacher, and holds nothing about one</text>
+
+  <!-- Teacher -->
+  <rect x="1146" y="196" width="280" height="104" rx="10" fill="#ffffff" stroke="#6b40b2" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="1166" y="224" font-size="15" font-weight="bold" fill="#0f1b2a">TEACHER</text>
+  <text x="1166" y="248" font-size="11.5" fill="#3c4650">installs nothing. Receives paper, or</text>
+  <text x="1166" y="266" font-size="11.5" fill="#3c4650">whatever channel the family already</text>
+  <text x="1166" y="284" font-size="11.5" fill="#3c4650">uses. No account, no login, no row.</text>
+
+  <!-- parent -> child link -->
+  <line x1="522" y1="302" x2="522" y2="340" stroke="#5f6b7a" stroke-width="1.5"/>
+  <text x="536" y="326" font-size="10.5" font-style="italic" fill="#5f6b7a">the child answers inside the parent's chat, on the parent's phone</text>
+
+  <!-- Child -->
+  <rect x="372" y="344" width="300" height="110" rx="10" fill="#ffffff" stroke="#6b40b2" stroke-width="2" stroke-dasharray="5 3"/>
+  <circle cx="648" cy="368" r="6" fill="#0972d3"/>
+  <text x="392" y="372" font-size="15" font-weight="bold" fill="#0f1b2a">CHILD — no account</text>
+  <text x="392" y="396" font-size="11.5" fill="#3c4650">an alias, and nothing else. The enrollment</text>
+  <text x="392" y="414" font-size="11.5" fill="#3c4650">flow refuses two capitalised words or more</text>
+  <text x="392" y="432" font-size="11.5" fill="#3c4650">than 20 characters — "Juan Pérez" bounces.</text>
+
+  <!-- the absent path -->
+  <path d="M 193 302 L 193 400 L 362 400" fill="none" stroke="#8c99a8" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#grey)"/>
+  <line x1="284" y1="384" x2="316" y2="416" stroke="#d91515" stroke-width="4"/>
+  <line x1="316" y1="384" x2="284" y2="416" stroke="#d91515" stroke-width="4"/>
+  <text x="88" y="432" font-size="11" font-style="italic" fill="#d91515">no message is ever addressed</text>
+  <text x="88" y="449" font-size="11" font-style="italic" fill="#d91515">to the child, because no</text>
+  <text x="88" y="466" font-size="11" font-style="italic" fill="#d91515">credential exists for one</text>
+
+  <!-- Judge -->
+  <rect x="1146" y="344" width="280" height="110" rx="10" fill="#ffffff" stroke="#6b40b2" stroke-width="1.5"/>
+  <text x="1166" y="372" font-size="15" font-weight="bold" fill="#0f1b2a">JUDGE — read-only mirror</text>
+  <text x="1166" y="396" font-size="11.5" fill="#3c4650">a web view behind an access code,</text>
+  <text x="1166" y="414" font-size="11.5" fill="#3c4650">compared in constant time. Aliases</text>
+  <text x="1166" y="432" font-size="11.5" fill="#3c4650">and counts; no write path at all.</text>
+
+  <!-- ================= BAND B : the screening pipeline ================= -->
+  <rect x="56" y="500" width="1408" height="382" rx="12" fill="#fdeceb" stroke="#d91515" stroke-width="1.5"/>
+  <text x="76" y="528" font-size="12" font-weight="bold" fill="#d91515" letter-spacing="0.8">EVERY UNTRUSTED INPUT, BEFORE ANY MODEL CALL — AND EVERY FAILURE COUNTS AS UNSAFE</text>
+
+  <rect x="88" y="560" width="200" height="62" rx="8" fill="#ffffff" stroke="#5f6b7a" stroke-width="1.5"/>
+  <text x="106" y="586" font-size="13" font-weight="bold" fill="#0f1b2a">Uploaded material</text>
+  <text x="106" y="606" font-size="11" fill="#3c4650">a photo of the page → text</text>
+
+  <rect x="88" y="650" width="200" height="62" rx="8" fill="#ffffff" stroke="#5f6b7a" stroke-width="1.5"/>
+  <text x="106" y="676" font-size="13" font-weight="bold" fill="#0f1b2a">Chat reply</text>
+  <text x="106" y="696" font-size="11" fill="#3c4650">whatever is typed back</text>
+
+  <line x1="292" y1="591" x2="326" y2="600" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)"/>
+  <line x1="292" y1="681" x2="326" y2="672" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)"/>
+
+  <!-- Armor -->
+  <rect x="330" y="556" width="254" height="180" rx="10" fill="#ffffff" stroke="#d91515" stroke-width="2.5"/>
+  <circle cx="562" cy="578" r="6" fill="#037f0c"/>
+  <text x="350" y="584" font-size="15" font-weight="bold" fill="#d91515">Armor</text>
+  <text x="350" y="608" font-size="11.5" fill="#3c4650">deterministic screener: 180</text>
+  <text x="350" y="626" font-size="11.5" fill="#3c4650">markers matched over a canonical</text>
+  <text x="350" y="644" font-size="11.5" fill="#3c4650">fold — case, accents, leet digits</text>
+  <text x="350" y="662" font-size="11.5" fill="#3c4650">(0→o, 1→i, 3→e) and de-spacing.</text>
+  <text x="350" y="690" font-size="11" font-style="italic" fill="#5f6b7a">runs before any model sees the text</text>
+  <text x="350" y="708" font-size="11" font-style="italic" fill="#5f6b7a">and is the only layer in local mode</text>
+
+  <line x1="588" y1="636" x2="624" y2="636" stroke="#037f0c" stroke-width="2" marker-end="url(#grey)"/>
+  <text x="606" y="626" font-size="10.5" font-style="italic" fill="#037f0c" text-anchor="middle">clean</text>
+
+  <!-- Intake classifier -->
+  <rect x="630" y="556" width="254" height="180" rx="10" fill="#eaf3fd" stroke="#0972d3" stroke-width="2"/>
+  <circle cx="862" cy="578" r="6" fill="#0972d3"/>
+  <text x="650" y="584" font-size="15" font-weight="bold" fill="#0f1b2a">Second opinion</text>
+  <text x="650" y="608" font-size="11.5" fill="#3c4650">the text is wrapped in an explicit</text>
+  <text x="650" y="626" font-size="11.5" fill="#3c4650">&lt;untrusted_content&gt; frame and</text>
+  <text x="650" y="644" font-size="11.5" fill="#3c4650">shown to the classifier as data,</text>
+  <text x="650" y="662" font-size="11.5" fill="#3c4650">never as instructions.</text>
+  <rect x="650" y="676" width="164" height="24" rx="6" fill="#fff4e5" stroke="#ff9900" stroke-width="1.2"/>
+  <text x="660" y="692" font-size="10.5" fill="#3c4650">Bedrock · Amazon Nova Lite</text>
+  <text x="650" y="720" font-size="11" font-style="italic" fill="#5f6b7a">a failed call is treated as unsafe</text>
+
+  <line x1="888" y1="636" x2="924" y2="636" stroke="#037f0c" stroke-width="2" marker-end="url(#grey)"/>
+  <text x="906" y="626" font-size="10.5" font-style="italic" fill="#037f0c" text-anchor="middle">clean</text>
+
+  <!-- Guardrails -->
+  <rect x="930" y="556" width="234" height="180" rx="10" fill="#fff4e5" stroke="#ff9900" stroke-width="2"/>
+  <circle cx="1142" cy="578" r="6" fill="#ffffff" stroke="#8c99a8" stroke-width="2"/>
+  <text x="950" y="584" font-size="15" font-weight="bold" fill="#0f1b2a">Bedrock Guardrails</text>
+  <text x="950" y="608" font-size="11.5" fill="#3c4650">layer two, cloud only. Any</text>
+  <text x="950" y="626" font-size="11.5" fill="#3c4650">exception on the call returns</text>
+  <text x="950" y="644" font-size="11.5" fill="#3c4650">safe = false by construction:</text>
+  <text x="950" y="662" font-size="11.5" fill="#3c4650">it cannot fail open.</text>
+  <text x="950" y="690" font-size="11" font-style="italic" fill="#5f6b7a">not exercised offline — local</text>
+  <text x="950" y="708" font-size="11" font-style="italic" fill="#5f6b7a">mode makes no model call at all</text>
+
+  <line x1="1168" y1="636" x2="1204" y2="636" stroke="#037f0c" stroke-width="2" marker-end="url(#grey)"/>
+
+  <!-- model -->
+  <rect x="1210" y="586" width="216" height="120" rx="10" fill="#eaf3fd" stroke="#0972d3" stroke-width="2"/>
+  <text x="1230" y="616" font-size="15" font-weight="bold" fill="#0f1b2a">Only then: a model</text>
+  <text x="1230" y="640" font-size="11.5" fill="#3c4650">the tutor, the grader or the</text>
+  <text x="1230" y="658" font-size="11.5" fill="#3c4650">note composer may read it —</text>
+  <text x="1230" y="676" font-size="11.5" fill="#3c4650">and on the grading path only</text>
+  <text x="1230" y="694" font-size="11.5" fill="#3c4650">the redacted version.</text>
+
+  <!-- fail closed -->
+  <line x1="457" y1="740" x2="457" y2="774" stroke="#d91515" stroke-width="2" marker-end="url(#red)"/>
+  <text x="466" y="762" font-size="10.5" font-style="italic" fill="#d91515">unsafe</text>
+  <line x1="757" y1="740" x2="757" y2="774" stroke="#d91515" stroke-width="2" marker-end="url(#red)"/>
+  <text x="766" y="762" font-size="10.5" font-style="italic" fill="#d91515">unsafe</text>
+  <line x1="1047" y1="740" x2="1047" y2="774" stroke="#d91515" stroke-width="2" marker-end="url(#red)"/>
+  <text x="1056" y="762" font-size="10.5" font-style="italic" fill="#d91515">unsafe</text>
+
+  <rect x="330" y="778" width="1096" height="76" rx="10" fill="#d91515"/>
+  <text x="354" y="808" font-size="15" font-weight="bold" fill="#ffffff">QUARANTINE — the fail-closed floor</text>
+  <text x="354" y="832" font-size="11.5" fill="#ffffff">Nothing is graded and no tutor, grader or composer ever reads it. The parent is shown what arrived and why it was held, and the span is kept as evidence.</text>
+
+  <text x="88" y="776" font-size="11" font-style="italic" fill="#5f6b7a">The same screener runs on both</text>
+  <text x="88" y="793" font-size="11" font-style="italic" fill="#5f6b7a">paths: the ingest graph screens a</text>
+  <text x="88" y="810" font-size="11" font-style="italic" fill="#5f6b7a">parsed page before it is stored,</text>
+  <text x="88" y="827" font-size="11" font-style="italic" fill="#5f6b7a">and the runner screens a reply</text>
+  <text x="88" y="844" font-size="11" font-style="italic" fill="#5f6b7a">before the session can resume.</text>
+
+  <!-- ================= BAND C : three cards ================= -->
+  <rect x="56" y="894" width="452" height="322" rx="10" fill="#f6f8fa"/>
+  <rect x="56" y="894" width="4" height="322" fill="#037f0c"/>
+  <circle cx="484" cy="920" r="6" fill="#037f0c"/>
+  <text x="80" y="925" font-size="14" font-weight="bold" fill="#0f1b2a">Measured: the Armor bench</text>
+  <text x="80" y="951" font-size="11.5" fill="#3c4650">400/400 adversarial payloads intercepted — 200 hand-written</text>
+  <text x="80" y="969" font-size="11.5" fill="#3c4650">strings over 9 attack families, 100 ES + 100 EN, each with a</text>
+  <text x="80" y="987" font-size="11.5" fill="#3c4650">deterministic OCR-corrupted twin. 0 of 200 clean grade-4</text>
+  <text x="80" y="1005" font-size="11.5" fill="#3c4650">Spanish texts blocked. 9 ms of screening, $0, no model calls.</text>
+  <text x="80" y="1035" font-size="12.5" font-weight="bold" fill="#d91515">Honest read</text>
+  <text x="80" y="1057" font-size="11.5" fill="#3c4650">The corpus was written by the defender on the afternoon the</text>
+  <text x="80" y="1075" font-size="11.5" fill="#3c4650">markers were tuned against it: these are in-sample numbers.</text>
+  <text x="80" y="1093" font-size="11.5" fill="#3c4650">326 of the 400 attacks are caught by exactly one marker — the</text>
+  <text x="80" y="1111" font-size="11.5" fill="#3c4650">defence is wide, not deep — and 8 OCR twins came out identical</text>
+  <text x="80" y="1129" font-size="11.5" fill="#3c4650">to their base string, so the distinct attack set is 392.</text>
+  <text x="80" y="1155" font-size="11.5" fill="#3c4650">The screener is the shipped code; the attacks are not real ones.</text>
+  <text x="80" y="1190" font-size="10.5" font-style="italic" fill="#5f6b7a">armor-bench-2026-08-20 · gates A1 ≥ 85 %, A2 ≥ 95 %, A3 ≤ 2 %:</text>
+  <text x="80" y="1206" font-size="10.5" font-style="italic" fill="#5f6b7a">100.0 % / 100.0 % / 0.0 %, all three passed</text>
+
+  <rect x="534" y="894" width="452" height="322" rx="10" fill="#f6f8fa"/>
+  <rect x="534" y="894" width="4" height="322" fill="#0972d3"/>
+  <circle cx="962" cy="920" r="6" fill="#0972d3"/>
+  <text x="558" y="925" font-size="14" font-weight="bold" fill="#0f1b2a">Enforced: the model reads less than the parent</text>
+  <text x="558" y="951" font-size="11.5" fill="#3c4650">On the grading path the judge model is handed the output of</text>
+  <text x="558" y="969" font-size="11.5" fill="#3c4650">screener.redact(): e-mail addresses, Venezuelan national IDs</text>
+  <text x="558" y="987" font-size="11.5" fill="#3c4650">(V-12345678) and phone numbers all become [redacted], and the</text>
+  <text x="558" y="1005" font-size="11.5" fill="#3c4650">sentence around them is left intact.</text>
+  <text x="558" y="1035" font-size="11.5" fill="#3c4650">The parent's copy is not redacted. The escalation summary</text>
+  <text x="558" y="1053" font-size="11.5" fill="#3c4650">quotes the child's own answers — "1/2 + 1/3 = 2/5" — because</text>
+  <text x="558" y="1071" font-size="11.5" fill="#3c4650">that quote is the evidence a parent needs to judge the claim.</text>
+  <text x="558" y="1101" font-size="11.5" fill="#3c4650">The teacher-note prompt receives neither one: no alias, no</text>
+  <text x="558" y="1119" font-size="11.5" fill="#3c4650">quotes, no identifiers. Three readers, three different views</text>
+  <text x="558" y="1137" font-size="11.5" fill="#3c4650">of the same answer.</text>
+  <text x="558" y="1190" font-size="10.5" font-style="italic" fill="#5f6b7a">tests/tools/test_guardrails.py · response_graph.py grade node ·</text>
+  <text x="558" y="1206" font-size="10.5" font-style="italic" fill="#5f6b7a">test_the_teacher_note_prompt_never_carries_the_alias_or_the_quotes</text>
+
+  <rect x="1012" y="894" width="452" height="322" rx="10" fill="#f6f8fa"/>
+  <rect x="1012" y="894" width="4" height="322" fill="#0972d3"/>
+  <circle cx="1440" cy="920" r="6" fill="#0972d3"/>
+  <text x="1036" y="925" font-size="14" font-weight="bold" fill="#0f1b2a">Enforced: /forget, one command</text>
+  <text x="1036" y="951" font-size="11.5" fill="#3c4650">The parent types /forget and confirms on a button. The family row</text>
+  <text x="1036" y="969" font-size="11.5" fill="#3c4650">goes, and with it every student, every mastery state, every spaced-</text>
+  <text x="1036" y="987" font-size="11.5" fill="#3c4650">repetition schedule, exam date, practice session, uploaded-material</text>
+  <text x="1036" y="1005" font-size="11.5" fill="#3c4650">record, escalation, quarantine item, and the enrollment row that</text>
+  <text x="1036" y="1023" font-size="11.5" fill="#3c4650">mapped the chat to the family.</text>
+  <text x="1036" y="1051" font-size="11.5" fill="#3c4650">One code path, two backends: the local files and the DynamoDB</text>
+  <text x="1036" y="1069" font-size="11.5" fill="#3c4650">single table. Nothing is soft-deleted and no other family is touched.</text>
+  <text x="1036" y="1101" font-size="12.5" font-weight="bold" fill="#d91515">Not yet erased — stated, not implied away</text>
+  <text x="1036" y="1123" font-size="11.5" fill="#3c4650">The append-only grade log and the stored media object still hold</text>
+  <text x="1036" y="1141" font-size="11.5" fill="#3c4650">rows keyed by a student id that now maps to nobody. Neither store</text>
+  <text x="1036" y="1159" font-size="11.5" fill="#3c4650">has a delete path today; building one is open work, not a claim.</text>
+  <text x="1036" y="1186" font-size="10.5" font-style="italic" fill="#5f6b7a">tests/tools/test_state_store_admin.py::</text>
+  <text x="1036" y="1202" font-size="10.5" font-style="italic" fill="#5f6b7a">test_forget_family_erases_every_trace</text>
+
+  <!-- ================= BAND D : what never exists ================= -->
+  <rect x="56" y="1250" width="1408" height="128" rx="12" fill="#ffffff" stroke="#8c99a8" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="80" y="1280" font-size="14" font-weight="bold" fill="#0f1b2a">What simply never exists — the only control that cannot leak</text>
+
+  <rect x="80" y="1296" width="248" height="38" rx="8" fill="#f6f8fa" stroke="#d5dbe3" stroke-width="1"/>
+  <text x="204" y="1320" font-size="11.5" fill="#3c4650" text-anchor="middle">the child's real name</text>
+  <rect x="344" y="1296" width="248" height="38" rx="8" fill="#f6f8fa" stroke="#d5dbe3" stroke-width="1"/>
+  <text x="468" y="1320" font-size="11.5" fill="#3c4650" text-anchor="middle">a photograph of the child</text>
+  <rect x="608" y="1296" width="248" height="38" rx="8" fill="#f6f8fa" stroke="#d5dbe3" stroke-width="1"/>
+  <text x="732" y="1320" font-size="11.5" fill="#3c4650" text-anchor="middle">a login for the child</text>
+  <rect x="872" y="1296" width="248" height="38" rx="8" fill="#f6f8fa" stroke="#d5dbe3" stroke-width="1"/>
+  <text x="996" y="1320" font-size="11.5" fill="#3c4650" text-anchor="middle">an account for the teacher</text>
+  <rect x="1136" y="1296" width="304" height="38" rx="8" fill="#f6f8fa" stroke="#d5dbe3" stroke-width="1"/>
+  <text x="1288" y="1320" font-size="11.5" fill="#3c4650" text-anchor="middle">a class roster taken from the school</text>
+
+  <text x="80" y="1362" font-size="10.5" font-style="italic" fill="#5f6b7a">The strict schemas carry no field for any of them, so there is nothing to redact, nothing to leak in a prompt and nothing to hand over under subpoena. The only photograph the system accepts is of the page.</text>
+
+  <text x="56" y="1444" font-size="10.5" font-style="italic" fill="#8c99a8">Measured = a dated adversarial bench in docs/reports/. Enforced = shipped code plus the unit test named on the card. Designed = built and reachable, but never exercised by an offline run.</text>
+</svg>

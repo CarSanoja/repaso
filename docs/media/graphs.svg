@@ -1,0 +1,422 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1780" height="1780" viewBox="0 0 1780 1780">
+  <style>
+    text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; fill: #0f1b2a; }
+    .title { font-size: 27px; font-weight: 700; }
+    .sub { font-size: 14px; fill: #3c4650; }
+    .gh { font-size: 14px; font-weight: 700; fill: #ffffff; letter-spacing: 0.4px; }
+    .gw { font-size: 10.5px; fill: #ffffff; }
+    .gk { font-size: 10.5px; font-weight: 700; fill: #b9d8f7; letter-spacing: 0.3px; }
+    .nt { font-size: 14px; font-weight: 700; fill: #0972d3; }
+    .na { font-size: 10.5px; fill: #3c4650; }
+    .pill { font-size: 10.5px; fill: #0f1b2a; }
+    .ch { font-size: 10.5px; font-weight: 700; }
+    .cb { font-size: 10.5px; fill: #3c4650; }
+    .h3 { font-size: 13px; font-weight: 700; }
+    .h4 { font-size: 12.5px; font-weight: 700; }
+    .s { font-size: 11px; fill: #3c4650; }
+    .xs { font-size: 10.5px; fill: #3c4650; }
+    .cap { font-size: 10.5px; fill: #5f6b7a; font-style: italic; }
+    .capg { font-size: 10.5px; fill: #037f0c; font-style: italic; }
+    .green { fill: #037f0c; }
+    .red { fill: #d91515; }
+    .blue { fill: #0972d3; }
+    .purple { fill: #6b40b2; }
+    .grey { fill: #5f6b7a; }
+    .mid { text-anchor: middle; }
+    .bold { font-weight: 700; }
+  </style>
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="7" refX="8.6" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 z" fill="#0972d3"/>
+    </marker>
+    <marker id="ar" markerWidth="9" markerHeight="7" refX="8.6" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 z" fill="#d91515"/>
+    </marker>
+    <marker id="ag" markerWidth="9" markerHeight="7" refX="8.6" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 z" fill="#037f0c"/>
+    </marker>
+    <marker id="ak" markerWidth="9" markerHeight="7" refX="8.6" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 z" fill="#5f6b7a"/>
+    </marker>
+    <marker id="ap" markerWidth="9" markerHeight="7" refX="8.6" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 z" fill="#6b40b2"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1780" height="1780" fill="#ffffff"/>
+
+  <text class="title" x="90" y="60">Repaso — the four graphs, edge by edge</text>
+  <text class="sub" x="90" y="88">Nodes in execution order, every conditional edge drawn and labelled, and the exit each refusal takes. Nothing here is implied.</text>
+
+  <!-- legend -->
+  <rect x="1330" y="20" width="14" height="14" rx="4" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="xs" x="1354" y="32">graph node (sharp rect, execution order)</text>
+  <rect x="1330" y="44" width="14" height="14" rx="4" fill="#fdeceb" stroke="#d91515" stroke-width="2"/>
+  <text class="xs" x="1354" y="56">a terminal exit — the graph stops here</text>
+  <rect x="1330" y="68" width="14" height="14" rx="4" fill="#eaf6ea" stroke="#037f0c" stroke-width="2"/>
+  <text class="xs" x="1354" y="80">deterministic — the harness owns this</text>
+  <rect x="1330" y="92" width="14" height="14" rx="4" fill="#f2ecfa" stroke="#6b40b2" stroke-width="2"/>
+  <text class="xs" x="1354" y="104">a human is interrupted</text>
+
+  <!-- ================= ROW 1 · INGEST ================= -->
+  <rect x="90" y="140" width="1630" height="370" rx="12" fill="#eaf3fd" stroke="#b7d4f2" stroke-width="1.6"/>
+  <rect x="106" y="158" width="224" height="334" rx="10" fill="#0972d3"/>
+  <text class="gh" x="118" y="188">INGEST GRAPH</text>
+  <text class="gw" x="118" y="212">S3 material_uploaded → repaso-ingest</text>
+  <line x1="118" y1="228" x2="318" y2="228" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="250">ENTRY POINT</text>
+  <text class="gw" x="118" y="268">parse</text>
+  <line x1="118" y1="282" x2="318" y2="282" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="304">EXECUTION LIMIT</text>
+  <text class="gw" x="118" y="322">max_node_executions = 8</text>
+  <line x1="118" y1="336" x2="318" y2="336" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="358">TERMINAL EXITS</text>
+  <text class="gw" x="118" y="376">5 — one from every node</text>
+  <line x1="118" y1="390" x2="318" y2="390" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="412">THE PAID STAGES</text>
+  <text class="gw" x="118" y="430">generate · validate</text>
+  <text class="gw" x="118" y="448" fill="#b9d8f7">each holds a stage claim,</text>
+  <text class="gw" x="118" y="464" fill="#b9d8f7">so a crash resumes free</text>
+
+  <!-- nodes -->
+  <rect x="356" y="180" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="446" y="204">parse</text>
+  <text class="na mid" x="446" y="223">Material Parser</text>
+  <rect x="364" y="230" width="164" height="22" rx="11" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.3"/>
+  <text class="pill mid" x="446" y="245">no model — legibility</text>
+
+  <rect x="580" y="180" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="670" y="204">screen</text>
+  <text class="na mid" x="670" y="223">Intake Screener</text>
+  <rect x="588" y="230" width="164" height="22" rx="11" fill="#fff4e5" stroke="#ff9900" stroke-width="1.3"/>
+  <text class="pill mid" x="670" y="245">Nova Lite · classify</text>
+
+  <rect x="804" y="180" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="894" y="204">map</text>
+  <text class="na mid" x="894" y="223">Competency Mapper</text>
+  <rect x="812" y="230" width="164" height="22" rx="11" fill="#fff4e5" stroke="#ff9900" stroke-width="1.3"/>
+  <text class="pill mid" x="894" y="245">Haiku 4.5 · structured</text>
+
+  <rect x="1028" y="180" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="1118" y="204">generate</text>
+  <text class="na mid" x="1118" y="223">Item Generator</text>
+  <rect x="1036" y="230" width="164" height="22" rx="11" fill="#fff4e5" stroke="#ff9900" stroke-width="1.3"/>
+  <text class="pill mid" x="1118" y="245">Sonnet 4.6 · generate</text>
+
+  <rect x="1252" y="180" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="1342" y="204">validate</text>
+  <text class="na mid" x="1342" y="223">Critic + Probe</text>
+  <rect x="1260" y="230" width="164" height="22" rx="11" fill="#fff4e5" stroke="#ff9900" stroke-width="1.3"/>
+  <text class="pill mid" x="1342" y="245">Sonnet 4.6 + Nova Micro</text>
+
+  <line x1="536" y1="220" x2="578" y2="220" stroke="#0972d3" stroke-width="2.2" marker-end="url(#a)"/>
+  <line x1="760" y1="220" x2="802" y2="220" stroke="#0972d3" stroke-width="2.2" marker-end="url(#a)"/>
+  <line x1="984" y1="220" x2="1026" y2="220" stroke="#0972d3" stroke-width="2.2" marker-end="url(#a)"/>
+  <line x1="1208" y1="220" x2="1250" y2="220" stroke="#0972d3" stroke-width="2.2" marker-end="url(#a)"/>
+
+  <!-- terminal branches -->
+  <line x1="446" y1="262" x2="446" y2="296" stroke="#d91515" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="670" y1="262" x2="670" y2="296" stroke="#d91515" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="894" y1="262" x2="894" y2="296" stroke="#d91515" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="1118" y1="262" x2="1118" y2="296" stroke="#d91515" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="1342" y1="262" x2="1342" y2="296" stroke="#d91515" stroke-width="2" marker-end="url(#ar)"/>
+
+  <rect x="342" y="300" width="208" height="78" rx="7" fill="#fdeceb" stroke="#d91515" stroke-width="1.6"/>
+  <text class="ch red" x="354" y="320">TERMINAL — blurry photo</text>
+  <text class="cb" x="354" y="338">legibility below the blur floor 300</text>
+  <text class="cb" x="354" y="356">→ re-photo request · no model paid</text>
+
+  <rect x="566" y="300" width="208" height="78" rx="7" fill="#fdeceb" stroke="#d91515" stroke-width="1.6"/>
+  <text class="ch red" x="578" y="320">TERMINAL — injection</text>
+  <text class="cb" x="578" y="338">quarantined with an EvidenceSpan</text>
+  <text class="cb" x="578" y="356">→ never reaches a generate prompt</text>
+
+  <rect x="790" y="300" width="208" height="78" rx="7" fill="#fdeceb" stroke="#d91515" stroke-width="1.6"/>
+  <text class="ch red" x="802" y="320">TERMINAL — off subject</text>
+  <text class="cb" x="802" y="338">no competency match in the taxonomy</text>
+  <text class="cb" x="802" y="356">→ polite rejection</text>
+
+  <rect x="1014" y="300" width="208" height="78" rx="7" fill="#fdeceb" stroke="#d91515" stroke-width="1.6"/>
+  <text class="ch red" x="1026" y="320">TERMINAL — thin material</text>
+  <text class="cb" x="1026" y="338">no draft passed structural checks</text>
+  <text class="cb" x="1026" y="356">→ ask for one worked example</text>
+
+  <rect x="1238" y="300" width="208" height="78" rx="7" fill="#fdeceb" stroke="#d91515" stroke-width="1.6"/>
+  <text class="ch red" x="1250" y="320">TERMINAL — all rejected</text>
+  <text class="cb" x="1250" y="338">critic or blind probe killed each</text>
+  <text class="cb" x="1250" y="356">→ ask for one worked example</text>
+
+  <rect x="356" y="402" width="1076" height="76" rx="8" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="s green bold" x="374" y="424">Every happy-path edge carries the same condition — run.terminal is None. A terminal exit sets it, and the graph stops without a special node.</text>
+  <text class="xs" x="374" y="446">generate and validate each take claim("stage#&lt;material&gt;#generate") before spending. After a crash the graph re-enters, loses the claim, and reads the finished</text>
+  <text class="xs" x="374" y="464">items back from the store instead of calling Sonnet a second time. Every terminal exit above fires before a single generate or judge token is billed.</text>
+
+  <rect x="1450" y="180" width="262" height="198" rx="10" fill="#fdeceb" stroke="#d91515" stroke-width="1.8"/>
+  <text class="h4 red" x="1470" y="206">The Armor</text>
+  <text class="xs" x="1470" y="230">400 / 400 adversarial payloads</text>
+  <text class="xs" x="1470" y="248">intercepted across 9 attack</text>
+  <text class="xs" x="1470" y="266">families, ES + EN, including</text>
+  <text class="xs" x="1470" y="284">OCR-corrupted variants.</text>
+  <text class="xs" x="1470" y="310">0 % false block on 200 clean</text>
+  <text class="xs" x="1470" y="328">grade-4 worksheets.</text>
+  <text class="cap" x="1470" y="352">screen runs a deny-list before</text>
+  <text class="cap" x="1470" y="370">Nova, and fails closed.</text>
+
+  <!-- ================= tutor-loop bracket ================= -->
+  <path d="M 84 530 H 68 V 1220 H 84" fill="none" stroke="#5f6b7a" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <text class="cap mid" x="54" y="875" transform="rotate(-90 54 875)">the tutor loop</text>
+
+  <!-- ================= ROW 2 · SESSION ================= -->
+  <rect x="90" y="530" width="1630" height="270" rx="12" fill="#eaf3fd" stroke="#b7d4f2" stroke-width="1.6"/>
+  <rect x="106" y="548" width="224" height="234" rx="10" fill="#0972d3"/>
+  <text class="gh" x="118" y="576">SESSION GRAPH</text>
+  <text class="gw" x="118" y="600">EventBridge Scheduler →</text>
+  <text class="gw" x="118" y="617">daily_session_due</text>
+  <line x1="118" y1="630" x2="318" y2="630" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="650">ENTRY POINT</text>
+  <text class="gw" x="118" y="668">plan</text>
+  <line x1="118" y1="682" x2="318" y2="682" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="702">EXECUTION LIMIT</text>
+  <text class="gw" x="118" y="720">max_node_executions = 4</text>
+  <line x1="118" y1="734" x2="318" y2="734" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="754">EXITS</text>
+  <text class="gw" x="118" y="772" fill="#b9d8f7">already planned · nothing due</text>
+
+  <rect x="356" y="570" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="446" y="594">plan</text>
+  <text class="na mid" x="446" y="613">Session Planner</text>
+  <rect x="364" y="620" width="164" height="22" rx="11" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.3"/>
+  <text class="pill mid" x="446" y="635">no model — SM-2</text>
+
+  <rect x="580" y="570" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="670" y="594">compose</text>
+  <text class="na mid" x="670" y="613">Capsule Composer</text>
+  <rect x="588" y="620" width="164" height="22" rx="11" fill="#fff4e5" stroke="#ff9900" stroke-width="1.3"/>
+  <text class="pill mid" x="670" y="635">Sonnet 4.6 · generate</text>
+
+  <line x1="536" y1="610" x2="578" y2="610" stroke="#0972d3" stroke-width="2.2" marker-end="url(#a)"/>
+
+  <path d="M 420 652 V 686" fill="none" stroke="#037f0c" stroke-width="2" marker-end="url(#ag)"/>
+  <path d="M 472 652 V 668 H 670 V 686" fill="none" stroke="#d91515" stroke-width="2" marker-end="url(#ar)"/>
+
+  <rect x="342" y="690" width="208" height="78" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="ch green" x="354" y="710">IDEMPOTENT EXIT</text>
+  <text class="cb" x="354" y="728">a session already exists for today</text>
+  <text class="cb" x="354" y="746">→ stop · a re-fired alarm costs $0</text>
+
+  <rect x="566" y="690" width="208" height="78" rx="7" fill="#fdeceb" stroke="#d91515" stroke-width="1.6"/>
+  <text class="ch red" x="578" y="710">TERMINAL — nothing due</text>
+  <text class="cb" x="578" y="728">SM-2 returns no item for today</text>
+  <text class="cb" x="578" y="746">→ no message is sent at all</text>
+
+  <rect x="800" y="570" width="912" height="198" rx="10" fill="#ffffff" stroke="#b7d4f2" stroke-width="1.6"/>
+  <text class="h3 blue" x="820" y="598">Session + response together are the tutor loop</text>
+  <text class="xs" x="820" y="624">One EventBridge schedule per family fires daily_session_due; the session graph plans a capsule, delivers it, and goes quiet. Every reply the parent</text>
+  <text class="xs" x="820" y="646">forwards re-enters through the response graph in the band below. Neither graph polls, and neither runs twice for the same student on the same day.</text>
+  <text class="xs" x="820" y="668">Exam mode: an EXAM# date inside 7 days caps the capsule at 4 items and re-orders them weakest-EMA first — the agent then rewrites its own schedule.</text>
+  <text class="capg" x="820" y="700">Silence is a legal output. No item due means no message: this system is not required to speak to a family every day.</text>
+  <text class="cap" x="820" y="726">Demo clock: 30 students × 14 days = 420 student-days through these same graphs in ~14 s, $0, byte-identical per seed; 1,062 responses graded.</text>
+
+  <!-- ================= ROW 3 · RESPONSE ================= -->
+  <rect x="90" y="820" width="1630" height="400" rx="12" fill="#eaf3fd" stroke="#b7d4f2" stroke-width="1.6"/>
+  <rect x="106" y="838" width="224" height="364" rx="10" fill="#0972d3"/>
+  <text class="gh" x="118" y="868">RESPONSE GRAPH</text>
+  <text class="gw" x="118" y="892">a parent reply → response_received</text>
+  <line x1="118" y1="908" x2="318" y2="908" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="930">ENTRY POINT</text>
+  <text class="gw" x="118" y="948">grade</text>
+  <line x1="118" y1="962" x2="318" y2="962" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="984">EXECUTION LIMIT</text>
+  <text class="gw" x="118" y="1002">max_node_executions = 6</text>
+  <line x1="118" y1="1016" x2="318" y2="1016" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="1038">THE ONLY CONDITIONAL EDGE</text>
+  <text class="gw" x="118" y="1056">adapt → escalate</text>
+  <line x1="118" y1="1070" x2="318" y2="1070" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="1092">WHO OWNS THAT DECISION</text>
+  <text class="gw" x="118" y="1110">the harness, not the model</text>
+  <text class="gw" x="118" y="1132" fill="#b9d8f7">escalation_min_samples = 9</text>
+  <text class="gw" x="118" y="1150" fill="#b9d8f7">cooldown = 7 days per student</text>
+  <text class="gw" x="118" y="1168" fill="#b9d8f7">STRUGGLING ceiling = 0.40</text>
+
+  <rect x="356" y="860" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="446" y="884">grade</text>
+  <text class="na mid" x="446" y="903">Grader</text>
+  <rect x="364" y="910" width="164" height="22" rx="11" fill="#fff4e5" stroke="#ff9900" stroke-width="1.3"/>
+  <text class="pill mid" x="446" y="925">MCQ in code · Sonnet 4.6</text>
+
+  <rect x="580" y="860" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="670" y="884">apply</text>
+  <text class="na mid" x="670" y="903">Mastery + SM-2</text>
+  <rect x="588" y="910" width="164" height="22" rx="11" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.3"/>
+  <text class="pill mid" x="670" y="925">no model — harness</text>
+
+  <rect x="804" y="860" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="894" y="884">adapt</text>
+  <text class="na mid" x="894" y="903">Adaptation Policy</text>
+  <rect x="812" y="910" width="164" height="22" rx="11" fill="#fff4e5" stroke="#ff9900" stroke-width="1.3"/>
+  <text class="pill mid" x="894" y="925">Haiku 4.5 · structured</text>
+
+  <rect x="1130" y="860" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="1220" y="884">escalate</text>
+  <text class="na mid" x="1220" y="903">Escalation Composer</text>
+  <rect x="1138" y="910" width="164" height="22" rx="11" fill="#fff4e5" stroke="#ff9900" stroke-width="1.3"/>
+  <text class="pill mid" x="1220" y="925">Sonnet 4.6 · generate</text>
+
+  <line x1="536" y1="900" x2="578" y2="900" stroke="#0972d3" stroke-width="2.2" marker-end="url(#a)"/>
+  <line x1="760" y1="900" x2="802" y2="900" stroke="#0972d3" stroke-width="2.2" marker-end="url(#a)"/>
+  <line x1="984" y1="900" x2="1126" y2="900" stroke="#037f0c" stroke-width="2.6" marker-end="url(#ag)"/>
+  <rect x="1000" y="884" width="112" height="32" rx="6" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
+  <text class="ch green mid" x="1056" y="904">trigger fired</text>
+  <text class="cap mid" x="1056" y="946">action ∈ {escalate_struggle,</text>
+  <text class="cap mid" x="1056" y="962">escalate_engagement}</text>
+
+  <line x1="446" y1="942" x2="446" y2="996" stroke="#d91515" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="670" y1="942" x2="670" y2="996" stroke="#037f0c" stroke-width="2" marker-end="url(#ag)"/>
+  <line x1="894" y1="942" x2="894" y2="996" stroke="#5f6b7a" stroke-width="2" marker-end="url(#ak)"/>
+  <line x1="1220" y1="942" x2="1220" y2="996" stroke="#6b40b2" stroke-width="2" marker-end="url(#ap)"/>
+
+  <rect x="342" y="1000" width="208" height="88" rx="7" fill="#fdeceb" stroke="#d91515" stroke-width="1.6"/>
+  <text class="ch red" x="354" y="1020">REFUSAL — confidence &lt; 0.85</text>
+  <text class="cb" x="354" y="1038">the grade does not exist: correct is</text>
+  <text class="cb" x="354" y="1056">None, mastery and SM-2 untouched,</text>
+  <text class="cb" x="354" y="1074">the answer goes to the parent</text>
+
+  <rect x="566" y="1000" width="208" height="88" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="ch green" x="578" y="1020">DETERMINISTIC</text>
+  <text class="cb" x="578" y="1038">EMA α = 0.3 mastery update and</text>
+  <text class="cb" x="578" y="1056">the SM-2 review, from the graded</text>
+  <text class="cb" x="578" y="1074">result. No model runs on this node.</text>
+
+  <rect x="790" y="1000" width="208" height="88" rx="7" fill="#f4f6f8" stroke="#8c99a8" stroke-width="1.6"/>
+  <text class="ch grey" x="802" y="1020">NO TRIGGER</text>
+  <text class="cb" x="802" y="1038">the graph ends after adapt —</text>
+  <text class="cb" x="802" y="1056">the parent is not interrupted.</text>
+  <text class="cb" x="802" y="1074">Most days end right here.</text>
+
+  <rect x="1116" y="1000" width="208" height="88" rx="7" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.6"/>
+  <text class="ch purple" x="1128" y="1020">INTERRUPT</text>
+  <text class="cb" x="1128" y="1038">one message with triage buttons,</text>
+  <text class="cb" x="1128" y="1056">to the parent only — never the</text>
+  <text class="cb" x="1128" y="1074">child. 7-day cooldown per student.</text>
+
+  <rect x="356" y="1112" width="954" height="80" rx="8" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="s green bold" x="374" y="1136">The hard rule — the model can neither veto the interrupt nor manufacture one.</text>
+  <text class="xs" x="374" y="1158">build_signals() computes struggle, disengagement and fast-guessing from core.harness.escalation_triggers before any model call, and fallback_decision()</text>
+  <text class="xs" x="374" y="1176">turns them into an action. If a trigger fired, decide() returns that action and drops Haiku's reply unread; if the Bedrock call fails, the same action stands.</text>
+
+  <rect x="1330" y="860" width="382" height="332" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="2"/>
+  <text class="h4 green" x="1350" y="888">Measured on 40 virgin seeds</text>
+  <text class="s" x="1350" y="910">16,800 simulated student-days</text>
+  <line x1="1350" y1="924" x2="1692" y2="924" stroke="#cbd3dc"/>
+  <text class="xs" x="1350" y="948">struggle-interrupt precision</text>
+  <text class="green" x="1350" y="980" font-size="24" font-weight="700">0.970</text>
+  <text class="s" x="1434" y="980">[0.947 – 0.983]</text>
+  <text class="s" x="1350" y="1004">recall 0.994 [0.980 – 0.998]</text>
+  <text class="xs" x="1350" y="1030">rate-matched random baseline 0.300</text>
+  <text class="xs" x="1350" y="1048">never-interrupt baseline recall 0.000</text>
+  <line x1="1350" y1="1064" x2="1692" y2="1064" stroke="#cbd3dc"/>
+  <text class="xs" x="1350" y="1086">interrupts per 420 student-days</text>
+  <text class="h4" x="1350" y="1106">p50 53 · p95 63</text>
+  <text class="xs" x="1350" y="1132">7 of 8 pre-registered gates pass. G2</text>
+  <text class="xs" x="1350" y="1150">stays red: 11 residual false positives,</text>
+  <text class="xs" x="1350" y="1168">root cause cold-start EMA.</text>
+  <text class="cap" x="1350" y="1186">calibration-validation 2026-08-20</text>
+
+  <!-- ================= ROW 4 · DAILY CLOSE ================= -->
+  <rect x="90" y="1240" width="1630" height="370" rx="12" fill="#eaf3fd" stroke="#b7d4f2" stroke-width="1.6"/>
+  <rect x="106" y="1258" width="224" height="334" rx="10" fill="#0972d3"/>
+  <text class="gh" x="118" y="1288">DAILY CLOSE GRAPH</text>
+  <text class="gw" x="118" y="1312">cron daily_close → repaso-quality</text>
+  <line x1="118" y1="1328" x2="318" y2="1328" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="1350">ENTRY POINT</text>
+  <text class="gw" x="118" y="1368">verify</text>
+  <line x1="118" y1="1382" x2="318" y2="1382" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="1404">EXECUTION LIMIT</text>
+  <text class="gw" x="118" y="1422">max_node_executions = 6</text>
+  <line x1="118" y1="1436" x2="318" y2="1436" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="1458">EDGES</text>
+  <text class="gw" x="118" y="1476">unconditional, in order</text>
+  <text class="gw" x="118" y="1494" fill="#b9d8f7">the conditions are</text>
+  <text class="gw" x="118" y="1510" fill="#b9d8f7">preconditions inside the nodes</text>
+  <line x1="118" y1="1524" x2="318" y2="1524" stroke="#4d9ae4"/>
+  <text class="gk" x="118" y="1546">EVERYTHING IT SENDS</text>
+  <text class="gw" x="118" y="1564">is claimed once per ISO week</text>
+
+  <rect x="356" y="1280" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="446" y="1304">verify</text>
+  <text class="na mid" x="446" y="1323">Goal Verifier</text>
+  <rect x="364" y="1330" width="164" height="22" rx="11" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.3"/>
+  <text class="pill mid" x="446" y="1345">no model — bounded</text>
+
+  <rect x="580" y="1280" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="670" y="1304">engagement</text>
+  <text class="na mid" x="670" y="1323">Engagement sweep</text>
+  <rect x="588" y="1330" width="164" height="22" rx="11" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.3"/>
+  <text class="pill mid" x="670" y="1345">no model — triggers</text>
+
+  <rect x="804" y="1280" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="894" y="1304">cohort</text>
+  <text class="na mid" x="894" y="1323">Cohort Signal</text>
+  <rect x="812" y="1330" width="164" height="22" rx="11" fill="#fff4e5" stroke="#ff9900" stroke-width="1.3"/>
+  <text class="pill mid" x="894" y="1345">k-floor, then Sonnet 4.6</text>
+
+  <rect x="1028" y="1280" width="180" height="80" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="2"/>
+  <text class="nt mid" x="1118" y="1304">optimize</text>
+  <text class="na mid" x="1118" y="1323">Item Optimizer</text>
+  <rect x="1036" y="1330" width="164" height="22" rx="11" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.3"/>
+  <text class="pill mid" x="1118" y="1345">no model — psychometrics</text>
+
+  <line x1="536" y1="1320" x2="578" y2="1320" stroke="#0972d3" stroke-width="2.2" marker-end="url(#a)"/>
+  <line x1="760" y1="1320" x2="802" y2="1320" stroke="#0972d3" stroke-width="2.2" marker-end="url(#a)"/>
+  <line x1="984" y1="1320" x2="1026" y2="1320" stroke="#0972d3" stroke-width="2.2" marker-end="url(#a)"/>
+
+  <line x1="446" y1="1362" x2="446" y2="1396" stroke="#037f0c" stroke-width="2" marker-end="url(#ag)"/>
+  <line x1="670" y1="1362" x2="670" y2="1396" stroke="#037f0c" stroke-width="2" marker-end="url(#ag)"/>
+  <line x1="894" y1="1362" x2="894" y2="1396" stroke="#037f0c" stroke-width="2" marker-end="url(#ag)"/>
+  <line x1="1118" y1="1362" x2="1118" y2="1396" stroke="#037f0c" stroke-width="2" marker-end="url(#ag)"/>
+
+  <rect x="342" y="1400" width="208" height="88" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="ch green" x="354" y="1420">PRECONDITION — bounded</text>
+  <text class="cb" x="354" y="1438">BoundedAttempts(2) caps the rework</text>
+  <text class="cb" x="354" y="1456">it may ask for. An unresolved item</text>
+  <text class="cb" x="354" y="1474">is reported, not retried forever.</text>
+
+  <rect x="566" y="1400" width="208" height="88" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="ch green" x="578" y="1420">PRECONDITION — delivery health</text>
+  <text class="cb" x="578" y="1438">counts masked to scheduled days:</text>
+  <text class="cb" x="578" y="1456">rest weekdays, holidays, and days</text>
+  <text class="cb" x="578" y="1474">the whole cohort went silent.</text>
+
+  <rect x="790" y="1400" width="208" height="88" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="ch green" x="802" y="1420">PRECONDITION — k-anonymity</text>
+  <text class="cb" x="802" y="1438">k ≥ 3 distinct families in one</text>
+  <text class="cb" x="802" y="1456">section, 7-day window, once per</text>
+  <text class="cb" x="802" y="1474">ISO week. The prompt gets no alias.</text>
+
+  <rect x="1014" y="1400" width="208" height="88" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.6"/>
+  <text class="ch green" x="1026" y="1420">PRECONDITION — evidence</text>
+  <text class="cb" x="1026" y="1438">point-biserial discrimination</text>
+  <text class="cb" x="1026" y="1456">below 0.15 with ≥ 8 attempts</text>
+  <text class="cb" x="1026" y="1474">retires the item. No model votes.</text>
+
+  <rect x="356" y="1512" width="1356" height="86" rx="8" fill="#ffffff" stroke="#b7d4f2" stroke-width="1.6"/>
+  <text class="xs" x="374" y="1536">Close runs verify → engagement → cohort → optimize on unconditional edges: the conditions live inside the nodes as preconditions, not on the graph. Every message it can send is</text>
+  <text class="xs" x="374" y="1556">claimed once per ISO week (engage#&lt;student&gt;#2026-W34, and one claim per section+competency), so a re-run of the close is silent rather than a second alert to the same family.</text>
+  <text class="cap" x="374" y="1578">A guard proposed to cut the residual struggle false positives — a corroboration floor — was falsified by its own pre-declared protocol (recall fell 0.994 → 0.917) and reverted. The real fix, a BKT-style estimator, is roadmap.</text>
+
+  <rect x="1250" y="1280" width="462" height="198" rx="10" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.8"/>
+  <text class="h4 green" x="1270" y="1308">The school calendar cannot fool it</text>
+  <text class="s" x="1270" y="1332">0 calendar-caused false engagement alerts per</text>
+  <text class="s" x="1270" y="1350">100 student-weeks — Gate A went 0/20 → 20/20</text>
+  <text class="s" x="1270" y="1376">genuine dropouts still caught at 3 practicable</text>
+  <text class="s" x="1270" y="1394">school days — 60/60</text>
+  <text class="s" x="1270" y="1420">the pre-fix control arm still fires 1,689 alerts</text>
+  <text class="s" x="1270" y="1438">on the very same weeks</text>
+  <text class="cap" x="1270" y="1462">calendar-gaps 2026-08-21</text>
+
+  <!-- ================= FOOTER ================= -->
+  <rect x="90" y="1640" width="1630" height="80" rx="8" fill="#f4f6f8" stroke="#cbd3dc"/>
+  <text class="s bold" x="112" y="1668">Execution limits are set on every graph — ingest 8 · session 4 · response 6 · close 6 node executions. A graph that loops stops; it does not spend.</text>
+  <text class="xs grey" x="112" y="1690">Built with strands.multiagent.graph.GraphBuilder: deterministic nodes are MultiAgentBase subclasses and every conditional edge closes over a typed run context, so each branch is unit-testable.</text>
+  <text class="xs grey" x="112" y="1708">Sources — armor bench 2026-08-20 · calibration validation 2026-08-20 · calendar gaps 2026-08-21 · demo clock 2026-08-20. 706 offline tests, ~5 s, zero credentials, zero network.</text>
+</svg>

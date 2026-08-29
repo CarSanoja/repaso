@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1740" height="1740" viewBox="0 0 1740 1740">
+<style>
+text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+.title { font-size: 27px; font-weight: 700; fill: #0f1b2a; }
+.sub { font-size: 14px; fill: #5f6b7a; }
+.inv { font-size: 14px; font-weight: 700; fill: #0f1b2a; }
+.nl { font-size: 10.5px; font-weight: 700; letter-spacing: 0.7px; }
+.nb { font-size: 11px; fill: #3c4650; }
+.ret { font-size: 11px; font-style: italic; fill: #037f0c; }
+.hl { font-size: 11px; font-weight: 700; fill: #ffffff; letter-spacing: 0.9px; }
+.lname { font-size: 12.5px; font-weight: 700; fill: #0f1b2a; }
+.lsub { font-size: 10.5px; font-style: italic; fill: #5f6b7a; }
+.lnote { font-size: 10.5px; fill: #3c4650; }
+.c { font-size: 11px; fill: #3c4650; }
+.pill { font-size: 9.8px; font-weight: 700; letter-spacing: 0.7px; }
+.railh { font-size: 16px; font-weight: 700; fill: #037f0c; }
+.railb { font-size: 12px; fill: #0f1b2a; }
+.foot { font-size: 10.5px; fill: #8c99a8; }
+</style>
+<defs>
+  <marker id="au" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+    <path d="M0,0 L9,4.5 L0,9 Z" fill="#037f0c"/>
+  </marker>
+  <marker id="ab" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+    <path d="M0,0 L9,4.5 L0,9 Z" fill="#5f6b7a"/>
+  </marker>
+</defs>
+
+<rect x="0" y="0" width="1740" height="1740" fill="#ffffff"/>
+
+<text class="title" x="60" y="52">Self-learning — six loops, and the adversary each one has to survive</text>
+<text class="sub" x="60" y="78">Naive self-learning makes the benchmark problem worse, faster: it is tuning-on-the-test with a cron schedule. The invariant below is what stops that, and every row instantiates it.</text>
+<text class="sub" x="60" y="98">Marked on the face: what is shippable inside the freeze, what is roadmap, and the one loop that has already been exercised by hand.</text>
+
+<g id="invariant">
+  <rect x="60" y="118" width="1620" height="182" rx="12" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.8"/>
+  <text class="inv" x="80" y="148">The invariant, verbatim: no memory updates itself without a named adversary, a held-out gate, an anti-gaming validator, and an append-only promotion record that can be reversed with one write.</text>
+
+  <rect x="80" y="170" width="292" height="80" rx="9" fill="#ffffff" stroke="#0972d3" stroke-width="1.3"/>
+  <text class="nl" x="94" y="192" style="fill:#0972d3">1 · A CHANGE IS PROPOSED</text>
+  <text class="nb" x="94" y="212">column 2 — a constant, a learner model, an item</text>
+  <text class="nb" x="94" y="228">or a prompt. Never by the loop itself, and</text>
+  <text class="nb" x="94" y="244">never silently.</text>
+  <line x1="376" y1="210" x2="396" y2="210" stroke="#5f6b7a" stroke-width="1.6" marker-end="url(#ab)"/>
+
+  <rect x="402" y="170" width="292" height="80" rx="9" fill="#fdeceb" stroke="#d91515" stroke-width="1.3"/>
+  <text class="nl" x="416" y="192" style="fill:#d91515">2 · A NAMED ADVERSARY ATTACKS IT</text>
+  <text class="nb" x="416" y="212">column 4 — never the person who built it, and</text>
+  <text class="nb" x="416" y="228">with an objective function that rewards</text>
+  <text class="nb" x="416" y="244">breaking the thing under test.</text>
+  <line x1="698" y1="210" x2="718" y2="210" stroke="#5f6b7a" stroke-width="1.6" marker-end="url(#ab)"/>
+
+  <rect x="724" y="170" width="292" height="80" rx="9" fill="#ffffff" stroke="#037f0c" stroke-width="1.3"/>
+  <text class="nl" x="738" y="192" style="fill:#037f0c">3 · A HELD-OUT GATE DECIDES</text>
+  <text class="nb" x="738" y="212">column 5 — declared before the run, not after.</text>
+  <text class="nb" x="738" y="228">Seeds that helped choose a value may never</text>
+  <text class="nb" x="738" y="244">be the seeds that score it.</text>
+  <line x1="1020" y1="210" x2="1040" y2="210" stroke="#5f6b7a" stroke-width="1.6" marker-end="url(#ab)"/>
+
+  <rect x="1046" y="170" width="292" height="80" rx="9" fill="#fdeceb" stroke="#d91515" stroke-width="1.3"/>
+  <text class="nl" x="1060" y="192" style="fill:#d91515">4 · AN ANTI-GAMING VALIDATOR</text>
+  <text class="nb" x="1060" y="212">column 6 — it catches the degenerate optimum</text>
+  <text class="nb" x="1060" y="228">an unconstrained sweep finds first, such as a</text>
+  <text class="nb" x="1060" y="244">gate that never fires at all.</text>
+  <line x1="1342" y1="210" x2="1362" y2="210" stroke="#5f6b7a" stroke-width="1.6" marker-end="url(#ab)"/>
+
+  <rect x="1368" y="170" width="292" height="80" rx="9" fill="#ffffff" stroke="#232f3e" stroke-width="1.3"/>
+  <text class="nl" x="1382" y="192" style="fill:#232f3e">5 · AN APPEND-ONLY RECORD</text>
+  <text class="nb" x="1382" y="212">column 3 — config_hash, provenance, and the</text>
+  <text class="nb" x="1382" y="228">sweep that promoted it, with rollback_of so</text>
+  <text class="nb" x="1382" y="244">one write reverses the whole thing.</text>
+
+  <path d="M1514 250 L1514 278 L226 278 L226 256" fill="none" stroke="#037f0c" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#au)"/>
+  <text class="ret" x="870" y="273" text-anchor="middle">…and when it goes wrong, that same record un-does it with one write. This is the whole difference between learning and drifting.</text>
+</g>
+
+<g id="tableframe">
+  <rect x="310" y="374" width="250" height="1116" fill="#fbfcfd"/>
+  <rect x="810" y="374" width="300" height="1116" fill="#fdeceb"/>
+  <rect x="1110" y="374" width="300" height="1116" fill="#e2f1e2"/>
+  <rect x="1410" y="374" width="270" height="1116" fill="#fdeceb"/>
+
+  <rect x="60" y="330" width="1620" height="44" rx="8" fill="#232f3e"/>
+  <rect x="60" y="356" width="1620" height="18" fill="#232f3e"/>
+  <rect x="74" y="346" width="10" height="10" fill="#0972d3"/>
+  <text class="hl" x="92" y="355">THE LOOP</text>
+  <rect x="324" y="346" width="10" height="10" fill="#0972d3"/>
+  <text class="hl" x="342" y="355">WHAT IT LEARNS</text>
+  <rect x="574" y="346" width="10" height="10" fill="#037f0c"/>
+  <text class="hl" x="592" y="355">THE MEMORY IT UPDATES</text>
+  <rect x="824" y="346" width="10" height="10" fill="#d91515"/>
+  <text class="hl" x="842" y="355">WHO CHALLENGES IT</text>
+  <rect x="1124" y="346" width="10" height="10" fill="#037f0c"/>
+  <text class="hl" x="1142" y="355">THE PROMOTION GATE</text>
+  <rect x="1424" y="346" width="10" height="10" fill="#d91515"/>
+  <text class="hl" x="1442" y="355">THE ANTI-GAMING GUARD</text>
+
+  <line x1="310" y1="374" x2="310" y2="1490" stroke="#dfe3e8" stroke-width="1"/>
+  <line x1="560" y1="374" x2="560" y2="1490" stroke="#dfe3e8" stroke-width="1"/>
+  <line x1="810" y1="374" x2="810" y2="1490" stroke="#c6d0da" stroke-width="1"/>
+  <line x1="1110" y1="374" x2="1110" y2="1490" stroke="#c6d0da" stroke-width="1"/>
+  <line x1="1410" y1="374" x2="1410" y2="1490" stroke="#c6d0da" stroke-width="1"/>
+  <line x1="60" y1="560" x2="1680" y2="560" stroke="#c6d0da" stroke-width="1"/>
+  <line x1="60" y1="746" x2="1680" y2="746" stroke="#c6d0da" stroke-width="1"/>
+  <line x1="60" y1="932" x2="1680" y2="932" stroke="#c6d0da" stroke-width="1"/>
+  <line x1="60" y1="1118" x2="1680" y2="1118" stroke="#c6d0da" stroke-width="1"/>
+  <line x1="60" y1="1304" x2="1680" y2="1304" stroke="#c6d0da" stroke-width="1"/>
+  <rect x="60" y="330" width="1620" height="1160" rx="8" fill="none" stroke="#8c99a8" stroke-width="1.4"/>
+</g>
+
+<g id="row0">
+  <text class="lname" x="74" y="402">L0 · CONSTANTS BECOME DATA</text>
+  <text class="lsub" x="74" y="420">the enabling refactor — nothing else on</text>
+  <text class="lsub" x="74" y="434">this page is buildable until it exists,</text>
+  <text class="lsub" x="74" y="448">and it is three hours of work</text>
+  <rect x="74" y="458" width="64" height="18" rx="9" fill="#037f0c"/>
+  <text class="pill" x="106" y="471" text-anchor="middle" style="fill:#ffffff">FREEZE</text>
+  <text class="lnote" x="74" y="494">27 free constants sit as module-level</text>
+  <text class="lnote" x="74" y="508">literals across six files, against a</text>
+  <text class="lnote" x="74" y="522">benchmark with 17 planted interrupts:</text>
+  <text class="lnote" x="74" y="536">more knobs than there are events.</text>
+
+  <text class="c" x="324" y="402">Nothing on its own. It is the</text>
+  <text class="c" x="324" y="417">precondition: tunable literals become</text>
+  <text class="c" x="324" y="432">one frozen PolicyConstants model,</text>
+  <text class="c" x="324" y="447">injected through Services, with</text>
+  <text class="c" x="324" y="462">config_hash = sha256(canonical_json).</text>
+  <text class="c" x="324" y="477">Constants become versioned, hashed,</text>
+  <text class="c" x="324" y="492">auditable data.</text>
+
+  <text class="c" x="574" y="402">POLICY#core / V#n plus an ACTIVE</text>
+  <text class="c" x="574" y="417">pointer. Every Escalation, GradeResult</text>
+  <text class="c" x="574" y="432">and item-retirement decision carries</text>
+  <text class="c" x="574" y="447">the hash of the constants that made it.</text>
+  <text class="c" x="574" y="462">That closes the audit chain from a</text>
+  <text class="c" x="574" y="477">parent's question to a specific sweep.</text>
+
+  <text class="c" x="824" y="402">A latent coupling bug, found in the same pass:</text>
+  <text class="c" x="824" y="417">adaptation_policy.build_signals passes the same</text>
+  <text class="c" x="824" y="432">min_samples to struggle_trigger and to</text>
+  <text class="c" x="824" y="447">fast_guess_flag, so sweeping the escalation</text>
+  <text class="c" x="824" y="462">threshold silently moved the fast-guessing</text>
+  <text class="c" x="824" y="477">detector. Two unrelated thresholds welded</text>
+  <text class="c" x="824" y="492">together make any calibration result</text>
+  <text class="c" x="824" y="507">uninterpretable. Decouple before sweeping.</text>
+
+  <text class="c" x="1124" y="402">Not a gate — the precondition for every gate</text>
+  <text class="c" x="1124" y="417">below it. Until constants are hashed, no</text>
+  <text class="c" x="1124" y="432">promotion record can name what it promoted,</text>
+  <text class="c" x="1124" y="447">and “why were we interrupted?” has no</text>
+  <text class="c" x="1124" y="462">deterministic answer — only a plausible one,</text>
+  <text class="c" x="1124" y="477">which is the thing this project refuses.</text>
+
+  <text class="c" x="1424" y="402">The code stays byte-stable. The</text>
+  <text class="c" x="1424" y="417">algorithms a parent's lawyer would</text>
+  <text class="c" x="1424" y="432">read never change; what changes is a</text>
+  <text class="c" x="1424" y="447">row with a provenance trail. That is</text>
+  <text class="c" x="1424" y="462">the whole trick — the deterministic</text>
+  <text class="c" x="1424" y="477">algorithms never learn their maths,</text>
+  <text class="c" x="1424" y="492">only their constants.</text>
+</g>
+
+<g id="row1">
+  <text class="lname" x="74" y="588">L1 · REPLAY CALIBRATOR</text>
+  <text class="lsub" x="74" y="606">counterfactual threshold calibration by</text>
+  <text class="lsub" x="74" y="620">deterministic replay — and there is no</text>
+  <text class="lsub" x="74" y="634">LLM anywhere inside this loop</text>
+  <rect x="74" y="644" width="64" height="18" rx="9" fill="#037f0c"/>
+  <text class="pill" x="106" y="657" text-anchor="middle" style="fill:#ffffff">FREEZE</text>
+  <rect x="146" y="644" width="132" height="18" rx="9" fill="#ffffff" stroke="#037f0c" stroke-width="1.2"/>
+  <text class="pill" x="212" y="657" text-anchor="middle" style="fill:#037f0c">ALREADY EXERCISED</text>
+  <text class="lnote" x="74" y="680">Already exercised by hand: the 8 → 9 move</text>
+  <text class="lnote" x="74" y="694">was chosen on a 2-D slab of disjoint</text>
+  <text class="lnote" x="74" y="708">seeds and scored on 40 virgin ones —</text>
+  <text class="lnote" x="74" y="722">by exactly this loop, driven manually.</text>
+
+  <text class="c" x="324" y="588">escalation_min_samples, cooldown</text>
+  <text class="c" x="324" y="603">days, silent days, min active days,</text>
+  <text class="c" x="324" y="618">the cohort k-floor, the 0.85 grader</text>
+  <text class="c" x="324" y="633">confidence gate, the item-retirement</text>
+  <text class="c" x="324" y="648">minimum and the mastery ceilings.</text>
+  <text class="c" x="324" y="663">Never the algorithms — only their</text>
+  <text class="c" x="324" y="678">constants.</text>
+
+  <text class="c" x="574" y="588">A ConfigVersion row: POLICY#core /</text>
+  <text class="c" x="574" y="603">V#n, plus an ACTIVE pointer. “Why were</text>
+  <text class="c" x="574" y="618">we interrupted?” then resolves to a</text>
+  <text class="c" x="574" y="633">trigger vector, plus the exact</text>
+  <text class="c" x="574" y="648">constants in force, plus the sweep</text>
+  <text class="c" x="574" y="663">that promoted them — deterministically,</text>
+  <text class="c" x="574" y="678">every time, for any escalation.</text>
+
+  <text class="c" x="824" y="588">Adversarial cohort search inside a plausibility</text>
+  <text class="c" x="824" y="603">box — an optimiser whose objective is to make</text>
+  <text class="c" x="824" y="618">the triggers spam or sleep — plus held-out seed</text>
+  <text class="c" x="824" y="633">families, plus a red team behind an information</text>
+  <text class="c" x="824" y="648">barrier: given the README and the public API</text>
+  <text class="c" x="824" y="663">only, never the trigger code, never the</text>
+  <text class="c" x="824" y="678">constants. Publish the worst cohort found,</text>
+  <text class="c" x="824" y="693">not the designed one.</text>
+
+  <text class="c" x="1124" y="588">Dominance on the held-out seed family (recall ≥,</text>
+  <text class="c" x="1124" y="603">false alarms ≤, delay ≤), with a paired-bootstrap</text>
+  <text class="c" x="1124" y="618">95 % CI on each delta excluding zero. Non-inferior</text>
+  <text class="c" x="1124" y="633">on the adversarial suite. And plateau interiority:</text>
+  <text class="c" x="1124" y="648">the ±1 neighbours must pass too. A parameter that</text>
+  <text class="c" x="1124" y="663">works at exactly 8 and fails at 7 and 9 is fitted</text>
+  <text class="c" x="1124" y="678">noise, not a threshold.</text>
+
+  <text class="c" x="1424" y="588">A hard recall floor. A gate that</text>
+  <text class="c" x="1424" y="603">never fires trivially achieves zero</text>
+  <text class="c" x="1424" y="618">false alarms, and an unconstrained</text>
+  <text class="c" x="1424" y="633">sweep finds that degenerate optimum</text>
+  <text class="c" x="1424" y="648">first. Integer-only candidates a</text>
+  <text class="c" x="1424" y="663">human can say out loud. Test-seed</text>
+  <text class="c" x="1424" y="678">hash published; those seeds are run</text>
+  <text class="c" x="1424" y="693">once per release.</text>
+</g>
+
+<g id="row2">
+  <text class="lname" x="74" y="774">L2 · MASTERY DUEL</text>
+  <text class="lsub" x="74" y="792">EMA against a BKT-style challenger,</text>
+  <text class="lsub" x="74" y="806">shadow-scored on next-response</text>
+  <text class="lsub" x="74" y="820">prediction — harness now, model later</text>
+  <rect x="74" y="830" width="64" height="18" rx="9" fill="#037f0c"/>
+  <text class="pill" x="106" y="843" text-anchor="middle" style="fill:#ffffff">FREEZE</text>
+  <rect x="146" y="830" width="76" height="18" rx="9" fill="#ffffff" stroke="#8c99a8" stroke-width="1.2"/>
+  <text class="pill" x="184" y="843" text-anchor="middle" style="fill:#5f6b7a">ROADMAP</text>
+  <text class="lnote" x="74" y="866">Why it matters: the 11 residual false</text>
+  <text class="lnote" x="74" y="880">positives are an EMA cold-start artifact</text>
+  <text class="lnote" x="74" y="894">— three consecutive misses multiply the</text>
+  <text class="lnote" x="74" y="908">EMA by 0.7³, from any prior history.</text>
+
+  <text class="c" x="324" y="774">Which learner model predicts the next</text>
+  <text class="c" x="324" y="789">response better, per student. And the</text>
+  <text class="c" x="324" y="804">deeper move: replacing attempts ≥ 9</text>
+  <text class="c" x="324" y="819">with P(mastery &lt; θ) &gt; q, so a hand-</text>
+  <text class="c" x="324" y="834">tuned count becomes a stated risk</text>
+  <text class="c" x="324" y="849">tolerance that adjusts itself with the</text>
+  <text class="c" x="324" y="864">quality of the evidence.</text>
+
+  <text class="c" x="574" y="774">STUDENT#id / MASTERY_MODEL#active —</text>
+  <text class="c" x="574" y="789">a pointer plus rolling scores — and a</text>
+  <text class="c" x="574" y="804">daily prediction log in S3.</text>
+  <text class="c" x="574" y="819">Deliberately not AgentCore Memory:</text>
+  <text class="c" x="574" y="834">that tier is conversational, and</text>
+  <text class="c" x="574" y="849">putting scoring data in it would</text>
+  <text class="c" x="574" y="864">destroy the auditability split.</text>
+
+  <text class="c" x="824" y="774">Each other — and a null baseline that both must</text>
+  <text class="c" x="824" y="789">beat: the per-student base rate. If the BKT</text>
+  <text class="c" x="824" y="804">challenger cannot beat a per-student base rate</text>
+  <text class="c" x="824" y="819">it is ornament, and the report will say so.</text>
+  <text class="c" x="824" y="834">Scored on Brier, log-loss, ECE over 10</text>
+  <text class="c" x="824" y="849">reliability bins, and AUC. The scoring harness</text>
+  <text class="c" x="824" y="864">is worth more than BKT itself: it makes every</text>
+  <text class="c" x="824" y="879">future modelling claim in this repo falsifiable.</text>
+
+  <text class="c" x="1124" y="774">Rolling Brier improvement ≥ δ over the last</text>
+  <text class="c" x="1124" y="789">W ≥ 30 responses, sustained for H consecutive</text>
+  <text class="c" x="1124" y="804">daily evaluations. Demotion at a wider margin —</text>
+  <text class="c" x="1124" y="819">asymmetric hysteresis, so a student cannot flap</text>
+  <text class="c" x="1124" y="834">between mastery models mid-week. The model and</text>
+  <text class="c" x="1124" y="849">its level-calibration map promote as one atomic</text>
+  <text class="c" x="1124" y="864">pair: a BKT posterior cannot be fed into</text>
+  <text class="c" x="1124" y="879">ceilings that were tuned for an EMA.</text>
+
+  <text class="c" x="1424" y="774">A strict feature cut-off at delivery</text>
+  <text class="c" x="1424" y="789">time: p(correct) is persisted with a</text>
+  <text class="c" x="1424" y="804">predicted_at that precedes</text>
+  <text class="c" x="1424" y="819">received_at, or the row is leakage</text>
+  <text class="c" x="1424" y="834">and not a label. A leakage detector</text>
+  <text class="c" x="1424" y="849">on top of it. And the challenger may</text>
+  <text class="c" x="1424" y="864">not raise interrupt burden at a</text>
+  <text class="c" x="1424" y="879">fixed recall.</text>
+</g>
+
+<g id="row3">
+  <text class="lname" x="74" y="960">L3 · ITEM COEVOLUTION</text>
+  <text class="lsub" x="74" y="978">generator ↔ critic ↔ probe, with</text>
+  <text class="lsub" x="74" y="992">deterministic psychometrics as the</text>
+  <text class="lsub" x="74" y="1006">referee that actually decides</text>
+  <rect x="74" y="1016" width="64" height="18" rx="9" fill="#037f0c"/>
+  <text class="pill" x="106" y="1029" text-anchor="middle" style="fill:#ffffff">FREEZE</text>
+  <rect x="146" y="1016" width="76" height="18" rx="9" fill="#ffffff" stroke="#8c99a8" stroke-width="1.2"/>
+  <text class="pill" x="184" y="1029" text-anchor="middle" style="fill:#5f6b7a">ROADMAP</text>
+  <text class="lnote" x="74" y="1052">The referee had to be fixed before it</text>
+  <text class="lnote" x="74" y="1066">could referee: the tournament once</text>
+  <text class="lnote" x="74" y="1080">retired 20 of 84 items in 14 days on</text>
+  <text class="lnote" x="74" y="1094">n ≈ 8 statistics, reported as a feature.</text>
+
+  <text class="c" x="324" y="960">Which items measure anything, and</text>
+  <text class="c" x="324" y="975">which generation prompts produce</text>
+  <text class="c" x="324" y="990">measurable items. Retirement stops</text>
+  <text class="c" x="324" y="1005">being a boolean and becomes a typed</text>
+  <text class="c" x="324" y="1020">reason — too easy, too hard, non-</text>
+  <text class="c" x="324" y="1035">discriminating, ambiguous, blind-pass</text>
+  <text class="c" x="324" y="1050">— which flows back into the generator</text>
+  <text class="c" x="324" y="1065">prompt as an explicit constraint.</text>
+
+  <text class="c" x="574" y="960">ITEM#id / STATS#window, a retirement</text>
+  <text class="c" x="574" y="975">ledger, and a regeneration queue.</text>
+  <text class="c" x="574" y="990">Provenance.prompt_version already</text>
+  <text class="c" x="574" y="1005">exists, so every regenerated item is</text>
+  <text class="c" x="574" y="1020">attributable to the prompt that made</text>
+  <text class="c" x="574" y="1035">it — which is what lets L4 be scored</text>
+  <text class="c" x="574" y="1050">on downstream psychometrics rather</text>
+  <text class="c" x="574" y="1065">than on rubric opinions.</text>
+
+  <text class="c" x="824" y="960">The Answerability Probe, run as an ensemble that</text>
+  <text class="c" x="824" y="975">records a blind-pass rate rather than a single</text>
+  <text class="c" x="824" y="990">boolean: can a student answer this without ever</text>
+  <text class="c" x="824" y="1005">seeing the material? Plus its mirror, the</text>
+  <text class="c" x="824" y="1020">Misconception Probe — a simulated student who</text>
+  <text class="c" x="824" y="1035">holds the known misconception must get the item</text>
+  <text class="c" x="824" y="1050">wrong, or the distractors cannot detect the very</text>
+  <text class="c" x="824" y="1065">error the item was written to detect.</text>
+
+  <text class="c" x="1124" y="960">Two-strikes retirement across independent windows:</text>
+  <text class="c" x="1124" y="975">flag on the point estimate, retire only on</text>
+  <text class="c" x="1124" y="990">confirmation in a later, separate window. Wilson</text>
+  <text class="c" x="1124" y="1005">intervals, never point estimates. Corrected</text>
+  <text class="c" x="1124" y="1020">item-total correlation, excluding the item from</text>
+  <text class="c" x="1124" y="1035">the total. Discrimination gated at n ≥ 25 — at</text>
+  <text class="c" x="1124" y="1050">pilot scale it is not measurable, and the README</text>
+  <text class="c" x="1124" y="1065">has to say so plainly.</text>
+
+  <text class="c" x="1424" y="960">The generator is blinded to the</text>
+  <text class="c" x="1424" y="975">retired item's response distribution.</text>
+  <text class="c" x="1424" y="990">A golden set that is immune to</text>
+  <text class="c" x="1424" y="1005">retirement, so the bank cannot drift</text>
+  <text class="c" x="1424" y="1020">out from under the measurement. And</text>
+  <text class="c" x="1424" y="1035">a weekly retirement budget cap — at</text>
+  <text class="c" x="1424" y="1050">most 5 % of the active bank — as a</text>
+  <text class="c" x="1424" y="1065">circuit breaker against collapse.</text>
+</g>
+
+<g id="row4">
+  <text class="lname" x="74" y="1146">L4 · PROMPT TOURNAMENTS</text>
+  <text class="lsub" x="74" y="1164">prompt-variant tournaments fed by the</text>
+  <text class="lsub" x="74" y="1178">human labels the pilot already</text>
+  <text class="lsub" x="74" y="1192">generates, for free</text>
+  <rect x="74" y="1202" width="64" height="18" rx="9" fill="#037f0c"/>
+  <text class="pill" x="106" y="1215" text-anchor="middle" style="fill:#ffffff">FREEZE</text>
+  <rect x="146" y="1202" width="76" height="18" rx="9" fill="#ffffff" stroke="#8c99a8" stroke-width="1.2"/>
+  <text class="pill" x="184" y="1215" text-anchor="middle" style="fill:#5f6b7a">ROADMAP</text>
+  <text class="lnote" x="74" y="1238">The 0.85 confidence gate is still</text>
+  <text class="lnote" x="74" y="1252">unmeasured — offline it is a scripted</text>
+  <text class="lnote" x="74" y="1266">constant. Grader-confidence ECE against</text>
+  <text class="lnote" x="74" y="1280">human labels is what would back it.</text>
+
+  <text class="c" x="324" y="1146">The grader, item-generator and</text>
+  <text class="c" x="324" y="1161">escalation-composer prompts. Scored</text>
+  <text class="c" x="324" y="1176">on QWK and MAE over the 0–2 ordinal</text>
+  <text class="c" x="324" y="1191">rubric points, with cost-asymmetric</text>
+  <text class="c" x="324" y="1206">rates: a false credit is worse than a</text>
+  <text class="c" x="324" y="1221">false quarantine, and the metric has</text>
+  <text class="c" x="324" y="1236">to know that.</text>
+
+  <text class="c" x="574" y="1146">PROMPT#agent / V#n plus an ACTIVE</text>
+  <text class="c" x="574" y="1161">pointer. The calibration corpus lives</text>
+  <text class="c" x="574" y="1176">in S3 with Object Lock on the test and</text>
+  <text class="c" x="574" y="1191">golden partitions — a real control</text>
+  <text class="c" x="574" y="1206">rather than a gesture, since a</text>
+  <text class="c" x="574" y="1221">tournament that can rewrite its own</text>
+  <text class="c" x="574" y="1236">test set proves nothing at all.</text>
+
+  <text class="c" x="824" y="1146">Human ground truth, already flowing and free:</text>
+  <text class="c" x="824" y="1161">every quarantine a parent approves, edits or</text>
+  <text class="c" x="824" y="1176">rejects is a label on the grader, persisted with</text>
+  <text class="c" x="824" y="1191">the machine's own prediction beside it. Plus a</text>
+  <text class="c" x="824" y="1206">teacher-labelled golden set of about 60</text>
+  <text class="c" x="824" y="1221">stratified responses, easy ones included, with</text>
+  <text class="c" x="824" y="1236">rater_role recorded and teacher labels weighted</text>
+  <text class="c" x="824" y="1251">above parent labels.</text>
+
+  <text class="c" x="1124" y="1146">Paired-bootstrap improvement on the held-out</text>
+  <text class="c" x="1124" y="1161">split, and non-regression per stratum.</text>
+  <text class="c" x="1124" y="1176">Quarantine labels are by construction exactly</text>
+  <text class="c" x="1124" y="1191">the low-confidence cases, so a grader prompt</text>
+  <text class="c" x="1124" y="1206">tuned only on them regresses on the confident</text>
+  <text class="c" x="1124" y="1221">majority; promotion requires non-regression on</text>
+  <text class="c" x="1124" y="1236">both strata. Human sign-off on any child-facing</text>
+  <text class="c" x="1124" y="1251">text, without exception.</text>
+
+  <text class="c" x="1424" y="1146">Variance collapse, constant outputs,</text>
+  <text class="c" x="1424" y="1161">and n-gram overlap between a</text>
+  <text class="c" x="1424" y="1176">candidate prompt and the calibration</text>
+  <text class="c" x="1424" y="1191">items. A quarantine-rate band: 40 %</text>
+  <text class="c" x="1424" y="1206">quarantined is useless even if it is</text>
+  <text class="c" x="1424" y="1221">accurate. And blind audit sampling on</text>
+  <text class="c" x="1424" y="1236">10 % — the proposed grade is hidden,</text>
+  <text class="c" x="1424" y="1251">because parents are approval-biased.</text>
+</g>
+
+<g id="row5">
+  <text class="lname" x="74" y="1332">L5 · THE LABEL FLYWHEEL</text>
+  <text class="lsub" x="74" y="1350">the exact tuples to persist now — the</text>
+  <text class="lsub" x="74" y="1364">substrate every other loop above</text>
+  <text class="lsub" x="74" y="1378">has to learn from</text>
+  <rect x="74" y="1388" width="64" height="18" rx="9" fill="#037f0c"/>
+  <text class="pill" x="106" y="1401" text-anchor="middle" style="fill:#ffffff">FREEZE</text>
+  <rect x="146" y="1388" width="116" height="18" rx="9" fill="#d91515"/>
+  <text class="pill" x="204" y="1401" text-anchor="middle" style="fill:#ffffff">BUILD THIS FIRST</text>
+  <text class="lnote" x="74" y="1424">The only irreversible item on the list.</text>
+  <text class="lnote" x="74" y="1438">Every other loop can be built after the</text>
+  <text class="lnote" x="74" y="1452">pilot; signal not captured during it is</text>
+  <text class="lnote" x="74" y="1466">gone forever.</text>
+
+  <text class="c" x="324" y="1332">Nothing, on its own. Six append-only</text>
+  <text class="c" x="324" y="1347">record types — Prediction, Outcome,</text>
+  <text class="c" x="324" y="1362">HumanLabel, Interrupt, ItemStat and</text>
+  <text class="c" x="324" y="1377">ConfigVersion — plus the one everyone</text>
+  <text class="c" x="324" y="1392">forgets: NearMiss, every (student, day)</text>
+  <text class="c" x="324" y="1407">where a trigger almost fired, with the</text>
+  <text class="c" x="324" y="1422">margin it missed by.</text>
+
+  <text class="c" x="574" y="1332">S3 is the corpus of record: daily</text>
+  <text class="c" x="574" y="1347">JSONL partitions, Athena-queryable,</text>
+  <text class="c" x="574" y="1362">immutable, Object Lock on the test and</text>
+  <text class="c" x="574" y="1377">golden partitions. DynamoDB holds only</text>
+  <text class="c" x="574" y="1392">what needs a point lookup. Local mode</text>
+  <text class="c" x="574" y="1407">writes the same shapes to disk, with</text>
+  <text class="c" x="574" y="1422">no credentials at all.</text>
+
+  <text class="c" x="824" y="1332">The absence of negatives. Logging only the fires</text>
+  <text class="c" x="824" y="1347">is the classic flywheel-killer: without near-</text>
+  <text class="c" x="824" y="1362">misses you can never estimate precision or recall</text>
+  <text class="c" x="824" y="1377">on real pilot data, and the pilot is the only</text>
+  <text class="c" x="824" y="1392">external check this project admits to having.</text>
+  <text class="c" x="824" y="1407">Logging them turns the pilot from an anecdote</text>
+  <text class="c" x="824" y="1422">generator into a labelled dataset.</text>
+
+  <text class="c" x="1124" y="1332">Not a gate so much as an invariant: predicted_at</text>
+  <text class="c" x="1124" y="1347">must precede received_at, or the row is leakage</text>
+  <text class="c" x="1124" y="1362">rather than a label. And every InterruptRecord</text>
+  <text class="c" x="1124" y="1377">carries followup_delta — the student's mastery</text>
+  <text class="c" x="1124" y="1392">change on that competency over the next 14 days,</text>
+  <text class="c" x="1124" y="1407">against matched non-interrupted peers. It is the</text>
+  <text class="c" x="1124" y="1422">only path to answering “does interrupting help?”,</text>
+  <text class="c" x="1124" y="1437">and it costs nothing to collect.</text>
+
+  <text class="c" x="1424" y="1332">Hash, never raw child text. The</text>
+  <text class="c" x="1424" y="1347">learning corpus must not become the</text>
+  <text class="c" x="1424" y="1362">place where the child-data guarantee</text>
+  <text class="c" x="1424" y="1377">leaks, and a text_hash plus a length</text>
+  <text class="c" x="1424" y="1392">is enough for every metric named in</text>
+  <text class="c" x="1424" y="1407">the five columns to the left.</text>
+</g>
+
+<g id="rail">
+  <rect x="60" y="1520" width="1620" height="110" rx="12" fill="#eaf6ea" stroke="#037f0c" stroke-width="2"/>
+  <text class="railh" x="84" y="1552">The constraint all of it has to preserve — the deterministic harness stays the referee</text>
+  <text class="railb" x="84" y="1578">Agents choose actions; only auditable deterministic estimators are allowed to cross a threshold. The deterministic algorithms never learn their maths — they learn their constants,</text>
+  <text class="railb" x="84" y="1600">and a constant becomes a versioned, hashed row with a provenance trail that one write reverts. Note the shape: the two loops that touch a child's decisions, L1 and L2, contain no LLM at all.</text>
+</g>
+
+<text class="foot" x="60" y="1668">Source: docs/product/self-learning.md (adversarial ML-research review, 2026-08-20). FREEZE = shippable inside the current freeze · ROADMAP = post-hackathon design, drawn here so the claim stays bounded rather than implied.</text>
+<text class="foot" x="60" y="1690">Explicitly not being built before the pilot: a generic experimentation platform, any online or continuous learning during a live 30-family pilot, and per-student prompt personalisation. Offline RL and contextual bandits are premature at ~4k–12k decision points — but the propensities are logged anyway, so a later evaluation stays possible.</text>
+
+</svg>

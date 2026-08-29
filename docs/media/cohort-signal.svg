@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1520" height="1520" viewBox="0 0 1520 1520" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5f6b7a"/>
+    </marker>
+    <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#037f0c"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1520" height="1520" fill="#ffffff"/>
+
+  <text x="56" y="62" font-size="27" font-weight="bold" fill="#0f1b2a">The cohort signal</text>
+  <text x="56" y="92" font-size="14" fill="#3c4650">Five families practising alone become one note for the teacher — and not one of them, nor the child, is ever named.</text>
+
+  <!-- ================= BAND 1 : the families ================= -->
+  <rect x="56" y="132" width="1408" height="210" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.5"/>
+  <text x="76" y="160" font-size="12" font-weight="bold" fill="#6b40b2" letter-spacing="0.8">FIVE FAMILIES OF ONE SECTION, PRACTISING INDEPENDENTLY — colegio-demo-4-b</text>
+
+  <rect x="88" y="180" width="248" height="112" rx="10" fill="#ffffff" stroke="#6b40b2" stroke-width="2"/>
+  <text x="106" y="206" font-size="14" font-weight="bold" fill="#0f1b2a">Family 1</text>
+  <text x="106" y="230" font-size="11.5" fill="#3c4650">its own chat, its own alias,</text>
+  <text x="106" y="248" font-size="11.5" fill="#3c4650">its own mastery rows</text>
+  <text x="106" y="272" font-size="11.5" fill="#037f0c">Equivalent fractions: STRUGGLING</text>
+
+  <rect x="356" y="180" width="248" height="112" rx="10" fill="#ffffff" stroke="#6b40b2" stroke-width="2"/>
+  <text x="374" y="206" font-size="14" font-weight="bold" fill="#0f1b2a">Family 2</text>
+  <text x="374" y="230" font-size="11.5" fill="#3c4650">its own chat, its own alias,</text>
+  <text x="374" y="248" font-size="11.5" fill="#3c4650">its own mastery rows</text>
+  <text x="374" y="272" font-size="11.5" fill="#037f0c">Equivalent fractions: STRUGGLING</text>
+
+  <rect x="624" y="180" width="248" height="112" rx="10" fill="#ffffff" stroke="#6b40b2" stroke-width="2"/>
+  <text x="642" y="206" font-size="14" font-weight="bold" fill="#0f1b2a">Family 3</text>
+  <text x="642" y="230" font-size="11.5" fill="#3c4650">its own chat, its own alias,</text>
+  <text x="642" y="248" font-size="11.5" fill="#3c4650">its own mastery rows</text>
+  <text x="642" y="272" font-size="11.5" fill="#037f0c">Equivalent fractions: STRUGGLING</text>
+
+  <rect x="892" y="180" width="248" height="112" rx="10" fill="#ffffff" stroke="#6b40b2" stroke-width="2"/>
+  <text x="910" y="206" font-size="14" font-weight="bold" fill="#0f1b2a">Family 4</text>
+  <text x="910" y="230" font-size="11.5" fill="#3c4650">its own chat, its own alias,</text>
+  <text x="910" y="248" font-size="11.5" fill="#3c4650">its own mastery rows</text>
+  <text x="910" y="272" font-size="11.5" fill="#037f0c">Equivalent fractions: STRUGGLING</text>
+
+  <rect x="1160" y="180" width="248" height="112" rx="10" fill="#ffffff" stroke="#6b40b2" stroke-width="2"/>
+  <text x="1178" y="206" font-size="14" font-weight="bold" fill="#0f1b2a">Family 5</text>
+  <text x="1178" y="230" font-size="11.5" fill="#3c4650">its own chat, its own alias,</text>
+  <text x="1178" y="248" font-size="11.5" fill="#3c4650">its own mastery rows</text>
+  <text x="1178" y="272" font-size="11.5" fill="#037f0c">Equivalent fractions: STRUGGLING</text>
+
+  <text x="88" y="322" font-size="11" font-style="italic" fill="#5f6b7a">Five separate chats, five separate parents, five separate mastery tables. No family can see another one, and none of them knows this is happening.</text>
+
+  <line x1="200" y1="346" x2="200" y2="368" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)"/>
+  <text x="216" y="363" font-size="10.5" font-style="italic" fill="#5f6b7a">what crosses: one row per family — (family_id, section_key, competency_id, failed_on). No alias, no answers, no scores.</text>
+
+  <!-- ================= BAND 2 : the daily close ================= -->
+  <rect x="56" y="372" width="1408" height="452" rx="12" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.5"/>
+  <text x="76" y="400" font-size="12" font-weight="bold" fill="#037f0c" letter-spacing="0.8">THE DAILY CLOSE — FOUR DETERMINISTIC STEPS, NO MODEL ANYWHERE IN THEM</text>
+
+  <rect x="88" y="422" width="310" height="186" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="2"/>
+  <text x="108" y="452" font-size="14.5" font-weight="bold" fill="#0f1b2a">1 · Group the day's failures</text>
+  <text x="108" y="478" font-size="11.5" fill="#3c4650">by (section_key, competency_id), over</text>
+  <text x="108" y="496" font-size="11.5" fill="#3c4650">every family whose calendar can deliver</text>
+  <text x="108" y="514" font-size="11.5" fill="#3c4650">today. A family the close skipped adds</text>
+  <text x="108" y="532" font-size="11.5" fill="#3c4650">nothing at all — not even a zero.</text>
+  <text x="108" y="588" font-size="11" font-style="italic" fill="#5f6b7a">core/cohort/signal.py · group_families</text>
+
+  <line x1="402" y1="515" x2="428" y2="515" stroke="#037f0c" stroke-width="2" marker-end="url(#green)"/>
+
+  <rect x="432" y="422" width="310" height="186" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="2"/>
+  <text x="452" y="452" font-size="14.5" font-weight="bold" fill="#0f1b2a">2 · Evidence gate, per family</text>
+  <text x="452" y="478" font-size="11.5" fill="#3c4650">a family counts only if that student's</text>
+  <text x="452" y="496" font-size="11.5" fill="#3c4650">mastery row on that competency reads</text>
+  <text x="452" y="514" font-size="11.5" fill="#3c4650">STRUGGLING with attempts ≥ 9 — the</text>
+  <text x="452" y="532" font-size="11.5" fill="#3c4650">same bar as a private interrupt.</text>
+  <text x="452" y="588" font-size="11" font-style="italic" fill="#5f6b7a">settings.escalation_min_samples = 9</text>
+
+  <line x1="746" y1="515" x2="772" y2="515" stroke="#037f0c" stroke-width="2" marker-end="url(#green)"/>
+
+  <rect x="776" y="422" width="310" height="186" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="2"/>
+  <text x="796" y="452" font-size="14.5" font-weight="bold" fill="#0f1b2a">3 · k-anonymity floor</text>
+  <text x="796" y="478" font-size="11.5" fill="#3c4650">the group must hold k ≥ 3 distinct</text>
+  <text x="796" y="496" font-size="11.5" fill="#3c4650">families inside a 7-day window. Two</text>
+  <text x="796" y="514" font-size="11.5" fill="#3c4650">families are two children; three are a</text>
+  <text x="796" y="532" font-size="11.5" fill="#3c4650">pattern in a classroom.</text>
+  <text x="796" y="588" font-size="11" font-style="italic" fill="#5f6b7a">settings.cohort_min_families = 3</text>
+
+  <line x1="1090" y1="515" x2="1116" y2="515" stroke="#037f0c" stroke-width="2" marker-end="url(#green)"/>
+
+  <rect x="1120" y="422" width="310" height="186" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="2"/>
+  <text x="1140" y="452" font-size="14.5" font-weight="bold" fill="#0f1b2a">4 · ISO-week claim</text>
+  <text x="1140" y="478" font-size="11.5" fill="#3c4650">cohort#colegio-demo-4-b#math.g4.</text>
+  <text x="1140" y="496" font-size="11.5" fill="#3c4650">fractions.equivalence#2026-W38 is</text>
+  <text x="1140" y="514" font-size="11.5" fill="#3c4650">written once. A replayed close loses it,</text>
+  <text x="1140" y="532" font-size="11.5" fill="#3c4650">so a section speaks at most once a week.</text>
+  <text x="1140" y="588" font-size="11" font-style="italic" fill="#5f6b7a">core/cohort/signal.py · signal_claim_key</text>
+
+  <rect x="88" y="632" width="310" height="164" rx="8" fill="#f6f8fa"/>
+  <text x="108" y="658" font-size="12.5" font-weight="bold" fill="#0f1b2a">Isolation is structural</text>
+  <text x="108" y="682" font-size="11.5" fill="#3c4650">Mastery rows are keyed by a student</text>
+  <text x="108" y="700" font-size="11.5" fill="#3c4650">id inside one family. Nothing is read</text>
+  <text x="108" y="718" font-size="11.5" fill="#3c4650">across families except this count,</text>
+  <text x="108" y="736" font-size="11.5" fill="#3c4650">and the count never leaves the</text>
+  <text x="108" y="754" font-size="11.5" fill="#3c4650">section it was computed in.</text>
+
+  <rect x="432" y="632" width="310" height="164" rx="8" fill="#f6f8fa"/>
+  <text x="452" y="658" font-size="12.5" font-weight="bold" fill="#0f1b2a">No cheaper door</text>
+  <text x="452" y="682" font-size="11.5" fill="#3c4650">The cohort path cannot become a</text>
+  <text x="452" y="700" font-size="11.5" fill="#3c4650">way of reaching a parent on less</text>
+  <text x="452" y="718" font-size="11.5" fill="#3c4650">evidence than a private struggle</text>
+  <text x="452" y="736" font-size="11.5" fill="#3c4650">triage would have required. The</text>
+  <text x="452" y="754" font-size="11.5" fill="#3c4650">gate is the same number.</text>
+
+  <rect x="776" y="632" width="310" height="164" rx="8" fill="#fdeceb" stroke="#d91515" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="796" y="658" font-size="12.5" font-weight="bold" fill="#d91515">Section 4-a, the same week</text>
+  <text x="796" y="682" font-size="11.5" fill="#3c4650">Two families report the same</text>
+  <text x="796" y="700" font-size="11.5" fill="#3c4650">difficulty. 2 &lt; 3, so there is no</text>
+  <text x="796" y="718" font-size="11.5" fill="#3c4650">group, no signal, no note and no</text>
+  <text x="796" y="736" font-size="11.5" fill="#3c4650">message to anyone. The floor is</text>
+  <text x="796" y="754" font-size="11.5" fill="#3c4650">arithmetic, not judgement.</text>
+
+  <rect x="1120" y="632" width="310" height="164" rx="8" fill="#f6f8fa"/>
+  <text x="1140" y="658" font-size="12.5" font-weight="bold" fill="#0f1b2a">Exactly once</text>
+  <text x="1140" y="682" font-size="11.5" fill="#3c4650">Retries, crashed workers and</text>
+  <text x="1140" y="700" font-size="11.5" fill="#3c4650">duplicate queue deliveries all replay</text>
+  <text x="1140" y="718" font-size="11.5" fill="#3c4650">the whole close. The claim lets only</text>
+  <text x="1140" y="736" font-size="11.5" fill="#3c4650">the first of them speak, so a family</text>
+  <text x="1140" y="754" font-size="11.5" fill="#3c4650">cannot be told twice.</text>
+
+  <line x1="200" y1="830" x2="200" y2="852" stroke="#5f6b7a" stroke-width="2" marker-end="url(#grey)"/>
+  <text x="216" y="847" font-size="10.5" font-style="italic" fill="#5f6b7a">what crosses: one integer — how many families. The competency's name and the section key travel with it; nothing else does.</text>
+
+  <!-- ================= BAND 3 : the note ================= -->
+  <rect x="56" y="872" width="452" height="292" rx="10" fill="#eaf3fd" stroke="#0972d3" stroke-width="2"/>
+  <text x="80" y="902" font-size="14.5" font-weight="bold" fill="#0f1b2a">The drafting prompt receives four things</text>
+  <text x="80" y="930" font-size="11.5" fill="#3c4650">1 · the language of the note — es</text>
+  <text x="80" y="952" font-size="11.5" fill="#3c4650">2 · the competency's name — Equivalent fractions</text>
+  <text x="80" y="974" font-size="11.5" fill="#3c4650">3 · the section key — colegio-demo-4-b</text>
+  <text x="80" y="996" font-size="11.5" fill="#3c4650">4 · how many families — 5</text>
+  <text x="80" y="1028" font-size="11.5" fill="#3c4650">That is the entire request. The system prompt spends</text>
+  <text x="80" y="1046" font-size="11.5" fill="#3c4650">its first instruction on the same point:</text>
+  <text x="80" y="1072" font-size="11.5" font-style="italic" fill="#0972d3">"You are given no names: never invent, guess, or ask</text>
+  <text x="80" y="1090" font-size="11.5" font-style="italic" fill="#0972d3">for a student name, an alias, a teacher name, or a</text>
+  <text x="80" y="1108" font-size="11.5" font-style="italic" fill="#0972d3">school name. Write about the competency only."</text>
+  <text x="80" y="1140" font-size="10.5" font-style="italic" fill="#5f6b7a">agents/prompts/escalation_composer.py · Claude Sonnet 4.6</text>
+
+  <rect x="534" y="872" width="452" height="292" rx="10" fill="#fdeceb" stroke="#d91515" stroke-width="2"/>
+  <text x="558" y="902" font-size="14.5" font-weight="bold" fill="#d91515">And never receives these</text>
+  <text x="558" y="930" font-size="11.5" fill="#3c4650">✕  the child's alias</text>
+  <text x="558" y="952" font-size="11.5" fill="#3c4650">✕  any student id or family id</text>
+  <text x="558" y="974" font-size="11.5" fill="#3c4650">✕  any verbatim answer the child wrote</text>
+  <text x="558" y="996" font-size="11.5" fill="#3c4650">✕  any per-child score, level or attempt count</text>
+  <text x="558" y="1018" font-size="11.5" fill="#3c4650">✕  a real name of any kind — child, teacher or school</text>
+  <text x="558" y="1050" font-size="11.5" fill="#3c4650">This is not a convention, it is an assertion. The test</text>
+  <text x="558" y="1068" font-size="11.5" fill="#3c4650">joins every prompt and every call argument the model</text>
+  <text x="558" y="1086" font-size="11.5" fill="#3c4650">was handed and fails if the alias or the quoted answer</text>
+  <text x="558" y="1104" font-size="11.5" fill="#3c4650">appears anywhere inside them.</text>
+  <text x="558" y="1132" font-size="10.5" font-style="italic" fill="#5f6b7a">tests/agents/test_closure.py ::</text>
+  <text x="558" y="1148" font-size="10.5" font-style="italic" fill="#5f6b7a">test_the_teacher_note_prompt_never_carries_the_alias_or_the_quotes</text>
+
+  <rect x="1012" y="872" width="452" height="292" rx="10" fill="#f2ecfa" stroke="#6b40b2" stroke-width="2"/>
+  <text x="1036" y="902" font-size="14.5" font-weight="bold" fill="#0f1b2a">What each of the five parents gets</text>
+  <text x="1036" y="930" font-size="11.5" font-style="italic" fill="#6b40b2">"Aviso: 5 familias de colegio-demo-4-b están</text>
+  <text x="1036" y="948" font-size="11.5" font-style="italic" fill="#6b40b2">tropezando con Equivalent fractions esta semana.</text>
+  <text x="1036" y="966" font-size="11.5" font-style="italic" fill="#6b40b2">Redacté una nota para la maestra por si quieres</text>
+  <text x="1036" y="984" font-size="11.5" font-style="italic" fill="#6b40b2">compartirla:"</text>
+  <text x="1036" y="1012" font-size="11.5" fill="#3c4650">…and then the note itself: two or three sentences,</text>
+  <text x="1036" y="1030" font-size="11.5" fill="#3c4650">no greeting and no signature, saying what the</text>
+  <text x="1036" y="1048" font-size="11.5" fill="#3c4650">difficulty is, that it keeps coming back, and asking</text>
+  <text x="1036" y="1066" font-size="11.5" fill="#3c4650">for one thing the family can practise at home.</text>
+  <text x="1036" y="1094" font-size="11.5" fill="#3c4650">Counts only. Every parent in the section receives it,</text>
+  <text x="1036" y="1112" font-size="11.5" fill="#3c4650">and each decides alone whether to hand it over.</text>
+  <text x="1036" y="1140" font-size="10.5" font-style="italic" fill="#5f6b7a">the teacher installs nothing and has no account to install</text>
+
+  <!-- ================= BAND 4 : evidence ================= -->
+  <rect x="56" y="1188" width="690" height="238" rx="10" fill="#f6f8fa"/>
+  <rect x="56" y="1188" width="4" height="238" fill="#037f0c"/>
+  <text x="80" y="1218" font-size="14.5" font-weight="bold" fill="#0f1b2a">Measured — 40 virgin seeds, 30 students × 14 days each</text>
+  <text x="80" y="1246" font-size="11.5" fill="#3c4650">77 cohort signals fired in total across the sweep.</text>
+  <text x="80" y="1268" font-size="11.5" fill="#3c4650">75 of them in colegio-demo-4-b, the planted cluster of five families.</text>
+  <text x="80" y="1290" font-size="11.5" fill="#3c4650">2 fired anywhere else.</text>
+  <text x="80" y="1312" font-size="11.5" fill="#3c4650">The weekly cap held in every seed: never twice for one section in one ISO week.</text>
+  <text x="80" y="1344" font-size="11.5" fill="#3c4650">Gate G5 — only section 4-b, at most one signal per ISO week — reads 38/40 seeds</text>
+  <text x="80" y="1362" font-size="11.5" fill="#3c4650">against a pre-registered ≥ 95 % bar. It passes.</text>
+  <text x="80" y="1400" font-size="10.5" font-style="italic" fill="#5f6b7a">fp-residue-2026-08-21, G5 rescored on ground truth · calibration-validation-2026-08-20</text>
+
+  <rect x="774" y="1188" width="690" height="238" rx="10" fill="#fdeceb" stroke="#d91515" stroke-width="2"/>
+  <text x="798" y="1218" font-size="14.5" font-weight="bold" fill="#d91515">Honest read — the gate passing is not the signal being justified</text>
+  <text x="798" y="1246" font-size="11.5" fill="#3c4650">Both stray signals stood on two credited families, not three: the third family behind</text>
+  <text x="798" y="1264" font-size="11.5" fill="#3c4650">each was a struggle false positive. The k-floor inherits the estimator's errors — it</text>
+  <text x="798" y="1282" font-size="11.5" fill="#3c4650">counts families, so it cannot filter the thing it is counting.</text>
+  <text x="798" y="1310" font-size="11.5" fill="#3c4650">And the clean row is partly arithmetic. In this cohort sections 4-a and 4-c hold exactly</text>
+  <text x="798" y="1328" font-size="11.5" fill="#3c4650">two low-ability students each, below the floor by construction, so no non-target section</text>
+  <text x="798" y="1346" font-size="11.5" fill="#3c4650">is even capable of firing. The adversarial review said so in its own autopsy; the repair —</text>
+  <text x="798" y="1364" font-size="11.5" fill="#3c4650">planting three struggling students in a non-target section so the signal can misfire — is</text>
+  <text x="798" y="1382" font-size="11.5" fill="#3c4650">on the roadmap, and is not inside this number.</text>
+  <text x="798" y="1408" font-size="10.5" font-style="italic" fill="#5f6b7a">adversarial-review-2026-08-20-autopsy, finding F-05 · fp-residue-2026-08-21</text>
+
+  <text x="56" y="1470" font-size="10.5" font-style="italic" fill="#8c99a8">Steps 1–4 are deterministic code in core/cohort and the daily-close graph; the only model call in the whole path writes the sentences of a note that contains no one's name.</text>
+</svg>

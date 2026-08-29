@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="1560" viewBox="0 0 1560 1560">
+<style>
+text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+.title { font-size: 27px; font-weight: 700; fill: #0f1b2a; }
+.sub { font-size: 14px; fill: #5f6b7a; }
+.ph { font-size: 14px; font-weight: 700; fill: #ffffff; letter-spacing: 0.4px; }
+.phs { font-size: 11.5px; fill: #ddd0f2; }
+.b { font-size: 11.5px; fill: #0f1b2a; }
+.bb { font-size: 11.5px; font-weight: 700; fill: #0f1b2a; }
+.bs { font-size: 11px; fill: #3c4650; }
+.btn { font-size: 11.5px; font-weight: 700; fill: #6b40b2; }
+.btnq { font-size: 11.5px; font-weight: 700; fill: #8c99a8; }
+.cap { font-size: 10.5px; font-style: italic; fill: #5f6b7a; }
+.lbl { font-size: 10.5px; font-weight: 700; letter-spacing: 0.7px; }
+.bandh { font-size: 15px; font-weight: 700; fill: #037f0c; }
+.bandi { font-size: 11.5px; font-weight: 700; fill: #0f1b2a; }
+.bandd { font-size: 10.5px; fill: #3c4650; }
+.foot { font-size: 11px; fill: #5f6b7a; }
+.foots { font-size: 10.5px; fill: #8c99a8; }
+.panel { fill: #ffffff; stroke: #d9cdee; stroke-width: 1.5; }
+.bub { fill: #f4f6f8; stroke: #dfe3e8; stroke-width: 1; }
+.bubp { fill: #f2ecfa; stroke: #c9b3e8; stroke-width: 1; }
+.bubr { fill: #fdeceb; stroke: #e8908a; stroke-width: 1; }
+</style>
+
+<rect x="0" y="0" width="1560" height="1560" fill="#ffffff"/>
+
+<text class="title" x="50" y="52">Repaso — a parent's first week, message by message</text>
+<text class="sub" x="50" y="78">The whole product lives in one Telegram chat that belongs to the parent. The child installs nothing, has no account, and has no real name — only an alias.</text>
+<text class="sub" x="50" y="98">Two moments ask the parent to decide. Everything else the system settles on its own, or refuses to send.</text>
+
+<rect x="1288" y="30" width="222" height="30" rx="15" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.2"/>
+<text class="btn" x="1399" y="50" text-anchor="middle">ES · every bubble is Spanish</text>
+
+<g id="panel1">
+  <rect class="panel" x="50" y="128" width="460" height="600" rx="12"/>
+  <rect x="50" y="128" width="460" height="46" rx="12" fill="#6b40b2"/>
+  <rect x="50" y="152" width="460" height="22" fill="#6b40b2"/>
+  <text class="ph" x="68" y="157">DAY 0 · SIGN-UP</text>
+  <text class="phs" x="492" y="157" text-anchor="end">≈ 8 minutes, once</text>
+  <rect x="50" y="128" width="460" height="600" rx="12" fill="none" stroke="#d9cdee" stroke-width="1.5"/>
+
+  <rect class="bub" x="68" y="192" width="360" height="63" rx="9"/>
+  <text class="b" x="80" y="213">Hola, soy Repaso, el tutor de refuerzo de tu familia.</text>
+  <text class="b" x="80" y="228">Yo trabajo contigo, el representante: tú me mandas el</text>
+  <text class="b" x="80" y="243">material y yo armo una práctica corta cada día.</text>
+
+  <rect class="bub" x="68" y="265" width="360" height="108" rx="9"/>
+  <text class="b" x="80" y="286">Antes de empezar, lo importante:</text>
+  <text class="b" x="80" y="301">1. La cuenta es tuya. Tu hijo o hija nunca usa Telegram.</text>
+  <text class="b" x="80" y="316">2. Nunca me des el nombre real. Usaremos un alias.</text>
+  <text class="b" x="80" y="331">3. Guardo solo alias, grado, material y respuestas.</text>
+  <text class="b" x="80" y="346">4. Código abierto; tus datos no. /forget borra todo.</text>
+  <text class="b" x="80" y="361">¿Aceptas estas condiciones?</text>
+
+  <rect x="68" y="383" width="110" height="28" rx="14" fill="#ffffff" stroke="#6b40b2" stroke-width="1.2"/>
+  <text class="btn" x="123" y="401" text-anchor="middle">Acepto</text>
+  <rect x="186" y="383" width="110" height="28" rx="14" fill="#ffffff" stroke="#c9b3e8" stroke-width="1.2"/>
+  <text class="btnq" x="241" y="401" text-anchor="middle">No acepto</text>
+
+  <rect class="bubp" x="430" y="421" width="62" height="30" rx="9"/>
+  <text class="b" x="461" y="441" text-anchor="middle">Acepto</text>
+
+  <rect class="bub" x="68" y="459" width="238" height="30" rx="9"/>
+  <text class="b" x="80" y="479">¿Qué alias usamos para el estudiante?</text>
+
+  <rect class="bubp" x="447" y="497" width="45" height="30" rx="9"/>
+  <text class="b" x="469" y="517" text-anchor="middle">Leo</text>
+
+  <rect x="68" y="535" width="424" height="52" rx="8" fill="#f7f8fa" stroke="#dfe3e8" stroke-width="1"/>
+  <text class="cap" x="80" y="553">three more questions, one short answer each —</text>
+  <text class="bb" x="80" y="573">grade 4  ·  San José 4to B  ·  practice at 7:00 pm</text>
+
+  <rect class="bub" x="68" y="599" width="360" height="63" rx="9"/>
+  <text class="b" x="80" y="620">Leo queda inscrito. Cada día a las 7pm llega una</text>
+  <text class="b" x="80" y="635">práctica de 5 a 10 minutos a este chat. Solo te</text>
+  <text class="b" x="80" y="650">interrumpo aparte cuando haya una decisión que tomar.</text>
+
+  <text class="cap" x="68" y="686">Four facts, and not one of them is a name: an alias, a grade, a section and an hour.</text>
+  <text class="cap" x="68" y="701">The strict data models physically reject anything shaped like a real identity, and</text>
+  <text class="cap" x="68" y="716">/forget erases every trace of the family after a double confirmation.</text>
+</g>
+
+<g id="panel2">
+  <rect class="panel" x="550" y="128" width="460" height="600" rx="12"/>
+  <rect x="550" y="128" width="460" height="46" rx="12" fill="#6b40b2"/>
+  <rect x="550" y="152" width="460" height="22" fill="#6b40b2"/>
+  <text class="ph" x="568" y="157">DAY 0 · FIRST MATERIAL</text>
+  <text class="phs" x="992" y="157" text-anchor="end">whatever the school already sent</text>
+  <rect x="550" y="128" width="460" height="600" rx="12" fill="none" stroke="#d9cdee" stroke-width="1.5"/>
+
+  <rect class="bubp" x="822" y="192" width="170" height="92" rx="9"/>
+  <rect x="834" y="202" width="146" height="56" rx="6" fill="#ffffff" stroke="#c9b3e8" stroke-width="1"/>
+  <circle cx="856" cy="218" r="7" fill="#ffd28a"/>
+  <path d="M840 257 L866 227 L886 247 L908 231 L978 257 Z" fill="#dfe3e8"/>
+  <text class="cap" x="907" y="275" text-anchor="middle">cuaderno_leo.jpg · 2.1 MB</text>
+
+  <rect class="bub" x="568" y="294" width="264" height="30" rx="9"/>
+  <text class="b" x="580" y="314">Recibido ✔ Estoy preparando el material.</text>
+
+  <rect x="568" y="332" width="424" height="58" rx="8" fill="#eaf3fd" stroke="#0972d3" stroke-width="1.2"/>
+  <text class="lbl" x="580" y="350" style="fill:#0972d3">THE INGEST GRAPH — THE PARENT NEVER SEES IT</text>
+  <text class="bs" x="580" y="368">Armor screener → material parser → competency mapper</text>
+  <text class="bs" x="580" y="383">→ item generator → item critic → answerability probe</text>
+
+  <rect class="bub" x="568" y="400" width="300" height="48" rx="9"/>
+  <text class="b" x="580" y="421">Material listo: preparé 7 ejercicios sobre</text>
+  <text class="b" x="580" y="436">fracciones equivalentes.</text>
+
+  <text class="cap" x="568" y="472">…and when the material will not do, it says so instead of inventing:</text>
+
+  <rect class="bubr" x="568" y="484" width="360" height="63" rx="9"/>
+  <text class="b" x="580" y="505">La foto salió borrosa y no quiero inventar lo que no</text>
+  <text class="b" x="580" y="520">leo. ¿Puedes tomarla de nuevo con más luz? Si puedes,</text>
+  <text class="b" x="580" y="535">envíala como archivo para que no pierda calidad.</text>
+
+  <rect class="bubr" x="568" y="557" width="360" height="48" rx="9"/>
+  <text class="b" x="580" y="578">Con esto solo conozco el tema, pero no cómo lo trabajan</text>
+  <text class="b" x="580" y="593">en clase. ¿Me mandas una foto de un ejercicio resuelto?</text>
+
+  <rect class="bubr" x="568" y="615" width="360" height="48" rx="9"/>
+  <text class="b" x="580" y="636">Ese material no parece de matemática. Si crees que me</text>
+  <text class="b" x="580" y="651">equivoqué, reenvíalo con una nota corta del tema.</text>
+
+  <text class="cap" x="568" y="687">A deterministic legibility metric gates the OCR and the Armor screener runs before</text>
+  <text class="cap" x="568" y="702">any model call: 400/400 adversarial payloads intercepted across 9 families, ES and</text>
+  <text class="cap" x="568" y="717">EN, at 0 % false-block on 200 clean grade-4 texts. Garbage is never made into practice.</text>
+</g>
+
+<g id="panel3">
+  <rect class="panel" x="1050" y="128" width="460" height="600" rx="12"/>
+  <rect x="1050" y="128" width="460" height="46" rx="12" fill="#6b40b2"/>
+  <rect x="1050" y="152" width="460" height="22" fill="#6b40b2"/>
+  <text class="ph" x="1068" y="157">DAY 1 … n · THE DAILY CAPSULE</text>
+  <text class="phs" x="1492" y="157" text-anchor="end">7:00 pm, every day</text>
+  <rect x="1050" y="128" width="460" height="600" rx="12" fill="none" stroke="#d9cdee" stroke-width="1.5"/>
+
+  <text class="cap" x="1280" y="204" text-anchor="middle">— today, 7:00 pm —</text>
+
+  <rect class="bub" x="1068" y="216" width="318" height="30" rx="9"/>
+  <text class="bb" x="1080" y="236">Práctica de hoy para Leo — Fracciones equivalentes</text>
+
+  <rect class="bub" x="1068" y="254" width="360" height="48" rx="9"/>
+  <text class="b" x="1080" y="275">Dos fracciones son equivalentes si representan la misma</text>
+  <text class="b" x="1080" y="290">parte del entero: 2/4 y 1/2 son la misma cantidad.</text>
+
+  <rect x="1068" y="310" width="360" height="70" rx="9" fill="#ffffff" stroke="#dfe3e8" stroke-width="1"/>
+  <text class="lbl" x="1080" y="328" style="fill:#037f0c">1 · REVIEW — DUE TODAY (SM-2)</text>
+  <text class="b" x="1080" y="346">¿Cuál fracción equivale a 2/4?</text>
+  <rect x="1080" y="354" width="72" height="22" rx="11" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.2"/>
+  <text class="btn" x="1116" y="369" text-anchor="middle">1/2</text>
+  <rect x="1160" y="354" width="72" height="22" rx="11" fill="#ffffff" stroke="#c9b3e8" stroke-width="1"/>
+  <text class="btnq" x="1196" y="369" text-anchor="middle">2/8</text>
+  <rect x="1240" y="354" width="72" height="22" rx="11" fill="#ffffff" stroke="#c9b3e8" stroke-width="1"/>
+  <text class="btnq" x="1276" y="369" text-anchor="middle">3/4</text>
+
+  <rect class="bub" x="1068" y="390" width="336" height="30" rx="9"/>
+  <text class="b" x="1080" y="410">¡Correcto! 2/4 y 1/2 cubren la misma parte del entero.</text>
+
+  <rect x="1068" y="428" width="360" height="30" rx="9" fill="#f7f8fa" stroke="#dfe3e8" stroke-width="1"/>
+  <text class="bs" x="1080" y="447" style="fill:#5f6b7a">2 · review — Recta numérica y décimas   ✔ correcto</text>
+
+  <rect x="1068" y="466" width="360" height="52" rx="9" fill="#ffffff" stroke="#dfe3e8" stroke-width="1"/>
+  <text class="lbl" x="1080" y="484" style="fill:#0972d3">3 · NEW — ONE NEW THING EVERY DAY</text>
+  <text class="b" x="1080" y="502">Compara 3/5 y 2/3. ¿Cuál es mayor?</text>
+
+  <rect class="bub" x="1068" y="528" width="342" height="30" rx="9"/>
+  <text class="b" x="1080" y="548">Todavía no. Llévalas al mismo denominador: 9/15 y 10/15.</text>
+
+  <rect class="bub" x="1068" y="566" width="348" height="30" rx="9"/>
+  <text class="b" x="1080" y="586">¡Práctica de hoy completa! Racha de 4 días. Hasta mañana.</text>
+
+  <rect x="1068" y="608" width="424" height="60" rx="8" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.2"/>
+  <text class="lbl" x="1080" y="626" style="fill:#037f0c">THE DETERMINISTIC HALF OF THIS PANEL</text>
+  <text class="bs" x="1080" y="644">SM-2 picks what is due · mastery is an EMA over graded</text>
+  <text class="bs" x="1080" y="659">attempts · difficulty follows measured performance, not mood.</text>
+
+  <text class="cap" x="1068" y="691">Reviews come first, and one unseen item keeps a reserved slot every day so a strong</text>
+  <text class="cap" x="1068" y="706">student still meets new material. Feedback is immediate — nothing in this panel waits</text>
+  <text class="cap" x="1068" y="721">for a human. 420 student-days produced 1,062 graded responses in about 14 seconds.</text>
+</g>
+
+<g id="panel4">
+  <rect class="panel" x="50" y="764" width="460" height="440" rx="12"/>
+  <rect x="50" y="764" width="460" height="46" rx="12" fill="#6b40b2"/>
+  <rect x="50" y="788" width="460" height="22" fill="#6b40b2"/>
+  <text class="ph" x="68" y="793">YOU DECIDE — 1 of 2</text>
+  <text class="phs" x="492" y="793" text-anchor="end">low-confidence open answer</text>
+  <rect x="50" y="764" width="460" height="440" rx="12" fill="none" stroke="#d9cdee" stroke-width="1.5"/>
+
+  <rect class="bub" x="68" y="828" width="360" height="63" rx="9"/>
+  <text class="b" x="80" y="849">Necesito tu ojo: Leo respondió <tspan style="font-style:italic;fill:#6b40b2">«creo que es un medio,</tspan></text>
+  <text class="b" x="80" y="864"><tspan style="font-style:italic;fill:#6b40b2">más o menos»</tspan> y no estoy seguro de cómo calificarla.</text>
+  <text class="b" x="80" y="879">¿La das por buena?</text>
+
+  <rect x="68" y="903" width="120" height="28" rx="14" fill="#ffffff" stroke="#6b40b2" stroke-width="1.2"/>
+  <text class="btn" x="128" y="921" text-anchor="middle">Está bien</text>
+  <rect x="196" y="903" width="120" height="28" rx="14" fill="#ffffff" stroke="#c9b3e8" stroke-width="1.2"/>
+  <text class="btnq" x="256" y="921" text-anchor="middle">Está mal</text>
+
+  <rect class="bubp" x="412" y="941" width="80" height="30" rx="9"/>
+  <text class="b" x="452" y="961" text-anchor="middle">Está bien</text>
+
+  <rect x="68" y="981" width="424" height="66" rx="8" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.2"/>
+  <text class="lbl" x="80" y="999" style="fill:#037f0c">MEANWHILE, IN THE DETERMINISTIC HARNESS</text>
+  <text class="bs" x="80" y="1017">grader confidence 0.30  &lt;  gate 0.85  →  the grade</text>
+  <text class="bs" x="80" y="1032">does NOT exist; the answer sits in quarantine.</text>
+
+  <rect x="68" y="1057" width="424" height="60" rx="8" fill="#eaf3fd" stroke="#0972d3" stroke-width="1.2"/>
+  <text class="lbl" x="80" y="1075" style="fill:#0972d3">AND WHAT YOUR TAP BECOMES</text>
+  <text class="bs" x="80" y="1093">a human label: your verdict, the machine's verdict, the</text>
+  <text class="bs" x="80" y="1108">confidence it had, and how long you took to decide.</text>
+
+  <text class="cap" x="68" y="1141">The system never guesses. Below the 0.85 confidence gate no grade exists until a</text>
+  <text class="cap" x="68" y="1156">human decides. One tap, no typing, no app — and the child's exact words are shown</text>
+  <text class="cap" x="68" y="1171">to you verbatim, never paraphrased and never guessed at.</text>
+</g>
+
+<g id="panel5">
+  <rect class="panel" x="550" y="764" width="460" height="440" rx="12"/>
+  <rect x="550" y="764" width="460" height="46" rx="12" fill="#6b40b2"/>
+  <rect x="550" y="788" width="460" height="22" fill="#6b40b2"/>
+  <text class="ph" x="568" y="793">YOU DECIDE — 2 of 2</text>
+  <text class="phs" x="992" y="793" text-anchor="end">sustained, measured struggle</text>
+  <rect x="550" y="764" width="460" height="440" rx="12" fill="none" stroke="#d9cdee" stroke-width="1.5"/>
+
+  <rect class="bub" x="568" y="828" width="360" height="78" rx="9"/>
+  <text class="b" x="580" y="849">Leo lleva varios días tropezando con fracciones</text>
+  <text class="b" x="580" y="864">equivalentes. Esta es la evidencia: 3 aciertos de 11</text>
+  <text class="b" x="580" y="879">intentos en 6 días de clase, y el repaso de ayer</text>
+  <text class="b" x="580" y="894">también falló. ¿Qué prefieres?</text>
+
+  <rect x="568" y="916" width="424" height="26" rx="13" fill="#ffffff" stroke="#6b40b2" stroke-width="1.2"/>
+  <text class="btn" x="586" y="933">Sesión guiada de 10 min juntos esta noche (te la preparo)</text>
+  <text class="cap" x="586" y="954">costs ten minutes of yours tonight · the session is already built</text>
+
+  <rect x="568" y="964" width="424" height="26" rx="13" fill="#ffffff" stroke="#6b40b2" stroke-width="1.2"/>
+  <text class="btn" x="586" y="981">Nota para la maestra (ya está redactada, tú decides enviarla)</text>
+  <text class="cap" x="586" y="1002">leaves the family chat · carries counts, never names or aliases</text>
+
+  <rect x="568" y="1012" width="424" height="26" rx="13" fill="#ffffff" stroke="#6b40b2" stroke-width="1.2"/>
+  <text class="btn" x="586" y="1029">Bajar el ritmo y consolidar el tema anterior</text>
+  <text class="cap" x="586" y="1050">moves slower · changes the order, never the rigour</text>
+
+  <rect x="568" y="1060" width="424" height="60" rx="8" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.2"/>
+  <text class="lbl" x="580" y="1078" style="fill:#037f0c">WHAT HAD TO HAPPEN BEFORE THIS MESSAGE EXISTED</text>
+  <text class="bs" x="580" y="1096">≥ 9 attempts of evidence (a slab-validated plateau centre) ·</text>
+  <text class="bs" x="580" y="1111">once per 7-day cooldown · a model opinion cannot veto or force it.</text>
+
+  <text class="cap" x="568" y="1142">Precision 0.970 [0.947–0.983], recall 0.994 [0.980–0.998] on 40 virgin seeds —</text>
+  <text class="cap" x="568" y="1157">16,800 simulated student-days, against a rate-matched random baseline of 0.300.</text>
+  <text class="cap" x="568" y="1172">Three options, each with its cost stated. The system does not choose for you.</text>
+</g>
+
+<g id="panel6">
+  <rect class="panel" x="1050" y="764" width="460" height="440" rx="12"/>
+  <rect x="1050" y="764" width="460" height="46" rx="12" fill="#6b40b2"/>
+  <rect x="1050" y="788" width="460" height="22" fill="#6b40b2"/>
+  <text class="ph" x="1068" y="793">SUNDAY · WEEKLY DIGEST</text>
+  <text class="phs" x="1492" y="793" text-anchor="end">no decision required</text>
+  <rect x="1050" y="764" width="460" height="440" rx="12" fill="none" stroke="#d9cdee" stroke-width="1.5"/>
+
+  <rect class="bub" x="1068" y="828" width="360" height="63" rx="9"/>
+  <text class="b" x="1080" y="849">Resumen semanal de Leo: 6 prácticas, 78 % de aciertos,</text>
+  <text class="b" x="1080" y="864">racha de 5 días. Dominio por tema: 4 dominados ·</text>
+  <text class="b" x="1080" y="879">3 en camino · 1 difícil.</text>
+
+  <rect class="bub" x="1068" y="903" width="360" height="63" rx="9"/>
+  <text class="b" x="1080" y="924">Aviso: 3 familias de San José 4to B están tropezando</text>
+  <text class="b" x="1080" y="939">con fracciones equivalentes esta semana. Redacté una</text>
+  <text class="b" x="1080" y="954">nota para la maestra por si quieres compartirla:</text>
+
+  <rect x="1068" y="976" width="180" height="26" rx="13" fill="#ffffff" stroke="#6b40b2" stroke-width="1.2"/>
+  <text class="btn" x="1158" y="993" text-anchor="middle">Enviar a la maestra</text>
+  <rect x="1258" y="976" width="120" height="26" rx="13" fill="#ffffff" stroke="#c9b3e8" stroke-width="1.2"/>
+  <text class="btnq" x="1318" y="993" text-anchor="middle">No, gracias</text>
+
+  <rect x="1068" y="1016" width="424" height="78" rx="8" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.2"/>
+  <text class="lbl" x="1080" y="1034" style="fill:#037f0c">K-ANONYMOUS — NOT AN ORDINARY NOTIFICATION</text>
+  <text class="bs" x="1080" y="1052">≥ 3 distinct families, same section and competency ·</text>
+  <text class="bs" x="1080" y="1067">once per ISO week · the note-drafting prompt never receives</text>
+  <text class="bs" x="1080" y="1082">an alias, and the note carries counts, never names.</text>
+
+  <text class="cap" x="1068" y="1116">The teacher installs nothing and has no account: the value reaches the classroom</text>
+  <text class="cap" x="1068" y="1131">through the parent, who decides whether the note is sent at all. A judge gets the</text>
+  <text class="cap" x="1068" y="1146">same story from the other side — a read-only web mirror behind an access code.</text>
+</g>
+
+<g id="quietband">
+  <rect x="50" y="1240" width="1460" height="180" rx="12" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.5"/>
+  <text class="bandh" x="74" y="1272">And the moments you are NOT interrupted — half the product</text>
+
+  <text class="bandi" x="74" y="1302">A wrong answer</text>
+  <text class="bandd" x="74" y="1318">The child gets the correction instantly. Nothing reaches you.</text>
+
+  <text class="bandi" x="564" y="1302">A bad day, or two</text>
+  <text class="bandd" x="564" y="1318">The trigger needs ≥ 9 attempts of evidence before it can exist.</text>
+
+  <text class="bandi" x="1054" y="1302">A topic you were told about 5 days ago</text>
+  <text class="bandd" x="1054" y="1318">7-day cooldown per student after each resolution.</text>
+
+  <text class="bandi" x="74" y="1358">Weekend, Carnaval, Semana Santa</text>
+  <text class="bandd" x="74" y="1374">0 false disengagement alerts per 100 student-weeks, 20/20 seeds —</text>
+  <text class="bandd" x="74" y="1390">the pre-fix build fired 1,689 alerts on the same twenty seeds.</text>
+
+  <text class="bandi" x="564" y="1358">A platform outage</text>
+  <text class="bandd" x="564" y="1374">The delivery-health gate masks a day the whole cohort went silent:</text>
+  <text class="bandd" x="564" y="1390">everyone quiet at once ≠ one child who quit. 566 → 0 false alerts.</text>
+
+  <text class="bandi" x="1054" y="1358">A prompt injection hidden in the material</text>
+  <text class="bandd" x="1054" y="1374">400/400 adversarial payloads intercepted across 9 families, ES + EN,</text>
+  <text class="bandd" x="1054" y="1390">before any model call. The family never hears about it.</text>
+</g>
+
+<text class="foot" x="50" y="1468">Every bubble is the real Spanish copy from src/repaso/i18n/es.py — 100 % of what the family sees is in Spanish (EN available with /language). The student never installs anything, never has an account, and is known only by an alias.</text>
+<text class="foots" x="50" y="1490">Numbers: demo-clock-offline-2026-08-20 · calibration-validation-2026-08-20 · calendar-gaps-2026-08-21 · armor-bench-2026-08-20</text>
+
+</svg>
