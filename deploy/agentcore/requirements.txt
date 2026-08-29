@@ -1,5 +1,5 @@
 bedrock-agentcore
-strands-agents>=1.0
+strands-agents>=1.53.0
 pydantic>=2.7
 pydantic-settings>=2.3
 boto3>=1.34
