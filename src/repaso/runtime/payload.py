@@ -1,10 +1,10 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from pydantic import BaseModel, Field, ValidationError, model_validator
 
 from repaso.runtime.errors import ErrorCode, InvocationError
-from repaso.schemas.channel import MediaKind
+from repaso.schemas.channel import InboundMessage, MediaKind
 from repaso.schemas.common import StrictBaseModel
 from repaso.schemas.events import EventKind
 
@@ -37,6 +37,19 @@ class MaterialPayload(StudentScoped):
 class AnswerPayload(StudentScoped):
     text: str
     latency_seconds: float = Field(default=0.0, ge=0.0)
+
+
+ChannelMessagePayload = InboundMessage
+
+
+class EscalationPayload(StrictBaseModel):
+    escalation_id: str
+    option_key: str
+
+
+class ExamPayload(StrictBaseModel):
+    exam_date: date
+    topic: str = ""
 
 
 def describe(error: ValidationError) -> str:

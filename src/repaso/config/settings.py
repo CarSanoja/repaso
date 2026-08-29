@@ -23,6 +23,8 @@ class Settings(BaseSettings):
     telegram_secret_name: str = "repaso/telegram"
     judge_code_secret_name: str = "repaso/judge"
 
+    pilot_invite_codes: str = ""
+
     holiday_dates: list[date] = []
 
     cohort_min_families: int = Field(default=3, ge=2)

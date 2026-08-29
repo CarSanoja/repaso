@@ -1,12 +1,18 @@
 from datetime import UTC, datetime
 
 from repaso.config.models import ModelRole
+from repaso.config.settings import Settings
+from repaso.runtime import invoke
+from repaso.schemas.channel import ChannelKind, InboundMedia, InboundMessage
 from repaso.schemas.item import Item, ItemKind, ItemStatus
 from repaso.schemas.provenance import Provenance, Source
 from repaso.schemas.session import Capsule, PracticeSession, SessionStatus
-from tests.orchestration.fixtures import FRACTIONS, accepted_verdict, mcq_draft
+from tests.orchestration.fixtures import FRACTIONS, accepted_verdict, make_services, mcq_draft
 
 START = datetime(2026, 9, 1, 19, 0, tzinfo=UTC)
+INVITE_CODE = "PILOTO-1"
+NEW_CHAT = "9001"
+FAMILY_CHAT = "100"
 FRACTION_TEXT = (
     b"Equivalent fractions lesson: 2/4 equals 1/2 because both name the same amount. "
     b"Practice recognizing equivalent fractions with models."
@@ -31,13 +37,16 @@ def seed_item(store, item_id: str = "i1", kind: ItemKind = ItemKind.MCQ) -> Item
     return item
 
 
-def seed_session(services, student_id: str, item_ids: list[str]) -> PracticeSession:
+def seed_session(
+    services, student_id: str, item_ids: list[str], delivered_at: datetime | None = None
+) -> PracticeSession:
     session = PracticeSession(
         id="sess1",
         student_id=student_id,
         session_date=services.clock.today(),
         capsule=Capsule(concept_snippet="snippet", item_ids=item_ids),
         status=SessionStatus.DELIVERED,
+        delivered_at=delivered_at,
     )
     services.store.put_session(session)
     return session
@@ -66,3 +75,54 @@ def script_ingest(services) -> None:
     for _ in range(2):
         services.models[ModelRole.JUDGE].enqueue(accepted_verdict())
         services.models[ModelRole.PROBE].enqueue({"answer": "no idea"})
+
+
+def pilot_settings(settings, codes: str = INVITE_CODE) -> Settings:
+    return Settings(
+        local_mode=True, local_data_dir=settings.local_data_dir, pilot_invite_codes=codes
+    )
+
+
+def inbound(
+    text: str | None = None,
+    callback: str | None = None,
+    media: InboundMedia | None = None,
+    chat_ref: str = NEW_CHAT,
+    message_ref: str = "1",
+    received_at: datetime = START,
+) -> InboundMessage:
+    return InboundMessage(
+        channel=ChannelKind.TELEGRAM,
+        chat_ref=chat_ref,
+        message_ref=message_ref,
+        text=text,
+        callback_data=callback,
+        media=media,
+        received_at=received_at,
+    )
+
+
+def channel_request(message: InboundMessage) -> dict:
+    return {
+        "kind": "channel_message",
+        "idempotency_key": f"{message.chat_ref}#{message.message_ref}",
+        "occurred_at": message.received_at.isoformat(),
+        "payload": message.model_dump(mode="json"),
+    }
+
+
+def pilot(settings):
+    return make_services(pilot_settings(settings))
+
+
+def send(services, message) -> dict:
+    return invoke(channel_request(message), services)
+
+
+def route_of(response: dict) -> str:
+    assert response["ok"] is True, response
+    return response["result"]["route"]
+
+
+def texts(response: dict) -> list[str]:
+    return [message["text"] for message in response["result"]["outbound"]]

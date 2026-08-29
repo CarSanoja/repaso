@@ -1,16 +1,27 @@
+from datetime import date
 from uuid import uuid4
 
-from repaso.core.orchestration.context import CloseRun, IngestRun, Services, TutorRun
+from repaso.core.orchestration.context import (
+    CloseRun,
+    EscalationRun,
+    ExamRun,
+    IngestRun,
+    Services,
+    TutorRun,
+)
 from repaso.core.orchestration.ingest_graph import build_ingest_graph
 from repaso.core.orchestration.quality_graph import build_quality_graph
 from repaso.core.orchestration.response_graph import build_response_graph
 from repaso.core.orchestration.tutor_graph import build_session_graph
+from repaso.i18n import msg
 from repaso.schemas.channel import MediaKind, OutboundMessage
+from repaso.schemas.escalation import Escalation, EscalationStatus
 from repaso.schemas.family import Family
 from repaso.schemas.grading import EvidenceSpan, StudentResponse
 from repaso.schemas.material import Material
 from repaso.schemas.provenance import Provenance, Source
 from repaso.schemas.review import QuarantineItem, QuarantineKind
+from repaso.schemas.schedule import ExamDate
 from repaso.schemas.session import PracticeSession, SessionStatus
 from repaso.schemas.student import Student
 
@@ -111,3 +122,51 @@ async def run_daily_close(services: Services) -> CloseRun:
     await build_quality_graph(services, run).invoke_async("close")
     deliver_outbound(services, run.outbound)
     return run
+
+
+def option_label(escalation: Escalation, option_key: str) -> str:
+    for option in escalation.options:
+        if option.key == option_key:
+            return option.label
+    return option_key
+
+
+def resolve_escalation(
+    services: Services, family: Family, escalation: Escalation, option_key: str
+) -> EscalationRun:
+    run = EscalationRun(family=family, escalation=escalation, chosen_option=option_key)
+    if escalation.status is not EscalationStatus.PENDING:
+        run.terminal = "already_resolved"
+        return run
+    run.escalation = escalation.model_copy(
+        update={
+            "status": EscalationStatus.RESOLVED,
+            "chosen_option": option_key,
+            "resolved_at": services.clock.now(),
+        }
+    )
+    services.store.put_escalation(run.escalation)
+    run.outbound.append(
+        OutboundMessage(
+            channel=family.channel,
+            chat_ref=family.chat_ref,
+            text=msg("escalation_ack", family.lang, option=option_label(escalation, option_key)),
+        )
+    )
+    deliver_outbound(services, run.outbound)
+    return run
+
+
+def record_exam(services: Services, family: Family, exam_date: date, topic: str) -> ExamRun:
+    students = services.store.list_students(family.id)
+    for student in students:
+        services.store.put_exam_date(
+            ExamDate(student_id=student.id, competency_id=None, exam_date=exam_date)
+        )
+    return ExamRun(
+        family=family,
+        exam_date=exam_date,
+        topic=topic,
+        student_ids=[student.id for student in students],
+        days_away=(exam_date - services.clock.today()).days,
+    )

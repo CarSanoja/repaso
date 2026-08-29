@@ -85,6 +85,9 @@ MESSAGES = {
         "Lo anoto con gusto, pero me falta el día. ¿Cuándo es? Por ejemplo: 12/09 o "
         "12-09-2026."
     ),
+    "escalation_ack": (
+        "Listo, seguimos con: {option}. Ajusto el plan de práctica desde hoy."
+    ),
     "mastery_summary": "{mastered} dominados · {developing} en camino · {struggling} difíciles",
     "paused": "Pausado. Nada se borra; /resume retoma cuando quieran.",
     "resumed": "¡De vuelta! Mañana a las {time} llega la próxima práctica.",

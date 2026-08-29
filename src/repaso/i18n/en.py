@@ -83,6 +83,9 @@ MESSAGES = {
         "Happy to note it, but I'm missing the day. When is it? For example: 12/09 or "
         "12-09-2026."
     ),
+    "escalation_ack": (
+        "Done, we go with: {option}. I am adjusting the practice plan from today."
+    ),
     "mastery_summary": "{mastered} mastered · {developing} on track · {struggling} tricky",
     "paused": "Paused. Nothing is erased; /resume picks up whenever you want.",
     "resumed": "Back! Tomorrow at {time} the next practice arrives.",

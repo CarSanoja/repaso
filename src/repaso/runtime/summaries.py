@@ -1,6 +1,13 @@
 from typing import Any
 
-from repaso.core.orchestration.context import CloseRun, IngestRun, TutorRun
+from repaso.core.orchestration.context import (
+    ChannelRun,
+    CloseRun,
+    EscalationRun,
+    ExamRun,
+    IngestRun,
+    TutorRun,
+)
 from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.grading import GradeResult
 
@@ -59,4 +66,39 @@ def close_summary(run: CloseRun) -> dict[str, Any]:
         "cohort_fired": list(run.cohort_fired),
         "retired_items": list(run.retired_items),
         "outbound": outbound_summary(run.outbound),
+    }
+
+
+def channel_summary(run: ChannelRun) -> dict[str, Any]:
+    return {
+        "handled": True,
+        "route": run.route.value,
+        "family_id": run.family.id if run.family is not None else None,
+        "student_id": run.student.id if run.student is not None else None,
+        "events": [event.kind.value for event in run.events],
+        "ingest": ingest_summary(run.ingest) if run.ingest is not None else None,
+        "tutor": tutor_summary(run.tutor) if run.tutor is not None else None,
+        "outbound": outbound_summary(run.outbound),
+    }
+
+
+def escalation_summary(run: EscalationRun) -> dict[str, Any]:
+    return {
+        "handled": run.terminal is None,
+        "terminal": run.terminal,
+        "escalation_id": run.escalation.id,
+        "status": run.escalation.status.value,
+        "chosen_option": run.escalation.chosen_option,
+        "outbound": outbound_summary(run.outbound),
+    }
+
+
+def exam_summary(run: ExamRun) -> dict[str, Any]:
+    return {
+        "handled": True,
+        "exam_date": run.exam_date.isoformat(),
+        "topic": run.topic,
+        "student_ids": list(run.student_ids),
+        "days_away": run.days_away,
+        "outbound": [],
     }

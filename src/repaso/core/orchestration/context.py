@@ -1,13 +1,16 @@
 from dataclasses import dataclass, field
+from datetime import date
+from enum import StrEnum
 from typing import Any
 
 from repaso.config.models import ModelRole
 from repaso.config.settings import Settings
 from repaso.core.harness.clock import Clock
 from repaso.core.telemetry.sink import NullTelemetrySink, TelemetrySink
-from repaso.schemas.channel import OutboundMessage
+from repaso.schemas.channel import InboundMessage, OutboundMessage
 from repaso.schemas.competency import Competency, CompetencyMatch
 from repaso.schemas.escalation import Escalation
+from repaso.schemas.events import DomainEvent
 from repaso.schemas.family import Family
 from repaso.schemas.grading import GradeResult, StudentResponse
 from repaso.schemas.item import Item, ItemVerdict
@@ -82,3 +85,48 @@ class CloseRun:
     cohort_fired: list[str] = field(default_factory=list)
     retired_items: list[str] = field(default_factory=list)
     outbound: list[OutboundMessage] = field(default_factory=list)
+
+
+class Route(StrEnum):
+    UNKNOWN_CHAT = "unknown_chat"
+    ENROLLMENT = "enrollment"
+    ENROLLED = "enrolled"
+    COMMAND = "command"
+    FORGET = "forget"
+    ESCALATION = "escalation"
+    MATERIAL = "material"
+    ANSWER = "answer"
+    MEDIA_UNAVAILABLE = "media_unavailable"
+    NO_STUDENT = "no_student"
+    UNROUTED_CALLBACK = "unrouted_callback"
+    IGNORED = "ignored"
+
+
+@dataclass
+class ChannelRun:
+    message: InboundMessage
+    route: Route
+    family: Family | None = None
+    student: Student | None = None
+    outbound: list[OutboundMessage] = field(default_factory=list)
+    events: list[DomainEvent] = field(default_factory=list)
+    ingest: IngestRun | None = None
+    tutor: TutorRun | None = None
+
+
+@dataclass
+class EscalationRun:
+    family: Family
+    escalation: Escalation
+    chosen_option: str
+    outbound: list[OutboundMessage] = field(default_factory=list)
+    terminal: str | None = None
+
+
+@dataclass
+class ExamRun:
+    family: Family
+    exam_date: date
+    topic: str
+    student_ids: list[str] = field(default_factory=list)
+    days_away: int = 0

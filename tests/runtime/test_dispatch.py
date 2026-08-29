@@ -1,26 +1,14 @@
-import pytest
-
 from repaso.runtime import invoke, invoke_async
 from repaso.runtime.entrypoint import supported_kinds
+from repaso.runtime.handlers import HANDLERS
 from repaso.schemas.events import EventKind
 from tests.orchestration.fixtures import make_services, seed_family
 from tests.runtime.fixtures import request, seed_item
 
-UNSUPPORTED = sorted(set(EventKind) - {EventKind(kind) for kind in supported_kinds()})
 
-
-def test_every_event_kind_is_either_routed_or_explicitly_unsupported():
-    assert supported_kinds() == [
-        "daily_close",
-        "daily_session_due",
-        "material_uploaded",
-        "response_received",
-    ]
-    assert [kind.value for kind in UNSUPPORTED] == [
-        "channel_message",
-        "escalation_resolved",
-        "exam_announced",
-    ]
+def test_every_event_kind_has_a_runtime_handler():
+    assert supported_kinds() == sorted(kind.value for kind in EventKind)
+    assert set(HANDLERS) == set(EventKind)
 
 
 def test_an_unknown_kind_is_a_structured_error(settings):
@@ -33,14 +21,14 @@ def test_an_unknown_kind_is_a_structured_error(settings):
     assert response["error"]["code"] == "unknown_kind"
 
 
-@pytest.mark.parametrize("kind", UNSUPPORTED, ids=lambda kind: kind.value)
-def test_known_kinds_without_a_handler_report_what_is_supported(settings, kind):
+def test_a_kind_left_without_a_handler_reports_what_is_supported(settings, monkeypatch):
     services = make_services(settings)
+    monkeypatch.delitem(HANDLERS, EventKind.EXAM_ANNOUNCED)
 
-    response = invoke(request(kind.value, "f1"), services)
+    response = invoke(request("exam_announced", "f1"), services)
 
     assert response["ok"] is False
-    assert response["kind"] == kind.value
+    assert response["kind"] == "exam_announced"
     assert response["error"]["code"] == "unsupported_kind"
     assert "daily_close" in response["error"]["message"]
 

@@ -2,23 +2,37 @@ import base64
 from collections.abc import Awaitable, Callable
 from typing import Any
 
+from repaso.core.orchestration.channel_runner import handle_channel_message
 from repaso.core.orchestration.context import Services
 from repaso.core.orchestration.runner import (
     handle_answer,
     handle_material,
+    record_exam,
+    resolve_escalation,
     run_daily_close,
     start_daily_session,
 )
 from repaso.runtime.errors import ErrorCode, InvocationError
 from repaso.runtime.payload import (
     AnswerPayload,
+    ChannelMessagePayload,
+    EscalationPayload,
+    ExamPayload,
     InvocationRequest,
     MaterialPayload,
     StudentScoped,
     validate,
 )
-from repaso.runtime.summaries import close_summary, ingest_summary, tutor_summary
-from repaso.schemas.common import FamilyId, StudentId
+from repaso.runtime.summaries import (
+    channel_summary,
+    close_summary,
+    escalation_summary,
+    exam_summary,
+    ingest_summary,
+    tutor_summary,
+)
+from repaso.schemas.common import EscalationId, FamilyId, StudentId
+from repaso.schemas.escalation import Escalation
 from repaso.schemas.events import EventKind
 from repaso.schemas.family import Family
 from repaso.schemas.student import Student
@@ -46,6 +60,20 @@ def resolve_student(services: Services, family: Family, student_id: str) -> Stud
             ErrorCode.NOT_FOUND, f"student {student_id} does not belong to family {family.id}"
         )
     return student
+
+
+def resolve_escalation_record(
+    services: Services, family: Family, escalation_id: str
+) -> Escalation:
+    escalation = services.store.get_escalation(EscalationId(escalation_id))
+    if escalation is None:
+        raise InvocationError(ErrorCode.NOT_FOUND, f"escalation not found: {escalation_id}")
+    if escalation.family_id != family.id:
+        raise InvocationError(
+            ErrorCode.NOT_FOUND,
+            f"escalation {escalation_id} does not belong to family {family.id}",
+        )
+    return escalation
 
 
 def resolve_material_data(services: Services, data: MaterialPayload) -> bytes:
@@ -105,9 +133,34 @@ async def on_daily_close(services: Services, request: InvocationRequest) -> dict
     return close_summary(await run_daily_close(services))
 
 
+async def on_channel_message(services: Services, request: InvocationRequest) -> dict[str, Any]:
+    message = validate(ChannelMessagePayload, request.payload)
+    return channel_summary(await handle_channel_message(services, message))
+
+
+async def on_escalation_resolved(
+    services: Services, request: InvocationRequest
+) -> dict[str, Any]:
+    data = validate(EscalationPayload, request.payload)
+    family = resolve_family(services, request)
+    escalation = resolve_escalation_record(services, family, data.escalation_id)
+    return escalation_summary(
+        resolve_escalation(services, family, escalation, data.option_key)
+    )
+
+
+async def on_exam_announced(services: Services, request: InvocationRequest) -> dict[str, Any]:
+    data = validate(ExamPayload, request.payload)
+    family = resolve_family(services, request)
+    return exam_summary(record_exam(services, family, data.exam_date, data.topic))
+
+
 HANDLERS: dict[EventKind, Handler] = {
     EventKind.MATERIAL_UPLOADED: on_material_uploaded,
+    EventKind.CHANNEL_MESSAGE: on_channel_message,
     EventKind.DAILY_SESSION_DUE: on_daily_session_due,
     EventKind.RESPONSE_RECEIVED: on_response_received,
+    EventKind.ESCALATION_RESOLVED: on_escalation_resolved,
+    EventKind.EXAM_ANNOUNCED: on_exam_announced,
     EventKind.DAILY_CLOSE: on_daily_close,
 }
