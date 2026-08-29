@@ -24,7 +24,13 @@ class MessagingStack(cdk.Stack):
         self._rule("IngestRule", ["material_uploaded"], self.ingest_queue)
         self._rule(
             "TutorRule",
-            ["channel_message", "daily_session_due", "response_received", "escalation_resolved"],
+            [
+                "channel_message",
+                "daily_session_due",
+                "response_received",
+                "escalation_resolved",
+                "exam_announced",
+            ],
             self.tutor_queue,
         )
         self._rule("QualityRule", ["daily_close"], self.quality_queue)
