@@ -1,0 +1,127 @@
+import json
+
+from repaso.lambdas import bootstrap, worker
+from repaso.schemas.events import EventKind
+from tests.lambdas.conftest import (
+    envelope,
+    make_batch,
+    make_domain_event,
+    make_record,
+)
+
+NO_FAILURES: dict[str, list[dict[str, str]]] = {"batchItemFailures": []}
+
+
+def failures_of(response: dict) -> list[str]:
+    return [entry["itemIdentifier"] for entry in response["batchItemFailures"]]
+
+
+def test_worker_reports_no_failures_for_a_clean_batch(lambda_env, runtime):
+    batch = make_batch(
+        make_record(make_domain_event(idempotency_key="12345#10"), message_id="m1"),
+        make_record(make_domain_event(idempotency_key="12345#11"), message_id="m2"),
+    )
+    assert worker.handler(batch, None) == NO_FAILURES
+    assert runtime.keys == ["12345#10", "12345#11"]
+
+
+def test_worker_reports_only_the_record_the_runtime_rejected(lambda_env, runtime):
+    runtime.failing.add("12345#11")
+    batch = make_batch(
+        make_record(make_domain_event(idempotency_key="12345#10"), message_id="m1"),
+        make_record(make_domain_event(idempotency_key="12345#11"), message_id="m2"),
+        make_record(make_domain_event(idempotency_key="12345#12"), message_id="m3"),
+    )
+    assert failures_of(worker.handler(batch, None)) == ["m2"]
+    assert runtime.keys == ["12345#10", "12345#11", "12345#12"]
+
+
+def test_worker_reports_a_body_that_is_not_json(lambda_env, runtime):
+    batch = make_batch(
+        make_record(body="{not json", message_id="m1"),
+        make_record(make_domain_event(idempotency_key="12345#11"), message_id="m2"),
+    )
+    assert failures_of(worker.handler(batch, None)) == ["m1"]
+    assert runtime.keys == ["12345#11"]
+
+
+def test_worker_reports_a_detail_that_is_not_a_domain_event(lambda_env, runtime):
+    body = json.dumps({"detail-type": "channel_message", "detail": {"kind": "nonsense"}})
+    assert failures_of(worker.handler(make_batch(make_record(body=body)), None)) == ["m1"]
+    assert runtime.calls == []
+
+
+def test_worker_reports_a_record_that_is_not_an_object(lambda_env, runtime):
+    assert worker.handler(make_batch("garbage"), None) == NO_FAILURES
+    assert runtime.calls == []
+
+
+def test_worker_accepts_a_bare_domain_event_body(lambda_env, runtime):
+    event = make_domain_event(idempotency_key="12345#77")
+    record = make_record(body=event.model_dump_json())
+    assert worker.handler(make_batch(record), None) == NO_FAILURES
+    assert runtime.keys == ["12345#77"]
+
+
+def test_worker_processes_a_repeated_delivery_once(lambda_env, runtime):
+    record = make_record(make_domain_event(idempotency_key="12345#10"))
+    worker.handler(make_batch(record), None)
+    assert worker.handler(make_batch(record), None) == NO_FAILURES
+    assert runtime.keys == ["12345#10"]
+
+
+def test_worker_deduplicates_inside_a_single_batch(lambda_env, runtime):
+    event = make_domain_event(idempotency_key="12345#10")
+    batch = make_batch(
+        make_record(event, message_id="m1"), make_record(event, message_id="m2")
+    )
+    assert worker.handler(batch, None) == NO_FAILURES
+    assert runtime.keys == ["12345#10"]
+
+
+def test_worker_keeps_its_claims_apart_from_publisher_claims(lambda_env, runtime):
+    published_key = "job#daily_session#f1#2026-09-01"
+    event = make_domain_event(
+        kind=EventKind.DAILY_SESSION_DUE, idempotency_key=published_key
+    )
+    worker.handler(make_batch(make_record(event)), None)
+    assert bootstrap.store().claim(published_key, "scheduler-tick") is True
+    assert bootstrap.store().claim(worker.worker_key(event), "sqs-worker") is False
+
+
+def test_worker_separates_the_same_key_across_event_kinds(lambda_env, runtime):
+    channel = make_domain_event(idempotency_key="12345#10")
+    response = make_domain_event(
+        kind=EventKind.RESPONSE_RECEIVED, idempotency_key="12345#10"
+    )
+    batch = make_batch(
+        make_record(channel, message_id="m1"), make_record(response, message_id="m2")
+    )
+    assert worker.handler(batch, None) == NO_FAILURES
+    assert [call["kind"] for call in runtime.calls] == ["channel_message", "response_received"]
+
+
+def test_worker_hands_the_runtime_the_serialised_event(lambda_env, runtime):
+    event = make_domain_event(idempotency_key="12345#10")
+    worker.handler(make_batch(make_record(event)), None)
+    assert runtime.calls == [json.loads(event.model_dump_json())]
+
+
+def test_worker_accepts_an_empty_batch(lambda_env, runtime):
+    assert worker.handler(make_batch(), None) == NO_FAILURES
+    assert worker.handler({}, None) == NO_FAILURES
+    assert worker.handler("not an event", None) == NO_FAILURES
+    assert runtime.calls == []
+
+
+def test_worker_cannot_report_a_record_without_a_message_id(lambda_env, runtime):
+    record = {"body": "{not json"}
+    assert worker.handler(make_batch(record), None) == NO_FAILURES
+    assert runtime.calls == []
+
+
+def test_worker_reads_the_eventbridge_envelope_it_is_wired_to(lambda_env, runtime):
+    event = make_domain_event(idempotency_key="12345#10")
+    assert json.loads(envelope(event))["detail"]["idempotency_key"] == "12345#10"
+    worker.handler(make_batch(make_record(body=envelope(event))), None)
+    assert runtime.keys == ["12345#10"]
