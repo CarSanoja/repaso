@@ -15,17 +15,32 @@ OWNER = "scheduler-tick"
 logger = logging.getLogger(__name__)
 
 
-def _text(payload: dict[str, Any], key: str) -> str:
-    value = payload.get(key)
+def _text(tick: dict[str, Any], key: str) -> str:
+    value = tick.get(key)
     return value.strip() if isinstance(value, str) else ""
 
 
-def _due_payload(tick: dict[str, Any], family_id: str) -> dict[str, Any]:
-    payload: dict[str, Any] = {FAMILY_KEY: family_id}
-    student_id = _text(tick, STUDENT_KEY)
+def _students(family_id: str, student_id: str) -> list[str]:
     if student_id:
-        payload[STUDENT_KEY] = student_id
-    return payload
+        return [student_id]
+    return [student.id for student in store().list_students(FamilyId(family_id))]
+
+
+def _fire(family_id: str, student_id: str, day: str, now: Any) -> str:
+    key = job_key(JOB_KIND, student_id, day)
+    if not store().claim(key, OWNER):
+        logger.info("scheduler tick already fired for %s", key)
+        return ""
+    publisher().publish(
+        DomainEvent(
+            kind=EventKind.DAILY_SESSION_DUE,
+            family_id=FamilyId(family_id),
+            idempotency_key=key,
+            occurred_at=now,
+            payload={STUDENT_KEY: student_id},
+        )
+    )
+    return key
 
 
 def handler(event: dict[str, Any], context: Any = None) -> dict[str, Any]:
@@ -35,21 +50,15 @@ def handler(event: dict[str, Any], context: Any = None) -> dict[str, Any]:
         logger.error("scheduler tick arrived without a family reference")
         return {"ok": False, "error": "missing_family_id"}
     now = SystemClock().now()
-    try:
-        key = job_key(JOB_KIND, family_id, now.date().isoformat())
-    except ValueError:
-        logger.error("scheduler tick carried an unusable family reference")
-        return {"ok": False, "error": "invalid_family_id"}
-    if not store().claim(key, OWNER):
-        logger.info("scheduler tick already fired for %s", key)
-        return {"ok": True, "duplicate": True, "idempotency_key": key}
-    publisher().publish(
-        DomainEvent(
-            kind=EventKind.DAILY_SESSION_DUE,
-            family_id=FamilyId(family_id),
-            idempotency_key=key,
-            occurred_at=now,
-            payload=_due_payload(tick, family_id),
-        )
-    )
-    return {"ok": True, "duplicate": False, "idempotency_key": key}
+    day = now.date().isoformat()
+    fired: list[str] = []
+    skipped: list[str] = []
+    for student_id in _students(family_id, _text(tick, STUDENT_KEY)):
+        try:
+            key = _fire(family_id, student_id, day, now)
+        except ValueError:
+            logger.error("scheduler tick carried an unusable student reference")
+            skipped.append(student_id)
+            continue
+        (fired if key else skipped).append(student_id)
+    return {"ok": True, "family_id": family_id, "fired": fired, "skipped": skipped}

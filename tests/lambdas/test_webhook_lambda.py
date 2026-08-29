@@ -72,6 +72,17 @@ def test_webhook_never_returns_5xx_when_the_secret_is_not_configured(lambda_env)
     assert bootstrap.container().publisher.published == []
 
 
+def test_webhook_acks_when_the_application_itself_crashes(secured_env, monkeypatch):
+    def explode(container, provided):
+        raise RuntimeError("state store unreachable")
+
+    monkeypatch.setattr("repaso.api.webhook._authorize", explode)
+    response = webhook.handler(signed_request(), None)
+    assert response["statusCode"] == 200
+    assert body_of(response) == ACK
+    assert secured_env.publisher.published == []
+
+
 def test_webhook_acks_a_body_that_is_not_json(secured_env):
     response = webhook.handler(make_request("{not json", {SECRET_HEADER: TELEGRAM_SECRET}), None)
     assert response["statusCode"] == 200

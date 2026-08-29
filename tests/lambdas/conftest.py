@@ -54,13 +54,22 @@ def event_loop_for_mangum():
 class RuntimeSpy:
     def __init__(self) -> None:
         self.calls: list[dict[str, Any]] = []
-        self.failing: set[str] = set()
+        self.rejecting: set[str] = set()
+        self.raising: set[str] = set()
 
     def invoke(self, payload: dict[str, Any]) -> dict[str, Any]:
         self.calls.append(payload)
-        if payload.get("idempotency_key") in self.failing:
-            raise RuntimeError("runtime dispatch failed")
-        return {"ok": True}
+        key = payload.get("idempotency_key")
+        kind = payload.get("kind")
+        if key in self.raising:
+            raise RuntimeError("runtime dispatch exploded")
+        if key in self.rejecting:
+            return {
+                "ok": False,
+                "kind": kind,
+                "error": {"code": "handler_failed", "message": "graph failed"},
+            }
+        return {"ok": True, "kind": kind, "result": {}}
 
     @property
     def keys(self) -> list[str]:
@@ -152,11 +161,19 @@ def envelope(event: DomainEvent) -> str:
 
 
 def make_record(
-    event: DomainEvent | None = None, message_id: str = "m1", body: str | None = None
+    event: DomainEvent | None = None,
+    message_id: str = "m1",
+    body: str | None = None,
+    receive_count: int = 1,
 ) -> dict[str, Any]:
     if body is None:
         body = envelope(event if event is not None else make_domain_event())
-    return {"messageId": message_id, "receiptHandle": f"rh-{message_id}", "body": body}
+    return {
+        "messageId": message_id,
+        "receiptHandle": f"rh-{message_id}",
+        "body": body,
+        "attributes": {"ApproximateReceiveCount": str(receive_count)},
+    }
 
 
 def make_batch(*records: dict[str, Any]) -> dict[str, Any]:

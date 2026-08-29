@@ -8,10 +8,17 @@ from repaso.schemas.events import DomainEvent
 
 BATCH_FAILURES_KEY = "batchItemFailures"
 ITEM_IDENTIFIER_KEY = "itemIdentifier"
-DETAIL_KEY = "detail"
 RECORDS_KEY = "Records"
 MESSAGE_ID_KEY = "messageId"
+ATTRIBUTES_KEY = "attributes"
+RECEIVE_COUNT_KEY = "ApproximateReceiveCount"
 BODY_KEY = "body"
+DETAIL_KEY = "detail"
+OK_KEY = "ok"
+ERROR_KEY = "error"
+CODE_KEY = "code"
+FIRST_DELIVERY = "1"
+UNREADABLE_RESULT = "unreadable_result"
 OWNER = "sqs-worker"
 WORKER_KEY_PREFIX = "worker"
 
@@ -28,19 +35,38 @@ def decode(record: dict[str, Any]) -> DomainEvent:
     return DomainEvent.model_validate(detail)
 
 
+def first_delivery(record: dict[str, Any]) -> bool:
+    attributes = record.get(ATTRIBUTES_KEY)
+    if not isinstance(attributes, dict):
+        return True
+    return str(attributes.get(RECEIVE_COUNT_KEY, FIRST_DELIVERY)) == FIRST_DELIVERY
+
+
 def _dispatch(event: DomainEvent) -> Any:
     from repaso.runtime.entrypoint import invoke
 
     return invoke(event.model_dump(mode="json"))
 
 
-def _process(record: dict[str, Any]) -> None:
+def _reason(result: Any) -> str:
+    if isinstance(result, dict):
+        error = result.get(ERROR_KEY)
+        if isinstance(error, dict):
+            return str(error.get(CODE_KEY, UNREADABLE_RESULT))
+    return UNREADABLE_RESULT
+
+
+def _process(record: dict[str, Any]) -> bool:
     event = decode(record)
     key = worker_key(event)
-    if not store().claim(key, OWNER):
+    if first_delivery(record) and not store().claim(key, OWNER):
         logger.info("worker skipped an already claimed event %s", key)
-        return
-    _dispatch(event)
+        return True
+    result = _dispatch(event)
+    if isinstance(result, dict) and result.get(OK_KEY) is True:
+        return True
+    logger.error("runtime rejected %s: %s", key, _reason(result))
+    return False
 
 
 def _identifier(record: Any) -> str:
@@ -56,9 +82,10 @@ def handler(event: dict[str, Any], context: Any = None) -> dict[str, list[dict[s
     for record in records or []:
         identifier = _identifier(record)
         try:
-            _process(record)
+            accepted = _process(record)
         except Exception:
             logger.exception("worker failed on message %s", identifier or "<unidentified>")
-            if identifier:
-                failures.append({ITEM_IDENTIFIER_KEY: identifier})
+            accepted = False
+        if not accepted and identifier:
+            failures.append({ITEM_IDENTIFIER_KEY: identifier})
     return {BATCH_FAILURES_KEY: failures}
