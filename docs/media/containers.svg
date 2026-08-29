@@ -272,7 +272,7 @@
 
   <!-- ============ BAND 6 — LOCAL MODE ============ -->
   <rect x="60" y="1520" width="1580" height="90" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="2" stroke-dasharray="7 5"/>
-  <text class="h4 green" x="84" y="1548">Local mode — REPASO_LOCAL_MODE=1 — why 706 offline tests need neither credentials nor network</text>
+  <text class="h4 green" x="84" y="1548">Local mode — REPASO_LOCAL_MODE=1 — why 885 offline tests need neither credentials nor network</text>
   <text class="xs" x="84" y="1570">Every box above sits behind a Python Protocol: StateStore, GradeLog, MediaStore, EventPublisher, KnowledgeRetriever, Screener, Clock, Model. Offline they are served by JSON files under</text>
   <text class="xs" x="84" y="1589">.local_data/, an in-process bus, and LocalPlaybackModel — a strict playback double that raises on any unplanned model call. The suite runs in ~5 s and doubles as a cost audit: a surprise Bedrock call fails a test.</text>
 </svg>

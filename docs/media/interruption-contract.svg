@@ -209,5 +209,5 @@
   <text x="88" y="1330" font-size="11.5" fill="#3c4650">itself — BKT-style slip/guess separation — which is product work on the roadmap, not calibration.</text>
   <text x="88" y="1356" font-size="10.5" font-style="italic" fill="#5f6b7a">corroboration-floor-falsified-2026-08-21 · fp-residue-2026-08-21 · calibration-validation-2026-08-20</text>
 
-  <text x="64" y="1424" font-size="10.5" font-style="italic" fill="#8c99a8">Gates 1–6 are deterministic code in core/harness and core/orchestration — no model participates in the decision to interrupt. Every number traces to a dated report in docs/reports/.</text>
+  <text x="64" y="1424" font-size="10.5" font-style="italic" fill="#8c99a8">Gates 1–6 are deterministic code in core/harness and core/orchestration — no model participates in the decision to interrupt. Every number traces to a dated report in dated runs.</text>
 </svg>

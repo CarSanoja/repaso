@@ -256,6 +256,6 @@
   <text class="h3 green" x="94" y="1670">Why the green column is the point of this diagram</text>
   <text class="xs" x="94" y="1696">Spacing intervals, mastery, escalation thresholds and item statistics are not opinions a model produced — they are functions with unit tests, and the fleet is wired so that no agent</text>
   <text class="xs" x="94" y="1716">can overrule them. Read that column and you have read the pedagogy. Offline, the whole Bedrock column is replaced by LocalPlaybackModel, a strict playback double that raises on</text>
-  <text class="xs" x="94" y="1736">any unplanned call — which is why 706 tests run in ~5 s with zero credentials and zero network, and why the suite doubles as a cost audit.</text>
+  <text class="xs" x="94" y="1736">any unplanned call — which is why 885 tests run in ~5 s with zero credentials and zero network, and why the suite doubles as a cost audit.</text>
   <text class="cap" x="94" y="1760">Model ids pinned in config/models.py with a per-role fallback chain on throttle. Numbers from calibration-validation 2026-08-20 · armor-bench 2026-08-20 · calendar-gaps 2026-08-21.</text>
 </svg>

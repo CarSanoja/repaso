@@ -355,10 +355,10 @@
   <text x="1140" y="1184" font-size="10.5" fill="#3c4650">AWS Budgets — one alarm per declared spend limit</text>
   <text x="1140" y="1206" font-size="10.5" fill="#3c4650">API Gateway secret token — the webhook is not a public endpoint</text>
   <text x="1140" y="1240" font-size="10.5" font-style="italic" fill="#5f6b7a">Local mode reproduces every one of these behind a file-backed</text>
-  <text x="1140" y="1254" font-size="10.5" font-style="italic" fill="#5f6b7a">double: 706 tests, zero credentials, zero network, ~5 seconds.</text>
+  <text x="1140" y="1254" font-size="10.5" font-style="italic" fill="#5f6b7a">double: 885 tests, zero credentials, zero network, ~5 seconds.</text>
 
   <!-- ================= MEASURED EVIDENCE ================= -->
-  <text x="36" y="1310" font-size="12" font-weight="bold" fill="#0f1b2a">Measured, not asserted — every number traces to a dated report in docs/reports/</text>
+  <text x="36" y="1310" font-size="12" font-weight="bold" fill="#0f1b2a">Measured, not asserted — every number traces to a dated run</text>
 
   <rect x="36" y="1320" width="384" height="124" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
   <text x="52" y="1366" font-size="27" font-weight="bold" fill="#037f0c">0.970</text>
@@ -366,7 +366,7 @@
   <text x="52" y="1390" font-size="10.5" fill="#3c4650">95 % CI [0.947–0.983] · recall 0.994 [0.980–0.998]</text>
   <text x="52" y="1403" font-size="10.5" fill="#3c4650">40 virgin seeds = 16,800 simulated student-days. Rate-matched</text>
   <text x="52" y="1416" font-size="10.5" fill="#3c4650">random baseline: 0.300. Never-interrupt recall: 0.000.</text>
-  <text x="52" y="1434" font-size="10.5" font-style="italic" fill="#8c99a8">docs/reports/calibration-validation-2026-08-20.md</text>
+  <text x="52" y="1434" font-size="10.5" font-style="italic" fill="#8c99a8">calibration run · 2026-08-20</text>
 
   <rect x="444" y="1320" width="384" height="124" rx="10" fill="#ffffff" stroke="#d91515" stroke-width="1.8"/>
   <text x="460" y="1366" font-size="27" font-weight="bold" fill="#d91515">400 / 400</text>
@@ -374,10 +374,10 @@
   <text x="460" y="1390" font-size="10.5" fill="#3c4650">9 attack families, ES + EN, including OCR-corrupted variants.</text>
   <text x="460" y="1403" font-size="10.5" fill="#3c4650">0 % false blocks on 200 clean grade-4 texts — including the</text>
   <text x="460" y="1416" font-size="10.5" fill="#3c4650">near-miss strings written to trip the screener.</text>
-  <text x="460" y="1434" font-size="10.5" font-style="italic" fill="#8c99a8">docs/reports/armor-bench-2026-08-20.md</text>
+  <text x="460" y="1434" font-size="10.5" font-style="italic" fill="#8c99a8">armor bench · 2026-08-20</text>
 
   <rect x="852" y="1320" width="384" height="124" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
-  <text x="868" y="1366" font-size="27" font-weight="bold" fill="#037f0c">706</text>
+  <text x="868" y="1366" font-size="27" font-weight="bold" fill="#037f0c">885</text>
   <text x="930" y="1366" font-size="12" font-weight="bold" fill="#0f1b2a">offline tests, ~5 seconds</text>
   <text x="868" y="1390" font-size="10.5" fill="#3c4650">Zero credentials. Zero network. Graphs, harness, Armor and</text>
   <text x="868" y="1403" font-size="10.5" fill="#3c4650">calendar all run on a laptop against a strict playback double</text>
@@ -390,7 +390,7 @@
   <text x="1276" y="1390" font-size="10.5" fill="#3c4650">30 students × 14 days through the real pipeline.</text>
   <text x="1276" y="1403" font-size="10.5" fill="#3c4650">1,062 responses graded · 20 items retired · byte-identical</text>
   <text x="1276" y="1416" font-size="10.5" fill="#3c4650">transcript for the same seed, on any machine.</text>
-  <text x="1276" y="1434" font-size="10.5" font-style="italic" fill="#8c99a8">docs/reports/demo-clock-offline-2026-08-20.md</text>
+  <text x="1276" y="1434" font-size="10.5" font-style="italic" fill="#8c99a8">demo clock · 2026-08-20</text>
 
   <rect x="36" y="1456" width="384" height="124" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
   <text x="52" y="1502" font-size="27" font-weight="bold" fill="#037f0c">0</text>
@@ -398,7 +398,7 @@
   <text x="52" y="1526" font-size="10.5" fill="#3c4650">Per 100 student-weeks, calendar mask and delivery-health gate</text>
   <text x="52" y="1539" font-size="10.5" fill="#3c4650">on: 0 across 2,400 student-weeks, gate A 20/20 seeds. The</text>
   <text x="52" y="1552" font-size="10.5" fill="#3c4650">pre-fix control arm still fires 1,689 — 70.4 per 100.</text>
-  <text x="52" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">docs/reports/calendar-gaps-2026-08-21.md</text>
+  <text x="52" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">calendar bench · 2026-08-21</text>
 
   <rect x="444" y="1456" width="384" height="124" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
   <text x="460" y="1502" font-size="27" font-weight="bold" fill="#037f0c">60 / 60</text>
@@ -406,7 +406,7 @@
   <text x="460" y="1526" font-size="10.5" fill="#3c4650">Masking must not buy quiet by going blind: every genuine</text>
   <text x="460" y="1539" font-size="10.5" fill="#3c4650">dropout alerted within 3 practicable days — including the one</text>
   <text x="460" y="1552" font-size="10.5" fill="#3c4650">whose silence starts on the first outage day (20/20).</text>
-  <text x="460" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">docs/reports/calendar-gaps-2026-08-21.md</text>
+  <text x="460" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">calendar bench · 2026-08-21</text>
 
   <rect x="852" y="1456" width="384" height="124" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
   <text x="868" y="1502" font-size="27" font-weight="bold" fill="#037f0c">53 / 63</text>
@@ -414,7 +414,7 @@
   <text x="868" y="1526" font-size="10.5" fill="#3c4650">p50 and p95 over 40 virgin seeds — the interruption budget a</text>
   <text x="868" y="1539" font-size="10.5" fill="#3c4650">family actually lives with. 7 of 8 pre-registered gates pass;</text>
   <text x="868" y="1552" font-size="10.5" fill="#3c4650">G2, zero false-positive students, stays red on the board.</text>
-  <text x="868" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">docs/reports/calibration-validation-2026-08-20.md</text>
+  <text x="868" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">calibration run · 2026-08-20</text>
 
   <rect x="1260" y="1456" width="384" height="124" rx="10" fill="#ffffff" stroke="#d91515" stroke-width="1.8"/>
   <text x="1276" y="1502" font-size="27" font-weight="bold" fill="#d91515">0.917</text>
@@ -422,7 +422,7 @@
   <text x="1276" y="1526" font-size="10.5" fill="#3c4650">A corroboration floor promised to cut the residual false</text>
   <text x="1276" y="1539" font-size="10.5" fill="#3c4650">positives. Its own pre-declared protocol measured recall fall</text>
   <text x="1276" y="1552" font-size="10.5" fill="#3c4650">0.994 → 0.917. Falsified in four hours, reverted the same hour.</text>
-  <text x="1276" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">docs/reports/corroboration-floor-falsified-2026-08-21.md</text>
+  <text x="1276" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">falsification run · 2026-08-21</text>
 
   <text x="36" y="1620" font-size="10.5" font-style="italic" fill="#5f6b7a">Open, and on the board: 11 residual struggle false positives across the 40 virgin seeds keep gate G2 below its 95 % bar. The root cause is the EMA's cold start — three consecutive misses multiply the estimate by 0.7³ from any prior history.</text>
   <text x="36" y="1638" font-size="10.5" font-style="italic" fill="#5f6b7a">Threshold-level guards are exhausted: two swept, one slab-confirmed, one falsified. The remaining fix is the estimator itself — a BKT-style slip/guess separation — and it is on the roadmap rather than in this drawing.</text>

@@ -456,7 +456,7 @@ text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
   <text class="railb" x="84" y="1600">and a constant becomes a versioned, hashed row with a provenance trail that one write reverts. Note the shape: the two loops that touch a child's decisions, L1 and L2, contain no LLM at all.</text>
 </g>
 
-<text class="foot" x="60" y="1668">Source: docs/product/self-learning.md (adversarial ML-research review, 2026-08-20). FREEZE = shippable inside the current freeze · ROADMAP = post-hackathon design, drawn here so the claim stays bounded rather than implied.</text>
+<text class="foot" x="60" y="1668">Source: adversarial ML-research review, 2026-08-20. NEAR-TERM = shippable in the current cycle · ROADMAP = later design work, drawn here so the claim stays bounded rather than implied.</text>
 <text class="foot" x="60" y="1690">Explicitly not being built before the pilot: a generic experimentation platform, any online or continuous learning during a live 30-family pilot, and per-student prompt personalisation. Offline RL and contextual bandits are premature at ~4k–12k decision points — but the propensities are logged anyway, so a later evaluation stays possible.</text>
 
 </svg>

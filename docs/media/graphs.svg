@@ -418,5 +418,5 @@
   <rect x="90" y="1640" width="1630" height="80" rx="8" fill="#f4f6f8" stroke="#cbd3dc"/>
   <text class="s bold" x="112" y="1668">Execution limits are set on every graph — ingest 8 · session 4 · response 6 · close 6 node executions. A graph that loops stops; it does not spend.</text>
   <text class="xs grey" x="112" y="1690">Built with strands.multiagent.graph.GraphBuilder: deterministic nodes are MultiAgentBase subclasses and every conditional edge closes over a typed run context, so each branch is unit-testable.</text>
-  <text class="xs grey" x="112" y="1708">Sources — armor bench 2026-08-20 · calibration validation 2026-08-20 · calendar gaps 2026-08-21 · demo clock 2026-08-20. 706 offline tests, ~5 s, zero credentials, zero network.</text>
+  <text class="xs grey" x="112" y="1708">Sources — armor bench 2026-08-20 · calibration validation 2026-08-20 · calendar gaps 2026-08-21 · demo clock 2026-08-20. 885 offline tests, ~5 s, zero credentials, zero network.</text>
 </svg>

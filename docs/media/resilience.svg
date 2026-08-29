@@ -327,7 +327,7 @@ text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
   <text class="oc" x="1180" y="1476" style="font-style:italic;fill:#d91515">For one day, four seeds stood on the board as a product failure.</text>
 </g>
 
-<text class="foot" x="60" y="1546">Sources: tests/channel/test_parser_dedupe.py · tests/orchestration/test_ingest_graph.py · tests/config/test_settings.py · infra/stacks/messaging_stack.py · src/repaso/config/models.py · docs/reports/calendar-gaps-2026-08-21.md · docs/reports/seed-sweep-2026-08-20.md</text>
-<text class="foot" x="60" y="1568">The whole offline suite — 706 tests, about 5 seconds, zero credentials, zero network — is also a cost audit: local mode implements the model interface and raises on any unplanned call, so a leak into a paid API fails the suite rather than the invoice.</text>
+<text class="foot" x="60" y="1546">Sources: tests/channel/test_parser_dedupe.py · tests/orchestration/test_ingest_graph.py · tests/config/test_settings.py · infra/stacks/messaging_stack.py · src/repaso/config/models.py · calendar bench · 2026-08-21 · seed sweep · 2026-08-20</text>
+<text class="foot" x="60" y="1568">The whole offline suite — 885 tests, about 5 seconds, zero credentials, zero network — is also a cost audit: local mode implements the model interface and raises on any unplanned call, so a leak into a paid API fails the suite rather than the invoice.</text>
 
 </svg>

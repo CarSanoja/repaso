@@ -243,5 +243,5 @@
 
   <text x="80" y="1362" font-size="10.5" font-style="italic" fill="#5f6b7a">The strict schemas carry no field for any of them, so there is nothing to redact, nothing to leak in a prompt and nothing to hand over under subpoena. The only photograph the system accepts is of the page.</text>
 
-  <text x="56" y="1444" font-size="10.5" font-style="italic" fill="#8c99a8">Measured = a dated adversarial bench in docs/reports/. Enforced = shipped code plus the unit test named on the card. Designed = built and reachable, but never exercised by an offline run.</text>
+  <text x="56" y="1444" font-size="10.5" font-style="italic" fill="#8c99a8">Measured = a dated adversarial bench in dated runs. Enforced = shipped code plus the unit test named on the card. Designed = built and reachable, but never exercised by an offline run.</text>
 </svg>

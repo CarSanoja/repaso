@@ -190,8 +190,7 @@ text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 <g id="callout1">
   <rect x="206" y="430" width="304" height="180" rx="10" fill="#232f3e"/>
   <text class="lbl" x="222" y="454" style="fill:#9fe6a0">COMMITTED BEFORE THE FIRST RUN</text>
-  <text class="cow" x="222" y="478">docs/reports/</text>
-  <text class="cow" x="222" y="494">preregistered-gates-2026-08-20.md</text>
+  <text class="cow" x="222" y="486">preregistered-gates-2026-08-20</text>
   <text class="coq" x="222" y="522">“Failures are reported as failures.</text>
   <text class="coq" x="222" y="538">This file does not change after runs.</text>
   <text class="coq" x="222" y="554">Deviations get a new dated report.”</text>
@@ -266,7 +265,7 @@ text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
   <rect x="62" y="674" width="820" height="22" fill="#eaf6ea"/>
   <line x1="62" y1="696" x2="882" y2="696" stroke="#037f0c" stroke-width="1.5"/>
   <text class="ph" x="82" y="680" style="fill:#037f0c">Seed hygiene — every range spent once, and recorded</text>
-  <text class="cap" x="862" y="680" text-anchor="end">seven dated blocks in docs/reports/</text>
+  <text class="cap" x="862" y="680" text-anchor="end">seven dated benchmark blocks</text>
   <rect x="62" y="650" width="820" height="560" rx="12" fill="none" stroke="#037f0c" stroke-width="1.5"/>
 
   <text class="lbl" x="82" y="722" style="fill:#5f6b7a">SEED RANGE</text>
@@ -318,7 +317,7 @@ text { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
   <text class="note" x="82" y="1106">1,689 alerts, 540 distinct students and all seven fire dates row for row.</text>
   <text class="cap" x="82" y="1140">The honest limit, stated in every report: these plateaus live in a simulator with a bimodal ability gap, and a</text>
   <text class="cap" x="82" y="1156">classroom is a continuum. The pilot and the live calibration remain the only external checks this project has.</text>
-  <text class="cap" x="82" y="1180">All of it offline: 706 tests in ~5 s, $0, no network, no credentials — the suite is also a cost audit.</text>
+  <text class="cap" x="82" y="1180">All of it offline: 885 tests in ~5 s, $0, no network, no credentials — the suite is also a cost audit.</text>
 </g>
 
 <g id="fork">
