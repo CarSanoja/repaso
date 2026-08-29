@@ -7,7 +7,6 @@ from repaso.agents.intake_screener import (
     UNTRUSTED_CLOSE,
     UNTRUSTED_OPEN,
     IntakeDecision,
-    redact_for_llm,
     screen_text,
 )
 from repaso.agents.material_parser import (
@@ -136,9 +135,6 @@ def test_intake_decision_defaults_to_no_reasons_and_the_prompt_is_versioned():
     assert PROMPT_VERSION.startswith("v")
 
 
-def test_redaction_for_the_llm_delegates_to_the_screener():
-    text = "Escribe a ana@colegio.edu.ve sobre la tarea"
-    assert redact_for_llm(text, LocalScreener()) == LocalScreener().redact(text)
 
 
 def test_a_sharp_photo_parses_with_its_legibility_recorded():

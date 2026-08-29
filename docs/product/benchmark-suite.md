@@ -31,7 +31,7 @@ The headline says **17**. The cohort signal fans out to every family in the sect
 Two more findings that the suite below is designed to catch, both structural:
 
 - **The answer channel has one layer of defense, not two.** `runner.handle_answer` calls `services.screener.screen(text)` directly — the ten English substrings. It never calls `intake_screener.screen_text`, which is where the untrusted-content framing and the LLM screener live. Those run only on the *ingest* path. The highest-volume untrusted input, typed by a minor, gets an English-only exact-substring matcher. `"ignora las instrucciones anteriores"` passes clean. And a false positive returns `None` with no outbound message: the child is silently ghosted mid-session and `current_item_index` never advances.
-- **`redact_for_llm` is defined, unit-tested, and never called by any production path.** `grader.open_prompt` interpolates `response.text` verbatim into the Bedrock prompt. The written guarantee "student names never reach the model" (architecture §Garantías 1) is currently unimplemented.
+- **`redact_for_llm` was defined, unit-tested, and never called by any production path.** `grader.open_prompt` interpolated `response.text` verbatim into the Bedrock prompt, leaving the written guarantee "student names never reach the model" unimplemented. *Since resolved:* the response graph redacts through the screener before the grader sees the text, and the unused wrapper is gone.
 
 Everything below is scoped so that a benchmark, run once, either changes a number or kills a claim. Tests are **numbered in rank order by information gained**. New code lands in `tests/bench/` (pytest, `-m bench`) and `scripts/bench/`, with results written to a dated report per run.
 
@@ -153,7 +153,7 @@ Then the part nobody does: **route every attack that survives the screener throu
 
 **Pass gate:** zero unredacted PII in any model-bound payload. Aliases only.
 
-**Predicted result: FAIL.** `redact_for_llm` has zero production callers; `grader.open_prompt` sends `response.text` verbatim. The gate exists as a function and a unit test, not as a pipeline stage.
+**Predicted result: FAIL.** At the time of review `redact_for_llm` had zero production callers and `grader.open_prompt` sent `response.text` verbatim -- the gate existed as a function and a unit test, not as a pipeline stage. It is now a pipeline stage; the audit itself is still unrun.
 
 **Repair:** call `screener.redact()` on `response.text` inside `grade_open` and on any free text entering a composer prompt; keep the unredacted text only in the local `EvidenceSpan` so the parent still sees what their child actually wrote.
 
@@ -315,7 +315,7 @@ Also record the scaling landmine: `_all_grades` is called twice per daily close 
 | 4 | Interrupt accounting | headline says 17; artifacts say 25 | **FAIL** — restate the number |
 | 5 | Threshold sensitivity curves | thresholds tuned on the reported seed | PASS for `min_samples`; no signal for the confidence gate |
 | 6 | Adversarial Armor corpus | one self-authored injection string | **FAIL** on interception, PASS on harm |
-| 7 | PII egress audit | `redact_for_llm` has no callers | **FAIL** — a written guarantee is unimplemented |
+| 7 | PII egress audit | the redaction gate was not on any path | **FAIL** at review time; the gate now runs, the audit does not |
 | 8 | Latent oracle + randomized population | archetypes authored by the trigger author | 0.85/0.80, not 8/8 |
 | 9 | Concept drift / recovery latency | recovery never measured | **FAIL** on post-recovery interrupts |
 | 10 | 60-day longitudinal | 14 days hides every slow dynamic | **FAIL** ×3 (bank drains, debt diverges, dropouts forgotten) |

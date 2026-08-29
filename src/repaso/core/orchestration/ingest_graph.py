@@ -13,7 +13,7 @@ from repaso.core.orchestration.nodes import StepNode
 from repaso.i18n.catalog import msg
 from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.grading import EvidenceSpan
-from repaso.schemas.item import Item, ItemStatus
+from repaso.schemas.item import ItemStatus
 from repaso.schemas.material import MaterialStatus
 from repaso.schemas.review import QuarantineItem, QuarantineKind
 
@@ -162,5 +162,3 @@ def kept_item_ids(run: IngestRun) -> list[str]:
     return [item.id for item in run.kept]
 
 
-def candidate_items(run: IngestRun) -> list[Item]:
-    return list(run.generated)

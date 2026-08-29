@@ -49,9 +49,6 @@ class CohortLedger:
     def expected_engagement_students(self) -> int:
         return len(self.by_archetype(Archetype.DISENGAGED))
 
-    @property
-    def expected_cohort_signals(self) -> int:
-        return 1
 
     @property
     def expected_injections(self) -> int:

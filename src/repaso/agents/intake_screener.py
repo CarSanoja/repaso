@@ -32,5 +32,3 @@ async def screen_text(text: str, screener: Screener, model) -> ScreenVerdict:
     return ScreenVerdict(safe=decision.safe, reasons=list(decision.reasons))
 
 
-def redact_for_llm(text: str, screener: Screener) -> str:
-    return screener.redact(text)

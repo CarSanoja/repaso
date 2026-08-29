@@ -42,9 +42,6 @@ def textract_client() -> Any | None:
     return _cached_client("textract")
 
 
-def sqs_client() -> Any | None:
-    return _cached_client("sqs")
-
 
 def reset_client_cache() -> None:
     _cached_client.cache_clear()
