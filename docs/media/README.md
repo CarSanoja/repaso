@@ -82,7 +82,7 @@ Shape grammar, applied consistently so shape carries meaning:
    `k ≥ 3 families` are facts; an unlabelled arrow is a guess.
 5. **Put the numbers in.** Measured precision, latency and counts turn an architecture
    drawing into evidence. **Only real measurements** — every number must trace to a
-   dated report in `docs/reports/`. Never a number you have not seen come out of a run.
+   dated benchmark run. Never a number you have not seen come out of a run.
 6. **Design for both light and dark presentation.** The background is painted explicitly
    white; text is dark ink. Never rely on the host's background.
 7. **The deterministic half must look different from the model half.** Green for the
@@ -109,6 +109,6 @@ Each diagram ships as a pair: `<name>.svg` (source of truth, edit this) and
 | [`resilience`](resilience.svg) | flow | The failure modes actually executed — crash-resume, duplicate delivery, outage silence, model throttle — and how each recovers | Anyone who has run production systems |
 | [`self-learning`](self-learning.svg) | roadmap | The learning loops and their adversaries: what updates, who challenges it, and the gate that promotes a change | Anyone assessing the learning claim |
 
-Every number in these diagrams comes from a dated report in `docs/reports/`. Where a
+Every number in these diagrams comes from a dated benchmark run. Where a
 control is designed but not yet proven live, the diagram says so on its face rather than
 implying more than was measured.

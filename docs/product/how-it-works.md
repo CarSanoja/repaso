@@ -4,8 +4,8 @@
 |---|---|
 | **Status** | Maintained — living document, updated with every implementation cycle |
 | **Audience** | Engineers integrating, deploying, or extending Repaso |
-| **Last updated** | 2026-08-20 (Benchmark 002 — adversarial round) |
-| **Related** | [Product overview](product-overview.md) · [Data model](data-model.md) · [Dev log](../devlog/README.md) · [Reports](../reports/) |
+| **Last updated** | 2026-08-28 |
+| **Related** | [Product overview](product-overview.md) · [Data model](data-model.md) |
 
 ## The design stance
 
@@ -56,17 +56,15 @@ interface and raises on any unplanned call, so the offline suite is also a cost 
   [0.947–0.983], recall 0.994 [0.980–0.998]** vs a 0.300 random baseline — reached
   through a pre-registered, out-of-sample pipeline (gates committed to git before any
   run; calibration chosen on disjoint seeds; validated on seeds no analysis touched).
-  Seven of eight pre-registered gates pass; the eighth stays red on the board
-  ([validation](../reports/calibration-validation-2026-08-20.md)).
+  Seven of eight pre-registered gates pass; the eighth stays red on the board.
 - **The Armor intercepts 400/400 adversarial payloads** across 9 attack families in
   both languages, including OCR-corrupted variants, at a **0 % false-block rate** on
-  200 clean worksheets ([bench](../reports/armor-bench-2026-08-20.md)); student names
-  and contact data are redacted before any model call on the grading path.
+  200 clean worksheets; student names and contact data are redacted before any
+  model call on the grading path.
 - **The school calendar cannot fool it**: weekends, Carnaval and Semana Santa produce
   **zero calendar-caused false disengagement alerts per 100 student-weeks**, while
-  genuine dropouts are still caught within 3 school days
-  ([calendar](../reports/calendar-gaps-2026-08-20.md)).
-- **675 offline tests, no credentials, no network**, green in ~5 s; the demo clock
+  genuine dropouts are still caught within 3 school days.
+- **706 offline tests, no credentials, no network**, green in ~5 s; the demo clock
   runs 420 student-days through the real graphs in ~14 s, byte-identical per seed.
 - **Crash-resume without repaying models**; **exactly-once everywhere** (update-id
   claims, weekly signal claims, conditional writes).

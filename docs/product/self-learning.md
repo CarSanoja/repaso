@@ -42,7 +42,6 @@ Nothing in this part is buildable until this exists. The tunable constants are c
 **One latent bug to fix in the same pass:** `adaptation_policy.build_signals` passes the *same* `min_samples` to `struggle_trigger` and to `fast_guess_flag`. Sweeping `escalation_min_samples` silently moves the fast-guessing detector. Two unrelated thresholds are welded together, which makes any calibration result uninterpretable. Decouple before sweeping (30 min).
 
 **[NEAR-TERM]**
-
 ---
 
 ## 2.2 Block L1 — Replay Calibrator: counterfactual threshold calibration
@@ -79,13 +78,11 @@ Binary per-student ledger checks are the wrong instrument. Report instead:
 **Repair:** `build_cohort(services, now, rng)` sampling cohort size, archetype mix (Dirichlet over the mix), per-student profile jitter (±15% on `base_ability`, `learning_rate`, `forgetting_rate`, `response_rate`), section assignment, dropout day, and injection day. Then split: seeds `1..40` are the training family (sweeps may look at them freely), seeds `41..80` are the test family, their hash committed, run once per release. Any number reported in the README comes from the test family or it does not go in the README.
 
 **[NEAR-TERM]**
-
 ### 2.2.4 The adversary: an optimizer whose job is to embarrass you
 
 The stated sin — *"the archetypes were designed by the same person who designed the triggers"* — is not repaired by more archetypes from the same person. It is repaired by an **objective function that rewards breaking the triggers**. Given a candidate constant vector, run a bounded random/CMA-ES search over `ArchetypeProfile` fields, constrained to a plausibility box (ability ∈ [0,1], response rate ≥ 0.5, learning rate ≤ 0.15 — later a prior fit on pilot data), maximizing either false alarms or missed detections. Publish the **worst cohort found**, not only the designed one. A README line like *"under adversarial cohort search within plausibility bounds, worst-case false-alarm rate is 0.4 per family-week"* is worth ten times more to a judge than 8/8.
 
 **[NEAR-TERM]**
-
 ### 2.2.5 The gate: plateau, not peak
 
 A candidate is promoted only if:
@@ -151,7 +148,7 @@ Fitting BKT's four parameters by EM at 30 students × 14 days is wishful. Use bo
 
 Three concrete defects in `psychometrics.py` / `item_optimizer.py`:
 
-1. **Part-whole contamination.** `student_totals()` in `item_optimizer.py` computes each student's total score over *all* grades including the item being evaluated, then correlates the item against that total. Standard psychometrics requires the **corrected item-total correlation** (exclude the item from the total). At the small per-student n here the inflation is not marginal. *1h fix.*
+1. **Part-whole contamination.** `student_totals()` in `item_optimizer.py` computes each student's total score over *all* grades including the item being evaluated, then correlates the item against that total. Standard psychometrics requires the **corrected item-total correlation** (exclude the item from the total). At the small per-student n here the inflation is not marginal.
 2. **Discrimination at n=8 is noise.** Point-biserial SE ≈ 1/√(n−3) ≈ 0.45 at n=8. Against `DISCRIMINATION_FLOOR = 0.15`, a genuinely good item with true r = 0.4 measures below the floor roughly a quarter of the time. Gate the discrimination branch at n ≥ 25 and say plainly in the README: *at pilot scale, discrimination is not measurable.*
 3. **p-value retirement fires on luck.** With `P_FLOOR = 0.05` and n=8, a legitimately hard item with true p = 0.25 returns all-wrong with probability 0.75⁸ ≈ 10% — and it is re-evaluated every single day. This is why **20 of 84 items (24% of the bank) were retired in 14 days**. The tournament is chewing a quarter of the item bank on noise-level evidence, and the report presents that number as a feature.
 
@@ -214,7 +211,6 @@ Six append-only record types, all carrying `schema_version`, `run_id`, `seed_or_
 **Storage:** S3 is the corpus of record — daily JSONL partitions `s3://…/learning/dt=YYYY-MM-DD/kind=<type>/`, Athena-queryable, immutable, Object Lock on test/golden partitions. DynamoDB holds only what needs point lookup (config versions, active pointers, human labels), with `gsi1` on student. Zero-code path if you want it: DynamoDB Streams → Firehose → S3. Local mode reuses the existing `LocalTelemetrySink` pattern — same interface, JSONL on disk, no credentials.
 
 **[NEAR-TERM]**
-
 ---
 
 ## 2.7 Additions
@@ -275,7 +271,7 @@ Note the shape: **the two blocks that touch children's decisions (L1, L2) contai
 | 10 | L6e promotion circuit breaker | **First thing to cut if you are over** |
 | | **Total** | |
 
-Deliberately **not** in the freeze: the BKT challenger itself (4h, stretch), the Misconception Probe (3h — cut with regret; it is the best innovation headline here and the first thing I would restore if L1b lands early), the automated prompt-mutation loop (~20h), item probation, Bedrock-batch regeneration.
+Deliberately **not** in the freeze: the BKT challenger itself, the Misconception Probe, the automated prompt-mutation loop, item probation, Bedrock-batch regeneration.
 
 **What not to build under any circumstances before September 3:** a generic experimentation platform; any online/continuous learning during a live pilot with 30 families; per-student prompt personalization. All three are the classic ways a self-learning story turns into an unaudited one.
 

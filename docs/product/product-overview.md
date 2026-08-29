@@ -4,7 +4,7 @@
 |---|---|
 | **Status** | Maintained — living document, updated with every implementation cycle |
 | **Audience** | Anyone deciding whether Repaso serves their family, school, or review |
-| **Last updated** | 2026-08-20 (Benchmark 002 — adversarial round) |
+| **Last updated** | 2026-08-28 |
 
 Wealthy families buy reinforcement: a tutor who looks at what the child is studying,
 runs a little practice every day, adapts to their level, and tells the parent when

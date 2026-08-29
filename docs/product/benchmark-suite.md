@@ -33,9 +33,9 @@ Two more findings that the suite below is designed to catch, both structural:
 - **The answer channel has one layer of defense, not two.** `runner.handle_answer` calls `services.screener.screen(text)` directly — the ten English substrings. It never calls `intake_screener.screen_text`, which is where the untrusted-content framing and the LLM screener live. Those run only on the *ingest* path. The highest-volume untrusted input, typed by a minor, gets an English-only exact-substring matcher. `"ignora las instrucciones anteriores"` passes clean. And a false positive returns `None` with no outbound message: the child is silently ghosted mid-session and `current_item_index` never advances.
 - **`redact_for_llm` is defined, unit-tested, and never called by any production path.** `grader.open_prompt` interpolates `response.text` verbatim into the Bedrock prompt. The written guarantee "student names never reach the model" (architecture §Garantías 1) is currently unimplemented.
 
-Everything below is scoped so that a benchmark, run once, either changes a number or kills a claim. Tests are **numbered in rank order by information gained**. New code lands in `tests/bench/` (pytest, `-m bench`) and `scripts/bench/`, with results written to `docs/reports/bench/`.
+Everything below is scoped so that a benchmark, run once, either changes a number or kills a claim. Tests are **numbered in rank order by information gained**. New code lands in `tests/bench/` (pytest, `-m bench`) and `scripts/bench/`, with results written to a dated report per run.
 
-**Meta-repair, 1h, prerequisite for everything: pre-registration.** Before any sweep runs, `scripts/bench/preregister.py` writes `docs/reports/bench/manifest.json` containing: the seed list split into `tuning_seeds` (thresholds may be touched) and `reporting_seeds` (frozen, never inspected during tuning), the config hash of `Settings`, and every pass gate below verbatim. Commit it. Every subsequent report cites the manifest hash. This is what converts "we tuned on the seed we reported" from a confession into a controlled procedure, and it costs an hour.
+**Meta-repair, prerequisite for everything: pre-registration.** Before any sweep runs, `scripts/bench/preregister.py` writes `bench/manifest.json` containing: the seed list split into `tuning_seeds` (thresholds may be touched) and `reporting_seeds` (frozen, never inspected during tuning), the config hash of `Settings`, and every pass gate below verbatim. Commit it. Every subsequent report cites the manifest hash. This is what converts "we tuned on the seed we reported" from a confession into a controlled procedure.
 
 ---
 
@@ -51,8 +51,7 @@ Everything below is scoped so that a benchmark, run once, either changes a numbe
 
 **Predicted result:** the policy wins comfortably. Closed-form for the struggle arm: the probability that a random 12-of-30 low-ability labelling contains all 9 triaged students is `C(21,3)/C(30,12) = 1.54×10⁻⁵`; jointly with the 3-of-3 engagement hits (`1/C(30,3)`) the null sits near 4×10⁻⁹. Arm (a) also scores zero false interrupts — which is exactly why the current headline is unfalsifiable as written.
 
-**Where:** offline sim. **[NEAR-TERM] — 3h.**
-
+**Where:** offline sim. **[NEAR-TERM]**
 **What it unlocks:** replacing "zero false interrupts" with "precision 1.00 at recall 1.00, p < 10⁻⁸ against a rate-matched blind interrupter; a never-interrupt baseline matches the false-positive count and scores recall 0."
 
 ---
@@ -69,10 +68,9 @@ Everything below is scoped so that a benchmark, run once, either changes a numbe
 
 **Predicted result: FAIL, hard.** `engagement_trigger(counts, min_active_days=2, silent_days_threshold=3)` counts calendar days from `daily_counts`, which buckets graded responses by date over a fixed 14-day window. Two consecutive weekends plus a Monday holiday is three trailing silent days with ≥2 active days in window — an alert to a family doing nothing wrong. Semana Santa fires an alert to *every* enrolled family, on the same day. That is the pilot's first-week catastrophe, and the current benchmark cannot see it because the simulator answers seven days a week.
 
-**Repair:** count silence in *scheduled* days, not calendar days — `daily_counts` should mask out days where no capsule was delivered or the family calendar marks a break, and `trailing_silent_days` should consume that masked series. Add `family.quiet_days: set[int]` (weekday mask, parent-settable) and a school-calendar blackout list to `Settings`. Roughly 4h of implementation on top of the 3h test.
+**Repair:** count silence in *scheduled* days, not calendar days — `daily_counts` should mask out days where no capsule was delivered or the family calendar marks a break, and `trailing_silent_days` should consume that masked series. Add `family.quiet_days: set[int]` (weekday mask, parent-settable) and a school-calendar blackout list to `Settings`.
 
-**Where:** offline sim, then verified in pilot. **[NEAR-TERM] — 3h test.**
-
+**Where:** offline sim, then verified in pilot. **[NEAR-TERM]**
 ---
 
 ## T3 — Multi-seed noise sweep with confidence intervals
@@ -87,8 +85,7 @@ Everything below is scoped so that a benchmark, run once, either changes a numbe
 
 **Predicted result:** precision holds; recall degrades at ±30% because `MIN_ATTEMPTS_FOR_LEVEL = 3` combined with `escalation_min_samples = 8` means a noisy struggler can bounce out of `STRUGGLING` before accumulating evidence. Expect the ±30% recall to land near 0.75–0.85.
 
-**Where:** offline sim. **[NEAR-TERM] — 5h.**
-
+**Where:** offline sim. **[NEAR-TERM]**
 ---
 
 ## T4 — Interrupt accounting and the alert-fatigue budget
@@ -103,8 +100,7 @@ Everything below is scoped so that a benchmark, run once, either changes a numbe
 
 **Predicted result:** currently 12/30 families interrupted, p95 = 2, max = 3 — passes at 14 days. At 60 days the 7-day cooldown alone permits 8 struggle packets per persistently-struggling student, which will breach the gate; that is T10's job to confirm.
 
-**Where:** offline sim. **[NEAR-TERM] — 2h.**
-
+**Where:** offline sim. **[NEAR-TERM]**
 ---
 
 ## T5 — Counterfactual threshold sensitivity curves
@@ -119,8 +115,7 @@ Everything below is scoped so that a benchmark, run once, either changes a numbe
 
 **Predicted result:** `min_samples = 8` will show a broad plateau roughly [6,11] and survive. `grader_confidence_threshold = 0.85` will show **no plateau at all offline**, because `AutoStubModel` returns a hard-coded 0.92 or the primed 0.3 — the curve will be a step function at 0.3 and 0.92 and will teach you nothing. Say so in the report; that parameter can only be set by T15.
 
-**Where:** offline sim. **[NEAR-TERM] — 4h build, compute in background.**
-
+**Where:** offline sim. **[NEAR-TERM]**
 **What it unlocks:** "Every escalation threshold sits mid-plateau across 20 held-out seeds; interrupt precision is ≥ 0.95 for any `min_samples` in [6,11]. The reported result is not a tuned artifact."
 
 ---
@@ -143,10 +138,9 @@ Then the part nobody does: **route every attack that survives the screener throu
 
 **Predicted result: FAIL on all three.** ES interception ≈ 0.02 (only strings containing the English `"system:"` or an English marker will hit); EN interception ≈ 0.35–0.45; obfuscation ≈ 0.00 (`_injection_reasons` does a raw `in` on a lowercased string with no NFKC normalization, no diacritic folding, no whitespace collapse); false-block ≥ 0.10 driven by `"disregard the remainder"` and by `PHONE_PATTERN` redacting number sequences. Harm rate should come out at 0 or near it — write down which surviving attacks did damage and which were absorbed by the deterministic layer, because that asymmetry *is* the architecture's safety argument and this is how you earn the right to state it.
 
-**Repair (4h, do it with the test):** (i) route `handle_answer` through `intake_screener.screen_text` so the answer channel gets both layers, guarded by `DailyBudget` so a spam burst cannot drain the LLM budget; (ii) add ES markers and NFKC + diacritic-fold + whitespace-collapse normalization before matching; (iii) replace the boolean block with three states — `safe` / `quarantine` / `block` — so a false positive produces a "no entendí eso, ¿lo escribes otra vez?" message instead of a silent dead end; (iv) drop `PHONE_PATTERN` matches that are separated by more than one space (a phone number is not a place-value list).
+**Repair:** (i) route `handle_answer` through `intake_screener.screen_text` so the answer channel gets both layers, guarded by `DailyBudget` so a spam burst cannot drain the LLM budget; (ii) add ES markers and NFKC + diacritic-fold + whitespace-collapse normalization before matching; (iii) replace the boolean block with three states — `safe` / `quarantine` / `block` — so a false positive produces a "no entendí eso, ¿lo escribes otra vez?" message instead of a silent dead end; (iv) drop `PHONE_PATTERN` matches that are separated by more than one space (a phone number is not a place-value list).
 
-**Where:** offline sim for the corpus; the LLM-screener arm re-runs live when Bedrock frees up, with the harm-rate gate unchanged. **[NEAR-TERM] — 6h test + 4h repair.**
-
+**Where:** offline sim for the corpus; the LLM-screener arm re-runs live when Bedrock frees up, with the harm-rate gate unchanged. **[NEAR-TERM]**
 ---
 
 ## T7 — PII egress audit
@@ -161,10 +155,9 @@ Then the part nobody does: **route every attack that survives the screener throu
 
 **Predicted result: FAIL.** `redact_for_llm` has zero production callers; `grader.open_prompt` sends `response.text` verbatim. The gate exists as a function and a unit test, not as a pipeline stage.
 
-**Repair (1h):** call `screener.redact()` on `response.text` inside `grade_open` and on any free text entering a composer prompt; keep the unredacted text only in the local `EvidenceSpan` so the parent still sees what their child actually wrote.
+**Repair:** call `screener.redact()` on `response.text` inside `grade_open` and on any free text entering a composer prompt; keep the unredacted text only in the local `EvidenceSpan` so the parent still sees what their child actually wrote.
 
-**Where:** offline sim. **[NEAR-TERM] — 2h test.**
-
+**Where:** offline sim. **[NEAR-TERM]**
 ---
 
 ## T8 — Latent-truth oracle and a randomized student population
@@ -179,8 +172,7 @@ While in there, fix `ability_on_day`: `base + learning_rate·day` is unbounded a
 
 **Pass gate:** precision ≥ 0.85, recall ≥ 0.80, median detection latency ≤ 5 days. These are deliberately looser than the archetype numbers — a randomized population contains borderline students the archetype set does not, and 8/8 will not survive contact with them. A result of 0.85/0.80 on unlabelled synthetic students is a *stronger* claim than 8/8 on designed ones.
 
-**Where:** offline sim. **[NEAR-TERM] — 6h.**
-
+**Where:** offline sim. **[NEAR-TERM]**
 ---
 
 ## T9 — Concept drift: mid-run ability jump and recovery latency
@@ -197,8 +189,7 @@ While in there, fix `ability_on_day`: `base + learning_rate·day` is unbounded a
 
 **Repair:** re-evaluate the trigger at compose time, not at fire time, and add a `recovery_veto` — suppress a cooling-off escalation if the mastery level improved since the last packet. Cheap, deterministic, auditable.
 
-**Where:** offline sim. **[NEAR-TERM] — 3h.**
-
+**Where:** offline sim. **[NEAR-TERM]**
 ---
 
 ## T10 — 60-day longitudinal: review debt, item-bank health, memory growth
@@ -222,8 +213,7 @@ While in there, fix `ability_on_day`: `base + learning_rate·day` is unbounded a
 
 Also record the scaling landmine: `_all_grades` is called twice per daily close and reads the entire grade history each time. At 300 students × 180 days × 3 items/day that is 324k records materialized nightly.
 
-**Where:** offline sim. **[NEAR-TERM] — 4h test; the three repairs are separate work.**
-
+**Where:** offline sim. **[NEAR-TERM]**
 ---
 
 ## T11 — EN/ES parity
@@ -238,8 +228,7 @@ Also record the scaling landmine: `_all_grades` is called twice per daily close 
 
 **Predicted result: FAIL, already visible in the committed artifacts.** From `.local_data/demo_clock/outbox.jsonl`, delivered to Spanish-speaking families: `"Explica con tus palabras: Make and read a line plot with fractions"` (116 occurrences), `"Práctica 2 de Line plots with fractions: elige la opción correcta"` (68). The Spanish templates interpolate English competency names straight out of the curriculum JSON. A nine-year-old in Caracas is being asked to explain something in a language they do not read.
 
-**Where:** offline sim (a, b); live (c). **[NEAR-TERM] — 2h.**
-
+**Where:** offline sim (a, b); live (c). **[NEAR-TERM]**
 ---
 
 ## T12 — Fairness-of-experience audit
@@ -256,8 +245,7 @@ Also record the scaling landmine: `_all_grades` is called twice per daily close 
 
 **Repair:** make the reserve proportional rather than fixed, and give lapsed items a decaying priority so a thrice-failed item yields its slot to something else.
 
-**Where:** offline sim. **[NEAR-TERM] — 3h.**
-
+**Where:** offline sim. **[NEAR-TERM]**
 ---
 
 ## T13 — Psychometric validity of the item tournament
@@ -272,8 +260,7 @@ Also record the scaling landmine: `_all_grades` is called twice per daily close 
 
 **Predicted result:** recall high, precision poor at n=8 — 8 observations is far too few to estimate a point-biserial with any stability, and the seed-to-seed Jaccard will show it. The honest outcome is either raising `RETIREMENT_MIN_ATTEMPTS` to ~25 or reframing retirement as "flagged for review by the Item Critic" rather than automatic.
 
-**Where:** offline sim. **[NEAR-TERM] — 3h.**
-
+**Where:** offline sim. **[NEAR-TERM]**
 ---
 
 ## T14 — Cost and latency SLO under burst
@@ -288,8 +275,7 @@ Also record the scaling landmine: `_all_grades` is called twice per daily close 
 
 **Also flag:** `CloudWatchTelemetrySink.emit` calls `boto3.client("cloudwatch")` and `put_metric_data` **synchronously, per event, constructing a fresh client each time**. At 9,999 telemetry events per 14-day 30-student run, that is ~24 client constructions and blocking API calls per student-day, inside the request path. Batch it or make it async before the burst test, or the burst test is measuring boto3.
 
-**Where:** offline for calls/cost model **[NEAR-TERM] — 4h**; live latency arm **[ROADMAP — needs Bedrock]**.
-
+**Where:** offline for calls/cost model **[NEAR-TERM]**; live latency arm **[ROADMAP — needs Bedrock]**
 ---
 
 ## T15 — Grading agreement vs the human golden set
@@ -316,8 +302,7 @@ Also record the scaling landmine: `_all_grades` is called twice per daily close 
 
 **Pass gate:** **no judge-only number is published without its κ.** Judge-human QWK ≥ 0.60 licenses reporting the 200-item scale; below that, only the 30 human-scored artifacts may be cited. Anti-gaming sensors must be green on every promoted prompt variant. Report judge-human agreement *alongside* inter-human agreement so the reader can see the ceiling.
 
-**Where:** live Bedrock. **[ROADMAP]** — 6h, unless the throttle lifts before Aug 27, in which case the calibration subset alone is a 3h [NEAR-TERM].
-
+**Where:** live Bedrock. **[ROADMAP]**
 ---
 
 ## Ranking by information gained
