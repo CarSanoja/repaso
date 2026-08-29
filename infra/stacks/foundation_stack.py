@@ -4,14 +4,18 @@ from aws_cdk import aws_dynamodb as dynamodb
 from aws_cdk import aws_kms as kms
 from aws_cdk import aws_s3 as s3
 from aws_cdk import aws_secretsmanager as secretsmanager
+from config import DeployConfig
 from constructs import Construct
 
 
 class FoundationStack(cdk.Stack):
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(
+        self, scope: Construct, construct_id: str, config: DeployConfig, **kwargs
+    ) -> None:
         super().__init__(scope, construct_id, **kwargs)
+        self.config = config
 
-        self.key = kms.Key(self, "RepasoKey", alias="repaso", enable_key_rotation=True)
+        self.key = kms.Key(self, "RepasoKey", alias=config.bare(), enable_key_rotation=True)
 
         self.media_bucket = s3.Bucket(
             self,
@@ -19,7 +23,11 @@ class FoundationStack(cdk.Stack):
             encryption=s3.BucketEncryption.KMS,
             encryption_key=self.key,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-            lifecycle_rules=[s3.LifecycleRule(expiration=cdk.Duration.days(90))],
+            lifecycle_rules=[
+                s3.LifecycleRule(
+                    expiration=cdk.Duration.days(config.media_retention_days)
+                )
+            ],
             removal_policy=cdk.RemovalPolicy.RETAIN,
         )
 
@@ -35,7 +43,7 @@ class FoundationStack(cdk.Stack):
         self.table = dynamodb.Table(
             self,
             "Table",
-            table_name="repaso",
+            table_name=config.bare(),
             partition_key=dynamodb.Attribute(name="pk", type=dynamodb.AttributeType.STRING),
             sort_key=dynamodb.Attribute(name="sk", type=dynamodb.AttributeType.STRING),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -52,18 +60,20 @@ class FoundationStack(cdk.Stack):
         )
 
         self.telegram_secret = secretsmanager.Secret(
-            self, "TelegramSecret", secret_name="repaso/telegram"
+            self, "TelegramSecret", secret_name=config.secret("telegram")
         )
-        self.judge_secret = secretsmanager.Secret(self, "JudgeSecret", secret_name="repaso/judge")
+        self.judge_secret = secretsmanager.Secret(
+            self, "JudgeSecret", secret_name=config.secret("judge")
+        )
 
-        alert_email = self.node.try_get_context("alert_email")
+        alert_email = config.alert_email
         if alert_email:
-            for limit in (25, 40):
+            for limit in config.budget_limits_usd:
                 budgets.CfnBudget(
                     self,
                     f"Budget{limit}",
                     budget=budgets.CfnBudget.BudgetDataProperty(
-                        budget_name=f"repaso-{limit}",
+                        budget_name=config.resource(str(limit)),
                         budget_type="COST",
                         time_unit="MONTHLY",
                         budget_limit=budgets.CfnBudget.SpendProperty(amount=limit, unit="USD"),
@@ -73,7 +83,7 @@ class FoundationStack(cdk.Stack):
                             notification=budgets.CfnBudget.NotificationProperty(
                                 notification_type="ACTUAL",
                                 comparison_operator="GREATER_THAN",
-                                threshold=100,
+                                threshold=config.budget_alert_threshold_pct,
                             ),
                             subscribers=[
                                 budgets.CfnBudget.SubscriberProperty(

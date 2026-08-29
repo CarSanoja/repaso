@@ -4,14 +4,18 @@ from aws_cdk import aws_events_targets as targets
 from aws_cdk import aws_iam as iam
 from aws_cdk import aws_scheduler as scheduler
 from aws_cdk import aws_sqs as sqs
+from config import DeployConfig
 from constructs import Construct
 
 
 class MessagingStack(cdk.Stack):
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(
+        self, scope: Construct, construct_id: str, config: DeployConfig, **kwargs
+    ) -> None:
         super().__init__(scope, construct_id, **kwargs)
+        self.config = config
 
-        self.bus = events.EventBus(self, "Bus", event_bus_name="repaso")
+        self.bus = events.EventBus(self, "Bus", event_bus_name=config.bare())
 
         self.ingest_queue, self.ingest_dlq = self._queue_pair("ingest")
         self.tutor_queue, self.tutor_dlq = self._queue_pair("tutor")
@@ -25,12 +29,12 @@ class MessagingStack(cdk.Stack):
         )
         self._rule("QualityRule", ["daily_close"], self.quality_queue)
 
-        scheduler.CfnScheduleGroup(self, "ScheduleGroup", name="repaso")
+        scheduler.CfnScheduleGroup(self, "ScheduleGroup", name=config.bare())
 
         self.scheduler_role = iam.Role(
             self,
             "SchedulerRole",
-            role_name="repaso-scheduler",
+            role_name=config.resource("scheduler"),
             assumed_by=iam.ServicePrincipal("scheduler.amazonaws.com"),
         )
         self.bus.grant_put_events_to(self.scheduler_role)
@@ -39,15 +43,17 @@ class MessagingStack(cdk.Stack):
         dlq = sqs.Queue(
             self,
             f"{name.capitalize()}Dlq",
-            queue_name=f"repaso-{name}-dlq",
-            retention_period=cdk.Duration.days(14),
+            queue_name=self.config.resource(name, "dlq"),
+            retention_period=cdk.Duration.days(self.config.dlq_retention_days),
         )
         queue = sqs.Queue(
             self,
             f"{name.capitalize()}Queue",
-            queue_name=f"repaso-{name}",
-            visibility_timeout=cdk.Duration.minutes(15),
-            dead_letter_queue=sqs.DeadLetterQueue(max_receive_count=3, queue=dlq),
+            queue_name=self.config.resource(name),
+            visibility_timeout=cdk.Duration.minutes(self.config.queue_visibility_minutes),
+            dead_letter_queue=sqs.DeadLetterQueue(
+                max_receive_count=self.config.queue_max_receive, queue=dlq
+            ),
         )
         return queue, dlq
 
