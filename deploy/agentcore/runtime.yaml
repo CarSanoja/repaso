@@ -1,0 +1,123 @@
+project: repaso
+region: us-east-1
+agent_name: repaso
+deployment_tool: bedrock-agentcore-starter-toolkit
+
+entrypoint:
+  file: src/repaso/runtime/app.py
+  module: repaso.runtime.app
+  server_factory: build_runtime_app
+  handler: agentcore_entrypoint
+  delegates_to: repaso.runtime.entrypoint.invoke_async
+  sync_api: repaso.runtime.entrypoint.invoke
+  protocol: HTTP
+
+payload:
+  schema: repaso.runtime.payload.InvocationRequest
+  required_keys:
+    - kind
+  optional_keys:
+    - family_id
+    - idempotency_key
+    - occurred_at
+    - payload
+  handled_kinds:
+    - material_uploaded
+    - daily_session_due
+    - response_received
+    - daily_close
+
+graphs:
+  - kind: material_uploaded
+    builder: repaso.core.orchestration.ingest_graph.build_ingest_graph
+    runner: repaso.core.orchestration.runner.handle_material
+  - kind: daily_session_due
+    builder: repaso.core.orchestration.tutor_graph.build_session_graph
+    runner: repaso.core.orchestration.runner.start_daily_session
+  - kind: response_received
+    builder: repaso.core.orchestration.response_graph.build_response_graph
+    runner: repaso.core.orchestration.runner.handle_answer
+  - kind: daily_close
+    builder: repaso.core.orchestration.quality_graph.build_quality_graph
+    runner: repaso.core.orchestration.runner.run_daily_close
+
+container:
+  platform: linux/arm64
+  host: 0.0.0.0
+  port: 8080
+  health_endpoint: /ping
+  invocation_endpoint: /invocations
+  python_runtime: PYTHON_3_13
+  requirements_file: deploy/agentcore/requirements.txt
+  network_mode: PUBLIC
+  idle_timeout_seconds: 900
+  max_lifetime_seconds: 28800
+  observability: enabled
+
+environment:
+  region:
+    REPASO_AWS_REGION: us-east-1
+    AWS_REGION: us-east-1
+    AWS_DEFAULT_REGION: us-east-1
+  resources:
+    REPASO_DDB_TABLE: repaso
+    REPASO_MEDIA_BUCKET: ""
+    REPASO_CURRICULUM_BUCKET: ""
+    REPASO_EVENT_BUS: repaso
+    REPASO_SCHEDULER_GROUP: repaso
+    REPASO_TELEGRAM_SECRET_NAME: repaso/telegram
+    REPASO_JUDGE_CODE_SECRET_NAME: repaso/judge
+  runtime_only:
+    REPASO_TELEGRAM_TOKEN: ""
+    REPASO_KNOWLEDGE_BASE_ID: ""
+    REPASO_GUARDRAIL_ID: ""
+  models:
+    REPASO_MODEL_GENERATE: us.anthropic.claude-sonnet-4-6
+    REPASO_MODEL_JUDGE: us.anthropic.claude-sonnet-4-6
+    REPASO_MODEL_STRUCTURED: us.anthropic.claude-haiku-4-5-20251001-v1:0
+    REPASO_MODEL_CLASSIFY: us.amazon.nova-lite-v1:0
+    REPASO_MODEL_PROBE: us.amazon.nova-micro-v1:0
+  tuning:
+    REPASO_COHORT_MIN_FAMILIES: 3
+    REPASO_GRADER_CONFIDENCE_THRESHOLD: 0.85
+    REPASO_ESCALATION_MIN_SAMPLES: 9
+    REPASO_LEGIBILITY_BLUR_FLOOR: 300.0
+    REPASO_DAILY_LLM_BUDGET_CALLS: 40
+    REPASO_REWORK_MAX_ITERATIONS: 2
+    REPASO_ITEM_REGEN_MAX_ROUNDS: 2
+    REPASO_HOLIDAY_DATES: "[]"
+  never_set:
+    - REPASO_LOCAL_MODE
+    - REPASO_LOCAL_DATA_DIR
+    - REPASO_LIVE_TESTS
+
+iam:
+  execution_role_name: repaso-agentcore-runtime
+  trust_policy: iam/trust-policy.json
+  inline_policies:
+    - name: repaso-agentcore-runtime
+      file: iam/runtime-execution-policy.json
+      covers:
+        - ecr
+        - logs
+        - xray
+        - cloudwatch
+        - bedrock-agentcore-workload-identity
+        - bedrock-model-invocation
+    - name: repaso-agentcore-data
+      file: iam/repaso-data-policy.json
+      covers:
+        - dynamodb
+        - s3
+        - kms
+        - secretsmanager
+        - events
+        - scheduler
+        - textract
+        - cloudwatch-repaso-namespace
+        - bedrock-knowledge-base-retrieve
+        - bedrock-apply-guardrail
+
+ssm:
+  runtime_arn_parameter: /repaso/agentcore/runtime-arn
+  runtime_arn_parameter_type: String

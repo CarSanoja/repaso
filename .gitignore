@@ -4,6 +4,7 @@ private/
 .env
 .env.*
 !.env.example
+.bedrock_agentcore.yaml
 *.pem
 credentials*
 __pycache__/
