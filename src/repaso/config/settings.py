@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     scheduler_group: str = "repaso"
     telegram_secret_name: str = "repaso/telegram"
     judge_code_secret_name: str = "repaso/judge"
+    invite_codes_secret_name: str = "repaso/pilot-invite-codes"
 
     pilot_invite_codes: str = ""
 

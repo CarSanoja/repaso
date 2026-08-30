@@ -109,6 +109,10 @@ MESSAGES = {
         "Hola, soy Repaso. Por ahora trabajo solo con familias del piloto. Si tienes un "
         "código de invitación, envíalo para empezar."
     ),
+    "enrollment_closed": (
+        "Hola, soy Repaso. Por ahora el piloto no recibe familias nuevas. Pídele a quien "
+        "te invitó que te avise cuando se abra un cupo."
+    ),
     "unknown_command": "No conozco ese comando. /help muestra lo que sé hacer.",
     "status_line": "{alias}: {sessions} prácticas, dominio {mastery_map}, racha {streak}.",
 }

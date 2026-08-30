@@ -99,6 +99,7 @@ class ApiStack(cdk.Stack):
             "REPASO_SCHEDULER_GROUP": config.bare(),
             "REPASO_TELEGRAM_SECRET_NAME": config.secret("telegram"),
             "REPASO_JUDGE_CODE_SECRET_NAME": config.secret("judge"),
+            "REPASO_INVITE_CODES_SECRET_NAME": config.secret("pilot-invite-codes"),
         }
 
     def _bedrock_statement(self) -> iam.PolicyStatement:
@@ -123,6 +124,7 @@ class ApiStack(cdk.Stack):
         self.foundation.curriculum_bucket.grant_read(self.worker)
         self.foundation.telegram_secret.grant_read(self.worker)
         self.foundation.judge_secret.grant_read(self.worker)
+        self.foundation.invite_codes_secret.grant_read(self.worker)
         self.messaging.bus.grant_put_events_to(self.worker)
         self.worker.add_to_role_policy(self._bedrock_statement())
         for queue in (

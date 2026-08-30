@@ -21,6 +21,7 @@ from repaso.schemas.student import Student
 from repaso.schemas.verification import DailyCloseReport
 from repaso.tools.event_bus import EventPublisher
 from repaso.tools.guardrails import Screener, ScreenVerdict
+from repaso.tools.invite_codes import InviteCodeSource
 from repaso.tools.knowledge import KnowledgeRetriever
 from repaso.tools.media_store import MediaStore
 from repaso.tools.ocr import TextExtractor
@@ -40,6 +41,7 @@ class Services:
     retriever: KnowledgeRetriever
     publisher: EventPublisher
     sender: ChannelSender
+    invites: InviteCodeSource
     models: dict[ModelRole, Any]
     telemetry: TelemetrySink = field(default_factory=NullTelemetrySink)
 
@@ -89,6 +91,7 @@ class CloseRun:
 
 class Route(StrEnum):
     UNKNOWN_CHAT = "unknown_chat"
+    ENROLLMENT_CLOSED = "enrollment_closed"
     ENROLLMENT = "enrollment"
     ENROLLED = "enrolled"
     COMMAND = "command"

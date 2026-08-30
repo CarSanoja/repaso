@@ -1,4 +1,4 @@
-from repaso.channel.telegram.allowlist import pilot_codes, valid_invite
+from repaso.channel.telegram.allowlist import valid_invite
 from repaso.channel.telegram.enrollment import advance, start_enrollment
 from repaso.core.orchestration.context import ChannelRun, Route, Services
 from repaso.i18n import msg
@@ -6,15 +6,25 @@ from repaso.schemas.channel import InboundMessage, OutboundMessage
 from repaso.schemas.common import Lang
 
 DEFAULT_LANG = Lang.ES
+TRACE_KIND = "enrollment"
+CLOSED_TRACE = "closed"
+UNAVAILABLE_TRACE = "codes_unavailable"
 
 
 def route_enrollment(services: Services, run: ChannelRun) -> None:
     message = run.message
     channel = message.channel.value
     store = services.store
-    codes = pilot_codes(services.settings.pilot_invite_codes)
+    codes = invite_codes(services, message)
     progress = store.get_enrollment(channel, message.chat_ref)
     if progress is None:
+        if not codes:
+            services.telemetry.trace(
+                TRACE_KIND, CLOSED_TRACE, status="skipped", chat_ref=message.chat_ref
+            )
+            run.route = Route.ENROLLMENT_CLOSED
+            run.outbound.append(greeting(message, "enrollment_closed"))
+            return
         text = (message.text or "").strip()
         if not valid_invite(text, codes):
             run.route = Route.UNKNOWN_CHAT
@@ -32,6 +42,20 @@ def route_enrollment(services: Services, run: ChannelRun) -> None:
     if run.family is not None:
         students = store.list_students(run.family.id)
         run.student = students[0] if students else None
+
+
+def invite_codes(services: Services, message: InboundMessage) -> frozenset[str]:
+    try:
+        return services.invites.codes()
+    except Exception as error:
+        services.telemetry.trace(
+            TRACE_KIND,
+            UNAVAILABLE_TRACE,
+            status="failed",
+            error=f"{type(error).__name__}: {error}"[:300],
+            chat_ref=message.chat_ref,
+        )
+        return frozenset()
 
 
 def greeting(message: InboundMessage, key: str) -> OutboundMessage:

@@ -3,7 +3,7 @@ from datetime import UTC, datetime, time
 import pytest
 
 from repaso.channel.delivery import deliver, deliver_for_family
-from repaso.channel.telegram.allowlist import is_known, pilot_codes, valid_invite
+from repaso.channel.telegram.allowlist import is_known, valid_invite
 from repaso.channel.telegram.commands import handle_command, handle_forget_callback
 from repaso.channel.telegram.enrollment import advance, parse_practice_time, start_enrollment
 from repaso.i18n import msg
@@ -11,6 +11,7 @@ from repaso.schemas.channel import ChannelKind, InboundMessage, OutboundMessage
 from repaso.schemas.common import Lang
 from repaso.schemas.enrollment import EnrollmentStep
 from repaso.schemas.family import FamilyStatus
+from repaso.tools.invite_codes import parse_codes
 from repaso.tools.state_store import build_state_store
 from repaso.tools.telegram import LocalOutbox
 
@@ -134,7 +135,7 @@ def test_allowlist_knows_families_enrollments_and_invite_codes(store, family):
     assert is_known(message, store) is False
     begin(store)
     assert is_known(message, store) is True
-    codes = pilot_codes(" PILOTO-1, piloto-2 ,, ")
+    codes = parse_codes(" PILOTO-1, piloto-2 ,, ")
     assert codes == frozenset({"PILOTO-1", "piloto-2"})
     assert valid_invite(" piloto-1 ", codes) is True
     assert valid_invite("otro", codes) is False and valid_invite("", codes) is False

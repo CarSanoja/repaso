@@ -21,6 +21,7 @@ from repaso.simulator.student_sim import INJECTION_REPLY, simulate_answer
 from repaso.tools.event_bus import build_event_publisher
 from repaso.tools.grade_log import build_grade_log
 from repaso.tools.guardrails import build_screener
+from repaso.tools.invite_codes import build_invite_codes
 from repaso.tools.knowledge import build_knowledge_retriever
 from repaso.tools.llm import instrument_models
 from repaso.tools.media_store import build_media_store
@@ -61,6 +62,7 @@ def build_offline_services(settings: Settings) -> Services:
         retriever=build_knowledge_retriever(settings),
         publisher=build_event_publisher(settings),
         sender=build_channel_sender(settings),
+        invites=build_invite_codes(settings),
         models=models,
         telemetry=telemetry,
     )

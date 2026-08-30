@@ -3,10 +3,12 @@ from httpx import ASGITransport, AsyncClient
 from repaso.api.dependencies import build_container
 from repaso.api.main import create_app
 from repaso.channel.telegram.enrollment import CONSENT_YES
+from repaso.core.telemetry.sink import LocalTelemetrySink
 from repaso.i18n import msg
 from repaso.runtime import invoke_async
 from repaso.schemas.common import Lang
 from repaso.schemas.family import FamilyStatus
+from repaso.tools.invite_codes import INVITE_CODES_FILENAME
 from tests.orchestration.fixtures import make_services
 from tests.runtime.fixtures import (
     INVITE_CODE,
@@ -24,6 +26,20 @@ WEBHOOK = "/telegram/webhook"
 SECRET = "testsecret"
 
 
+class BrokenInviteCodes:
+    def codes(self) -> frozenset[str]:
+        raise RuntimeError("secrets manager is unreachable")
+
+
+def traced(services, tmp_path):
+    services.telemetry = LocalTelemetrySink(tmp_path / "telemetry.jsonl", services.clock)
+    return services
+
+
+def trace_names(services) -> list[str]:
+    return [f"{event.kind}.{event.name}" for event in services.telemetry.events]
+
+
 def test_a_chat_nobody_invited_is_told_how_to_get_in(settings):
     services = pilot(settings)
 
@@ -32,6 +48,41 @@ def test_a_chat_nobody_invited_is_told_how_to_get_in(settings):
     assert route_of(response) == "unknown_chat"
     assert texts(response) == [msg("unknown_chat", Lang.ES)]
     assert services.store.get_enrollment(CHANNEL, NEW_CHAT) is None
+
+
+def test_nobody_can_enroll_while_the_pilot_holds_no_invite_codes(settings, tmp_path):
+    services = traced(make_services(pilot_settings(settings, codes="")), tmp_path)
+
+    response = send(services, inbound(text="PILOTO-1"))
+
+    assert route_of(response) == "enrollment_closed"
+    assert texts(response) == [msg("enrollment_closed", Lang.ES)]
+    assert services.store.get_enrollment(CHANNEL, NEW_CHAT) is None
+    assert "enrollment.closed" in trace_names(services)
+
+
+def test_an_unreachable_code_source_closes_enrollment_instead_of_failing(settings, tmp_path):
+    services = traced(make_services(pilot_settings(settings, codes="")), tmp_path)
+    services.invites = BrokenInviteCodes()
+
+    response = send(services, inbound(text="PILOTO-1"))
+
+    assert route_of(response) == "enrollment_closed"
+    assert texts(response) == [msg("enrollment_closed", Lang.ES)]
+    assert "enrollment.codes_unavailable" in trace_names(services)
+
+
+def test_codes_kept_in_a_file_open_enrollment_when_no_setting_names_them(settings):
+    configured = pilot_settings(settings, codes="")
+    path = configured.local_data_dir / INVITE_CODES_FILENAME
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("PILOTO-9\nPILOTO-8\n", encoding="utf-8")
+    services = make_services(configured)
+
+    response = send(services, inbound(text="PILOTO-9"))
+
+    assert route_of(response) == "enrollment"
+    assert services.store.get_enrollment(CHANNEL, NEW_CHAT).invite_code == "PILOTO-9"
 
 
 def test_an_invite_code_opens_enrollment(settings):

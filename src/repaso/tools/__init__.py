@@ -1,6 +1,7 @@
 from repaso.tools.alarms import AlarmScheduler, AlarmSpec, build_alarm_scheduler, daily_cron
 from repaso.tools.event_bus import EventPublisher, LocalEventBus, build_event_publisher
 from repaso.tools.guardrails import Screener, ScreenVerdict, build_screener
+from repaso.tools.invite_codes import InviteCodeSource, build_invite_codes
 from repaso.tools.knowledge import KnowledgeRetriever, build_knowledge_retriever
 from repaso.tools.llm import LocalPlaybackModel, PlaybackExhausted, build_model
 from repaso.tools.media_store import MediaStore, build_media_store
@@ -14,6 +15,7 @@ __all__ = [
     "ChannelSender",
     "EventPublisher",
     "ExtractResult",
+    "InviteCodeSource",
     "KnowledgeRetriever",
     "LocalEventBus",
     "LocalOutbox",
@@ -27,6 +29,7 @@ __all__ = [
     "build_alarm_scheduler",
     "build_channel_sender",
     "build_event_publisher",
+    "build_invite_codes",
     "build_knowledge_retriever",
     "build_media_store",
     "build_model",

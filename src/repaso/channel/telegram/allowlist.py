@@ -14,7 +14,3 @@ def valid_invite(text: str, codes: frozenset[str]) -> bool:
     if not candidate:
         return False
     return candidate in {code.strip().casefold() for code in codes}
-
-
-def pilot_codes(raw: str) -> frozenset[str]:
-    return frozenset(part.strip() for part in raw.split(",") if part.strip())

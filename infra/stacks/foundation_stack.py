@@ -65,6 +65,9 @@ class FoundationStack(cdk.Stack):
         self.judge_secret = secretsmanager.Secret(
             self, "JudgeSecret", secret_name=config.secret("judge")
         )
+        self.invite_codes_secret = secretsmanager.Secret(
+            self, "InviteCodesSecret", secret_name=config.secret("pilot-invite-codes")
+        )
 
         alert_email = config.alert_email
         if alert_email:
