@@ -16,6 +16,7 @@ from repaso.core.harness.escalation_triggers import (
     engagement_trigger,
     trailing_silent_days,
 )
+from repaso.core.harness.pause import is_paused, trace_paused
 from repaso.core.orchestration.context import CloseRun, Services
 from repaso.core.orchestration.nodes import StepNode
 from repaso.core.orchestration.response_graph import daily_counts, window_days
@@ -41,7 +42,10 @@ def _cohort_totals(services: Services) -> dict[date, int]:
     return Counter(grade.graded_at.date() for grade in _all_grades(services))
 
 
-def _delivers_today(services: Services, family: Family, today: date) -> bool:
+def _delivers_today(services: Services, family: Family, today: date, step: str) -> bool:
+    if is_paused(family):
+        trace_paused(services.telemetry, family, step)
+        return False
     return is_scheduled(today, family.rest_weekdays, services.settings.holiday_dates)
 
 
@@ -74,7 +78,7 @@ def build_quality_graph(services: Services, run: CloseRun):
         today = services.clock.today()
         failures, families_by_section = [], {}
         for family in services.store.list_families():
-            if not _delivers_today(services, family, today):
+            if not _delivers_today(services, family, today, "close_cohort"):
                 continue
             for student in services.store.list_students(family.id):
                 families_by_section.setdefault(student.section_key, set()).add(family.id)
@@ -123,7 +127,7 @@ def build_quality_graph(services: Services, run: CloseRun):
         days = window_days(services)
         totals = _cohort_totals(services)
         for family in services.store.list_families():
-            if not _delivers_today(services, family, today):
+            if not _delivers_today(services, family, today, "close_engagement"):
                 continue
             closed = _closed_days(services, family, totals)
             for student in services.store.list_students(family.id):

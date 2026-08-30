@@ -3,6 +3,7 @@ from typing import Any
 
 from repaso.core.harness.clock import SystemClock
 from repaso.core.harness.idempotency import job_key
+from repaso.core.harness.pause import is_paused
 from repaso.lambdas.bootstrap import publisher, store
 from repaso.schemas.common import FamilyId
 from repaso.schemas.events import DomainEvent, EventKind
@@ -18,6 +19,11 @@ logger = logging.getLogger(__name__)
 def _text(tick: dict[str, Any], key: str) -> str:
     value = tick.get(key)
     return value.strip() if isinstance(value, str) else ""
+
+
+def _paused(family_id: str) -> bool:
+    family = store().get_family(FamilyId(family_id))
+    return family is not None and is_paused(family)
 
 
 def _students(family_id: str, student_id: str) -> list[str]:
@@ -49,6 +55,9 @@ def handler(event: dict[str, Any], context: Any = None) -> dict[str, Any]:
     if not family_id:
         logger.error("scheduler tick arrived without a family reference")
         return {"ok": False, "error": "missing_family_id"}
+    if _paused(family_id):
+        logger.info("scheduler tick skipped: family %s is paused", family_id)
+        return {"ok": True, "family_id": family_id, "fired": [], "skipped": [], "paused": True}
     now = SystemClock().now()
     day = now.date().isoformat()
     fired: list[str] = []

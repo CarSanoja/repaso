@@ -1,6 +1,7 @@
 from datetime import date
 from uuid import uuid4
 
+from repaso.core.harness.pause import is_paused, trace_paused
 from repaso.core.orchestration.context import (
     CloseRun,
     EscalationRun,
@@ -57,6 +58,10 @@ async def handle_material(
 
 async def start_daily_session(services: Services, family: Family, student: Student) -> TutorRun:
     run = TutorRun(family=family, student=student)
+    if is_paused(family):
+        run.terminal = "paused"
+        trace_paused(services.telemetry, family, "daily_session", student.id)
+        return run
     await build_session_graph(services, run).invoke_async("session")
     deliver_outbound(services, run.outbound)
     return run

@@ -2,6 +2,7 @@ import json
 
 from repaso.config.models import ModelRole
 from repaso.runtime import invoke
+from repaso.schemas.family import FamilyStatus
 from repaso.schemas.session import SessionStatus
 from tests.orchestration.fixtures import make_services, seed_family
 from tests.runtime.fixtures import request, seed_item, seed_session
@@ -35,6 +36,20 @@ def test_a_second_session_the_same_day_reports_its_terminal(settings):
     assert response["ok"] is True
     assert response["result"]["terminal"] == "already_planned"
     assert response["result"]["outbound"] == []
+
+
+def test_daily_session_due_delivers_nothing_to_a_paused_family(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    seed_item(services.store, "i1")
+    services.store.put_family(family.model_copy(update={"status": FamilyStatus.PAUSED}))
+
+    response = invoke(request("daily_session_due", family.id, student_id=student.id), services)
+
+    assert response["ok"] is True
+    assert response["result"]["terminal"] == "paused"
+    assert response["result"]["outbound"] == []
+    assert services.store.get_session_by_date(student.id, services.clock.today()) is None
 
 
 def test_response_received_grades_the_current_item(settings):

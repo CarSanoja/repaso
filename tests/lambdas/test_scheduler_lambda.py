@@ -4,7 +4,7 @@ from repaso.core.harness.idempotency import job_key
 from repaso.lambdas import bootstrap, scheduler
 from repaso.schemas.channel import ChannelKind
 from repaso.schemas.events import EventKind
-from repaso.schemas.family import Family
+from repaso.schemas.family import Family, FamilyStatus
 from repaso.schemas.student import Student
 from tests.lambdas.conftest import CHAT_REF, NOW
 
@@ -98,6 +98,38 @@ def test_scheduler_publishes_nothing_for_a_family_without_students(lambda_env):
     response = scheduler.handler(TICK, None)
     assert response == {"ok": True, "family_id": "f1", "fired": [], "skipped": []}
     assert published_events() == []
+
+
+def test_scheduler_fires_nothing_for_a_paused_family(lambda_env):
+    seed_student()
+    store = bootstrap.store()
+    family = store.get_family("f1")
+    store.put_family(family.model_copy(update={"status": FamilyStatus.PAUSED}))
+
+    response = scheduler.handler(TICK, None)
+
+    assert response == {
+        "ok": True,
+        "family_id": "f1",
+        "fired": [],
+        "skipped": [],
+        "paused": True,
+    }
+    assert published_events() == []
+
+
+def test_scheduler_fires_again_once_the_family_resumes(lambda_env):
+    seed_student()
+    store = bootstrap.store()
+    family = store.get_family("f1")
+    store.put_family(family.model_copy(update={"status": FamilyStatus.PAUSED}))
+    scheduler.handler(TICK, None)
+
+    store.put_family(family.model_copy(update={"status": FamilyStatus.ACTIVE}))
+    response = scheduler.handler(TICK, None)
+
+    assert response["fired"] == ["s1"]
+    assert len(published_events()) == 1
 
 
 def test_scheduler_rejects_a_tick_without_a_family(lambda_env):
