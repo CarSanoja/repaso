@@ -171,6 +171,13 @@ def test_only_pending_quarantine_is_listed(store):
     assert [item.id for item in store.list_pending_quarantine("f1")] == ["q1"]
 
 
+def test_a_quarantine_is_reachable_by_id_only_from_its_own_family(store):
+    store.put_quarantine(make_quarantine("q1"))
+    assert store.get_quarantine("f1", "q1") == make_quarantine("q1")
+    assert store.get_quarantine("f2", "q1") is None
+    assert store.get_quarantine("f1", "ghost") is None
+
+
 def test_claim_is_won_once(store):
     assert store.claim("job#1", "worker-a") is True
     assert store.claim("job#1", "worker-b") is False

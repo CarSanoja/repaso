@@ -160,6 +160,11 @@ class DynamoStateStore:
     def put_quarantine(self, item: QuarantineItem) -> None:
         put_row(self._table, f"FAMILY#{item.family_id}", f"QUAR#{item.id}", item)
 
+    def get_quarantine(self, family_id: FamilyId, quarantine_id: str) -> QuarantineItem | None:
+        return get_row(
+            self._table, f"FAMILY#{family_id}", f"QUAR#{quarantine_id}", QuarantineItem
+        )
+
     def list_pending_quarantine(self, family_id: FamilyId) -> list[QuarantineItem]:
         found = query_prefix(self._table, f"FAMILY#{family_id}", "QUAR#", QuarantineItem)
         return [item for item in found if item.status is QuarantineStatus.PENDING]

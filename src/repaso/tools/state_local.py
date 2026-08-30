@@ -138,6 +138,10 @@ class LocalStateStore:
     def put_quarantine(self, item: QuarantineItem) -> None:
         self._tables.put("quarantine", item.id, item)
 
+    def get_quarantine(self, family_id: FamilyId, quarantine_id: str) -> QuarantineItem | None:
+        item = self._tables.get("quarantine", quarantine_id, QuarantineItem)
+        return item if item is not None and item.family_id == family_id else None
+
     def list_pending_quarantine(self, family_id: FamilyId) -> list[QuarantineItem]:
         pending = QuarantineStatus.PENDING
         return self._tables.where("quarantine", QuarantineItem, family_id=family_id, status=pending)
