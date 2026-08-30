@@ -20,9 +20,11 @@ from repaso.schemas.family import Family
 from repaso.schemas.student import Student
 
 ESCALATION_PREFIX = "esc:"
+QUARANTINE_PREFIX = "quar:"
 ANSWER_PREFIX = "ans:"
 COMMAND_PREFIX = "/"
 ANSWER_CALLBACK_PARTS = 4
+QUARANTINE_DECISIONS = {"yes": True, "no": False}
 
 
 async def handle_channel_message(services: Services, message: InboundMessage) -> ChannelRun:
@@ -77,6 +79,17 @@ async def _route_callback(services: Services, run: ChannelRun, family: Family, d
             run.route = Route.ESCALATION
             run.events.append(
                 _escalation_event(family, escalation_id, option_key, services.clock.now())
+            )
+            return
+    if data.startswith(QUARANTINE_PREFIX):
+        quarantine_id, _, decision = data[len(QUARANTINE_PREFIX) :].partition(":")
+        accepted = QUARANTINE_DECISIONS.get(decision)
+        if quarantine_id and accepted is not None:
+            run.route = Route.QUARANTINE
+            run.events.append(
+                _quarantine_event(
+                    family, quarantine_id, decision, accepted, services.clock.now()
+                )
             )
             return
     if data.startswith(ANSWER_PREFIX):
@@ -161,4 +174,16 @@ def _escalation_event(
         idempotency_key=f"esc#{escalation_id}#{option_key}",
         occurred_at=now,
         payload={"escalation_id": escalation_id, "option_key": option_key},
+    )
+
+
+def _quarantine_event(
+    family: Family, quarantine_id: str, decision: str, accepted: bool, now: datetime
+) -> DomainEvent:
+    return DomainEvent(
+        kind=EventKind.QUARANTINE_RESOLVED,
+        family_id=family.id,
+        idempotency_key=f"quar#{quarantine_id}#{decision}",
+        occurred_at=now,
+        payload={"quarantine_id": quarantine_id, "accepted": accepted},
     )

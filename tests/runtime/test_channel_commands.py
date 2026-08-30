@@ -71,7 +71,7 @@ def test_a_callback_nothing_owns_is_reported_rather_than_dropped(settings):
     services = pilot(settings)
     seed_family(services.store)
 
-    response = send(services, inbound(callback="quar:q1:yes", chat_ref=FAMILY_CHAT))
+    response = send(services, inbound(callback="digest:weekly:send", chat_ref=FAMILY_CHAT))
 
     assert route_of(response) == "unrouted_callback"
     assert response["result"]["outbound"] == []

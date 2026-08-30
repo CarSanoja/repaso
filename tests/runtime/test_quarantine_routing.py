@@ -8,7 +8,25 @@ from tests.orchestration.fixtures import (
     seed_held_answer,
     seed_open_item,
 )
-from tests.runtime.fixtures import pilot, request
+from tests.runtime.fixtures import (
+    FAMILY_CHAT,
+    channel_request,
+    inbound,
+    pilot,
+    request,
+)
+
+
+def test_a_button_carrying_an_unreadable_decision_is_not_routed(settings):
+    services = pilot(settings)
+    family, student = seed_family(services.store)
+    seed_held_answer(services.store, family.id, student.id)
+
+    for callback in ("quar:q1:maybe", "quar::yes", "quar:q1"):
+        tap = invoke(channel_request(inbound(callback=callback, chat_ref=FAMILY_CHAT)), services)
+        assert tap["result"]["route"] == "unrouted_callback", callback
+        assert tap["result"]["events"] == []
+    assert services.publisher.published == []
 
 
 def test_a_missing_quarantine_is_reported_not_found(settings):
@@ -68,6 +86,43 @@ def test_resolving_the_same_quarantine_twice_releases_the_answer_once(settings):
     assert again["result"]["terminal"] == "already_resolved"
     assert again["result"]["outbound"] == first["result"]["outbound"]
     assert services.store.get_mastery(student.id, FRACTIONS).attempts == 1
+
+
+def test_the_quarantine_button_travels_from_the_chat_to_a_released_answer(settings):
+    services = pilot(settings)
+    family, student = seed_family(services.store)
+    item = seed_open_item(services.store)
+    seed_held_answer(services.store, family.id, student.id)
+
+    tap = invoke(
+        channel_request(inbound(callback="quar:q1:yes", chat_ref=FAMILY_CHAT)), services
+    )
+
+    assert tap["result"]["route"] == "quarantine"
+    assert tap["result"]["events"] == ["quarantine_resolved"]
+    published = services.publisher.published[0]
+    assert published.idempotency_key == "quar#q1#yes"
+    assert published.payload == {"quarantine_id": "q1", "accepted": True}
+
+    resolution = invoke(published.model_dump(mode="json"), services)
+
+    assert resolution["ok"] is True
+    assert resolution["result"]["released_item_id"] == item.id
+    assert services.store.get_mastery(student.id, FRACTIONS).correct == 1
+
+
+def test_the_rejecting_button_carries_the_decision_it_shows(settings):
+    services = pilot(settings)
+    family, student = seed_family(services.store)
+    seed_open_item(services.store)
+    seed_held_answer(services.store, family.id, student.id)
+
+    tap = invoke(channel_request(inbound(callback="quar:q1:no", chat_ref=FAMILY_CHAT)), services)
+
+    assert tap["result"]["route"] == "quarantine"
+    published = services.publisher.published[0]
+    assert published.idempotency_key == "quar#q1#no"
+    assert published.payload == {"quarantine_id": "q1", "accepted": False}
 
 
 def test_the_parent_approving_releases_the_answer_and_is_told_so(settings):

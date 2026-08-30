@@ -97,6 +97,7 @@ class Route(StrEnum):
     COMMAND = "command"
     FORGET = "forget"
     ESCALATION = "escalation"
+    QUARANTINE = "quarantine"
     MATERIAL = "material"
     ANSWER = "answer"
     MEDIA_UNAVAILABLE = "media_unavailable"
