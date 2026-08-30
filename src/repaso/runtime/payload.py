@@ -47,6 +47,11 @@ class EscalationPayload(StrictBaseModel):
     option_key: str
 
 
+class QuarantinePayload(StrictBaseModel):
+    quarantine_id: str
+    accepted: bool
+
+
 class ExamPayload(StrictBaseModel):
     exam_date: date
     topic: str = ""

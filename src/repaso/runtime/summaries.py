@@ -6,6 +6,7 @@ from repaso.core.orchestration.context import (
     EscalationRun,
     ExamRun,
     IngestRun,
+    QuarantineRun,
     TutorRun,
 )
 from repaso.schemas.channel import OutboundMessage
@@ -89,6 +90,17 @@ def escalation_summary(run: EscalationRun) -> dict[str, Any]:
         "escalation_id": run.escalation.id,
         "status": run.escalation.status.value,
         "chosen_option": run.escalation.chosen_option,
+        "outbound": outbound_summary(run.outbound),
+    }
+
+
+def quarantine_summary(run: QuarantineRun) -> dict[str, Any]:
+    return {
+        "handled": run.terminal is None,
+        "terminal": run.terminal,
+        "quarantine_id": run.quarantine.id,
+        "status": run.quarantine.status.value,
+        "released_item_id": run.released_item_id,
         "outbound": outbound_summary(run.outbound),
     }
 

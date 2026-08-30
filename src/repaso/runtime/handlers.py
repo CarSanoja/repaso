@@ -4,6 +4,7 @@ from typing import Any
 
 from repaso.core.orchestration.channel_runner import handle_channel_message
 from repaso.core.orchestration.context import Services
+from repaso.core.orchestration.quarantine_resolution import resolve_quarantine
 from repaso.core.orchestration.runner import (
     handle_answer,
     handle_material,
@@ -20,6 +21,7 @@ from repaso.runtime.payload import (
     ExamPayload,
     InvocationRequest,
     MaterialPayload,
+    QuarantinePayload,
     StudentScoped,
     validate,
 )
@@ -29,12 +31,14 @@ from repaso.runtime.summaries import (
     escalation_summary,
     exam_summary,
     ingest_summary,
+    quarantine_summary,
     tutor_summary,
 )
 from repaso.schemas.common import EscalationId, FamilyId, StudentId
 from repaso.schemas.escalation import Escalation
 from repaso.schemas.events import EventKind
 from repaso.schemas.family import Family
+from repaso.schemas.review import QuarantineItem
 from repaso.schemas.student import Student
 
 Handler = Callable[[Services, InvocationRequest], Awaitable[dict[str, Any]]]
@@ -74,6 +78,15 @@ def resolve_escalation_record(
             f"escalation {escalation_id} does not belong to family {family.id}",
         )
     return escalation
+
+
+def resolve_quarantine_record(
+    services: Services, family: Family, quarantine_id: str
+) -> QuarantineItem:
+    quarantine = services.store.get_quarantine(family.id, quarantine_id)
+    if quarantine is None:
+        raise InvocationError(ErrorCode.NOT_FOUND, f"quarantine not found: {quarantine_id}")
+    return quarantine
 
 
 def resolve_material_data(services: Services, data: MaterialPayload) -> bytes:
@@ -149,6 +162,17 @@ async def on_escalation_resolved(
     )
 
 
+async def on_quarantine_resolved(
+    services: Services, request: InvocationRequest
+) -> dict[str, Any]:
+    data = validate(QuarantinePayload, request.payload)
+    family = resolve_family(services, request)
+    quarantine = resolve_quarantine_record(services, family, data.quarantine_id)
+    return quarantine_summary(
+        resolve_quarantine(services, family, quarantine, data.accepted)
+    )
+
+
 async def on_exam_announced(services: Services, request: InvocationRequest) -> dict[str, Any]:
     data = validate(ExamPayload, request.payload)
     family = resolve_family(services, request)
@@ -161,6 +185,7 @@ HANDLERS: dict[EventKind, Handler] = {
     EventKind.DAILY_SESSION_DUE: on_daily_session_due,
     EventKind.RESPONSE_RECEIVED: on_response_received,
     EventKind.ESCALATION_RESOLVED: on_escalation_resolved,
+    EventKind.QUARANTINE_RESOLVED: on_quarantine_resolved,
     EventKind.EXAM_ANNOUNCED: on_exam_announced,
     EventKind.DAILY_CLOSE: on_daily_close,
 }

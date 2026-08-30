@@ -29,6 +29,7 @@ class MessagingStack(cdk.Stack):
                 "daily_session_due",
                 "response_received",
                 "escalation_resolved",
+                "quarantine_resolved",
                 "exam_announced",
             ],
             self.tutor_queue,
