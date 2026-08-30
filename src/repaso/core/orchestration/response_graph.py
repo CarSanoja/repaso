@@ -10,8 +10,10 @@ from repaso.agents.grader import grade_mcq, grade_open
 from repaso.config.models import ModelRole
 from repaso.core.harness.calendar import mask_to_scheduled
 from repaso.core.harness.escalation_triggers import DEFAULT_COOLDOWN_DAYS, DEFAULT_SILENT_DAYS
-from repaso.core.harness.mastery import update_mastery
-from repaso.core.harness.sm2 import grade_to_quality, review
+from repaso.core.orchestration.answer_outcome import (
+    EXPECTED_ANSWER_SECONDS,
+    record_answer_outcome,
+)
 from repaso.core.orchestration.context import Services, TutorRun
 from repaso.core.orchestration.nodes import StepNode
 from repaso.core.orchestration.response_signals import (
@@ -23,11 +25,8 @@ from repaso.i18n.catalog import msg
 from repaso.schemas.channel import Button, OutboundMessage
 from repaso.schemas.family import Family
 from repaso.schemas.item import ItemKind
-from repaso.schemas.mastery import MasteryState
-from repaso.schemas.schedule import SpacedItemState
 from repaso.schemas.session import SessionStatus
 
-EXPECTED_ANSWER_SECONDS = 45.0
 SIGNAL_WINDOW_DAYS = 14
 ESCALATION_ACTIONS = {"escalate_struggle", "escalate_engagement"}
 
@@ -92,23 +91,9 @@ def build_response_graph(services: Services, run: TutorRun):
     async def apply() -> None:
         item = run.items[0]
         if run.grade.correct is not None:
-            mastery = services.store.get_mastery(run.student.id, item.competency_id)
-            if mastery is None:
-                mastery = MasteryState(
-                    student_id=run.student.id, competency_id=item.competency_id,
-                    ema_accuracy=0.0, attempts=0, correct=0,
-                )
-            services.store.put_mastery(
-                update_mastery(mastery, run.grade.correct, services.clock.now())
+            record_answer_outcome(
+                services, run.student.id, item, run.grade.correct, run.response.latency_seconds
             )
-            spaced = {s.item_id: s for s in services.store.list_spaced(run.student.id)}
-            state = spaced.get(item.id) or SpacedItemState(
-                student_id=run.student.id, item_id=item.id, due_date=services.clock.today()
-            )
-            quality = grade_to_quality(
-                run.grade.correct, run.response.latency_seconds, EXPECTED_ANSWER_SECONDS
-            )
-            services.store.put_spaced(review(state, quality, services.clock.today()))
             key = "feedback_correct" if run.grade.correct else "feedback_incorrect"
             _say(run, msg(key, run.family.lang, feedback=run.grade.feedback).strip())
         next_index = run.session.current_item_index + 1
