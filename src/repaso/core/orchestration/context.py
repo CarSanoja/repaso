@@ -127,6 +127,15 @@ class EscalationRun:
 
 
 @dataclass
+class QuarantineRun:
+    family: Family
+    quarantine: QuarantineItem
+    released_item_id: str | None = None
+    outbound: list[OutboundMessage] = field(default_factory=list)
+    terminal: str | None = None
+
+
+@dataclass
 class ExamRun:
     family: Family
     exam_date: date

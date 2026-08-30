@@ -126,7 +126,12 @@ async def test_open_answer_below_threshold_is_quarantined_without_a_verdict():
     assert quarantine.kind is QuarantineKind.LOW_CONFIDENCE_GRADE
     assert quarantine.family_id == "f1"
     assert quarantine.status is QuarantineStatus.PENDING
-    assert quarantine.payload == {"item_id": "i1", "student_id": "s1", "answer": "mitad"}
+    assert quarantine.payload == {
+        "item_id": "i1",
+        "student_id": "s1",
+        "answer": "mitad",
+        "latency_seconds": 12.0,
+    }
     assert quarantine.evidence.quote == "mitad"
     assert quarantine.created_at == GRADED_AT
     assert quarantine.id

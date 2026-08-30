@@ -2,7 +2,9 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Any
 
-from repaso.schemas.common import FamilyId, StrictBaseModel
+from pydantic import Field
+
+from repaso.schemas.common import FamilyId, ItemId, StrictBaseModel, StudentId
 from repaso.schemas.grading import EvidenceSpan
 
 
@@ -27,3 +29,10 @@ class QuarantineItem(StrictBaseModel):
     status: QuarantineStatus = QuarantineStatus.PENDING
     created_at: datetime
     resolved_at: datetime | None = None
+
+
+class HeldAnswer(StrictBaseModel):
+    item_id: ItemId
+    student_id: StudentId
+    answer: str
+    latency_seconds: float = Field(default=0.0, ge=0.0)

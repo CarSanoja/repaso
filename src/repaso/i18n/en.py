@@ -59,6 +59,12 @@ MESSAGES = {
     ),
     "quarantine_approve": "It's right",
     "quarantine_reject": "It's wrong",
+    "quarantine_ack_approved": (
+        "Thank you. I am counting it as right and it already adds to this week's progress."
+    ),
+    "quarantine_ack_rejected": (
+        "Thank you. I am leaving it out of progress: it neither adds nor subtracts."
+    ),
     "struggle_summary": (
         "{alias} has been struggling with {competency} for several days. Here is the "
         "evidence: {evidence}. What do you prefer?"

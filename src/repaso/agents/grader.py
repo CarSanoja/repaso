@@ -8,7 +8,7 @@ from repaso.agents.prompts.grader import SYSTEM
 from repaso.schemas.common import FamilyId, Lang, StrictBaseModel
 from repaso.schemas.grading import EvidenceSpan, GradedBy, GradeResult, StudentResponse
 from repaso.schemas.item import Item
-from repaso.schemas.review import QuarantineItem, QuarantineKind
+from repaso.schemas.review import HeldAnswer, QuarantineItem, QuarantineKind
 
 NO_RUBRIC = "No rubric was written for this item; grade strictly against the answer key."
 
@@ -77,11 +77,12 @@ def quarantine_for(
         kind=QuarantineKind.LOW_CONFIDENCE_GRADE,
         family_id=family_id,
         evidence=evidence_for(response),
-        payload={
-            "item_id": response.item_id,
-            "student_id": response.student_id,
-            "answer": response.text,
-        },
+        payload=HeldAnswer(
+            item_id=response.item_id,
+            student_id=response.student_id,
+            answer=response.text,
+            latency_seconds=response.latency_seconds,
+        ).model_dump(),
         created_at=graded_at,
     )
 

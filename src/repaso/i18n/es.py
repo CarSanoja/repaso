@@ -61,6 +61,12 @@ MESSAGES = {
     ),
     "quarantine_approve": "Está bien",
     "quarantine_reject": "Está mal",
+    "quarantine_ack_approved": (
+        "Gracias. La cuento como correcta y ya suma al avance de esta semana."
+    ),
+    "quarantine_ack_rejected": (
+        "Gracias. La dejo fuera del avance: no suma ni resta."
+    ),
     "struggle_summary": (
         "{alias} lleva varios días tropezando con {competency}. Esta es la evidencia: "
         "{evidence}. ¿Qué prefieres?"
