@@ -201,7 +201,7 @@ That leaves 95 % of detections (163 of 172, by scheduled day 8) inside a window 
    nothing arrives in six weeks. The section-level signal a teacher would act on takes a median
    of 5 school days and fails to appear at all in 1 seed in 5. Whether "most families in the
    first school week, one in twenty-three never, and one section in five with no teacher-level
-   signal" is acceptable for a pilot is a decision for the school and for Carlos, not for this
+   signal" is acceptable for a pilot is a decision for the school and the operator, not for this
    report; what the report can say is that the first number is fast, the second is
    uninterpretable until a persistently-struggling archetype exists, and the third is the one
    least discussed so far.

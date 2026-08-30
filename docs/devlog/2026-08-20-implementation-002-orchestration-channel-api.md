@@ -45,5 +45,5 @@ answer-bank-aware stub models that let the full pipeline run offline.
 
 Bedrock model agreements for Claude Sonnet 4.6 / Sonnet 5 / Haiku 4.5 accepted via
 CLI (use-case form automated); the region-guard IAM policy received a surgical
-carve-out for `bedrock:InvokeModel*` only, applied by the founder. Per-minute quotas
+carve-out for `bedrock:InvokeModel*` only, applied by the account operator. Per-minute quotas
 have multi-million-token defaults; the day-one token tier is the only wait.

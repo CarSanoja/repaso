@@ -28,8 +28,6 @@ as a measured feature, and a web mirror so judges can test without Telegram.
   own the pedagogy (SM-2 spacing, mastery EMA, escalation triggers, psychometrics).
 - 100 % Amazon Bedrock for every model call; local mode runs the entire system with
   zero network using a strict playback double of the Strands model interface.
-- Calendar: feature freeze Sep 3; weeks 3+ are presentation only; pilot with 5–10
-  volunteer families from ~Aug 31.
 
 ## Verification
 

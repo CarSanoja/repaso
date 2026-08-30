@@ -2,8 +2,8 @@
 
 > Adversarial ML-research review commissioned 2026-08-20 against the demo-clock
 > benchmark and the frozen architecture. Produced by an external-reviewer persona
-> with full read access to the source. Tags: [FREEZE] = shippable before Sep 3;
-> [ROADMAP] = post-hackathon design.
+> with full read access to the source. Tags: [NEAR-TERM] = shippable in the current
+> cycle; [ROADMAP] = later design work.
 
 # Part 2 — Self-learning architecture: memories that update AND challenge each other
 
@@ -19,7 +19,7 @@ Self-learning is the only escape from this — but naive self-learning makes it 
 
 > **No memory updates itself without a named adversary, a held-out gate, an anti-gaming validator, and an append-only promotion record that can be reversed with one write.**
 
-This is also how self-learning stays compatible with the frozen philosophy in `private/architecture.md` §5. The deterministic algorithms never learn their *math*. They learn their *constants*, and constants become versioned, hashed, auditable data. The code a parent's lawyer would read stays byte-stable; what changes is a row with a provenance trail.
+This is also how self-learning stays compatible with the frozen design philosophy. The deterministic algorithms never learn their *math*. They learn their *constants*, and constants become versioned, hashed, auditable data. The code a parent's lawyer would read stays byte-stable; what changes is a row with a provenance trail.
 
 ---
 
@@ -41,7 +41,7 @@ Nothing in this part is buildable until this exists. The tunable constants are c
 
 **One latent bug to fix in the same pass:** `adaptation_policy.build_signals` passes the *same* `min_samples` to `struggle_trigger` and to `fast_guess_flag`. Sweeping `escalation_min_samples` silently moves the fast-guessing detector. Two unrelated thresholds are welded together, which makes any calibration result uninterpretable. Decouple before sweeping (30 min).
 
-**[FREEZE — 3h]**
+**[NEAR-TERM]**
 
 ---
 
@@ -78,13 +78,13 @@ Binary per-student ledger checks are the wrong instrument. Report instead:
 
 **Repair:** `build_cohort(services, now, rng)` sampling cohort size, archetype mix (Dirichlet over the mix), per-student profile jitter (±15% on `base_ability`, `learning_rate`, `forgetting_rate`, `response_rate`), section assignment, dropout day, and injection day. Then split: seeds `1..40` are the training family (sweeps may look at them freely), seeds `41..80` are the test family, their hash committed, run once per release. Any number reported in the README comes from the test family or it does not go in the README.
 
-**[FREEZE — 3h for the seeded cohort generator; 4h for the operating-characteristic sweep; 9h for the tape recorder + grid + bootstrap CI + plateau check]**
+**[NEAR-TERM]**
 
 ### 2.2.4 The adversary: an optimizer whose job is to embarrass you
 
 The stated sin — *"the archetypes were designed by the same person who designed the triggers"* — is not repaired by more archetypes from the same person. It is repaired by an **objective function that rewards breaking the triggers**. Given a candidate constant vector, run a bounded random/CMA-ES search over `ArchetypeProfile` fields, constrained to a plausibility box (ability ∈ [0,1], response rate ≥ 0.5, learning rate ≤ 0.15 — later a prior fit on pilot data), maximizing either false alarms or missed detections. Publish the **worst cohort found**, not only the designed one. A README line like *"under adversarial cohort search within plausibility bounds, worst-case false-alarm rate is 0.4 per family-week"* is worth ten times more to a judge than 8/8.
 
-**[FREEZE if time — 4h; otherwise ROADMAP]**
+**[NEAR-TERM]**
 
 ### 2.2.5 The gate: plateau, not peak
 
@@ -132,7 +132,7 @@ Promote the challenger for a student when its rolling Brier beats the incumbent 
 
 Fitting BKT's four parameters by EM at 30 students × 14 days is wishful. Use bounded literature priors (slip ≤ 0.15, guess ≤ 1/n_options for MCQ) per competency and revisit at pilot scale. And note the split in value: **the shadow-scoring harness is worth more than BKT itself** — once two models can be scored head-to-head on next-response prediction, every future modelling claim in this repo becomes falsifiable.
 
-**[FREEZE — 4h for the shadow-scoring harness] · [ROADMAP / stretch — 4h for the BKT challenger]**
+**[NEAR-TERM] · [ROADMAP]**
 
 ---
 
@@ -161,17 +161,17 @@ Three concrete defects in `psychometrics.py` / `item_optimizer.py`:
 
 Retirement is currently a boolean. Make it a typed `RetirementReason` — `TOO_EASY`, `TOO_HARD`, `NON_DISCRIMINATING`, `AMBIGUOUS_BY_QUARANTINE_RATE`, `BLIND_PASS` — and feed it into (a) the Item Generator prompt as an explicit constraint ("the previous item at this competency was retired for X; target difficulty band Y and misconception Z"), and (b) the Item Critic's rubric weights. `Provenance.prompt_version` already exists, so every regenerated item is attributable to the prompt that produced it, which makes L4's tournaments measurable on *downstream psychometrics*, not just on rubric scores.
 
-### A new adversary worth naming in the Devpost
+### A new adversary worth naming
 
 The Answerability Probe asks: *can a student answer without the material?* Add its mirror, the **Misconception Probe**: a simulated student who *holds the known misconception* (`MISCONCEPTIONS` in `archetypes.py`) must answer the item **wrong**. If the misconception-holder gets it right, the distractors do not discriminate the misconception, and the item cannot detect the very error it was written to detect. This is cheap, entirely offline, philosophically consistent (a deterministic adversary refereeing a generated artefact), and it is a genuinely novel validator — a better innovation headline than the Answerability Probe alone.
 
 Also: run the Answerability Probe as an **ensemble** (k samples at temperature) and record a *blind-pass rate*, not a single boolean. A one-shot probe is a coin flip dressed as a gate.
 
-**[FREEZE — 6h: corrected item-total 1h, Wilson + two-strikes + budget cap 2h, typed reasons + prompt feedback 3h] · [FREEZE if time — 3h Misconception Probe] · [ROADMAP — probation status, Bedrock-batch regeneration backlog]**
+**[NEAR-TERM] · [NEAR-TERM] · [ROADMAP — needs Bedrock]**
 
 ---
 
-## 2.5 Block L4 — Prompt-variant tournaments fed by human labels (gradesync `Evolve`, ported)
+## 2.5 Block L4 — Prompt-variant tournaments fed by human labels
 
 | | |
 |---|---|
@@ -182,7 +182,7 @@ Also: run the Answerability Probe as an **ensemble** (k samples at temperature) 
 | **Anti-gaming** | Variance collapse, constant outputs, ground-truth contact (n-gram overlap between candidate prompt and calibration items), **quarantine-rate band** |
 | **AWS** | S3 with **Object Lock on the test/golden partitions** (a real control, not a gesture), **Bedrock batch inference** for candidate scoring, DynamoDB registry, EventBridge weekly schedule |
 
-The gradesync pattern ports cleanly: convergence loops of tournaments, candidates re-scored against the same human ground-truth calibration set, anti-gaming validator, promote the best accepted mutation, stop on marginal improvement or cycle budget. What Repaso adds is that **its ground truth is already flowing and free**: every quarantine a parent approves or rejects is a human label on the grader. Today that decision is stored as a `QuarantineStatus` with an untyped `payload: dict[str, Any]` — the machine's own prediction is not reliably persisted next to the human verdict, which means the labels currently being generated are worth much less than they should be. Fixing that is §2.6, and it is urgent.
+The pattern is well understood: convergence loops of tournaments, candidates re-scored against the same human ground-truth calibration set, anti-gaming validator, promote the best accepted mutation, stop on marginal improvement or cycle budget. What Repaso adds is that **its ground truth is already flowing and free**: every quarantine a parent approves or rejects is a human label on the grader. Today that decision is stored as a `QuarantineStatus` with an untyped `payload: dict[str, Any]` — the machine's own prediction is not reliably persisted next to the human verdict, which means the labels currently being generated are worth much less than they should be. Fixing that is §2.6, and it is urgent.
 
 Three honest caveats that must be designed around, not hand-waved:
 
@@ -190,9 +190,9 @@ Three honest caveats that must be designed around, not hand-waved:
 2. **Parents are approval-biased** — approving means their child gets credit. For a random 10% of quarantines, present the **blind** version (no proposed grade shown). This de-biases the labels and simultaneously yields an inter-rater agreement estimate for free. Call it **blind audit sampling**; record `rater_role` and weight teacher labels above parent labels.
 3. **The 0.85 gate is currently unmeasured.** The entire "never guess" guarantee rests on the grader's `confidence` being meaningful, and in the offline benchmark that number is a scripted constant (0.92 / 0.3 by construction). The single highest-value measurement available once Bedrock unthrottles is the **ECE of grader confidence against human labels**. If confidence is uncalibrated, the confidence gate is theatre and the architecture's third guarantee is unbacked. Measure it before you claim it.
 
-Metrics: QWK and MAE on `rubric_points` (0–2 ordinal — QWK is the right instrument, same as gradesync), plus cost-asymmetric rates (false-credit is worse than false-quarantine), plus the quarantine-rate band as an operational constraint (a candidate that quarantines 40% of answers is useless even if it is accurate).
+Metrics: QWK and MAE on `rubric_points` (0–2 ordinal — QWK is the right instrument for it), plus cost-asymmetric rates (false-credit is worse than false-quarantine), plus the quarantine-rate band as an operational constraint (a candidate that quarantines 40% of answers is useless even if it is accurate).
 
-**[FREEZE — 5h: label capture + blind audit sampling + golden set + offline scorer with QWK/MAE/ECE, then run one *manual* tournament with 4 hand-written variants when Bedrock returns] · [ROADMAP — automated mutation + convergence loop + Bedrock batch, ~20h]**
+**[NEAR-TERM — needs Bedrock] · [ROADMAP — needs Bedrock]**
 
 ---
 
@@ -213,16 +213,16 @@ Six append-only record types, all carrying `schema_version`, `run_id`, `seed_or_
 
 **Storage:** S3 is the corpus of record — daily JSONL partitions `s3://…/learning/dt=YYYY-MM-DD/kind=<type>/`, Athena-queryable, immutable, Object Lock on test/golden partitions. DynamoDB holds only what needs point lookup (config versions, active pointers, human labels), with `gsi1` on student. Zero-code path if you want it: DynamoDB Streams → Firehose → S3. Local mode reuses the existing `LocalTelemetrySink` pattern — same interface, JSONL on disk, no credentials.
 
-**[FREEZE — 6h: schemas 2h, writer + local sink 2h, wiring into `response_graph` / `quality_graph` 2h]**
+**[NEAR-TERM]**
 
 ---
 
 ## 2.7 Additions
 
-### 2.7a The interrupt budget — reframe the objective [FREEZE 1h]
+### 2.7a The interrupt budget — reframe the objective [NEAR-TERM]
 Precision and recall on planted labels is not what a school buys. The real objective is constrained: **maximize detected-need recall subject to ≤ N interrupts per family per month.** Publish that constraint as a first-class number and let the calibrator optimize under it. It derives free from L5 data and it is the number a coordinator will actually ask about in the first meeting.
 
-### 2.7b Red-team archetypes behind an information barrier [FREEZE 3h]
+### 2.7b Red-team archetypes behind an information barrier [NEAR-TERM]
 The parameter-search adversary in §2.2.4 is tooling. The *fingerprint* problem is organizational, and the fix is an information barrier: hand a separate agent (or a separate person) only the README and the public API — **no access to `escalation_triggers.py`, no access to the constants** — and task it with designing a cohort where the system either spams or sleeps. Whatever it finds goes in the report next to the designed cohort. This is the only intellectually honest answer to *"the archetypes were designed by the trigger designer"*, and it is three hours of work with outsized credibility return.
 
 ### 2.7c Calibration-first, decision-second [ROADMAP doctrine]
@@ -238,7 +238,7 @@ I would resist this even though it is the fashionable answer, and the reasons ar
 
 What to do instead: (i) **log propensities anyway** — record the action set the policy considered and any tie-breaks, ~30 minutes of work, so future OPE remains possible; (ii) restrict learning to the *parameters of interpretable rules*, which is exactly block L1; (iii) if bandits ever arrive, put them on **item selection within a competency** (high T, immediate reward, low harm), never on **interrupt decisions** (low T, delayed reward, high harm). A defensible entry threshold: ~10⁵ logged decisions **and** a proxy reward validated at correlation > 0.3 against a delayed assessment.
 
-### 2.7e Promotion circuit breaker [FREEZE 2h]
+### 2.7e Promotion circuit breaker [NEAR-TERM]
 Every self-learning loop needs something watching for the ground shifting underneath it. Re-score the golden item set and golden labels weekly. If golden metrics move while population metrics stay flat (or the reverse), **freeze all promotions automatically** and raise a human escalation. Reuses the existing `BoundedAttempts` / circuit-breaker vocabulary and costs almost nothing. It is also the mechanism that makes it safe to leave these loops running unattended during a pilot.
 
 ---
@@ -259,21 +259,21 @@ Note the shape: **the two blocks that touch children's decisions (L1, L2) contai
 
 ---
 
-## 2.9 The 40-hour cut
+## 2.9 Priority order
 
-| Rank | Item | Hours | Why this rank |
-|---:|---|---:|---|
-| 1 | L5 flywheel schema + `NearMissRecord` | 6 | Irreversible. Signal not captured is gone |
-| 2 | L0 constant registry + decouple fast-guess `min_samples` | 3 | Blocks everything else; fixes a live coupling bug |
-| 3 | L1c seeded cohort generator | 3 | Without it, "multiple seeds" is a placebo |
-| 4 | L1a operating-characteristic / boundary sweep | 4 | Kills the "recalibrated away from the threshold" objection |
-| 5 | L1b tape + grid + train/test split + bootstrap CI + plateau | 9 | Turns 8/8 into a curve with error bars |
-| 6 | L3 psychometrics honesty (corrected item-total, Wilson, two-strikes, typed reasons) | 6 | Fixes a real contamination bug + a 24%-bank-churn artefact |
-| 7 | L6a interrupt-budget metric | 1 | The number a school asks for |
-| 8 | L6b red-team archetypes behind an information barrier | 3 | The honest answer to the designer-fingerprint sin |
-| 9 | L2 shadow-scoring harness (model-agnostic) | 4 | Makes every future modelling claim falsifiable |
-| 10 | L6e promotion circuit breaker | 2 | **First thing to cut if you are over** |
-| | **Total** | **41** | |
+| Rank | Item | Why this rank |
+|---:|---|---|
+| 1 | L5 flywheel schema + `NearMissRecord` | Irreversible. Signal not captured is gone |
+| 2 | L0 constant registry + decouple fast-guess `min_samples` | Blocks everything else; fixes a live coupling bug |
+| 3 | L1c seeded cohort generator | Without it, "multiple seeds" is a placebo |
+| 4 | L1a operating-characteristic / boundary sweep | Kills the "recalibrated away from the threshold" objection |
+| 5 | L1b tape + grid + train/test split + bootstrap CI + plateau | Turns 8/8 into a curve with error bars |
+| 6 | L3 psychometrics honesty (corrected item-total, Wilson, two-strikes, typed reasons) | Fixes a real contamination bug + a 24%-bank-churn artefact |
+| 7 | L6a interrupt-budget metric | The number a school asks for |
+| 8 | L6b red-team archetypes behind an information barrier | The honest answer to the designer-fingerprint sin |
+| 9 | L2 shadow-scoring harness (model-agnostic) | Makes every future modelling claim falsifiable |
+| 10 | L6e promotion circuit breaker | **First thing to cut if you are over** |
+| | **Total** | |
 
 Deliberately **not** in the freeze: the BKT challenger itself (4h, stretch), the Misconception Probe (3h — cut with regret; it is the best innovation headline here and the first thing I would restore if L1b lands early), the automated prompt-mutation loop (~20h), item probation, Bedrock-batch regeneration.
 

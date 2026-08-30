@@ -2,8 +2,8 @@
 
 > Adversarial ML-research review commissioned 2026-08-20 against the demo-clock
 > benchmark and the frozen architecture. Produced by an external-reviewer persona
-> with full read access to the source. Tags: [FREEZE] = shippable before Sep 3;
-> [ROADMAP] = post-hackathon design.
+> with full read access to the source. Tags: [NEAR-TERM] = shippable in the current
+> cycle; [ROADMAP] = later design work.
 
 # Part 1: The autopsy — what a top-tier reviewer would reject
 
@@ -25,7 +25,7 @@ The report calls this out as "archetypes designed by the same person who designe
 
 **There is nothing between `base_ability` 0.25 and 0.65.** The `STRUGGLING_CEILING = 0.4` threshold in `mastery.py:7` is being asked to separate two point masses 0.6 apart in probability space. Any threshold in a band roughly 0.3 wide gets 8/8. The benchmark cannot distinguish a well-calibrated threshold from a badly-calibrated one because no simulated child ever lives near the boundary — which is precisely where every real fourth-grader lives.
 
-**Repair.** `[FREEZE — 6 h]` Replace the archetype *labels* as ground truth with a **continuous latent-ability cohort**: sample `base_ability ~ TruncNormal(0.55, 0.15)` on [0.05, 0.95], `learning_rate ~ TruncNormal(0.05, 0.03)`, `response_rate ~ Beta(9, 1)`, `forgetting_rate ~ TruncNormal(0.08, 0.04)`. Define ground truth as a *number the designer cannot place relative to a threshold*: "a student needs help on competency c at day d" ⟺ latent `P(correct | c, d) < 0.5` sustained over 3 consecutive days. Keep the 8 archetypes as *named points sampled from that distribution* so the demo narrative survives, but score against the latent parameter.
+**Repair.** `[NEAR-TERM]` Replace the archetype *labels* as ground truth with a **continuous latent-ability cohort**: sample `base_ability ~ TruncNormal(0.55, 0.15)` on [0.05, 0.95], `learning_rate ~ TruncNormal(0.05, 0.03)`, `response_rate ~ Beta(9, 1)`, `forgetting_rate ~ TruncNormal(0.08, 0.04)`. Define ground truth as a *number the designer cannot place relative to a threshold*: "a student needs help on competency c at day d" ⟺ latent `P(correct | c, d) < 0.5` sustained over 3 consecutive days. Keep the 8 archetypes as *named points sampled from that distribution* so the demo narrative survives, but score against the latent parameter.
 
 This single change converts the benchmark from a tautology into a measurement: with a continuum you get an ROC curve, an AUC, and a defensible operating point instead of a binary pass. It is the highest-value 6 hours on this list.
 
@@ -37,7 +37,7 @@ Bug-fix #2 in the report raises `escalation_min_samples` from 5 to 8 *after obse
 
 Worse, the same knob is doing three unrelated statistical jobs: minimum evidence for struggle triage (`escalation_triggers.struggle_trigger`), minimum evidence for a cohort failure (`quality_graph.py`, `mastery.attempts >= escalation_min_samples`), and `min_samples` for `fast_guess_flag`. One number was tuned against one of the three criteria on one realization, and the other two inherited it silently.
 
-**Repair.** `[FREEZE — 2 h]`
+**Repair.** `[NEAR-TERM]`
 1. Split the knob: `struggle_min_attempts`, `cohort_min_attempts`, `fast_guess_min_samples`. Each gets its own justification line in the report.
 2. Declare a **seed split before the next run**: seeds `1..40` are the dev set (tuning allowed, results never headlined), seeds `1001..1200` are a locked test set. Commit the test-seed list with a hash in the repo *before* running it. Report headline numbers from the test set only.
 3. Add a **threshold sensitivity sweep** (see F-04) so the report can say "8/8 holds for `min_attempts ∈ [6, 11] × STRUGGLING_CEILING ∈ [0.33, 0.47]`" — which converts the tuning admission from a confession into evidence of robustness. If the passing region turns out to be a knife edge, that is the most important thing this whole review could surface, and you want to know before a pilot, not during one.
@@ -58,7 +58,7 @@ Read the third row again. Three disengaged students is not evidence about engage
 
 Scale the first row: at a 300-student pilot, a true false-interrupt rate at the top of that interval is **~40 spurious parent interruptions per fortnight**, and this benchmark would show you zero. A reviewer will compute this in ten seconds and stop reading.
 
-**Repair.** `[FREEZE — 6 h, includes F-04 and the sweep in F-02]` The run costs 14.1 s. 200 seeds is 47 minutes single-core, ~6 minutes on 8 cores. Build `scripts/run_seed_sweep.py`:
+**Repair.** `[NEAR-TERM]` The run costs 14.1 s. 200 seeds is 47 minutes single-core, ~6 minutes on 8 cores. Build `scripts/run_seed_sweep.py`:
 - N ≥ 200 test seeds, per-seed confusion counts persisted to JSONL.
 - Report **mean ± bootstrap 95% CI** for precision, recall, F_β, detection latency, interrupts-per-family-per-week.
 - Report the **fraction of seeds with ≥ 1 false interrupt** — the number a school principal actually cares about.
@@ -96,7 +96,7 @@ Audit of `demo_clock.verdict_rows` against `cohort.build_cohort`:
 
 Honest count: **3 substantive checks, not 8.** (Struggle recall on 9, struggle FP on 21, engagement FP on 27.)
 
-**Repair.** `[FREEZE — 1.5 h]` Rewrite the ledger with falsifiable rows and adversarial cohort construction: put **3 struggling students in a non-target section** so the cohort signal *can* misfire; assert **per-ISO-week counts**, not totals; delete the `≥1` rows and replace them with rates from F-06/F-08. Then rewrite the report's headline as "3 substantive checks over 200 seeds, with intervals," and state the honest count explicitly. A reviewer who sees you downgrade your own 8/8 to 3/3-with-CIs will trust every other number in the document.
+**Repair.** `[NEAR-TERM]` Rewrite the ledger with falsifiable rows and adversarial cohort construction: put **3 struggling students in a non-target section** so the cohort signal *can* misfire; assert **per-ISO-week counts**, not totals; delete the `≥1` rows and replace them with rates from F-06/F-08. Then rewrite the report's headline as "3 substantive checks over 200 seeds, with intervals," and state the honest count explicitly. A reviewer who sees you downgrade your own 8/8 to 3/3-with-CIs will trust every other number in the document.
 
 ---
 
@@ -106,7 +106,7 @@ Honest count: **3 substantive checks, not 8.** (Struggle recall on 9, struggle F
 
 The benchmark could not surface this because the simulator emits an English attack containing two hardcoded markers.
 
-**Repair.** `[FREEZE — 3 h]`
+**Repair.** `[NEAR-TERM]`
 1. Build `tests/fixtures/injection_corpus_es.jsonl`: ~60 labeled strings across (a) Spanish direct-instruction attacks, (b) English paraphrases with no marker present, (c) unicode/homoglyph and spaced-out evasion (`s y s t e m :`), (d) **benign strings containing markers** — `"mi maestra dijo que actúa como si fuera un examen"` must NOT quarantine, or you have manufactured a false-positive machine aimed at children.
 2. Report **screener FPR and FNR with CIs** as a benchmark row, replacing the vacuous `≥1`.
 3. Wire `BedrockGuardrailsScreener` behind the same corpus so the offline and live screeners are scored on the same instrument.
@@ -121,7 +121,7 @@ The report says the doubles validate "orchestration, gating and state — not se
 
 Also untested: MCQ grading only ever receives the exact `answer_key` string or `distractors[0]`. `grade_mcq`'s index-matching branch (`reply == str(options.index(key) + 1)`) is never exercised end-to-end, and no malformed reply ("la segunda", "c)", a typo, an emoji) ever reaches the grader.
 
-**Repair.** `[ROADMAP — needs Bedrock, ~4 h once unthrottled]` Port the gradesync **Evolve** pattern verbatim: a human-labeled calibration set of open answers (gold `correct`/`rubric_points`), scored with **QWK and MAE**, plus the anti-gaming validator (variance collapse, constant outputs, ground-truth contact). `[FREEZE — 1 h]` What you can do *now* without Bedrock: replace the primed-constant quarantine assertion with a **risk–coverage (selective prediction) curve** computed offline — vary the confidence threshold from 0.5 to 0.99 and plot residual error rate vs. coverage. Even with synthetic confidences this at least tests the *shape* of the gate rather than one point of it, and it is the right chart to show a judge.
+**Repair.** `[ROADMAP — needs Bedrock]` Adopt a prompt-evolution pattern: a human-labeled calibration set of open answers (gold `correct`/`rubric_points`), scored with **QWK and MAE**, plus the anti-gaming validator (variance collapse, constant outputs, ground-truth contact). `[NEAR-TERM]` What you can do *now* without Bedrock: replace the primed-constant quarantine assertion with a **risk–coverage (selective prediction) curve** computed offline — vary the confidence threshold from 0.5 to 0.99 and plot residual error rate vs. coverage. Even with synthetic confidences this at least tests the *shape* of the gate rather than one point of it, and it is the right chart to show a judge.
 
 ---
 
@@ -133,7 +133,7 @@ Also untested: MCQ grading only ever receives the exact `answer_key` string or `
 - SM-2 could be replaced with `interval = 1` for all items and the benchmark would score 8/8.
 - There is no end-to-end evidence for the single most-cited pedagogical mechanism in the pitch.
 
-**Repair.** `[FREEZE — 4 h]` Give each `(student, item)` a memory-strength state in the *simulator* (not the system): `p_recall = exp(-Δt / S)`, `S` growing multiplicatively with each successful recall. Then the scheduler becomes measurable: run identical seeded cohorts under **SM-2 vs. fixed-3-day vs. review-everything-daily vs. no-review** and report *retention at day 14 per item delivered*. That produces the first genuine efficiency number in the project and makes the F-11 FSRS argument empirical instead of citational.
+**Repair.** `[NEAR-TERM]` Give each `(student, item)` a memory-strength state in the *simulator* (not the system): `p_recall = exp(-Δt / S)`, `S` growing multiplicatively with each successful recall. Then the scheduler becomes measurable: run identical seeded cohorts under **SM-2 vs. fixed-3-day vs. review-everything-daily vs. no-review** and report *retention at day 14 per item delivered*. That produces the first genuine efficiency number in the project and makes the F-11 FSRS argument empirical instead of citational.
 
 ---
 
@@ -159,14 +159,14 @@ And nowhere does mastery see `item.difficulty`. `psychometrics.py` computes `ite
 
 **Repair, staged so auditability survives.**
 
-`[FREEZE — 2 h]` **Guess-corrected EMA.** One auditable line, defensible in a parent-facing explanation:
+`[NEAR-TERM]` **Guess-corrected EMA.** One auditable line, defensible in a parent-facing explanation:
 ```
 g = 1 / len(item.options) if kind is MCQ else 0.0
 adjusted = max(0.0, (outcome - g) / (1.0 - g))
 ```
 Feed `adjusted` to the EMA. Re-anchor `STRUGGLING_CEILING` on the corrected scale (it is now a *true* mastery proportion, not a chance-contaminated one). Simultaneously: raise MCQ to 4 options in `item_bank` and in the `Item Generator` rubric — dropping the guess floor from 0.333 to 0.25 is free precision.
 
-`[FREEZE — 2 h]` **Difficulty-weighted evidence.** Weight the EMA increment by item difficulty: `w = 0.6 + 0.2 * (difficulty - 1)`, normalized. Still a weighted moving average, still fully inspectable, but a wrong answer on a hard item stops counting as much as a wrong answer on an easy one. Log the weight in the `EvidenceSpan` so the audit trail shows it.
+`[NEAR-TERM]` **Difficulty-weighted evidence.** Weight the EMA increment by item difficulty: `w = 0.6 + 0.2 * (difficulty - 1)`, normalized. Still a weighted moving average, still fully inspectable, but a wrong answer on a hard item stops counting as much as a wrong answer on an easy one. Log the weight in the `EvidenceSpan` so the audit trail shows it.
 
 `[ROADMAP]` **PFA (Performance Factors Analysis)** is the right destination, not BKT. `logit(p) = β_item + γ·successes + ρ·failures`, per competency. It is a logistic regression: the coefficients are three numbers you can print in an audit log, it conditions on item difficulty using the `p_value` you already compute, it is monotone in evidence, and it degrades gracefully at cold start. BKT gives you explicit slip/guess parameters and a `P(learned)` posterior, which is nicer for the parent message ("we estimate a 78% chance Ana has not yet mastered fractions, from 11 attempts at average difficulty 2.4" beats "0.31"), but it needs EM fitting per competency and the auditability story is harder to tell judges in a video. **Rasch/1PL** is the destination for the *item* side, because it puts student θ and item b on one scale, which is exactly what the tournament in F-13 needs.
 
@@ -189,7 +189,7 @@ The benchmark cannot see this because the simulated parent never responds to any
 
 Two further defects in the same three lines: the mutex is keyed **per family**, not per student per competency, so a family with two enrolled children shares one triage slot; and the struggle escalation is composed with `[run.grade.evidence]` — **a single response quote**, when `architecture.md` guarantee #4 promises evidence of a *pattern*.
 
-**Repair.** `[FREEZE — 2 h]` Persist `last_escalated_at` per `(student_id, competency_id, kind)`; compute real elapsed days from `services.clock`; suppress for `cooldown_days` **after resolution**, not during pendency. Carry the last 3–5 evidence spans into `compose_struggle`. Add a benchmark row that resolves escalations on a simulated parent-response delay distribution — otherwise the whole acknowledgment path stays unexercised.
+**Repair.** `[NEAR-TERM]` Persist `last_escalated_at` per `(student_id, competency_id, kind)`; compute real elapsed days from `services.clock`; suppress for `cooldown_days` **after resolution**, not during pendency. Carry the last 3–5 evidence spans into `compose_struggle`. Add a benchmark row that resolves escalations on a simulated parent-response delay distribution — otherwise the whole acknowledgment path stays unexercised.
 
 ---
 
@@ -201,7 +201,7 @@ Worse, `EXPECTED_ANSWER_SECONDS = 45.0` is a single constant applied to **every 
 
 And latency as a difficulty proxy is confounded for this population by device, typing speed, whether a parent is sitting alongside, and whether the child was interrupted — none of which the harness observes.
 
-**Repair.** `[FREEZE — 1.5 h]` Per-kind `expected_seconds` (MCQ 30 s, OPEN 150 s), scaled by `item.difficulty`. Emit quality 2 for slow-wrong vs. 1 for fast-wrong. Cap per-review ease decay at −0.10. Compute `expected_seconds` empirically from the item's own observed median latency once n ≥ 20 — you already have the grade log.
+**Repair.** `[NEAR-TERM]` Per-kind `expected_seconds` (MCQ 30 s, OPEN 150 s), scaled by `item.difficulty`. Emit quality 2 for slow-wrong vs. 1 for fast-wrong. Cap per-review ease decay at −0.10. Compute `expected_seconds` empirically from the item's own observed median latency once n ≥ 20 — you already have the grade log.
 
 `[ROADMAP]` **FSRS-4.5** (difficulty/stability/retrievability) behind the existing `review(state, quality, today) -> SpacedItemState` signature, with default parameters at cold start and per-cohort fitting later. Be honest with yourself about the size of this win: FSRS's advantage over SM-2 is real but modest at default parameters, and it only becomes large once you have thousands of review logs to fit. The cheap fixes above capture most of the available gain before Sep 3. What FSRS buys you that SM-2 cannot is a **target-retention knob** — "schedule so that 90% of reviews succeed" — which is a far better product control than an ease factor, and a much better story in a demo. Ship the interface now, swap the internals post-pilot. Auditability is preserved: FSRS is a closed-form formula with 17 published constants, replayable to the byte.
 
@@ -222,7 +222,7 @@ if not latencies_seconds or len(latencies_seconds) < min_samples:  # min_samples
 
 This is the sharpest illustration of the ledger's real weakness: **the benchmark only checks what someone remembered to write down.** Its coverage of the harness is unmeasured.
 
-**Repair.** `[FREEZE — 2 h]` Persist a rolling per-student latency window (last 20 responses) in the state store; pass it to `build_signals`. Add a ledger row for fast-guess detection with FPR/FNR over seeds. `[FREEZE — 1 h, high ROI]` Add **branch coverage over `src/repaso/core/harness/` during the demo-clock run** and publish it as a report line. Any harness branch with zero demo-clock coverage is either dead code or an untested claim; either way you want the list before a judge finds it.
+**Repair.** `[NEAR-TERM]` Persist a rolling per-student latency window (last 20 responses) in the state store; pass it to `build_signals`. Add a ledger row for fast-guess detection with FPR/FNR over seeds. `[NEAR-TERM]` Add **branch coverage over `src/repaso/core/harness/` during the demo-clock run** and publish it as a report line. Any harness branch with zero demo-clock coverage is either dead code or an untested claim; either way you want the list before a judge finds it.
 
 ---
 
@@ -238,14 +238,14 @@ Three independent defects stacking into a self-harming loop.
 
 **(d) The bank only shrinks.** `item_optimizer.regeneration_requests` exists, is unit-tested (`tests/agents/test_closure.py:185`), and is **never called from `quality_graph.optimize()`** — grep confirms zero call sites outside tests. `settings.item_regen_max_rounds` is likewise never read. `architecture.md:70` claims "El banco mejora solo." In the demo path the bank monotonically decays: 84 → 64 in two weeks, empty in roughly eight. Retirement is also irreversible — there is no reinstatement path and no `SUSPECT` state. And a shrinking active bank is precisely the mechanism that manufactured planner-starvation bug #4, which you have therefore only fixed on one side.
 
-**Repair.** `[FREEZE — 3 h]`
+**Repair.** `[NEAR-TERM]`
 1. Corrected item-total correlation (exclude focal item).
 2. Raise the retirement gate to **n ≥ 30**, or better: retire only when the Bayesian posterior `P(r < 0.15) > 0.9` (a Fisher-z normal approximation is enough and stays auditable).
 3. Retire to **`ItemStatus.SUSPECT`** — stop scheduling, keep the record, allow reinstatement when more data arrives. Irreversible destruction on 8 observations is indefensible.
-4. **Anti-gaming validator**, straight from gradesync: refuse to retire more than 10% of a competency's active bank per week; refuse any retirement that would drop a competency's active count below `DAILY_ITEM_LIMIT`; log every refusal with its reason.
+4. **Anti-gaming validator**: refuse to retire more than 10% of a competency's active bank per week; refuse any retirement that would drop a competency's active count below `DAILY_ITEM_LIMIT`; log every refusal with its reason.
 5. Wire `regeneration_requests` into `optimize()` behind `item_regen_max_rounds`, or **delete the "the bank improves itself" claim from the architecture doc.** Shipping a claim with a dead call site is the kind of thing that ends a judging conversation.
 
-`[FREEZE — 3 h]` **ε-exploration for unbiased psychometrics.** Reserve ~10% of daily slots for uniformly-random item assignment, and log `assignment_reason ∈ {due, weakest_unseen, random}` on every delivered item. Compute p-values and discrimination **on the random subsample only**. This is the standard exploration-data trick, it costs one field and one branch, and it is the difference between "our item statistics are measured" and "our item statistics are an artifact of our own routing policy." It also happens to be an excellent thing to say out loud in a video.
+`[NEAR-TERM]` **ε-exploration for unbiased psychometrics.** Reserve ~10% of daily slots for uniformly-random item assignment, and log `assignment_reason ∈ {due, weakest_unseen, random}` on every delivered item. Compute p-values and discrimination **on the random subsample only**. This is the standard exploration-data trick, it costs one field and one branch, and it is the difference between "our item statistics are measured" and "our item statistics are an artifact of our own routing policy." It also happens to be an excellent thing to say out loud in a video.
 
 ---
 
@@ -253,7 +253,7 @@ Three independent defects stacking into a self-harming loop.
 
 `_weakest_unseen` sorts by `ema.get(competency_id, UNKNOWN_EMA=0.5)`. A competency with a single wrong answer has EMA 0.0 (see F-09's cold start), which sorts **below** any never-seen competency at 0.5. So one unlucky first answer causes the planner to feed that competency's items preferentially, generating more attempts on the weakest topic, which drives the EMA further down, which raises `attempts` past the `≥ 8` gate faster than for any other competency — **the exact ingredient that manufactures a STRUGGLING label.** This is the same class of bug as report bug #2, fixed there by delaying the gate rather than by breaking the loop.
 
-**Repair.** Covered by F-13's ε-exploration plus F-09's cold start fix. `[FREEZE — included above]` Additionally: initialize new `MasteryState` EMA to `UNKNOWN_EMA = 0.5` rather than `0.0` so the "unseen" and "seen once, wrongly" cases are not inverted, and require `attempts ≥ 3` before a competency's EMA is allowed to influence planner ordering.
+**Repair.** Covered by F-13's ε-exploration plus F-09's cold start fix. `[NEAR-TERM]` Additionally: initialize new `MasteryState` EMA to `UNKNOWN_EMA = 0.5` rather than `0.0` so the "unseen" and "seen once, wrongly" cases are not inverted, and require `attempts ≥ 3` before a competency's EMA is allowed to influence planner ordering.
 
 ---
 
@@ -270,7 +270,7 @@ A defensible cost ratio is at minimum **10:1**, plausibly 30:1. Optimizing for F
 
 Note also that the current report undercounts what a parent feels. 17 interrupts / 30 families / 2 weeks = **0.28 interrupts per family per week** — that is the number to publish. And the engagement alert **re-fires weekly** (`claim_key = f"engage#{student.id}#{year}-W{week}"`) for a child already flagged, with no acknowledgment suppression: 3 students produced 6 alerts, and the ledger only counted *distinct students*, so alert *volume* — the parent-facing quantity — is unmeasured.
 
-**Repair.** `[FREEZE — 2 h]` Replace the headline with a declared composite. Publish the cost constants; a stated, arguable number beats an implicit one every time.
+**Repair.** `[NEAR-TERM]` Replace the headline with a declared composite. Publish the cost constants; a stated, arguable number beats an implicit one every time.
 
 **Primary — expected cost per 100 student-weeks:**
 ```
@@ -285,7 +285,7 @@ Report against all five baselines from F-04. The system must beat `threshold-on-
 3. **Detection latency**: median and p90 days from true onset of struggle to triage, versus the oracle floor. *9/9 recall on day 13 is nearly worthless; 9/9 on day 4 is the product.* The current report contains no latency number at all.
 4. **Calibration**: a reliability diagram — among all fired triages, what fraction were genuinely below the latent threshold, bucketed by the system's own confidence.
 
-`[FREEZE — 1 h]` Add acknowledgment suppression: once a parent responds to an engagement alert, suppress that student's alert for N days regardless of ISO week.
+`[NEAR-TERM]` Add acknowledgment suppression: once a parent responds to an engagement alert, suppress that student's alert for N days regardless of ISO week.
 
 ---
 
@@ -293,7 +293,7 @@ Report against all five baselines from F-04. The system must beat `threshold-on-
 
 The entire report measures alarms. Nothing measures whether simulated children learned more under this system than under a control. The pitch rests on an effect size (d=0.37); the benchmark produces no effect-size-shaped number even in simulation, where it is nearly free.
 
-**Repair.** `[FREEZE — 3 h]` You already have the machinery (SimClock + seeded cohort + full state = deterministic replay). Run the identical seeded cohort under:
+**Repair.** `[NEAR-TERM]` You already have the machinery (SimClock + seeded cohort + full state = deterministic replay). Run the identical seeded cohort under:
 - **Policy A**: full system (adaptive planner + SM-2 + triggers).
 - **Policy B**: control — 3 uniformly-random items daily, no adaptation, no spacing, no interrupts.
 
@@ -309,7 +309,7 @@ Report bug #4 — "once the review queue saturated the daily limit, new material
 
 The report's own "not fixed" note ("breadth-first fill; a per-competency depth preference would reach open questions sooner for strong students") is a second instance of the same class, still unmeasured.
 
-**Repair.** `[FREEZE — 3 h]` Instrument per-student, per-run:
+**Repair.** `[NEAR-TERM]` Instrument per-student, per-run:
 1. distinct competencies touched
 2. fraction of item **kinds** seen (MCQ vs. OPEN) — the metric that would have caught bug #4 automatically
 3. new-vs-review ratio
@@ -327,15 +327,15 @@ Two known fairness-adjacent confounds to fix in the same pass: `_weakest_unseen`
 
 ### F-18 — Determinism is presented adjacent to validity `MEDIUM`
 
-"Same seed → byte-identical transcript" is a *reproducibility* property and a genuinely good one. It sits two lines from the correctness claim, and readers will conflate them. A byte-identical reproduction of a biased estimate is still biased. **Repair** `[FREEZE — 10 min]`: one sentence saying so, in the Honest read. Saying it yourself is worth more than a reviewer saying it for you.
+"Same seed → byte-identical transcript" is a *reproducibility* property and a genuinely good one. It sits two lines from the correctness claim, and readers will conflate them. A byte-identical reproduction of a biased estimate is still biased. **Repair** `[NEAR-TERM]`: one sentence saying so, in the Honest read. Saying it yourself is worth more than a reviewer saying it for you.
 
 ### F-19 — "420/420 sessions delivered" is a count of the harness's own loop `LOW`
 
-`_play_day` increments `sessions_delivered` only when `run.terminal is None`; `_collect_escalations` reads final state. The row is not independent evidence. Likewise "1,062 responses graded" = 2.53/day against `DAILY_ITEM_LIMIT = 3`, but `_play_day` `break`s on the first non-response, conflating "child stopped" with "session ended." **Repair** `[FREEZE — 30 min]`: separate the counters (`sessions_planned`, `sessions_delivered`, `sessions_completed`, `items_abandoned`).
+`_play_day` increments `sessions_delivered` only when `run.terminal is None`; `_collect_escalations` reads final state. The row is not independent evidence. Likewise "1,062 responses graded" = 2.53/day against `DAILY_ITEM_LIMIT = 3`, but `_play_day` `break`s on the first non-response, conflating "child stopped" with "session ended." **Repair** `[NEAR-TERM]`: separate the counters (`sessions_planned`, `sessions_delivered`, `sessions_completed`, `items_abandoned`).
 
 ### F-20 — Bug #5 is a benchmark-integrity disclosure and should be labeled as one `MEDIUM`
 
-"Deterministic injection on days 2–3; **abilities recalibrated away from the threshold**." Moving the simulated population away from the decision boundary is not a simulator bug fix — it is a reduction in the benchmark's difficulty, applied after observing the result, on the reported seed. It belongs under Honest read, not under "Bugs found and fixed." **Repair** `[FREEZE — 15 min]`: move it, and state what the pre-recalibration results were. Under F-01's continuous cohort the issue dissolves, because there is no longer a threshold to move away from.
+"Deterministic injection on days 2–3; **abilities recalibrated away from the threshold**." Moving the simulated population away from the decision boundary is not a simulator bug fix — it is a reduction in the benchmark's difficulty, applied after observing the result, on the reported seed. It belongs under Honest read, not under "Bugs found and fixed." **Repair** `[NEAR-TERM]`: move it, and state what the pre-recalibration results were. Under F-01's continuous cohort the issue dissolves, because there is no longer a threshold to move away from.
 
 ### F-21 — The struggle escalation carries one quote, against a stated architectural guarantee `MEDIUM`
 
@@ -347,28 +347,28 @@ Covered in F-10. Guarantee #4 ("toda decisión carga evidencia") is satisfied in
 
 ---
 
-## E. Budget: what fits before Sep 3
+## E. Priority order
 
-~40 build-hours remain. Ranked by evidence-per-hour. Everything below is offline-only and needs no Bedrock.
+Ranked by evidence gained. Everything below is offline-only and needs no Bedrock.
 
-| # | Item | Fixes | Hours | Cum. |
-|---|---|---|---:|---:|
-| 1 | Seed sweep (N≥200) + Clopper–Pearson/bootstrap CIs + 5 baselines + threshold sensitivity sweep | F-03, F-04, F-02 | 6 | 6 |
-| 2 | Continuous-ability cohort generator; ground truth = latent parameter | F-01 | 6 | 12 |
-| 3 | Item tournament: corrected item-total, n≥30 / posterior gate, SUSPECT status, anti-gaming validator, wire regeneration | F-13 | 3 | 15 |
-| 4 | Composite objective: expected cost, F₃, interrupt budget, detection latency, calibration | F-15 | 2 | 17 |
-| 5 | Spanish injection corpus + screener FPR/FNR row | F-06 | 3 | 20 |
-| 6 | Guess-corrected + difficulty-weighted EMA; 4-option MCQ; cold-start fix | F-09, F-14 | 4 | 24 |
-| 7 | Simulator memory decay + SM-2 vs. fixed-interval vs. none | F-08, F-11 | 4 | 28 |
-| 8 | Fairness-of-experience metrics + CI regression floor + per-student item-order permutation | F-17 | 3 | 31 |
-| 9 | ε-exploration slots + `assignment_reason` logging | F-13c, F-14 | 3 | 34 |
-| 10 | Outcome metric: policy A vs. control B, mastery delta | F-16 | 3 | 37 |
-| 11 | Real 7-day cooldown, per-(student, competency, kind), post-resolution; multi-span evidence | F-10, F-21 | 2 | 39 |
-| 12 | Fast-guess rolling latency window + ledger row; harness branch-coverage report | F-12, F-22 | 3 | 42 |
-| 13 | Ledger rewrite (adversarial cohort, per-week assertions) + honest report rewrite | F-05, F-18–F-20 | 2 | 44 |
-| 14 | SM-2 per-kind expected_seconds, quality-2 band, ease-decay cap | F-11 | 1.5 | 45.5 |
-| — | *Deferred:* FSRS, PFA/BKT/Rasch, Bedrock calibration set with QWK/MAE + anti-gaming validator | F-09, F-11, F-07 | ROADMAP | — |
+| # | Item | Fixes |
+|---|---|---|
+| 1 | Seed sweep (N≥200) + Clopper–Pearson/bootstrap CIs + 5 baselines + threshold sensitivity sweep | F-03, F-04, F-02 |
+| 2 | Continuous-ability cohort generator; ground truth = latent parameter | F-01 |
+| 3 | Item tournament: corrected item-total, n≥30 / posterior gate, SUSPECT status, anti-gaming validator, wire regeneration | F-13 |
+| 4 | Composite objective: expected cost, F₃, interrupt budget, detection latency, calibration | F-15 |
+| 5 | Spanish injection corpus + screener FPR/FNR row | F-06 |
+| 6 | Guess-corrected + difficulty-weighted EMA; 4-option MCQ; cold-start fix | F-09, F-14 |
+| 7 | Simulator memory decay + SM-2 vs. fixed-interval vs. none | F-08, F-11 |
+| 8 | Fairness-of-experience metrics + CI regression floor + per-student item-order permutation | F-17 |
+| 9 | ε-exploration slots + `assignment_reason` logging | F-13c, F-14 |
+| 10 | Outcome metric: policy A vs. control B, mastery delta | F-16 |
+| 11 | Real 7-day cooldown, per-(student, competency, kind), post-resolution; multi-span evidence | F-10, F-21 |
+| 12 | Fast-guess rolling latency window + ledger row; harness branch-coverage report | F-12, F-22 |
+| 13 | Ledger rewrite (adversarial cohort, per-week assertions) + honest report rewrite | F-05, F-18–F-20 |
+| 14 | SM-2 per-kind expected_seconds, quality-2 band, ease-decay cap | F-11 |
+| — | *Deferred:* FSRS, PFA/BKT/Rasch, Bedrock calibration set with QWK/MAE + anti-gaming validator | F-09, F-11, F-07 |
 
-**Recommended cut line: items 1–10 (37 h).** Items 11–14 are cheap and important; if hours compress, item 11 (the fake cooldown) and item 13 (the honest rewrite) must survive, because one is a shipped defect a pilot will hit in week one and the other is what converts this document from a scoreboard into a result.
+**Items 11–14 are cheap and important.** If the order compresses, item 11 (the fake cooldown) and item 13 (the honest rewrite) must survive, because one is a shipped defect a pilot will hit in week one and the other is what converts this document from a scoreboard into a result.
 
-**The single sentence a reviewer should be able to read after this work:** *"Across 200 held-out seeds on a continuously-distributed simulated cohort, the system detects struggling students with recall 0.9X [CI] at a false-interrupt rate of 0.0X [CI] — beating a naive accuracy threshold by ΔX on expected cost and reaching help N days sooner — with fairness-of-experience dispersion below X across ability deciles."* That sentence is 37 hours away. "8/8 on one seed" is not on the path to it.
+**The single sentence a reviewer should be able to read after this work:** *"Across 200 held-out seeds on a continuously-distributed simulated cohort, the system detects struggling students with recall 0.9X [CI] at a false-interrupt rate of 0.0X [CI] — beating a naive accuracy threshold by ΔX on expected cost and reaching help N days sooner — with fairness-of-experience dispersion below X across ability deciles."* "8/8 on one seed" is not on the path to it.
