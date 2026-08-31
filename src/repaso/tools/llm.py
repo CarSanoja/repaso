@@ -1,5 +1,7 @@
 from collections import deque
 from collections.abc import AsyncGenerator, AsyncIterable
+from functools import lru_cache
+from pathlib import Path
 from typing import Any, TypeVar
 
 from pydantic import BaseModel
@@ -10,7 +12,15 @@ from strands.types.tools import ToolChoice, ToolSpec
 
 from repaso.config.models import ModelRole, model_for
 from repaso.config.settings import Settings
-from repaso.tools.cassette import STREAM_KIND, STRUCTURED_KIND
+from repaso.tools.cassette import (
+    STREAM_KIND,
+    STRUCTURED_KIND,
+    CassetteEntry,
+    CassetteWriter,
+    load_cassette,
+)
+from repaso.tools.cassette_model import CassetteModel
+from repaso.tools.recording_model import RecordingModel
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -91,11 +101,33 @@ class LocalPlaybackModel(Model):
         yield {"output": output_model(**entry)}
 
 
+@lru_cache(maxsize=4)
+def _cassette_entries(path: Path) -> tuple[CassetteEntry, ...]:
+    return tuple(load_cassette(path))
+
+
+@lru_cache(maxsize=4)
+def _cassette_writer(path: Path) -> CassetteWriter:
+    return CassetteWriter(path)
+
+
+def clear_cassette_cache() -> None:
+    _cassette_entries.cache_clear()
+    _cassette_writer.cache_clear()
+
+
 def build_model(
     role: ModelRole, settings: Settings, playback: LocalPlaybackModel | None = None
 ) -> Model:
     if settings.local_mode:
-        return playback if playback is not None else LocalPlaybackModel()
+        if playback is not None:
+            return playback
+        if settings.cassette_path is not None:
+            return CassetteModel(_cassette_entries(settings.cassette_path), role.value)
+        return LocalPlaybackModel()
     from strands.models.bedrock import BedrockModel
 
-    return BedrockModel(model_id=model_for(role), region_name=settings.aws_region)
+    model = BedrockModel(model_id=model_for(role), region_name=settings.aws_region)
+    if settings.record_cassette_path is None:
+        return model
+    return RecordingModel(model, _cassette_writer(settings.record_cassette_path), role.value)

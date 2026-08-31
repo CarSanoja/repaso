@@ -1,8 +1,9 @@
 from datetime import date
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -14,6 +15,8 @@ class Settings(BaseSettings):
     aws_region: str | None = None
     local_mode: bool | None = None
     local_data_dir: Path = Path(".local_data")
+    cassette_path: Path | None = None
+    record_cassette_path: Path | None = None
 
     ddb_table: str = "repaso"
     media_bucket: str = ""
@@ -37,6 +40,11 @@ class Settings(BaseSettings):
     item_regen_max_rounds: int = Field(default=2, ge=0)
 
     live_tests: bool = False
+
+    @field_validator("cassette_path", "record_cassette_path", mode="before")
+    @classmethod
+    def blank_is_no_cassette(cls, value: Any) -> Any:
+        return None if isinstance(value, str) and not value.strip() else value
 
     @model_validator(mode="after")
     def derive_local_mode(self) -> "Settings":

@@ -4,6 +4,7 @@ import pytest
 
 from repaso.config.clients import reset_client_cache
 from repaso.config.settings import Settings, clear_settings_cache
+from repaso.tools.llm import clear_cassette_cache
 
 
 @pytest.fixture(autouse=True)
@@ -13,9 +14,11 @@ def clean_environment(monkeypatch):
             monkeypatch.delenv(key)
     clear_settings_cache()
     reset_client_cache()
+    clear_cassette_cache()
     yield
     clear_settings_cache()
     reset_client_cache()
+    clear_cassette_cache()
 
 
 @pytest.fixture

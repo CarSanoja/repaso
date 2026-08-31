@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from repaso.config.clients import dynamodb_client
 from repaso.config.models import DEFAULT_MODELS, ModelRole, fallback_chain, model_for
 from repaso.config.settings import Settings
@@ -36,3 +38,18 @@ def test_threshold_bounds_fail_at_boot():
     except ValueError:
         return
     raise AssertionError("out-of-range threshold must fail validation")
+
+
+def test_a_blank_cassette_path_is_no_cassette_at_all(monkeypatch):
+    monkeypatch.setenv("REPASO_CASSETTE_PATH", "")
+    monkeypatch.setenv("REPASO_RECORD_CASSETTE_PATH", "   ")
+    settings = Settings()
+
+    assert settings.cassette_path is None
+    assert settings.record_cassette_path is None
+
+
+def test_a_cassette_path_is_read_from_the_environment(monkeypatch):
+    monkeypatch.setenv("REPASO_CASSETTE_PATH", "cassettes/demo.jsonl")
+
+    assert Settings().cassette_path == Path("cassettes/demo.jsonl")
