@@ -4,6 +4,7 @@ from typing import Protocol, runtime_checkable
 from pydantic import Field
 
 from repaso.config.settings import Settings
+from repaso.core.telemetry.sink import TelemetrySink
 from repaso.schemas.channel import MediaKind
 from repaso.schemas.common import FrozenStrictModel
 from repaso.tools.media_store import normalize_ref
@@ -70,11 +71,15 @@ class LocalMediaFetcher:
         return FetchedMedia(data=data, content_type=sniff_content_type(data), size=len(data))
 
 
-def build_media_fetcher(settings: Settings, token: str | None = None) -> MediaFetcher:
+def build_media_fetcher(
+    settings: Settings,
+    token: str | None = None,
+    telemetry: TelemetrySink | None = None,
+) -> MediaFetcher:
     if settings.local_mode:
         return LocalMediaFetcher(settings.local_data_dir)
     if not token:
         raise ValueError("token is required when local_mode is off")
     from repaso.tools.telegram_media import TelegramMediaFetcher
 
-    return TelegramMediaFetcher(token)
+    return TelegramMediaFetcher(token, telemetry=telemetry)

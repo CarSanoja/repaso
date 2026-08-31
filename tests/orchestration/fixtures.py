@@ -18,6 +18,7 @@ from repaso.tools.guardrails import build_screener
 from repaso.tools.invite_codes import build_invite_codes
 from repaso.tools.knowledge import build_knowledge_retriever
 from repaso.tools.llm import LocalPlaybackModel
+from repaso.tools.media_fetcher import build_media_fetcher
 from repaso.tools.media_store import build_media_store
 from repaso.tools.ocr import build_text_extractor
 from repaso.tools.state_store import build_state_store
@@ -34,6 +35,7 @@ def make_services(settings) -> Services:
         store=build_state_store(settings),
         grade_log=build_grade_log(settings),
         media=build_media_store(settings),
+        fetcher=build_media_fetcher(settings),
         extractor=build_text_extractor(settings),
         screener=build_screener(settings),
         retriever=build_knowledge_retriever(settings),

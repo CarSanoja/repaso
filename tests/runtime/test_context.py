@@ -15,6 +15,7 @@ from repaso.runtime.context import (
 )
 from repaso.tools.instrumented_model import InstrumentedModel
 from repaso.tools.llm import LocalPlaybackModel
+from repaso.tools.media_fetcher import LocalMediaFetcher
 from repaso.tools.state_local import LocalStateStore
 from repaso.tools.telegram import LocalOutbox
 
@@ -48,6 +49,7 @@ def test_local_mode_wires_every_service_to_its_local_implementation(settings):
 
     assert isinstance(services.clock, SystemClock)
     assert isinstance(services.store, LocalStateStore)
+    assert isinstance(services.fetcher, LocalMediaFetcher)
     assert isinstance(services.sender, LocalOutbox)
     assert set(services.models) == set(ModelRole)
     for model in services.models.values():

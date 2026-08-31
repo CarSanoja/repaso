@@ -13,6 +13,7 @@ from repaso.tools.instrumented_model import instrument_models
 from repaso.tools.invite_codes import build_invite_codes
 from repaso.tools.knowledge import build_knowledge_retriever
 from repaso.tools.llm import build_model
+from repaso.tools.media_fetcher import build_media_fetcher
 from repaso.tools.media_store import build_media_store
 from repaso.tools.ocr import build_text_extractor
 from repaso.tools.state_store import build_state_store
@@ -44,6 +45,7 @@ def build_runtime_services(settings: Settings) -> Services:
         store=build_state_store(settings),
         grade_log=build_grade_log(settings),
         media=build_media_store(settings),
+        fetcher=build_media_fetcher(settings, os.environ.get(TELEGRAM_TOKEN_ENV), telemetry),
         extractor=build_text_extractor(settings),
         screener=build_screener(settings, guardrail_id=os.environ.get(GUARDRAIL_ID_ENV)),
         retriever=build_knowledge_retriever(settings, os.environ.get(KNOWLEDGE_BASE_ID_ENV)),

@@ -23,6 +23,7 @@ from repaso.tools.event_bus import EventPublisher
 from repaso.tools.guardrails import Screener, ScreenVerdict
 from repaso.tools.invite_codes import InviteCodeSource
 from repaso.tools.knowledge import KnowledgeRetriever
+from repaso.tools.media_fetcher import MediaFetcher
 from repaso.tools.media_store import MediaStore
 from repaso.tools.ocr import TextExtractor
 from repaso.tools.state_store import StateStore
@@ -36,6 +37,7 @@ class Services:
     store: StateStore
     grade_log: Any
     media: MediaStore
+    fetcher: MediaFetcher
     extractor: TextExtractor
     screener: Screener
     retriever: KnowledgeRetriever

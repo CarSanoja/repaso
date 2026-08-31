@@ -4,8 +4,10 @@ import pytest
 
 from repaso.config.settings import Settings, clear_settings_cache
 from repaso.lambdas import bootstrap
+from repaso.tools.media_fetcher import LocalMediaFetcher
 from repaso.tools.state_local import LocalStateStore
 from repaso.tools.telegram import TelegramSender
+from repaso.tools.telegram_media import TelegramMediaFetcher
 
 TELEGRAM_PAYLOAD = {"webhook_secret": "from-secrets", "bot_token": "bot-123"}
 
@@ -64,6 +66,7 @@ def test_the_container_carries_the_secret_material_it_resolved(lambda_env, secre
     assert container.telegram_secret == "from-secrets"
     assert container.judge_code == "JUDGE9"
     assert isinstance(container.store, LocalStateStore)
+    assert isinstance(container.fetcher, LocalMediaFetcher)
 
 
 def test_a_deployed_container_builds_its_telegram_sender_from_the_secret(secrets, tmp_path):
@@ -71,6 +74,7 @@ def test_a_deployed_container_builds_its_telegram_sender_from_the_secret(secrets
     settings = Settings(aws_region="us-east-1", local_mode=False, local_data_dir=tmp_path)
     container = bootstrap.build_lambda_container(settings)
     assert isinstance(container.sender, TelegramSender)
+    assert isinstance(container.fetcher, TelegramMediaFetcher)
     assert container.telegram_secret == "from-secrets"
 
 
