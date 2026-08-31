@@ -2,6 +2,7 @@ import pytest
 from pydantic import BaseModel
 
 from repaso.agents.base import StructuredCallFailed, structured, user_message
+from repaso.tools.cassette_model import CassetteExhausted, CassetteModel
 from repaso.tools.llm import LocalPlaybackModel, PlaybackExhausted
 
 
@@ -19,6 +20,12 @@ async def test_structured_returns_the_parsed_output():
 async def test_structured_propagates_playback_exhaustion():
     model = LocalPlaybackModel([])
     with pytest.raises(PlaybackExhausted):
+        await structured(model, Verdict, "judge", "evaluate this")
+
+
+async def test_structured_propagates_cassette_exhaustion():
+    model = CassetteModel([], "judge")
+    with pytest.raises(CassetteExhausted):
         await structured(model, Verdict, "judge", "evaluate this")
 
 

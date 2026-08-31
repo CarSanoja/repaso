@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+from repaso.tools.cassette_model import CassetteExhausted
 from repaso.tools.llm import PlaybackExhausted
 
 
@@ -18,7 +19,7 @@ async def structured[T: BaseModel](model, output_model: type[T], system: str, te
         async for event in events:
             if "output" in event:
                 output = event["output"]
-    except PlaybackExhausted:
+    except (CassetteExhausted, PlaybackExhausted):
         raise
     except Exception as error:
         raise StructuredCallFailed(str(error)) from error
