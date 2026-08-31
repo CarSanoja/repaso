@@ -55,6 +55,10 @@ MESSAGES = {
         "La foto salió borrosa y no quiero inventar lo que no leo. ¿Puedes tomarla de "
         "nuevo con más luz? Si puedes, envíala como archivo para que no pierda calidad."
     ),
+    "media_unreadable": (
+        "Ese archivo no me llegó completo y no quiero inventar lo que no leo. ¿Me lo "
+        "envías de nuevo?"
+    ),
     "quarantine_prompt": (
         "Necesito tu ojo: {alias} respondió \"{answer}\" y no estoy seguro de cómo "
         "calificarla. ¿La das por buena?"

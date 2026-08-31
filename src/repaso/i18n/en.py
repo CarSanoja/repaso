@@ -53,6 +53,10 @@ MESSAGES = {
         "The photo came out blurry and I won't guess what I can't read. Can you retake "
         "it with more light? If possible, send it as a file to keep the quality."
     ),
+    "media_unreadable": (
+        "That file didn't reach me whole and I won't guess what I can't read. Can you "
+        "send it again?"
+    ),
     "quarantine_prompt": (
         "I need your eyes: {alias} answered \"{answer}\" and I'm not sure how to grade "
         "it. Should it count as correct?"

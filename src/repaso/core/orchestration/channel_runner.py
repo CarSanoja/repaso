@@ -7,13 +7,9 @@ from repaso.channel.telegram.commands import (
     handle_forget_callback,
 )
 from repaso.core.orchestration.channel_enrollment import route_enrollment
+from repaso.core.orchestration.channel_media import route_material
 from repaso.core.orchestration.context import ChannelRun, Route, Services
-from repaso.core.orchestration.runner import (
-    active_session,
-    deliver_outbound,
-    handle_answer,
-    handle_material,
-)
+from repaso.core.orchestration.runner import active_session, deliver_outbound, handle_answer
 from repaso.schemas.channel import InboundMessage
 from repaso.schemas.events import DomainEvent, EventKind
 from repaso.schemas.family import Family
@@ -51,7 +47,7 @@ async def _route_family(services: Services, run: ChannelRun, family: Family) -> 
         _route_command(services, run, family, text)
         return
     if message.media is not None:
-        await _route_material(services, run, family)
+        await route_material(services, run, family)
         return
     if text:
         await _route_answer(services, run, family, text)
@@ -100,21 +96,6 @@ async def _route_callback(services: Services, run: ChannelRun, family: Family, d
     run.route = Route.UNROUTED_CALLBACK
 
 
-async def _route_material(services: Services, run: ChannelRun, family: Family) -> None:
-    media = run.message.media
-    student = _first_student(services, family)
-    if student is None or media is None:
-        run.route = Route.NO_STUDENT
-        return
-    data = _media_bytes(services, media.media_ref)
-    if data is None:
-        run.route = Route.MEDIA_UNAVAILABLE
-        return
-    run.student = student
-    run.route = Route.MATERIAL
-    run.ingest = await handle_material(services, family, student, media.kind, data)
-
-
 async def _route_answer(services: Services, run: ChannelRun, family: Family, text: str) -> None:
     student = _answering_student(services, family)
     if student is None:
@@ -137,18 +118,6 @@ def _button_answer(services: Services, data: str) -> str | None:
     if not 0 <= index < len(item.options):
         return None
     return item.options[index]
-
-
-def _media_bytes(services: Services, media_ref: str) -> bytes | None:
-    try:
-        return services.media.get(media_ref)
-    except ValueError:
-        return None
-
-
-def _first_student(services: Services, family: Family) -> Student | None:
-    students = services.store.list_students(family.id)
-    return students[0] if students else None
 
 
 def _answering_student(services: Services, family: Family) -> Student | None:
