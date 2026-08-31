@@ -7,7 +7,7 @@ from strands.models.model import Model
 from strands.types.content import Messages
 
 from repaso.config.models import ModelRole
-from repaso.tools.llm import STREAM_KIND, STRUCTURED_KIND
+from repaso.tools.cassette import STREAM_KIND, STRUCTURED_KIND
 
 T = TypeVar("T", bound=BaseModel)
 

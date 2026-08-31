@@ -10,13 +10,11 @@ from strands.types.tools import ToolChoice, ToolSpec
 
 from repaso.config.models import ModelRole, model_for
 from repaso.config.settings import Settings
+from repaso.tools.cassette import STREAM_KIND, STRUCTURED_KIND
 
 T = TypeVar("T", bound=BaseModel)
 
 ScriptEntry = str | BaseModel | dict[str, Any]
-
-STREAM_KIND = "stream"
-STRUCTURED_KIND = "structured_output"
 
 
 class PlaybackExhausted(RuntimeError):
