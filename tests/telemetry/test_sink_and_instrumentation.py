@@ -8,7 +8,8 @@ from repaso.config.models import ModelRole
 from repaso.core.harness.clock import SimClock
 from repaso.core.orchestration.nodes import StepNode
 from repaso.core.telemetry.sink import LocalTelemetrySink, build_telemetry_sink
-from repaso.tools.llm import LocalPlaybackModel, PlaybackExhausted, instrument_models
+from repaso.tools.instrumented_model import instrument_models
+from repaso.tools.llm import LocalPlaybackModel, PlaybackExhausted
 
 START = datetime(2026, 9, 1, 19, 0, tzinfo=UTC)
 

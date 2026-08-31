@@ -9,9 +9,10 @@ from repaso.core.telemetry.sink import build_telemetry_sink
 from repaso.tools.event_bus import build_event_publisher
 from repaso.tools.grade_log import build_grade_log
 from repaso.tools.guardrails import build_screener
+from repaso.tools.instrumented_model import instrument_models
 from repaso.tools.invite_codes import build_invite_codes
 from repaso.tools.knowledge import build_knowledge_retriever
-from repaso.tools.llm import build_model, instrument_models
+from repaso.tools.llm import build_model
 from repaso.tools.media_store import build_media_store
 from repaso.tools.ocr import build_text_extractor
 from repaso.tools.state_store import build_state_store

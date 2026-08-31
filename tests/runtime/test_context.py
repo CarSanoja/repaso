@@ -13,7 +13,8 @@ from repaso.runtime.context import (
     reset_runtime_session,
     runtime_services,
 )
-from repaso.tools.llm import InstrumentedModel, LocalPlaybackModel
+from repaso.tools.instrumented_model import InstrumentedModel
+from repaso.tools.llm import LocalPlaybackModel
 from repaso.tools.state_local import LocalStateStore
 from repaso.tools.telegram import LocalOutbox
 
