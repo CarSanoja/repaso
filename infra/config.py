@@ -63,5 +63,8 @@ class DeployConfig:
     def secret(self, name: str) -> str:
         return f"{self.project}/{name}"
 
+    def parameter(self, *parts: str) -> str:
+        return "/" + "/".join((self.project, *parts))
+
     def bare(self) -> str:
         return self.project
