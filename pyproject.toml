@@ -28,9 +28,13 @@ dev = [
     "ruff>=0.5",
     "uvicorn>=0.30",
 ]
+runtime = [
+    "bedrock-agentcore>=0.1",
+]
 deploy = [
     "aws-cdk-lib>=2.150",
     "constructs>=10.3",
+    "pyyaml>=6.0",
 ]
 
 [tool.setuptools]

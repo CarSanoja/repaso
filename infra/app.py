@@ -3,6 +3,7 @@ from pathlib import Path
 
 import aws_cdk as cdk
 from config import DeployConfig
+from stacks.agentcore_stack import AgentCoreStack
 from stacks.api_stack import ApiStack
 from stacks.foundation_stack import FoundationStack
 from stacks.guardrails_stack import GuardrailsStack
@@ -17,9 +18,17 @@ shared = {"config": config, "env": config.env, "synthesizer": config.synthesizer
 
 foundation = FoundationStack(app, config.stack("foundation"), **shared)
 messaging = MessagingStack(app, config.stack("messaging"), **shared)
-GuardrailsStack(app, config.stack("guardrails"), **shared)
+guardrails = GuardrailsStack(app, config.stack("guardrails"), **shared)
 api = ApiStack(
     app, config.stack("api"), foundation=foundation, messaging=messaging, **shared
+)
+AgentCoreStack(
+    app,
+    config.stack("agentcore"),
+    foundation=foundation,
+    messaging=messaging,
+    guardrails=guardrails,
+    **shared,
 )
 ObservabilityStack(
     app, config.stack("observability"), api=api, messaging=messaging, **shared

@@ -1,7 +1,7 @@
 project: repaso
 region: us-east-1
 agent_name: repaso
-deployment_tool: bedrock-agentcore-starter-toolkit
+deployment_tool: aws-cdk (infra/stacks/agentcore_stack.py)
 
 entrypoint:
   file: src/repaso/runtime/app.py
@@ -47,8 +47,8 @@ container:
   port: 8080
   health_endpoint: /ping
   invocation_endpoint: /invocations
-  python_runtime: PYTHON_3_13
-  requirements_file: deploy/agentcore/requirements.txt
+  python_runtime: PYTHON_3_12
+  dockerfile: deploy/agentcore/Dockerfile
   network_mode: PUBLIC
   idle_timeout_seconds: 900
   max_lifetime_seconds: 28800
