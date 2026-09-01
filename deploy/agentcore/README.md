@@ -1,106 +1,96 @@
 # AgentCore Runtime
 
-Deployment configuration and runbook for hosting the repaso Strands graphs on
-Amazon Bedrock AgentCore Runtime.
+Deployment inputs for hosting the repaso Strands graphs on Amazon Bedrock
+AgentCore Runtime. Everything here is a file, and every file is read by
+`infra/stacks/agentcore_stack.py` at synthesis time. Nothing in this directory
+calls AWS on its own.
 
-`runtime.yaml` is the hand-maintained source of truth: entrypoint, container
-settings, the `REPASO_*` environment contract, and the IAM policies the
-execution role needs. The starter toolkit generates its own
-`.bedrock_agentcore.yaml` when you run `agentcore configure` — that file is a
-build artefact, not the specification. When the two disagree, `runtime.yaml`
-wins and the toolkit invocation is corrected.
+| File | What the stack does with it |
+| --- | --- |
+| `runtime.yaml` | container settings, protocol and the whole `REPASO_*` environment contract |
+| `Dockerfile` | the ARM64 image, built and pushed by `cdk deploy` as a `DockerImageAsset` |
+| `iam/trust-policy.json` | the principal and conditions the execution role is assumed under |
+| `iam/runtime-execution-policy.json` | inline policy `repaso-agentcore-runtime` |
+| `iam/repaso-data-policy.json` | inline policy `repaso-agentcore-data` |
 
-Everything here is a file. Nothing in this directory calls AWS on its own.
+## Design decision: CDK L1, not the starter toolkit
 
-## Design decision: starter toolkit, not CDK
+The rest of this project's infrastructure is CDK (`infra/`), and so is this.
+The earlier decision recorded here went the other way, for a reason that no
+longer holds: `CfnRuntime` was described as an escape hatch that left the whole
+container path — build, repository, push, digest — outside the deploy graph,
+which is the property that makes CDK worth using.
 
-The rest of this project's infrastructure is CDK (`infra/`). AgentCore is
-deliberately not. This is a recorded decision, not an oversight.
+`DockerImageAsset` is that path. It stages the build context at synth, and
+builds and pushes the image during `cdk deploy` into the bootstrap asset
+repository, so one command still deploys the stack. `aws-cdk-lib` 2.268 ships
+`CfnRuntime` and `CfnRuntimeEndpoint` as a direct mapping of
+`AWS::BedrockAgentCore::Runtime`; there is no L2 construct and none is needed
+for a single runtime with a container artifact.
 
-`aws-cdk-lib` ships only the L1 `aws_bedrockagentcore.CfnRuntime` escape hatch —
-a direct CloudFormation mapping with no L2 construct. Using it means owning the
-whole container path by hand: build an ARM64 image, create the ECR repository,
-push, resolve the digest, and feed the URI into `CfnRuntime`, all outside the
-CDK deploy graph. The build step cannot participate in `cdk deploy`, so the
-"one command deploys the stack" property that makes CDK worth using in the first
-place does not hold here.
+What that buys, beyond the one command: the runtime, its execution role and the
+SSM parameter carrying its ARN are all in CloudFormation, so `cdk destroy --all`
+removes them, and the deployed configuration is a template in the repository
+rather than a build artefact on someone's machine.
 
-The starter toolkit does that build-and-push path in one command. The cost of
-the decision is that the AgentCore runtime is not described in
-CloudFormation and is not torn down by `cdk destroy --all`; teardown is a
-separate step, documented below.
-
-Revisit this when an L2 construct for AgentCore Runtime lands in `aws-cdk-lib`.
-The newer Node CLI (`npm install -g @aws/agentcore`) already wraps CDK
-constructs from `@aws/agentcore-cdk` internally, which is the likely path for
-that to happen.
+The two placeholders that are still substituted at synth rather than written
+into the JSON are the account and region, and the image repository ARN — the
+image lives in the CDK asset repository, so the toolkit's naming convention
+would have denied the pull.
 
 ## Prerequisites
 
-- An AWS account with `infra/` already deployed. The runtime consumes the
-  DynamoDB table, both buckets, the KMS key, both secrets, the event bus and the
-  scheduler group created by `repaso-foundation` and `repaso-messaging`.
+- `infra/` deployed. The runtime consumes the DynamoDB table, both buckets, the
+  KMS key, both secrets, the event bus, the scheduler group and the guardrail
+  created by the other five stacks.
 - Bedrock model access enabled in `us-east-1` for the five models in
   `src/repaso/config/models.py`, including their fallback chains.
-- Python 3.12+ and the toolkit:
+- Docker with `buildx`, running, for `cdk deploy`. Synthesis does not need it:
+  the asset is a content hash and a staged directory until deploy time.
+- Deployer IAM permissions covering ECR, CloudFormation, IAM role creation,
+  `iam:PassRole` and `bedrock-agentcore:*`.
+
+## Synthesize
 
 ```bash
-pip install bedrock-agentcore bedrock-agentcore-starter-toolkit
+pip install -e ".[deploy]"
+cd infra
+python app.py
 ```
 
-- Deployer IAM permissions. Start from `BedrockAgentCoreFullAccess` plus the
-  policy in the *Use the AgentCore CLI* section of
-  [IAM Permissions for AgentCore Runtime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.html)
-  — CodeBuild, ECR, S3, CloudWatch Logs, role management and `iam:PassRole`.
-  That section is written for the Node CLI; it is the closest published
-  equivalent for the starter toolkit, which drives the same build path.
-- The runtime package under `src/repaso/runtime/`. `entrypoint.invoke(payload)`
-  and `entrypoint.invoke_async(payload)` are the dispatch surface;
-  `app.build_runtime_app()` wraps `invoke_async` in `BedrockAgentCoreApp` and
-  `app.main()` serves it. AgentCore requires an ARM64 container serving
-  `/invocations` (POST) and `/ping` (GET) on `0.0.0.0:8080`;
-  `BedrockAgentCoreApp` provides both endpoints. `app.py` is the file you point
-  `--entrypoint` at — see item 4 under *Needs verification*.
+That writes every template to `infra/cdk.out`, including
+`repaso-agentcore.template.json`. `tests/infra/test_synth.py` runs exactly this
+and asserts against the result.
+
+## Deploy
+
+```bash
+cd infra
+AWS_PROFILE=quanta npx cdk deploy repaso-agentcore -c alert_email=<alerts-email>
+```
+
+The image is built for `linux/arm64` from the repository root using
+`deploy/agentcore/Dockerfile`, which installs the project with its `runtime`
+extra and serves `python -m repaso.runtime.app`. `BedrockAgentCoreApp` provides
+`/invocations` (POST) and `/ping` (GET) on `0.0.0.0:8080`, which is what
+AgentCore requires.
+
+The runtime ARN lands in SSM at `/repaso/agentcore/runtime-arn` and as the
+stack output `RuntimeArnOutput`. Nothing under `src/` reads that parameter
+today; it is the handoff contract for whatever invokes the runtime, and it
+exists so the ARN is never stranded in a local file.
 
 ## Execution role
 
-Create the role once, before `agentcore configure`. The agent name is baked
-into the log-group and workload-identity ARN patterns in the policies, so
-`repaso` has to be settled before the role exists.
+Assembled by the stack from `iam/`. The account id, the region, the bucket
+names, the KMS key id, the image repository and the guardrail id are
+substituted with live references to the other stacks, so a renamed bucket
+cannot drift out of the policy. No `sed` pass, no `aws iam create-role`.
 
-Substitute your account id, bucket names, KMS key id, knowledge base id and
-guardrail id. This uses BSD `sed`; on GNU `sed` drop the `''`:
-
-```bash
-cd deploy/agentcore
-export ACCOUNT_ID=<your-account-id>
-for f in iam/*.json; do
-  sed -i '' \
-    -e "s/123456789012/$ACCOUNT_ID/g" \
-    -e "s/REPASO_MEDIA_BUCKET/<media-bucket-name>/g" \
-    -e "s/REPASO_CURRICULUM_BUCKET/<curriculum-bucket-name>/g" \
-    -e "s/REPASO_KEY_ID/<kms-key-id>/g" \
-    -e "s/REPASO_KNOWLEDGE_BASE_ID/<knowledge-base-id>/g" \
-    -e "s/REPASO_GUARDRAIL_ID/<guardrail-id>/g" \
-    "$f"
-done
-```
-
-```bash
-aws iam create-role \
-  --role-name repaso-agentcore-runtime \
-  --assume-role-policy-document file://iam/trust-policy.json
-
-aws iam put-role-policy \
-  --role-name repaso-agentcore-runtime \
-  --policy-name repaso-agentcore-runtime \
-  --policy-document file://iam/runtime-execution-policy.json
-
-aws iam put-role-policy \
-  --role-name repaso-agentcore-runtime \
-  --policy-name repaso-agentcore-data \
-  --policy-document file://iam/repaso-data-policy.json
-```
+A statement whose placeholder has no value is dropped rather than deployed
+pointing at nothing. That is what happens to `CurriculumKnowledgeBaseRetrieve`
+today: no knowledge base exists, `tools/knowledge.py` falls back to the bundled
+fixture taxonomy, and the statement would grant nothing.
 
 `iam/runtime-execution-policy.json` is the AgentCore baseline — ECR pull, the
 `/aws/bedrock-agentcore/runtimes/*` log groups, X-Ray, the `bedrock-agentcore`
@@ -124,148 +114,75 @@ clients in `src/repaso/config/clients.py` and their call sites:
 | `bedrock:Retrieve` | curriculum knowledge base | `tools/knowledge.py` |
 | `bedrock:ApplyGuardrail` | intake screening | `tools/guardrails.py` |
 
-Three notes on that policy.
-
 The AgentCore baseline restricts `PutMetricData` to the `bedrock-agentcore`
 namespace, but `build_telemetry_sink` writes to a namespace called `repaso` —
 hence the second, separately scoped statement.
 
-`bedrock:Retrieve` and `bedrock:ApplyGuardrail` are conditional.
-`runtime/context.py` passes `REPASO_KNOWLEDGE_BASE_ID` and `REPASO_GUARDRAIL_ID`
-through to the retriever and the screener; when either is absent the code falls
-back to the local fixture retriever or the heuristic screener and the
-corresponding statement is dead. Drop the statement rather than leave a
-placeholder resource in the policy.
-
-`secretsmanager:GetSecretValue` is, as the code stands, **not** used by this
+`secretsmanager:GetSecretValue` is, as the code stands, not used by this
 runtime. `runtime/context.py` builds the Telegram sender from
-`REPASO_TELEGRAM_TOKEN` directly; the only reader of
-`REPASO_TELEGRAM_SECRET_NAME` and `REPASO_JUDGE_CODE_SECRET_NAME` is
-`lambdas/bootstrap.py`, which runs elsewhere. The statement is kept because
-passing a bot token as a runtime environment variable puts it in the runtime's
-stored configuration, readable by anyone who can call `GetAgentRuntime`; moving
-the runtime to resolve its own secret is the better end state. If you are not
-going to do that, remove the statement.
+`REPASO_TELEGRAM_TOKEN` directly; the only reader of the two secret-name
+variables is `lambdas/bootstrap.py`, which runs elsewhere. The statement is
+kept because the token is the one value the stack deliberately does not carry —
+see below — and resolving it from Secrets Manager inside the runtime is the
+better end state.
 
 ## Environment contract
 
-Every variable in `runtime.yaml` under `environment:` comes from
+`runtime.yaml` under `environment:` is the contract, and the stack builds the
+runtime's environment from it. Every variable comes from
 `src/repaso/config/settings.py` (prefix `REPASO_`, `case_sensitive=False`) or
 from `src/repaso/config/models.py`, which reads `REPASO_MODEL_<ROLE>` straight
 off `os.environ` rather than through `Settings`.
 
-The one that will bite you: **`REPASO_AWS_REGION` must be set**.
-`Settings.derive_local_mode` sets `local_mode = not bool(aws_region)`, so a
-runtime deployed without it starts cleanly, answers `/ping`, uses no LLM at all,
-writes to a container-local `.local_data` directory and quietly produces
-playback output. There is no error. Never set `REPASO_LOCAL_MODE` explicitly —
-let it derive.
+Three rules the stack enforces rather than trusts:
 
-`AWS_REGION` and `AWS_DEFAULT_REGION` are also required. Most boto3 clients are
-built with an explicit `region_name` from settings, but
-`CloudWatchTelemetrySink` calls `boto3.client("cloudwatch")` with no region and
-falls back to the ambient environment.
+- Resource names are replaced with live references — table, buckets, bus,
+  scheduler group, guardrail id and guardrail version — so the file's own
+  values are defaults, not the deployed truth.
+- A declared value that is empty is omitted rather than written as an empty
+  string. `REPASO_TELEGRAM_TOKEN` is the reason: a token in the runtime's
+  environment is readable by anyone who can call `GetAgentRuntime`, and it does
+  not belong in a CloudFormation template.
+- Everything under `never_set` is stripped. `REPASO_LOCAL_MODE` is the
+  dangerous one: `Settings.derive_local_mode` sets `local_mode = not
+  bool(aws_region)`, so a runtime that derives local mode starts cleanly,
+  answers `/ping`, uses no LLM at all, writes to a container-local `.local_data`
+  directory and quietly produces playback output. There is no error.
 
-Three variables are read straight from `os.environ` by
-`src/repaso/runtime/context.py` and have no `Settings` field, so they will not
-appear in `.env.example`:
+`REPASO_AWS_REGION`, `AWS_REGION` and `AWS_DEFAULT_REGION` are all set from the
+stack's region. The last two matter because `CloudWatchTelemetrySink` calls
+`boto3.client("cloudwatch")` with no region and falls back to the ambient
+environment.
 
-| Variable | Effect when unset |
-| --- | --- |
-| `REPASO_TELEGRAM_TOKEN` | `build_channel_sender` raises `ValueError` outside local mode. Required. |
-| `REPASO_KNOWLEDGE_BASE_ID` | falls back to the bundled fixture taxonomy in `tools/knowledge.py` |
-| `REPASO_GUARDRAIL_ID` | falls back to the heuristic screener; no Bedrock Guardrail is applied |
-
-`REPASO_LIVE_TESTS` stays unset in the runtime.
-
-## Configure
-
-From the repository root:
-
-```bash
-agentcore configure \
-  --entrypoint src/repaso/runtime/app.py \
-  --name repaso \
-  --region us-east-1 \
-  --execution-role arn:aws:iam::$ACCOUNT_ID:role/repaso-agentcore-runtime \
-  --requirements-file deploy/agentcore/requirements.txt \
-  --protocol HTTP
-```
-
-This writes `.bedrock_agentcore.yaml` in the repository root and generates a
-Dockerfile from the project. Observability is enabled by default; do not pass
-`--disable-otel`.
-
-`.bedrock_agentcore.yaml` records your account id and ECR URIs and is **not**
-covered by the repository `.gitignore`. Add it before the first configure, or
-keep it out of commits by hand. This repository ships publicly.
-
-## Launch
-
-```bash
-agentcore launch \
-  --env REPASO_AWS_REGION=us-east-1 \
-  --env AWS_REGION=us-east-1 \
-  --env AWS_DEFAULT_REGION=us-east-1 \
-  --env REPASO_DDB_TABLE=repaso \
-  --env REPASO_MEDIA_BUCKET=<media-bucket-name> \
-  --env REPASO_CURRICULUM_BUCKET=<curriculum-bucket-name> \
-  --env REPASO_EVENT_BUS=repaso \
-  --env REPASO_SCHEDULER_GROUP=repaso \
-  --env REPASO_TELEGRAM_SECRET_NAME=repaso/telegram \
-  --env REPASO_JUDGE_CODE_SECRET_NAME=repaso/judge \
-  --env REPASO_TELEGRAM_TOKEN=<telegram-bot-token>
-```
-
-Add `--env REPASO_KNOWLEDGE_BASE_ID=<id>` and `--env REPASO_GUARDRAIL_ID=<id>`
-once those resources exist; without them the runtime silently uses the fixture
-taxonomy and the heuristic screener.
-
-Model ids and tuning values are left at their code defaults; override them with
-further `--env` pairs only when they need to differ from
-`src/repaso/config/models.py` and `settings.py`.
-
-The toolkit builds the ARM64 image, creates the ECR repository, pushes, and
-creates the runtime. Expect a few minutes.
-
-## Capture the runtime ARN into SSM
-
-The runtime ARN is the only handle the rest of the system has on the deployment,
-and the toolkit leaves it in a local file. Publish it:
-
-```bash
-RUNTIME_ARN=$(agentcore status --agent repaso --verbose | python3 -c 'import json,sys; print(json.load(sys.stdin)["agent_arn"])')
-
-aws ssm put-parameter \
-  --name /repaso/agentcore/runtime-arn \
-  --type String \
-  --value "$RUNTIME_ARN" \
-  --overwrite \
-  --region us-east-1
-```
-
-Nothing under `src/` reads this parameter today — there is no SSM client in
-`config/clients.py`. It is the handoff contract for the SQS worker that will
-invoke the runtime, and it exists so that the ARN is not stranded in a local
-build artefact. Whatever consumes it will need `ssm:GetParameter` on
-`arn:aws:ssm:us-east-1:<account>:parameter/repaso/agentcore/runtime-arn`.
+`REPASO_KNOWLEDGE_BASE_ID` is empty and therefore absent, and
+`tools/knowledge.py` falls back to the fixture taxonomy.
 
 ## Verify
 
 `repaso.runtime.payload.parse_request` rejects anything without a string
-`kind`, and `HANDLERS` covers four of the seven `EventKind` members:
-`material_uploaded`, `daily_session_due`, `response_received`, `daily_close`.
-An unknown kind returns a structured error rather than raising, so the cheapest
-smoke test is a deliberately bad payload — it proves the container is serving
-and the dispatcher is wired without touching Bedrock:
+`kind`, and an unknown kind returns a structured error rather than raising, so
+the cheapest smoke test is a deliberately bad payload — it proves the container
+is serving and the dispatcher is wired without touching Bedrock:
 
-```bash
-agentcore status --agent repaso
-agentcore invoke --agent repaso '{"kind": "exam_announced"}'
+```python
+import boto3, json, uuid
+
+arn = boto3.client("ssm", region_name="us-east-1").get_parameter(
+    Name="/repaso/agentcore/runtime-arn"
+)["Parameter"]["Value"]
+
+client = boto3.client("bedrock-agentcore", region_name="us-east-1")
+response = client.invoke_agent_runtime(
+    agentRuntimeArn=arn,
+    runtimeSessionId=f"repaso-smoke-{uuid.uuid4().hex}",
+    payload=json.dumps({"kind": "not_a_kind"}),
+    qualifier="DEFAULT",
+)
+print(json.loads(response["response"].read()))
 ```
 
-That should come back as an `UNSUPPORTED_KIND` error result. A real invocation
-looks like:
+`runtimeSessionId` has a documented minimum length; a short literal is
+rejected. A real invocation looks like:
 
 ```json
 {
@@ -276,50 +193,15 @@ looks like:
 }
 ```
 
-Or through boto3:
-
-```python
-import boto3, json, uuid
-
-client = boto3.client("bedrock-agentcore", region_name="us-east-1")
-response = client.invoke_agent_runtime(
-    agentRuntimeArn=RUNTIME_ARN,
-    runtimeSessionId=f"repaso-smoke-{uuid.uuid4().hex}",
-    payload=json.dumps({"kind": "exam_announced"}),
-    qualifier="DEFAULT",
-)
-print(json.loads(response["response"].read()))
-```
-
-`runtimeSessionId` has a documented minimum length; a short literal is rejected.
-The generated id above is comfortably past it.
-
-A healthy deployment returns a JSON body from `/invocations`. `invoke_async`
-catches everything and converts it to an error result, so a 200 response is not
-the same as a successful run — read the `kind` and error code in the body.
-Container logs land in `/aws/bedrock-agentcore/runtimes/repaso-*`:
+`invoke_async` catches everything and converts it to an error result, so a 200
+response is not the same as a successful run — read the `kind` and error code in
+the body. Container logs land in `/aws/bedrock-agentcore/runtimes/repaso-*`:
 
 ```bash
 aws logs tail /aws/bedrock-agentcore/runtimes --follow --region us-east-1
 ```
 
 The payload schema is owned by `repaso.runtime.payload`, not by this directory.
-Ignore the `{"prompt": ...}` shape in the toolkit's own documentation; this
-runtime dispatches on `kind`.
-
-### Bedrock throughput
-
-This account currently has Bedrock on-demand throughput at zero, pending an AWS
-support case. Deployment, `agentcore status` and `/ping` all work. Live
-invocation will fail with `ThrottlingException` as soon as a graph reaches a
-model call, and the fallback chains in `models.py` will not save it — every
-fallback is also Bedrock. 100% of model calls in this project go through
-Amazon Bedrock; there is no second provider anywhere and adding one is out of
-scope.
-
-Until the case clears, verify with local mode instead, which uses no LLM at all:
-unset `REPASO_AWS_REGION` and run the graphs against `LocalPlaybackModel`. That
-exercises orchestration, not inference.
 
 ## Observability
 
@@ -356,84 +238,10 @@ live in the second one.
 ## Teardown
 
 ```bash
-agentcore destroy --agent repaso --delete-ecr-repo
+cd infra && AWS_PROFILE=quanta npx cdk destroy repaso-agentcore
 ```
 
-Then remove what the toolkit did not create:
-
-```bash
-aws ssm delete-parameter --name /repaso/agentcore/runtime-arn --region us-east-1
-aws iam delete-role-policy --role-name repaso-agentcore-runtime --policy-name repaso-agentcore-data
-aws iam delete-role-policy --role-name repaso-agentcore-runtime --policy-name repaso-agentcore-runtime
-aws iam delete-role --role-name repaso-agentcore-runtime
-```
-
-`cdk destroy --all` does not touch any of this. The AgentCore runtime, its ECR
-repository, its CodeBuild project and this execution role are outside
-CloudFormation by the design decision recorded above — that is the price of not
-using CDK here, and it has to be paid by hand at teardown time.
-
-## Needs verification against the installed toolkit
-
-The starter toolkit's CLI surface has moved between releases and this runbook
-was written without the toolkit installed in `.venv`. Run `agentcore --help` and
-`agentcore <command> --help` against the version you actually install and
-correct this file before trusting it. The following are known-uncertain:
-
-1. **`agentcore launch` vs `agentcore deploy`.** AWS blog posts and the
-   CloudWatch observability guide use `agentcore launch`. The toolkit's current
-   `documentation/docs/api-reference/cli.md` on `main` documents `agentcore
-   deploy` and no `launch`. One is a rename. Confirm which your version has;
-   the `--env`, `--local`, `--image-tag` and `--auto-update-on-conflict` flags
-   belong to whichever it is, not to `configure`.
-
-2. **`--env` repetition.** Documented as `--env` / `-env` taking `KEY=VALUE`.
-   Whether it may be repeated (as written above) or expects a single
-   comma-separated string is unconfirmed.
-
-3. **`--deployment-type` and `--runtime`.** Current `main` documents a
-   `direct_code_deploy` default with a `--runtime PYTHON_3_1x` selector;
-   older versions built a container by default. `runtime.yaml` declares
-   `PYTHON_3_13`. If your version defaults to `container`, `--runtime` may be
-   ignored and the generated Dockerfile's base image decides the Python version
-   instead.
-
-4. **What `--entrypoint` should point at.** `src/repaso/runtime/app.py` builds
-   the server inside `build_runtime_app()` and serves it from `main()`. There is
-   no module-level `app` object and no `if __name__ == "__main__"` guard, so
-   importing or executing that file does not start a server. The toolkit
-   examples all use a module-level `app = BedrockAgentCoreApp()` with
-   `app.run()` under a `__main__` guard. Either the toolkit discovers the
-   factory, or `app.py` needs the guard added. Determine which before the first
-   launch; this is the most likely cause of a container that builds and then
-   fails its health check.
-
-5. **How `repaso` reaches the container.** `requirements.txt` here lists third
-   party dependencies only. The project uses a `src/` layout with
-   `package-dir = {"" = "src"}`, so an unmodified `PYTHONPATH` will not import
-   `repaso` even with the source copied in. Confirm whether the generated
-   Dockerfile installs the project, and if not, add `.` to
-   `deploy/agentcore/requirements.txt` or set `PYTHONPATH=/app/src`.
-
-6. **The runtime ARN's key.** The `agentcore status --verbose` JSON path used
-   above assumes `agent_arn`, which is the key the toolkit's `launch()` returns
-   in the Python API. The CLI's `status` output may nest it differently; the
-   same value is in the `bedrock_agentcore:` section of
-   `.bedrock_agentcore.yaml`, which is the more stable read.
-
-7. **`invoke_agent_runtime` parameter shape.** The AgentCore observability guide
-   passes `payload=json.dumps(...)`. The AWS SDK for PHP reference for the same
-   operation shows a structured `body` parameter instead. These are different
-   API versions. Check `client.meta.service_model.operation_model("InvokeAgentRuntime").input_shape.members`
-   in your installed boto3 before writing a caller.
-
-8. **`aws-opentelemetry-distro`.** Runtime-hosted agents are auto-instrumented
-   and the toolkit adds OTEL to the generated Dockerfile, so it is deliberately
-   absent from `requirements.txt`. Confirm against the generated Dockerfile; if
-   your version does not add it, pin it there.
-
-9. **Upstream status.** The toolkit's own README carries a deprecation notice:
-   "The Starter Toolkit CLI is no longer supported", pointing at
-   `npm install -g @aws/agentcore`. That CLI is Node-based and wraps
-   `@aws/agentcore-cdk`. The decision recorded above stands for now, but this is
-   the tripwire that should force a revisit — not a stale-dependency warning.
+That removes the runtime, the execution role and the SSM parameter, because all
+three are in the stack. The image stays in the CDK bootstrap asset repository,
+which is shared with every other asset in this account and is not this stack's
+to delete.
