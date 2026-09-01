@@ -5,10 +5,15 @@ from strands.models.model import Model
 
 from repaso.agents.base import user_message
 from repaso.config.models import FALLBACK_MODELS, ModelRole, model_for
+from repaso.config.settings import Settings
 from repaso.schemas.common import FrozenStrictModel
 
 PING_PROMPT = "Responde únicamente con la palabra listo."
 PING_TIMEOUT_SECONDS = 60.0
+
+
+class LiveModeRequired(RuntimeError):
+    pass
 
 
 class ModelRoute(FrozenStrictModel):
@@ -36,6 +41,14 @@ def build_routes() -> tuple[ModelRoute, ...]:
 
 def routing_model_ids() -> tuple[str, ...]:
     return tuple(route.model_id for route in build_routes())
+
+
+def build_route_model(route: ModelRoute, settings: Settings) -> Model:
+    if settings.local_mode:
+        raise LiveModeRequired(f"{route.name} needs a region-backed Settings, not local mode")
+    from strands.models.bedrock import BedrockModel
+
+    return BedrockModel(model_id=route.model_id, region_name=settings.aws_region)
 
 
 def _delta_text(event: Any) -> str:

@@ -38,7 +38,7 @@ class BudgetEstimate(FrozenStrictModel):
             f"live tier estimate: {self.calls} calls "
             f"({self.conformance_calls} conformance at {self.samples} samples, "
             f"{self.routing_calls} routing) "
-            f"~${self.estimated_usd:.4f} against a ${self.limit_usd:.2f} budget [{verdict}]"
+            f"~${self.estimated_usd:.4f} against a ${self.limit_usd:.4f} budget [{verdict}]"
         )
 
 

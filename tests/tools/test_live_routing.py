@@ -2,8 +2,16 @@ import pytest
 
 from repaso.config.models import DEFAULT_MODELS, FALLBACK_MODELS, ModelRole
 from repaso.config.pricing import PRICES
+from repaso.config.settings import Settings
 from repaso.tools.llm import LocalPlaybackModel, PlaybackExhausted
-from tests.live.routing import PING_PROMPT, build_routes, ping, routing_model_ids
+from tests.live.routing import (
+    PING_PROMPT,
+    LiveModeRequired,
+    build_route_model,
+    build_routes,
+    ping,
+    routing_model_ids,
+)
 
 
 def test_every_role_has_a_default_route():
@@ -47,3 +55,8 @@ async def test_ping_sends_a_single_short_prompt():
 async def test_ping_surfaces_a_model_that_will_not_answer():
     with pytest.raises(PlaybackExhausted):
         await ping(LocalPlaybackModel())
+
+
+def test_local_settings_cannot_stand_in_for_a_routed_model(settings: Settings):
+    with pytest.raises(LiveModeRequired, match=build_routes()[0].name):
+        build_route_model(build_routes()[0], settings)

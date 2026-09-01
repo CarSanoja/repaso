@@ -111,6 +111,15 @@ def test_the_default_sample_count_fits_inside_the_default_budget():
         build_registry(), ROUTING_MODELS, DEFAULT_SAMPLES, DEFAULT_BUDGET_USD
     )
     assert estimate.within_budget
+    assert round(estimate.estimated_usd, 2) == 0.60
+
+
+def test_the_documented_ceiling_falls_between_sixteen_and_seventeen_samples():
+    probes = build_registry()
+    fits = estimate_budget(probes, ROUTING_MODELS, 16, DEFAULT_BUDGET_USD)
+    over = estimate_budget(probes, ROUTING_MODELS, 17, DEFAULT_BUDGET_USD)
+    assert fits.within_budget
+    assert not over.within_budget
 
 
 def test_an_affordable_run_is_announced_and_allowed():
