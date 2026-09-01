@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     judge_code_secret_name: str = "repaso/judge"
     invite_codes_secret_name: str = "repaso/pilot-invite-codes"
 
+    guardrail_id: str = ""
+    guardrail_version: str = ""
+
     pilot_invite_codes: str = ""
 
     holiday_dates: list[date] = []

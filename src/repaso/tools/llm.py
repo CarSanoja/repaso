@@ -20,6 +20,7 @@ from repaso.tools.cassette import (
     load_cassette,
 )
 from repaso.tools.cassette_model import CassetteModel
+from repaso.tools.guardrails import DEFAULT_GUARDRAIL_VERSION
 from repaso.tools.recording_model import RecordingModel
 
 T = TypeVar("T", bound=BaseModel)
@@ -116,6 +117,15 @@ def clear_cassette_cache() -> None:
     _cassette_writer.cache_clear()
 
 
+def guardrail_config(settings: Settings) -> dict[str, str]:
+    if not settings.guardrail_id:
+        return {}
+    return {
+        "guardrail_id": settings.guardrail_id,
+        "guardrail_version": settings.guardrail_version or DEFAULT_GUARDRAIL_VERSION,
+    }
+
+
 def build_model(
     role: ModelRole, settings: Settings, playback: LocalPlaybackModel | None = None
 ) -> Model:
@@ -127,7 +137,11 @@ def build_model(
         return LocalPlaybackModel()
     from strands.models.bedrock import BedrockModel
 
-    model = BedrockModel(model_id=model_for(role), region_name=settings.aws_region)
+    model = BedrockModel(
+        model_id=model_for(role),
+        region_name=settings.aws_region,
+        **guardrail_config(settings),
+    )
     if settings.record_cassette_path is None:
         return model
     return RecordingModel(model, _cassette_writer(settings.record_cassette_path), role.value)
