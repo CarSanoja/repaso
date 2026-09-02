@@ -11,24 +11,13 @@ from repaso.core.orchestration.runner import (
     run_daily_close,
     start_daily_session,
 )
-from repaso.core.telemetry.sink import build_telemetry_sink
 from repaso.schemas.item import ItemKind
 from repaso.schemas.session import SessionStatus
 from repaso.simulator.cohort import CohortLedger, build_cohort
 from repaso.simulator.demo_result import DemoClockResult, collect_results, resolve_pending
+from repaso.simulator.offline_services import assemble_services
 from repaso.simulator.stub_model import AutoStubModel
 from repaso.simulator.student_sim import INJECTION_REPLY, simulate_answer
-from repaso.tools.event_bus import build_event_publisher
-from repaso.tools.grade_log import build_grade_log
-from repaso.tools.guardrails import build_screener
-from repaso.tools.instrumented_model import instrument_models
-from repaso.tools.invite_codes import build_invite_codes
-from repaso.tools.knowledge import build_knowledge_retriever
-from repaso.tools.media_fetcher import build_media_fetcher
-from repaso.tools.media_store import build_media_store
-from repaso.tools.ocr import build_text_extractor
-from repaso.tools.state_store import build_state_store
-from repaso.tools.telegram import build_channel_sender
 
 START = datetime(2026, 9, 1, 19, 0, tzinfo=UTC)
 HEDGED_PREFIX = "creo que"
@@ -49,24 +38,8 @@ class CalendarOverlay:
 
 
 def build_offline_services(settings: Settings) -> Services:
-    clock = SimClock(START)
-    telemetry = build_telemetry_sink(settings, clock)
-    models = instrument_models({role: AutoStubModel() for role in ModelRole}, telemetry)
-    return Services(
-        settings=settings,
-        clock=clock,
-        store=build_state_store(settings),
-        grade_log=build_grade_log(settings),
-        media=build_media_store(settings),
-        fetcher=build_media_fetcher(settings),
-        extractor=build_text_extractor(settings),
-        screener=build_screener(settings),
-        retriever=build_knowledge_retriever(settings),
-        publisher=build_event_publisher(settings),
-        sender=build_channel_sender(settings),
-        invites=build_invite_codes(settings),
-        models=models,
-        telemetry=telemetry,
+    return assemble_services(
+        settings, SimClock(START), {role: AutoStubModel() for role in ModelRole}
     )
 
 
