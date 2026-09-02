@@ -49,6 +49,11 @@ MESSAGES = {
         "This tells me the topic but not how the class works it. Could you send a "
         "photo of a solved exercise from the notebook?"
     ),
+    "material_unusable": (
+        "I went through it and the questions it produced are not ones I would stand "
+        "behind, so I'd rather send nothing than send something wrong. Could you send "
+        "another photo, or the notebook page where the topic is worked out?"
+    ),
     "rephoto_request": (
         "The photo came out blurry and I won't guess what I can't read. Can you retake "
         "it with more light? If possible, send it as a file to keep the quality."

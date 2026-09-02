@@ -51,6 +51,11 @@ MESSAGES = {
         "Con esto solo conozco el tema, pero no cómo lo trabajan en clase. ¿Me mandas "
         "una foto de un ejercicio resuelto del cuaderno?"
     ),
+    "material_unusable": (
+        "Lo revisé y los ejercicios que salieron de ahí no los puedo dar por buenos, "
+        "así que prefiero no mandar nada antes que mandar algo mal. ¿Me envías otra "
+        "foto, o la página del cuaderno donde el tema esté resuelto?"
+    ),
     "rephoto_request": (
         "La foto salió borrosa y no quiero inventar lo que no leo. ¿Puedes tomarla de "
         "nuevo con más luz? Si puedes, envíala como archivo para que no pierda calidad."

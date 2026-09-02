@@ -5,6 +5,7 @@ from PIL import Image, ImageDraw, ImageFilter
 from repaso.config.models import ModelRole
 from repaso.core.orchestration.context import IngestRun
 from repaso.core.orchestration.ingest_graph import build_ingest_graph
+from repaso.i18n import msg
 from repaso.schemas.channel import MediaKind
 from repaso.schemas.item import ItemStatus
 from repaso.schemas.material import MaterialStatus
@@ -99,6 +100,27 @@ async def test_wrong_subject_material_is_rejected_without_generation(settings):
     assert run.terminal == "no_match"
     assert services.models[ModelRole.GENERATE].calls == []
     assert run.outbound
+
+
+async def test_material_whose_questions_all_fail_review_says_so(settings):
+    services = make_services(settings)
+    run = make_run(services, FRACTION_TEXT)
+    services.models[ModelRole.CLASSIFY].enqueue({"safe": True, "reasons": []})
+    services.models[ModelRole.STRUCTURED].enqueue({"competency_ids": [FRACTIONS]})
+    services.models[ModelRole.GENERATE].enqueue(
+        {"items": [mcq_draft("Which fraction equals 2/4?", "1/2", ["2/8", "3/4"])]}
+    )
+    services.models[ModelRole.JUDGE].enqueue(
+        {"accepted": False, "flaws": ["ungradable"], "notes": "the answer key is wrong"}
+    )
+    services.models[ModelRole.PROBE].enqueue({"answer": "no idea"})
+
+    await build_ingest_graph(services, run).invoke_async("ingest")
+
+    assert run.terminal == "all_rejected"
+    assert run.kept == []
+    assert run.outbound[-1].text == msg("material_unusable", run.family.lang)
+    assert run.outbound[-1].text != msg("material_thin", run.family.lang)
 
 
 async def test_crash_resume_skips_paid_generation(settings):

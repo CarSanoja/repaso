@@ -131,7 +131,7 @@ def build_ingest_graph(services: Services, run: IngestRun):
             )
         if not run.kept:
             run.terminal = "all_rejected"
-            _say(run, "material_thin")
+            _say(run, "material_unusable")
             return
         _say(
             run,
