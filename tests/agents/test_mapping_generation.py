@@ -23,6 +23,7 @@ from repaso.tools.llm import LocalPlaybackModel
 EQUIVALENCE = "math.g4.fractions.equivalence"
 COMPARISON = "math.g4.fractions.comparison"
 NOW = datetime(2026, 3, 2, 19, 0, tzinfo=UTC)
+LATER = datetime(2026, 3, 9, 19, 0, tzinfo=UTC)
 MATERIAL = (
     "Cuaderno de 4to grado: fracciones equivalentes. equivalent fractions such as 2/4 "
     "and 1/2, and comparing fractions with a common denominator."
@@ -161,6 +162,27 @@ async def test_valid_batch_becomes_candidate_items(competency):
     assert items[0].provenance.model_id == "us.anthropic.claude-haiku-4-5"
     assert items[0].provenance.prompt_version == "v1"
     assert items[1].rubric
+
+
+async def test_regenerating_the_same_material_reuses_the_same_item_ids(competency):
+    batch = GeneratedBatch(items=[mcq_draft(), open_draft()])
+    first = await generate_items(
+        MATERIAL, competency, 2, 4, LocalPlaybackModel([batch]), NOW
+    )
+    second = await generate_items(
+        MATERIAL, competency, 2, 4, LocalPlaybackModel([batch]), LATER
+    )
+
+    assert [item.id for item in first] == [item.id for item in second]
+
+
+async def test_a_reworded_stem_is_a_different_item(competency):
+    drafts = [mcq_draft(), mcq_draft(stem="¿Cuál equivale a 3/4?")]
+    items = await generate_items(
+        MATERIAL, competency, 2, 4, LocalPlaybackModel([GeneratedBatch(items=drafts)]), NOW
+    )
+
+    assert len({item.id for item in items}) == 2
 
 
 async def test_invalid_drafts_are_dropped_and_counted(competency):

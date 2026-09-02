@@ -1,5 +1,5 @@
 from datetime import datetime
-from uuid import uuid4
+from hashlib import sha256
 
 from pydantic import BaseModel
 
@@ -10,6 +10,7 @@ from repaso.schemas.competency import Competency
 from repaso.schemas.item import Item, ItemKind, ItemStatus
 from repaso.schemas.provenance import Provenance, Source
 
+ITEM_ID_LENGTH = 32
 MIN_OPTIONS = 3
 MAX_OPTIONS = 5
 MIN_DIFFICULTY = 1
@@ -53,6 +54,11 @@ def is_valid_draft(draft: ItemDraft) -> bool:
     return not draft.options and _filled(draft.rubric)
 
 
+def item_id_for(competency: Competency, draft: ItemDraft) -> ItemId:
+    seed = "\n".join((str(competency.id), draft.kind.value, draft.stem.strip()))
+    return ItemId(sha256(seed.encode("utf-8")).hexdigest()[:ITEM_ID_LENGTH])
+
+
 def _to_item(
     draft: ItemDraft,
     competency: Competency,
@@ -61,7 +67,7 @@ def _to_item(
     prompt_version: str,
 ) -> Item:
     return Item(
-        id=ItemId(uuid4().hex),
+        id=item_id_for(competency, draft),
         competency_id=CompetencyId(str(competency.id)),
         kind=draft.kind,
         difficulty=draft.difficulty,
