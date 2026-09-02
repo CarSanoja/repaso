@@ -5,6 +5,7 @@ from pydantic import Field
 from repaso.config.settings import Settings
 from repaso.schemas.channel import MediaKind
 from repaso.schemas.common import FrozenStrictModel
+from repaso.tools.image_text import embedded_text
 
 DECODED_TEXT_CONFIDENCE = 0.99
 TEXTRACT_CONFIDENCE_SCALE = 100.0
@@ -23,6 +24,9 @@ class TextExtractor(Protocol):
 
 class LocalTextExtractor:
     def extract(self, data: bytes, kind: MediaKind) -> ExtractResult:
+        carried = embedded_text(data)
+        if carried is not None:
+            return ExtractResult(text=carried, confidence=DECODED_TEXT_CONFIDENCE)
         try:
             decoded = data.decode("utf-8")
         except UnicodeDecodeError:
