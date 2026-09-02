@@ -38,6 +38,9 @@ class CassetteModel(Model):
     def remaining(self, kind: str, output_model: str | None = None) -> int:
         return len(self._queues.get((kind, output_model), ()))
 
+    def remaining_total(self) -> int:
+        return sum(len(queue) for queue in self._queues.values())
+
     def _take(self, kind: str, output_model: str | None) -> CassetteEntry:
         key = (kind, output_model)
         self._calls[key] += 1
