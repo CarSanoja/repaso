@@ -22,7 +22,6 @@ from repaso.tools.llm import LocalPlaybackModel
 
 EQUIVALENCE = "math.g4.fractions.equivalence"
 COMPARISON = "math.g4.fractions.comparison"
-ADDITION = "math.g4.fractions.addition_same_denominator"
 NOW = datetime(2026, 3, 2, 19, 0, tzinfo=UTC)
 MATERIAL = (
     "Cuaderno de 4to grado: fracciones equivalentes. equivalent fractions such as 2/4 "
@@ -140,7 +139,7 @@ async def test_candidate_list_and_limit_reach_the_prompt(retriever):
 
 async def test_mapper_falls_back_to_top_candidates_when_the_model_fails(retriever):
     result = await map_material(MATERIAL, 4, "math", retriever, BrokenModel(), limit=2)
-    assert [str(match.competency_id) for match in result] == [EQUIVALENCE, ADDITION]
+    assert [str(match.competency_id) for match in result] == [EQUIVALENCE, COMPARISON]
 
 
 async def test_mapper_rejects_a_non_positive_limit(retriever):

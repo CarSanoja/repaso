@@ -39,7 +39,10 @@ def overlap_score(query_tokens: set[str], competency: Competency) -> float:
     if not query_tokens:
         return 0.0
     target = tokenize(f"{competency.name} {competency.description}")
-    return len(query_tokens & target) / len(query_tokens)
+    shared = len(query_tokens & target)
+    if not shared:
+        return 0.0
+    return max(shared / len(query_tokens), shared / len(target))
 
 
 class LocalTaxonomyRetriever:

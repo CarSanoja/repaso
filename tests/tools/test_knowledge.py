@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from repaso.agents.competency_mapper import MIN_RETRIEVAL_SCORE
 from repaso.config.settings import Settings
 from repaso.schemas.competency import Competency
 from repaso.tools.knowledge import (
@@ -10,6 +11,7 @@ from repaso.tools.knowledge import (
     LocalTaxonomyRetriever,
     build_knowledge_retriever,
     local_taxonomy_path,
+    overlap_score,
     tokenize,
 )
 
@@ -69,6 +71,22 @@ def test_ordering_is_deterministic_across_calls(retriever):
 
 def test_unrelated_query_returns_no_matches(retriever):
     assert retriever.retrieve("photosynthesis chloroplast", grade=4, subject="math") == []
+
+
+def test_a_long_page_still_clears_the_floor_its_short_form_cleared(retriever):
+    short = "equivalent fractions 2/4"
+    padded = short + " " + " ".join(f"ejercicio{number}" for number in range(30))
+
+    first = retriever.retrieve(short, grade=4, subject="math")
+    second = retriever.retrieve(padded, grade=4, subject="math")
+
+    assert first[0].competency_id == second[0].competency_id == EQUIVALENCE
+    assert second[0].confidence >= MIN_RETRIEVAL_SCORE
+
+
+def test_a_query_touching_nothing_scores_zero(retriever):
+    competency = retriever.get_competency(EQUIVALENCE)
+    assert overlap_score(tokenize("volcanoes and tectonic plates"), competency) == 0.0
 
 
 def test_get_competency_returns_full_record(retriever):
