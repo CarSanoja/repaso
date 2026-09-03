@@ -1,4 +1,5 @@
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -34,9 +35,10 @@ def verify(sha: str, python: str) -> list[str]:
             capture_output=True,
             check=True,
         )
+        env = {**os.environ, "PYTHONPATH": str(tree / "src")}
         for name, command in CHECKS:
             result = subprocess.run(
-                [python, "-m", *command], cwd=tree, capture_output=True, text=True
+                [python, "-m", *command], cwd=tree, capture_output=True, text=True, env=env
             )
             if result.returncode != 0:
                 tail = (result.stdout + result.stderr).strip().splitlines()[-1:]
