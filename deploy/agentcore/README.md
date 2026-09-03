@@ -106,7 +106,7 @@ clients in `src/repaso/config/clients.py` and their call sites:
 | S3 read/write on the media bucket | material uploads | `tools/media_store.py` |
 | S3 read on the curriculum bucket | taxonomy | `tools/knowledge.py` |
 | KMS decrypt/generate | the media bucket is KMS-encrypted in `FoundationStack` | — |
-| Secrets Manager get | Telegram token, judge code | `lambdas/bootstrap.py` |
+| Secrets Manager get | pilot invite codes, and the Telegram token and judge code the API layer reads | `tools/invite_codes.py`, `lambdas/bootstrap.py` |
 | `events:PutEvents` on bus `repaso` | graph fan-out | `tools/event_bus.py` |
 | Scheduler create/update/delete + `iam:PassRole` | one alarm per family; `alarms.py` passes `RoleArn` in the schedule target | `tools/alarms.py` |
 | `textract:DetectDocumentText` | photo OCR | `tools/ocr.py` |
@@ -118,13 +118,18 @@ The AgentCore baseline restricts `PutMetricData` to the `bedrock-agentcore`
 namespace, but `build_telemetry_sink` writes to a namespace called `repaso` —
 hence the second, separately scoped statement.
 
-`secretsmanager:GetSecretValue` is, as the code stands, not used by this
-runtime. `runtime/context.py` builds the Telegram sender from
-`REPASO_TELEGRAM_TOKEN` directly; the only reader of the two secret-name
-variables is `lambdas/bootstrap.py`, which runs elsewhere. The statement is
-kept because the token is the one value the stack deliberately does not carry —
-see below — and resolving it from Secrets Manager inside the runtime is the
-better end state.
+`secretsmanager:GetSecretValue` has one reader inside this runtime:
+`tools/invite_codes.py`, which resolves `repaso/pilot-invite-codes` on every
+message from a chat it does not recognise. That read fails closed — an
+unreadable source is an empty code set, and an empty code set answers "the
+pilot is not taking new families right now" — so a missing grant would not
+raise anything, it would quietly shut enrolment.
+
+The Telegram token and the judge code are read by `lambdas/bootstrap.py`, which
+runs elsewhere; `runtime/context.py` builds the Telegram sender and the media
+fetcher from `REPASO_TELEGRAM_TOKEN` directly. Both statements stay because the
+token is the one value the stack deliberately does not carry — see below — and
+resolving it from Secrets Manager inside the runtime is the better end state.
 
 ## Environment contract
 

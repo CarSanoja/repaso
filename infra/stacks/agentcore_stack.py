@@ -121,6 +121,7 @@ class AgentCoreStack(cdk.Stack):
             "REPASO_SCHEDULER_GROUP": config.bare(),
             "REPASO_TELEGRAM_SECRET_NAME": config.secret("telegram"),
             "REPASO_JUDGE_CODE_SECRET_NAME": config.secret("judge"),
+            "REPASO_INVITE_CODES_SECRET_NAME": config.secret("pilot-invite-codes"),
             "REPASO_GUARDRAIL_ID": guardrails.guardrail.attr_guardrail_id,
             "REPASO_GUARDRAIL_VERSION": guardrails.version.attr_version,
         }

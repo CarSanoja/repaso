@@ -21,6 +21,7 @@ RUNTIME = "AWS::BedrockAgentCore::Runtime"
 PARAMETER = "AWS::SSM::Parameter"
 AGENTCORE_ASSETS = "repaso-agentcore.assets.json"
 IMAGE_CONTEXT = {"LICENSE", "README.md", "deploy", "pyproject.toml", "src"}
+INVITE_CODES_SECRET = "repaso/pilot-invite-codes"
 
 
 @pytest.fixture(scope="module")
@@ -130,18 +131,30 @@ def test_the_runtime_environment_holds_no_empty_or_forbidden_value(assembly):
     assert environment["REPASO_MODEL_GENERATE"]
 
 
-def test_the_execution_role_drops_the_statement_with_no_resource(assembly):
+def role_statements(assembly: Path) -> list[dict]:
     role = only(assembly, "agentcore", "AWS::IAM::Role")
-    statements = [
+    return [
         statement
         for policy in role["Policies"]
         for statement in policy["PolicyDocument"]["Statement"]
     ]
+
+
+def test_the_execution_role_drops_the_statement_with_no_resource(assembly):
+    statements = role_statements(assembly)
     sids = [statement["Sid"] for statement in statements]
 
     assert "REPASO_" not in json.dumps(statements)
     assert "IntakeGuardrail" in sids
     assert "CurriculumKnowledgeBaseRetrieve" not in sids
+
+
+def test_the_runtime_may_read_every_secret_it_resolves_at_run_time(assembly):
+    granted = json.dumps(role_statements(assembly))
+    environment = only(assembly, "agentcore", RUNTIME)["EnvironmentVariables"]
+
+    assert environment["REPASO_INVITE_CODES_SECRET_NAME"] == INVITE_CODES_SECRET
+    assert f"secret:{INVITE_CODES_SECRET}-*" in granted
 
 
 def test_the_runtime_arn_is_published_for_whatever_invokes_it(assembly):

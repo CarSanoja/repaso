@@ -67,6 +67,7 @@ environment:
     REPASO_SCHEDULER_GROUP: repaso
     REPASO_TELEGRAM_SECRET_NAME: repaso/telegram
     REPASO_JUDGE_CODE_SECRET_NAME: repaso/judge
+    REPASO_INVITE_CODES_SECRET_NAME: repaso/pilot-invite-codes
   runtime_only:
     REPASO_TELEGRAM_TOKEN: ""
     REPASO_KNOWLEDGE_BASE_ID: ""
