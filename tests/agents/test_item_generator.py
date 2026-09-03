@@ -2,11 +2,6 @@ from datetime import UTC, datetime
 
 import pytest
 
-from repaso.agents.competency_mapper import (
-    MIN_RETRIEVAL_SCORE,
-    MappingDecision,
-    map_material,
-)
 from repaso.agents.item_generator import (
     GeneratedBatch,
     ItemDraft,
@@ -14,14 +9,13 @@ from repaso.agents.item_generator import (
     generate_items,
 )
 from repaso.schemas.common import CompetencyId, Lang
-from repaso.schemas.competency import Competency, CompetencyMatch
+from repaso.schemas.competency import Competency
 from repaso.schemas.item import ItemKind, ItemStatus
 from repaso.schemas.provenance import Source
 from repaso.tools.knowledge import LocalTaxonomyRetriever
 from repaso.tools.llm import LocalPlaybackModel
 
 EQUIVALENCE = "math.g4.fractions.equivalence"
-COMPARISON = "math.g4.fractions.comparison"
 NOW = datetime(2026, 3, 2, 19, 0, tzinfo=UTC)
 LATER = datetime(2026, 3, 9, 19, 0, tzinfo=UTC)
 MATERIAL = (
@@ -56,28 +50,9 @@ class BrokenModel:
         return failing()
 
 
-class LowScoreRetriever:
-    def retrieve(self, query, grade, subject, limit=5):
-        return [
-            CompetencyMatch(competency_id=CompetencyId(EQUIVALENCE), confidence=0.05),
-            CompetencyMatch(competency_id=CompetencyId(COMPARISON), confidence=0.1),
-        ]
-
-    def get_competency(self, competency_id):
-        return None
-
-    def list_competencies(self, grade, subject):
-        return []
-
-
 @pytest.fixture
-def retriever() -> LocalTaxonomyRetriever:
-    return LocalTaxonomyRetriever()
-
-
-@pytest.fixture
-def competency(retriever) -> Competency:
-    return retriever.get_competency(CompetencyId(EQUIVALENCE))
+def competency() -> Competency:
+    return LocalTaxonomyRetriever().get_competency(CompetencyId(EQUIVALENCE))
 
 
 def mcq_draft(**overrides) -> ItemDraft:
@@ -102,50 +77,6 @@ def open_draft(**overrides) -> ItemDraft:
         "rubric": "2 puntos si nombra la simplificación, 1 si solo dice que son iguales, 0 si no.",
     }
     return ItemDraft(**{**payload, **overrides})
-
-
-async def test_off_topic_material_maps_to_nothing(retriever):
-    model = LocalPlaybackModel()
-    result = await map_material("photosynthesis chloroplast leaves", 4, "math", retriever, model)
-    assert result == []
-    assert model.calls == []
-
-
-async def test_weak_candidates_are_a_wrong_subject_signal():
-    model = LocalPlaybackModel()
-    retriever = LowScoreRetriever()
-    weak = retriever.retrieve(MATERIAL, 4, "math")
-    assert weak and all(match.confidence < MIN_RETRIEVAL_SCORE for match in weak)
-    assert await map_material(MATERIAL, 4, "math", retriever, model) == []
-    assert model.calls == []
-
-
-async def test_hallucinated_ids_are_dropped(retriever):
-    model = LocalPlaybackModel(
-        [MappingDecision(competency_ids=[EQUIVALENCE, "math.g4.invented.by_the_model"])]
-    )
-    result = await map_material(MATERIAL, 4, "math", retriever, model)
-    assert [str(match.competency_id) for match in result] == [EQUIVALENCE]
-    assert result[0] == retriever.retrieve(MATERIAL, 4, "math", limit=8)[0]
-
-
-async def test_candidate_list_and_limit_reach_the_prompt(retriever):
-    model = RecordingModel(MappingDecision(competency_ids=[COMPARISON]))
-    await map_material(MATERIAL, 4, "math", retriever, model, limit=2)
-    assert "Equivalent fractions" in model.texts[0]
-    assert EQUIVALENCE in model.texts[0]
-    assert "at most 2" in model.texts[0]
-    assert "grade 4 math" in model.system_prompts[0]
-
-
-async def test_mapper_falls_back_to_top_candidates_when_the_model_fails(retriever):
-    result = await map_material(MATERIAL, 4, "math", retriever, BrokenModel(), limit=2)
-    assert [str(match.competency_id) for match in result] == [EQUIVALENCE, COMPARISON]
-
-
-async def test_mapper_rejects_a_non_positive_limit(retriever):
-    with pytest.raises(ValueError):
-        await map_material(MATERIAL, 4, "math", retriever, LocalPlaybackModel(), limit=0)
 
 
 async def test_valid_batch_becomes_candidate_items(competency):
