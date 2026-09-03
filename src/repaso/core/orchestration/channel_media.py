@@ -6,7 +6,10 @@ from repaso.schemas.family import Family
 from repaso.schemas.student import Student
 
 MEDIA_UNREADABLE_KEY = "media_unreadable"
+TRACE_KIND = "channel"
 MEDIA_TRACE_NAME = "media_unavailable"
+MEDIA_ERROR_TRACE_NAME = "media_error"
+ERROR_DETAIL_LIMIT = 300
 
 
 async def route_material(services: Services, run: ChannelRun, family: Family) -> None:
@@ -18,7 +21,9 @@ async def route_material(services: Services, run: ChannelRun, family: Family) ->
     data = _media_bytes(services, media)
     if data is None:
         run.route = Route.MEDIA_UNAVAILABLE
-        services.telemetry.trace("channel", MEDIA_TRACE_NAME, status="failed", family_id=family.id)
+        services.telemetry.trace(
+            TRACE_KIND, MEDIA_TRACE_NAME, status="failed", family_id=family.id
+        )
         run.outbound.append(_unreadable_media(run.message, family))
         return
     run.student = student
@@ -35,7 +40,13 @@ def _media_bytes(services: Services, media: InboundMedia) -> bytes | None:
             return None
         services.media.put(media.media_ref, fetched.data, fetched.content_type)
         return fetched.data
-    except ValueError:
+    except Exception as error:
+        services.telemetry.trace(
+            TRACE_KIND,
+            MEDIA_ERROR_TRACE_NAME,
+            status="failed",
+            error=f"{type(error).__name__}: {error}"[:ERROR_DETAIL_LIMIT],
+        )
         return None
 
 

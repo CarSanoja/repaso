@@ -26,6 +26,30 @@ class SpyFetcher:
         return self._fetched
 
 
+class BrokenStore:
+    def __init__(self, error: Exception) -> None:
+        self._error = error
+
+    def exists(self, ref: str) -> bool:
+        raise self._error
+
+    def get(self, ref: str) -> bytes | None:
+        raise self._error
+
+    def put(self, ref: str, data: bytes, content_type: str) -> None:
+        raise self._error
+
+
+class ExplodingFetcher:
+    def __init__(self, error: Exception) -> None:
+        self._error = error
+        self.calls: list[tuple[str, MediaKind]] = []
+
+    def fetch(self, ref: str, kind: MediaKind) -> FetchedMedia | None:
+        self.calls.append((ref, kind))
+        raise self._error
+
+
 def fetched(data: bytes = FRACTION_TEXT, content_type: str = "image/jpeg") -> FetchedMedia:
     return FetchedMedia(data=data, content_type=content_type, size=len(data))
 
@@ -126,6 +150,35 @@ async def test_a_reference_that_would_escape_the_store_is_refused_without_raisin
     assert run.route is Route.MEDIA_UNAVAILABLE
     assert spy.calls == []
     assert run.outbound
+
+
+async def test_a_store_that_is_down_still_answers_the_parent(settings):
+    services = with_fetcher(settings, SpyFetcher(fetched()))
+    services.media = BrokenStore(OSError("bucket unreachable"))
+    services.telemetry = LocalTelemetrySink(settings.local_data_dir / "t.jsonl", SimClock(START))
+    family, _ = seed_family(services.store)
+
+    run = await handle_channel_message(services, upload())
+
+    assert run.route is Route.MEDIA_UNAVAILABLE
+    assert [message.text for message in run.outbound] == [msg("media_unreadable", family.lang)]
+    assert [event.name for event in services.telemetry.events] == [
+        "media_error",
+        "media_unavailable",
+    ]
+
+
+async def test_a_fetcher_that_raises_is_an_outcome_not_an_escape(settings):
+    spy = ExplodingFetcher(RuntimeError("connection reset"))
+    services = with_fetcher(settings, spy)
+    services.telemetry = LocalTelemetrySink(settings.local_data_dir / "t.jsonl", SimClock(START))
+    seed_family(services.store)
+
+    run = await handle_channel_message(services, upload())
+
+    assert run.route is Route.MEDIA_UNAVAILABLE
+    assert spy.calls == [(FILE_ID, MediaKind.PHOTO)]
+    assert services.telemetry.events[0].error == "RuntimeError: connection reset"
 
 
 async def test_an_upload_from_a_family_with_no_student_never_fetches(settings):
