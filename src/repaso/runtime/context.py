@@ -19,7 +19,6 @@ from repaso.tools.ocr import build_text_extractor
 from repaso.tools.state_store import build_state_store
 from repaso.tools.telegram import build_channel_sender
 
-GUARDRAIL_ID_ENV = "REPASO_GUARDRAIL_ID"
 KNOWLEDGE_BASE_ID_ENV = "REPASO_KNOWLEDGE_BASE_ID"
 TELEGRAM_TOKEN_ENV = "REPASO_TELEGRAM_TOKEN"
 
@@ -47,7 +46,7 @@ def build_runtime_services(settings: Settings) -> Services:
         media=build_media_store(settings),
         fetcher=build_media_fetcher(settings, os.environ.get(TELEGRAM_TOKEN_ENV), telemetry),
         extractor=build_text_extractor(settings),
-        screener=build_screener(settings, guardrail_id=os.environ.get(GUARDRAIL_ID_ENV)),
+        screener=build_screener(settings),
         retriever=build_knowledge_retriever(settings, os.environ.get(KNOWLEDGE_BASE_ID_ENV)),
         publisher=build_event_publisher(settings),
         sender=build_channel_sender(settings, os.environ.get(TELEGRAM_TOKEN_ENV)),

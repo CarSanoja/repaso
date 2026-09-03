@@ -190,10 +190,12 @@ def build_screener(
     settings: Settings,
     *,
     guardrail_id: str | None = None,
-    version: str = DEFAULT_GUARDRAIL_VERSION,
+    version: str | None = None,
 ) -> Screener:
     if settings.local_mode:
         return LocalScreener()
-    if guardrail_id:
-        return BedrockGuardrailsScreener(guardrail_id, version)
-    return LocalScreener()
+    identifier = guardrail_id or settings.guardrail_id
+    if not identifier:
+        return LocalScreener()
+    published = version or settings.guardrail_version or DEFAULT_GUARDRAIL_VERSION
+    return BedrockGuardrailsScreener(identifier, published)

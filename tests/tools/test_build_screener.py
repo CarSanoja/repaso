@@ -1,5 +1,6 @@
 from repaso.config.settings import Settings
 from repaso.tools.guardrails import (
+    DEFAULT_GUARDRAIL_VERSION,
     BedrockGuardrailsScreener,
     LocalScreener,
     Screener,
@@ -53,6 +54,34 @@ def test_build_screener_ignores_a_guardrail_id_in_local_mode(settings):
 def test_build_screener_returns_the_bedrock_screener_when_a_guardrail_id_is_given(tmp_path):
     screener = build_screener(cloud_settings(tmp_path), guardrail_id="gr-1", version="7")
     assert isinstance(screener, BedrockGuardrailsScreener)
+
+
+def test_the_deployed_guardrail_reaches_the_screener_without_being_passed(monkeypatch, tmp_path):
+    client = install_client(monkeypatch, FakeGuardrailClient())
+    settings = cloud_settings(tmp_path, guardrail_id="gr-9", guardrail_version="4")
+
+    build_screener(settings).screen("hola")
+
+    assert client.calls[0]["guardrailIdentifier"] == "gr-9"
+    assert client.calls[0]["guardrailVersion"] == "4"
+
+
+def test_an_id_with_no_published_version_screens_against_the_draft(monkeypatch, tmp_path):
+    client = install_client(monkeypatch, FakeGuardrailClient())
+
+    build_screener(cloud_settings(tmp_path, guardrail_id="gr-9")).screen("hola")
+
+    assert client.calls[0]["guardrailVersion"] == DEFAULT_GUARDRAIL_VERSION
+
+
+def test_an_explicit_guardrail_wins_over_the_configured_one(monkeypatch, tmp_path):
+    client = install_client(monkeypatch, FakeGuardrailClient())
+    settings = cloud_settings(tmp_path, guardrail_id="gr-9", guardrail_version="4")
+
+    build_screener(settings, guardrail_id="gr-1", version="7").screen("hola")
+
+    assert client.calls[0]["guardrailIdentifier"] == "gr-1"
+    assert client.calls[0]["guardrailVersion"] == "7"
 
 
 def test_bedrock_screener_sends_the_guardrail_payload(monkeypatch, tmp_path):
