@@ -9,6 +9,7 @@ from constructs import Construct
 from stacks.agentcore_contract import (
     DOCKERFILE,
     REPO_ROOT,
+    build_context_excludes,
     environment,
     load_contract,
     policy_document,
@@ -17,20 +18,6 @@ from stacks.agentcore_contract import (
 from stacks.foundation_stack import FoundationStack
 from stacks.guardrails_stack import GuardrailsStack
 from stacks.messaging_stack import MessagingStack
-
-BUILD_EXCLUDES = [
-    ".git",
-    ".github",
-    ".ruff_cache",
-    ".venv",
-    "docs",
-    "infra",
-    "node_modules",
-    "private",
-    "scripts",
-    "tests",
-    "**/__pycache__",
-]
 
 POLICIES = {
     "runtime": "runtime-execution-policy.json",
@@ -61,7 +48,8 @@ class AgentCoreStack(cdk.Stack):
             directory=str(REPO_ROOT),
             file=DOCKERFILE,
             platform=ecr_assets.Platform.LINUX_ARM64,
-            exclude=BUILD_EXCLUDES,
+            exclude=build_context_excludes(),
+            ignore_mode=cdk.IgnoreMode.DOCKER,
         )
 
         substitutions = self._substitutions(foundation, guardrails)

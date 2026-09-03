@@ -19,6 +19,8 @@ QUEUES = ("ingest", "tutor", "quality")
 GUARDRAIL = "AWS::Bedrock::Guardrail"
 RUNTIME = "AWS::BedrockAgentCore::Runtime"
 PARAMETER = "AWS::SSM::Parameter"
+AGENTCORE_ASSETS = "repaso-agentcore.assets.json"
+IMAGE_CONTEXT = {"LICENSE", "README.md", "deploy", "pyproject.toml", "src"}
 
 
 @pytest.fixture(scope="module")
@@ -101,6 +103,22 @@ def test_the_runtime_is_a_public_http_container(assembly):
     assert runtime["NetworkConfiguration"]["NetworkMode"] == "PUBLIC"
     assert runtime["ProtocolConfiguration"] == "HTTP"
     assert runtime["AgentRuntimeArtifact"]["ContainerConfiguration"]["ContainerUri"]
+
+
+def runtime_image(assembly: Path) -> dict:
+    manifest = json.loads((assembly / AGENTCORE_ASSETS).read_text(encoding="utf-8"))
+    images = list(manifest["dockerImages"].values())
+    assert len(images) == 1
+    return images[0]["source"]
+
+
+def test_the_image_is_built_from_what_the_dockerfile_copies_and_nothing_else(assembly):
+    source = runtime_image(assembly)
+    context = assembly / source["directory"]
+
+    assert {entry.name for entry in context.iterdir()} == IMAGE_CONTEXT
+    assert (context / source["dockerFile"]).is_file()
+    assert list(context.rglob("__pycache__")) == []
 
 
 def test_the_runtime_environment_holds_no_empty_or_forbidden_value(assembly):

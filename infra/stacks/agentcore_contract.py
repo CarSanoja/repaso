@@ -14,10 +14,16 @@ DOCKERFILE = "deploy/agentcore/Dockerfile"
 
 ENVIRONMENT_GROUPS = ("region", "resources", "runtime_only", "models", "tuning")
 UNRESOLVED = re.compile(r"REPASO_[A-Z_]+")
+BUILT_FROM = ("pyproject.toml", "README.md", "LICENSE", "src", DOCKERFILE)
+NEVER_BUILT_FROM = ("**/__pycache__", "**/*.egg-info", "**/*.pyc")
 
 
 def load_contract() -> dict[str, Any]:
     return yaml.safe_load(RUNTIME_YAML.read_text(encoding="utf-8"))
+
+
+def build_context_excludes() -> list[str]:
+    return ["*", *(f"!{kept}" for kept in BUILT_FROM), *NEVER_BUILT_FROM]
 
 
 def environment(contract: dict[str, Any], overrides: dict[str, str]) -> dict[str, str]:
