@@ -159,8 +159,20 @@ stack's region. The last two matter because `CloudWatchTelemetrySink` calls
 `boto3.client("cloudwatch")` with no region and falls back to the ambient
 environment.
 
-`REPASO_KNOWLEDGE_BASE_ID` is empty and therefore absent, and
-`tools/knowledge.py` falls back to the fixture taxonomy.
+Two of the variables the stack omits are the two the runtime cannot start
+without. `build_knowledge_retriever` raises without `REPASO_KNOWLEDGE_BASE_ID`
+outside local mode — it falls back to the fixture taxonomy in local mode only,
+because serving a real family from a fixture is worse than not serving them —
+and `build_channel_sender` and `build_media_fetcher` both raise without
+`REPASO_TELEGRAM_TOKEN`. `runtime_services` builds all of them at once, so
+until both are injected every invocation returns `handler_failed` rather than
+degrading. The failure is loud in the response and in CloudWatch, which is the
+intended half of the trade: the dangerous version of this is
+`REPASO_LOCAL_MODE`, above, which produces answers instead of errors.
+
+The smoke test below still passes in that state: `parse_request` rejects the
+payload before `runtime_services` is ever called, so it proves the container is
+serving and says nothing about whether the fleet can run.
 
 ## Verify
 
