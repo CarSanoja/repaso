@@ -1,0 +1,83 @@
+{
+  "cases": 60,
+  "predictions": 0,
+  "duplicate_prediction_ids": [],
+  "independently_reviewed": 0,
+  "scored": 0,
+  "quality_claim_allowed": false,
+  "grade_agreement": null,
+  "review_agreement": null,
+  "coverage": 0.0,
+  "automatic_reviewed": 0,
+  "automatic_correct_reviewed": 0,
+  "false_automatic_correct": 0,
+  "false_automatic_correct_rate": null,
+  "false_automatic_correct_wilson_95": null,
+  "errors": 0,
+  "by_category": {
+    "ambiguous": {
+      "cases": 10,
+      "automatic_reviewed": 0,
+      "grade_agreement": null
+    },
+    "clear_correct": {
+      "cases": 10,
+      "automatic_reviewed": 0,
+      "grade_agreement": null
+    },
+    "clear_incorrect": {
+      "cases": 5,
+      "automatic_reviewed": 0,
+      "grade_agreement": null
+    },
+    "correct_conclusion_wrong_reason": {
+      "cases": 5,
+      "automatic_reviewed": 0,
+      "grade_agreement": null
+    },
+    "informal_correct": {
+      "cases": 10,
+      "automatic_reviewed": 0,
+      "grade_agreement": null
+    },
+    "injection": {
+      "cases": 10,
+      "automatic_reviewed": 0,
+      "grade_agreement": null
+    },
+    "partial": {
+      "cases": 10,
+      "automatic_reviewed": 0,
+      "grade_agreement": null
+    }
+  },
+  "confidence_bands": [
+    {
+      "low": 0,
+      "high": 0.7,
+      "reviewed": 0,
+      "grade_agreement": null
+    },
+    {
+      "low": 0.7,
+      "high": 0.85,
+      "reviewed": 0,
+      "grade_agreement": null
+    },
+    {
+      "low": 0.85,
+      "high": 0.95,
+      "reviewed": 0,
+      "grade_agreement": null
+    },
+    {
+      "low": 0.95,
+      "high": 1,
+      "reviewed": 0,
+      "grade_agreement": null
+    }
+  ],
+  "mode": "schema validation",
+  "split": "all",
+  "at": "2026-09-06T20:38:02.905818+00:00"
+}

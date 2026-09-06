@@ -1,72 +1,25 @@
 # Product overview
 
-| | |
-|---|---|
-| **Status** | Maintained — living document, updated with every implementation cycle |
-| **Audience** | Anyone deciding whether Repaso serves their family, school, or review |
-| **Last updated** | 2026-08-28 |
+Repaso helps a parent sustain a short fourth-grade math practice routine from material used at school. The child answers in the parent's Telegram chat; there is no child account. The teacher may receive a note the parent chooses to forward.
 
-Wealthy families buy reinforcement: a tutor who looks at what the child is studying,
-runs a little practice every day, adapts to their level, and tells the parent when
-something is genuinely wrong. Repaso is that ritual for families who cannot buy it —
-an agent that lives in the family's Telegram chat, works from whatever material the
-school already sends, and interrupts a human only when there is a real decision to
-make.
+The family enrolls with a pilot invitation, an alias, a section and an agreed practice time. The system accepts supported printed material, maps it to the bundled curriculum and reviews generated exercises. At the agreed time it sends a capsule, collects responses and updates the next practice. Pausing or deleting the family disables its schedule.
 
-## The parent — the only user
+## Decisions with consequences
 
-The account is the parent's; there is nothing for anyone else to install or learn.
+An uncertain open answer is held for review. The adult sees the question, the child's response, the expected answer and a short rubric, with choices for correct, incorrect or not knowing yet. Either final decision is retained in the assessment history and applied once to learning state. Waiting is not approval.
 
-1. **Feed it the chaos.** A photo of the notebook, the weekly plan PDF, even a voice
-   note. Blurry photo? Repaso asks for a retake instead of guessing. Off-subject or
-   too-thin material gets an honest answer, not hallucinated exercises.
-2. **Set the rhythm.** Practice time, pauses, exam dates. Nine commands total;
-   `/forget` erases every trace of the family after a double confirmation.
-3. **Live the ritual.** Every day at the chosen hour a capsule arrives: a two-sentence
-   concept reminder and three practice questions — reviews first, one new thing every
-   day. Younger children practice with the parent beside them; the child never needs an
-   account or the app.
-4. **Decide only what is yours to decide.** When the grader is unsure about an open
-   answer, the parent gets the child's exact words and two buttons. When the child has
-   genuinely been struggling for days, the parent gets the evidence and three options
-   with trade-offs — a guided session tonight, a drafted note for the teacher, or a
-   lighter week. When the child quietly stops practicing, the parent hears about it
-   that week, not at report-card time.
+After sufficient evidence of difficulty, the adult can receive a drafted teacher note or choose one exercise for the next session. Automatic policy decisions can also change difficulty or require an explanation. Adaptations have a seven-day expiry. Routine capsules and feedback follow the agreed schedule; extra alerts are intended to support an adult decision.
 
-## The student — an experience, not an account
+## Current scope
 
-Short daily practice at the family's pace: immediate kind feedback, questions that
-return exactly when forgetting would set in, difficulty that follows measured
-performance. No login, no profile, no name — the system knows an alias and a grade,
-and the strict data models physically reject anything shaped like a real identity.
+One student per family; fourth-grade math; clear printed Spanish PNG/JPEG or an unencrypted one-page PDF up to 10 MB. Voice, Spanish handwriting, broader subjects and unimplemented guided sessions are excluded. A cohort note is experimental: a normalized section is scoped by the invitation, at least three families must contribute, and only one parent receives the aggregate note. A small cohort threshold is not a guarantee of anonymity.
 
-## The teacher — a beneficiary, never a user
+## Experience for judges
 
-Teachers install nothing and manage nothing. When at least three families of the same
-section struggle with the same competency in a week, Repaso drafts a respectful,
-anonymous note — counts only, never names or aliases — and each parent decides whether
-to deliver it. The classroom gets an early-warning system without a single new tool.
+The browser opens a prepared, isolated case. Seven stages show material, delivery, uncertainty, human review, difficulty, choice and consequence. The two choices can be compared without typing IDs. This mode runs real orchestration with authored model responses and local transport; its accelerated dates are labeled. It does not expose pilot families. Live-data endpoints additionally require an explicit family allowlist, empty by default.
 
-## The pilot operator and the judge
+## Privacy and evidence
 
-The operator onboards a family in ten minutes with an invite code and can watch every
-number the reports publish — delivery rates, quarantine latencies, escalation counts —
-from telemetry that exists from day one. Judges get a read-only web mirror with an
-access code: pick a demo student, read the full transcript, drive the demo clock one
-day forward through the real pipeline.
+Family-generated material is family-owned. `/forget` removes active state, grades, S3 versions and alarms, while preserving other families. Logs have seven-day configured retention; backups can retain historical data for up to 35 days. Telegram retains its own chat history. Alias checks are a convenience, not comprehensive anonymization: submitted text is processed by Telegram and AWS.
 
-## The interruption contract
-
-| Moment | Who is interrupted | Guarantee |
-|---|---|---|
-| Low-confidence open answer | Parent, one tap | The system **never guesses**; below the confidence gate no grade exists until a human decides |
-| Persistent measured struggle | Parent, three options | Fires only on ≥ 9 attempts of evidence (a slab-validated plateau centre), once per cooldown; a model opinion cannot veto it — or force it |
-| Quiet disengagement | Parent, weekly | Detected at the daily close, counting **school days** — weekends, Carnaval and Semana Santa never read as silence |
-| Section-wide struggle | Each parent of the section | k-anonymous (≥ 3 families), once per week, drafted note carries no identifiers |
-| Illegible or insufficient material | Parent | A retake or an example is requested; garbage is never parsed into practice |
-| Everything else | Nobody | Across 40 virgin seeds — 16,800 simulated student-days — 97 % of struggle interruptions pointed at genuinely measured difficulty [CI 0.947–0.983] and 99 % of struggling students were reached; every planted injection was intercepted |
-
-## What Repaso refuses to do
-
-Store a real name. Guess a grade. Message a child directly. Adapt rigor away. Publish
-a family's data — the repo is open source; the data never is.
+A real synthetic printed-page Textract check passed. Live inference, observed family use, savings and learning benefit are not established. See [the evidence register](../evidence/README.md) and [pilot protocol](../pilot/README.md).

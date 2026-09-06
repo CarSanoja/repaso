@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-09-06T18:30:03.296002+00:00",
+  "rows": [
+    {
+      "model": "us.amazon.nova-micro-v1:0",
+      "status": "unavailable",
+      "error": "ThrottlingException",
+      "message": "Too many tokens per day, please wait before trying again."
+    },
+    {
+      "model": "us.amazon.nova-lite-v1:0",
+      "status": "unavailable",
+      "error": "ThrottlingException",
+      "message": "Too many tokens per day, please wait before trying again."
+    },
+    {
+      "model": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "status": "unavailable",
+      "error": "ThrottlingException",
+      "message": "Too many tokens per day, please wait before trying again."
+    },
+    {
+      "model": "us.anthropic.claude-sonnet-4-6",
+      "status": "unavailable",
+      "error": "ThrottlingException",
+      "message": "Too many tokens per day, please wait before trying again."
+    }
+  ],
+  "calls_maximum": 4,
+  "max_output_tokens_per_call": 16
+}

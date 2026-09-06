@@ -1,0 +1,59 @@
+{
+  "at": "2026-09-06T21:15:12.302153+00:00",
+  "base_commit": "ce6a5b028bf79e6bfe80ded241f5c95667dd13c9",
+  "state": "pre-commit verification of the implementation recorded below; committed locally, no deployment or publication",
+  "implementation_commit": "08826b26f8df5dbd3a125539666cbf7058f3f9cd",
+  "evaluation_commit": "42d7096fe349a741ac174f6ec5e00513ec98ae03",
+  "pytest": {
+    "passed": 1169,
+    "skipped_live": 56,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 51.693
+  },
+  "ruff": "passed",
+  "git_diff_check": "passed",
+  "complete_transport_runs": {
+    "passed": 10,
+    "origin": "Moto AWS; authored models; remote AgentCore/Telegram boundaries substituted",
+    "failures_injected_runs": 5,
+    "duplicate_events_replayed_in_all": true
+  },
+  "judge_scenarios": {
+    "teacher_note": {
+      "passed": 24,
+      "total": 24
+    },
+    "reduce_load": {
+      "passed": 23,
+      "total": 23
+    },
+    "origin": "authored simulation"
+  },
+  "installed_wheel": {
+    "passed": true,
+    "tested_outside_checkout": true,
+    "sha256": "dacaac64d5e5552fc619e04107f146fac8e5f373135f8cfd5c422ef032dd6f29"
+  },
+  "arm64_python312_images": {
+    "lambda": {
+      "image_id": "sha256:69616d25955be3370aa305f8cf4fc681ae3e623e34a1c54a24f488d4a2c23c4a",
+      "installed_assets_http_and_both_full_journeys": "passed"
+    },
+    "agentcore": {
+      "image_id": "sha256:9d02bc77d7ec0df6f37fbeafa8a6882d6ab73ce1c8e05902eaeb7e78182c7417",
+      "installed_assets_http_and_both_full_journeys": "passed"
+    }
+  },
+  "video": {
+    "origin": "captioned reconstruction of authored simulation; no voice narration",
+    "seconds": 280,
+    "resolution": "1920x1080",
+    "sha256": "67898a054fc94f725c66d719268cc04c5a85decbe9ce500c4418d3f41310a45c"
+  },
+  "live_inference": "blocked: four actual model calls daily-token throttled",
+  "live_ocr": "one printed synthetic page passed; no embedded text",
+  "human_pilot_participants": 0,
+  "independent_teacher_labels": 0,
+  "external_release": "pending owner inputs/approval; six AWS stacks and three secrets absent"
+}

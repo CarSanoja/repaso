@@ -1,0 +1,55 @@
+1
+00:00:00,000 --> 00:00:20,000
+The parent already has school material. Repaso is designed to turn it into a short daily practice, then follow what happens next.
+
+2
+00:00:20,000 --> 00:00:40,000
+The family uses an alias and chooses a daily time. Enrollment creates a timezone-aware alarm. Pause, resume and schedule changes update that routine.
+
+3
+00:00:40,000 --> 00:01:00,000
+In this authored case, seven questions survive review. They belong to this family. A correct guess by the options-only probe cannot veto a valid exercise.
+
+4
+00:01:00,000 --> 00:01:20,000
+A short reminder arrives with a recognition question and reasoning practice. The session becomes delivered only after the transport acknowledges the message.
+
+5
+00:01:20,000 --> 00:01:40,000
+The child says that adding the same number to the top and bottom keeps a fraction equal. The response explains why that rule changes the value.
+
+6
+00:01:40,000 --> 00:02:00,000
+An ambiguous explanation is held for the parent. The parent can mark it correct, incorrect, or say they do not know yet. Waiting is not approval.
+
+7
+00:02:00,000 --> 00:02:20,000
+The parent approves this synthetic example. A final human assessment supersedes the provisional grade. A rejected answer also becomes a final outcome.
+
+8
+00:02:20,000 --> 00:02:40,000
+The additional guide claims that two thirds equals four ninths. Its generated exercises are rejected. The family is asked for a better source page.
+
+9
+00:02:40,000 --> 00:03:00,000
+After nine reviewed answers, persistent difficulty reaches the configured threshold. The parent receives evidence and two choices with concrete consequences.
+
+10
+00:03:00,000 --> 00:03:20,000
+Choosing the teacher note delivers the actual draft to the parent. Repaso does not contact the teacher automatically. The next routine continues.
+
+11
+00:03:20,000 --> 00:03:40,000
+The alternative choice saves a seven-day workload reduction. The next practice contains one exercise instead of three. The choice changes the plan.
+
+12
+00:03:40,000 --> 00:04:00,000
+The worker invokes AgentCore through SSM. DynamoDB transactions protect learning updates; journals and delivery receipts support recovery. Lost Telegram acknowledgments can still duplicate messages.
+
+13
+00:04:00,000 --> 00:04:20,000
+Ten full adapter simulations passed with injected failures. A separate actual Textract call read a new printed page. Neither proves live model quality or family benefit.
+
+14
+00:04:20,000 --> 00:04:40,000
+The candidate covers fourth-grade math and printed material. Bedrock quota, deployed acceptance, teacher review and a family pilot remain open. This preview reconstructs authored simulation data.

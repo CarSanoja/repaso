@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-06",
+  "origin": "authored local simulation",
+  "seed": 20260901,
+  "days": 14,
+  "students": 30,
+  "student_days": 420,
+  "sessions_delivered_local": 420,
+  "responses": 1037,
+  "struggle_alerts": 15,
+  "engagement_alerts": 6,
+  "cohort_notes": 1,
+  "uncertain_answers": 26,
+  "injection_quarantines": 2,
+  "checks_passed": 9,
+  "checks_total": 9,
+  "elapsed_seconds": 281.4,
+  "learning_effect_claim": false,
+  "live_inference": false
+}

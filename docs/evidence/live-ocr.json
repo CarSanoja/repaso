@@ -1,0 +1,10 @@
+{
+  "at": "2026-09-06T19:37:44.983214+00:00",
+  "origin": "live Textract on synthetic printed PNG",
+  "image_sha256": "c4f6fc4e09693491acf99938b962539697f4db4cab1b50341d879861f5e1f1cf",
+  "embedded_text": false,
+  "requests": 1,
+  "text": "MATEMATICA CUARTO GRADO\nFracciones equivalentes\nUna fraccion conserva su valor si multiplicas\nnumerador y denominador por el mismo numero.\nEjemplo: 1/2 = 2/4 = 3/6\n1. Completa: 2/3 = ?/6\n2. Explica por que 4/8 equivale a 1/2.\n3. Dibuja dos representaciones de la mitad.",
+  "confidence": 0.9957223510742188,
+  "passed": true
+}

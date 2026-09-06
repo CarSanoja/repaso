@@ -1,0 +1,73 @@
+{
+  "origin": "local Linux ARM64 container smoke; no AWS inference",
+  "checks": [
+    {
+      "name": "AgentCore /ping",
+      "status": 200
+    },
+    {
+      "name": "AgentCore not_a_kind",
+      "result": {
+        "ok": false,
+        "kind": "not_a_kind",
+        "error": {
+          "code": "unknown_kind",
+          "message": "unknown event kind 'not_a_kind'; known kinds: channel_message, daily_close, daily_session_due, escalation_resolved, exam_announced, material_uploaded, quarantine_resolved, response_received"
+        }
+      }
+    },
+    {
+      "name": "AgentCore daily_close",
+      "result": {
+        "ok": true,
+        "kind": "daily_close",
+        "result": {
+          "handled": true,
+          "report": {
+            "close_date": "2026-09-06",
+            "sessions_planned": 0,
+            "sessions_delivered": 0,
+            "responses_graded": 0,
+            "quarantines_open": 0,
+            "escalations_fired": 0,
+            "rework_attempts": 0,
+            "pending_human": [],
+            "unresolved": []
+          },
+          "cohort_fired": [],
+          "retired_items": [],
+          "outbound": [],
+          "recovery": {
+            "attempted": 0,
+            "recovered": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "Lambda GET /health",
+      "status": 200
+    },
+    {
+      "name": "Lambda GET /judge/",
+      "status": 200
+    },
+    {
+      "name": "Lambda GET /judge/assets/judge.css",
+      "status": 200
+    },
+    {
+      "name": "Lambda GET /judge/assets/judge.js",
+      "status": 200
+    },
+    {
+      "name": "Lambda POST /judge/login",
+      "status": 200
+    },
+    {
+      "name": "Lambda POST /judge/demo/run",
+      "status": 200,
+      "journey_checks": 23
+    }
+  ]
+}
