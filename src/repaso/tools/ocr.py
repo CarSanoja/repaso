@@ -39,12 +39,30 @@ class LocalTextExtractor:
 
 class TextractExtractor:
     def extract(self, data: bytes, kind: MediaKind) -> ExtractResult:
+        from io import BytesIO
+
+        from pypdf import PdfReader
+
         from repaso.config.clients import textract_client
+
+        if kind is MediaKind.VOICE:
+            raise ValueError("unsupported_voice")
+        if len(data) > 10 * 1024 * 1024:
+            raise ValueError("material_too_large")
+        if kind is MediaKind.PDF:
+            try:
+                reader = PdfReader(BytesIO(data))
+                if reader.is_encrypted or len(reader.pages) != 1:
+                    raise ValueError("only_unencrypted_single_page_pdf_supported")
+            except Exception as error:
+                raise ValueError("unsupported_pdf") from error
 
         client = textract_client()
         if client is None:
             raise RuntimeError("textract client is unavailable in local mode")
         response = client.detect_document_text(Document={"Bytes": data})
+        if any(b.get("TextType") == "HANDWRITING" for b in response.get("Blocks", [])):
+            raise ValueError("handwriting_not_supported")
         return _result_from_blocks(response.get("Blocks", []))
 
 

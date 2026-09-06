@@ -4,12 +4,13 @@ from repaso.config.models import ModelRole
 from repaso.core.orchestration.context import Services
 from repaso.schemas.item import Item, ItemKind, ItemStatus
 from repaso.simulator.demo_stage import Stage
+from repaso.tools.grade_log import effective_grades
 
 COMPETENCY = "math.g4.fractions.equivalence"
 NOT_YET = "—"
 HELD = "held"
 ANSWERS_EXPECTED = 3
-DROPPED_EXPECTED = 9
+DROPPED_EXPECTED = 5
 
 
 def _queue_counters(services: Services) -> list[Any]:
@@ -50,11 +51,12 @@ def harness_reading(
 
 def close_ledger(stage: Stage, family: Any, student: Any) -> None:
     services = stage.services
-    active = services.store.list_items_by_competency(COMPETENCY, ItemStatus.ACTIVE)
     rejected = services.store.list_items_by_competency(COMPETENCY, ItemStatus.REJECTED)
     mastery = services.store.get_mastery(student.id, COMPETENCY)
-    graded = services.grade_log.by_student(student.id)
-    stage.beat("what the child was asked", "1 mcq + 2 open", item_shape(active))
+    graded = effective_grades(services.grade_log.by_student(student.id))
+    session = services.store.get_session_by_date(student.id, services.clock.today())
+    asked = [services.store.get_item(i) for i in session.capsule.item_ids]
+    stage.beat("what the child was asked", "1 mcq + 2 open", item_shape(asked))
     stage.beat("questions the review dropped", DROPPED_EXPECTED, len(rejected))
     stage.beat("answers graded", ANSWERS_EXPECTED, len(graded))
     stage.beat(

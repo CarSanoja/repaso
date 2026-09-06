@@ -4,9 +4,11 @@ from repaso.core.harness.budgets import BoundedAttempts
 from repaso.core.harness.psychometrics import ItemObservation, should_retire
 from repaso.schemas.grading import GradeResult
 from repaso.schemas.item import Item, ItemStatus
+from repaso.tools.grade_log import effective_grades
 
 
 def student_totals(grades: list[GradeResult]) -> dict[str, float]:
+    grades = effective_grades(grades, final_only=True)
     outcomes: dict[str, list[float]] = {}
     for grade in grades:
         if grade.correct is None:
@@ -16,6 +18,7 @@ def student_totals(grades: list[GradeResult]) -> dict[str, float]:
 
 
 def observations(grades: list[GradeResult]) -> list[ItemObservation]:
+    grades = effective_grades(grades, final_only=True)
     totals = student_totals(grades)
     return [
         ItemObservation(

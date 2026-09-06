@@ -34,7 +34,7 @@ class DeployConfig:
             dlq_retention_days=int(ctx("dlq_retention_days") or 14),
             queue_visibility_minutes=int(ctx("queue_visibility_minutes") or 15),
             queue_max_receive=int(ctx("queue_max_receive") or 3),
-            log_retention_days=int(ctx("log_retention_days") or 30),
+            log_retention_days=int(ctx("log_retention_days") or 7),
             bootstrap_qualifier=ctx("@aws-cdk/core:bootstrapQualifier") or BOOTSTRAP_QUALIFIER,
         )
 

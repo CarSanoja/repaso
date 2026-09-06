@@ -135,11 +135,14 @@ def build_model(
         if settings.cassette_path is not None:
             return CassetteModel(_cassette_entries(settings.cassette_path), role.value)
         return LocalPlaybackModel()
+    from botocore.config import Config
     from strands.models.bedrock import BedrockModel
 
     model = BedrockModel(
         model_id=model_for(role),
         region_name=settings.aws_region,
+        boto_client_config=Config(read_timeout=90, connect_timeout=10, retries={"max_attempts": 0}),
+        max_tokens=4096,
         **guardrail_config(settings),
     )
     if settings.record_cassette_path is None:

@@ -7,6 +7,7 @@ from repaso.api.dependencies import AppContainer
 router = APIRouter()
 
 
+@router.get("/health")
 @router.get("/healthz")
 async def healthz() -> dict[str, str]:
     return {"status": "ok"}

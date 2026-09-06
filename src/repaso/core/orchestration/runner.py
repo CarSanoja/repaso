@@ -1,7 +1,9 @@
 from datetime import date
+from hashlib import sha256
 from uuid import uuid4
 
 from repaso.core.harness.pause import is_paused, trace_paused
+from repaso.core.orchestration.adaptations import apply_adaptation
 from repaso.core.orchestration.context import (
     CloseRun,
     EscalationRun,
@@ -11,6 +13,7 @@ from repaso.core.orchestration.context import (
     TutorRun,
 )
 from repaso.core.orchestration.ingest_graph import build_ingest_graph
+from repaso.core.orchestration.outbox import deliver
 from repaso.core.orchestration.quality_graph import build_quality_graph
 from repaso.core.orchestration.response_graph import build_response_graph
 from repaso.core.orchestration.tutor_graph import build_session_graph
@@ -18,8 +21,9 @@ from repaso.i18n import msg
 from repaso.schemas.channel import MediaKind, OutboundMessage
 from repaso.schemas.escalation import Escalation, EscalationStatus
 from repaso.schemas.family import Family
-from repaso.schemas.grading import EvidenceSpan, StudentResponse
+from repaso.schemas.grading import EvidenceSpan, GradeResult, StudentResponse
 from repaso.schemas.material import Material
+from repaso.schemas.operation import OperationRecord
 from repaso.schemas.provenance import Provenance, Source
 from repaso.schemas.review import QuarantineItem, QuarantineKind
 from repaso.schemas.schedule import ExamDate
@@ -29,8 +33,13 @@ from repaso.schemas.student import Student
 ACTIVE_SESSION_STATUSES = {SessionStatus.DELIVERED, SessionStatus.IN_PROGRESS}
 
 
-def deliver_outbound(services: Services, messages: list[OutboundMessage]) -> list[str]:
-    return [services.sender.send(message) for message in messages]
+def deliver_outbound(
+    services: Services,
+    messages: list[OutboundMessage],
+    key: str | None = None,
+    scope: str | None = None,
+) -> list[str]:
+    return deliver(services, messages, key, scope)
 
 
 async def handle_material(
@@ -52,7 +61,7 @@ async def handle_material(
     services.media.put(material.media_ref, data, "application/octet-stream")
     run = IngestRun(family=family, student=student, material=material, data=data)
     await build_ingest_graph(services, run).invoke_async("ingest")
-    deliver_outbound(services, run.outbound)
+    deliver_outbound(services, run.outbound, f"material#{material_id}", family.id)
     return run
 
 
@@ -63,7 +72,15 @@ async def start_daily_session(services: Services, family: Family, student: Stude
         trace_paused(services.telemetry, family, "daily_session", student.id)
         return run
     await build_session_graph(services, run).invoke_async("session")
-    deliver_outbound(services, run.outbound)
+    if run.session and run.outbound:
+        deliver_outbound(services, run.outbound, f"session#{run.session.id}", family.id)
+        run.session = run.session.model_copy(
+            update={
+                "status": SessionStatus.DELIVERED,
+                "delivered_at": services.clock.now(),
+            }
+        )
+        services.store.put_session(run.session)
     return run
 
 
@@ -89,6 +106,7 @@ async def handle_answer(
     student: Student,
     text: str,
     latency_seconds: float,
+    response_id: str | None = None,
 ) -> TutorRun | None:
     verdict = services.screener.screen(text)
     if not verdict.safe:
@@ -103,7 +121,12 @@ async def handle_answer(
             )
         )
         return None
-    session = active_session(services, student.id)
+    saved = services.store.get_record(family.id, f"answer#{response_id}") if response_id else None
+    session = (
+        PracticeSession.model_validate(saved.payload["session"])
+        if saved
+        else active_session(services, student.id)
+    )
     if session is None:
         return None
     item = current_item(services, session)
@@ -117,15 +140,57 @@ async def handle_answer(
         received_at=services.clock.now(),
     )
     run = TutorRun(family=family, student=student, session=session, items=[item], response=response)
-    await build_response_graph(services, run).invoke_async("response")
-    deliver_outbound(services, run.outbound)
+    response_id = (
+        response_id or sha256(f"{session.id}:{session.current_item_index}".encode()).hexdigest()
+    )
+    key = f"answer#{response_id}"
+    saved = saved or services.store.get_record(family.id, key)
+    if saved is None:
+        pending = [
+            r
+            for r in services.store.list_records(family.id, "answer#")
+            if r.payload.get("student_id") == student.id and not r.payload.get("complete")
+        ]
+        if pending:
+            raise RuntimeError("previous answer is awaiting recovery")
+        saved = OperationRecord(
+            scope=family.id,
+            key=key,
+            payload={
+                "session": session.model_dump(mode="json"),
+                "student_id": student.id,
+                "response": response.model_dump(mode="json"),
+            },
+        )
+        services.store.put_record(saved)
+    run.operation = saved
+    run.response = StudentResponse.model_validate(saved.payload["response"])
+    if saved.payload.get("complete"):
+        run.session = PracticeSession.model_validate(saved.payload["final_session"])
+        run.grade = GradeResult.model_validate(saved.payload["grade"])
+        run.outbound = [OutboundMessage.model_validate(m) for m in saved.payload["outbound"]]
+        run.decision_action = saved.payload.get("decision")
+        run.escalations = [
+            Escalation.model_validate(e) for e in saved.payload.get("escalations", [])
+        ]
+    else:
+        await build_response_graph(services, run).invoke_async("response")
+        saved.payload.update(
+            {
+                "complete": True,
+                "final_session": run.session.model_dump(mode="json"),
+                "outbound": [m.model_dump(mode="json") for m in run.outbound],
+                "escalations": [e.model_dump(mode="json") for e in run.escalations],
+            }
+        )
+        services.store.put_record(saved)
+    deliver_outbound(services, run.outbound, key, family.id)
     return run
 
 
 async def run_daily_close(services: Services) -> CloseRun:
     run = CloseRun()
     await build_quality_graph(services, run).invoke_async("close")
-    deliver_outbound(services, run.outbound)
     return run
 
 
@@ -140,9 +205,39 @@ def resolve_escalation(
     services: Services, family: Family, escalation: Escalation, option_key: str
 ) -> EscalationRun:
     run = EscalationRun(family=family, escalation=escalation, chosen_option=option_key)
+    if escalation.family_id != family.id:
+        raise ValueError("escalation does not belong to family")
+    escalation = services.store.get_escalation(escalation.id) or escalation
     if escalation.status is not EscalationStatus.PENDING:
         run.terminal = "already_resolved"
         return run
+    if option_key not in {o.key for o in escalation.options}:
+        raise ValueError("option is not available for this escalation")
+    key = f"escalation-decision#{escalation.id}"
+    saved = services.store.get_record(family.id, key)
+    if saved is None:
+        saved = OperationRecord(scope=family.id, key=key, payload={"option": option_key})
+        services.store.put_record(saved)
+    option_key = saved.payload["option"]
+    run.chosen_option = option_key
+    if option_key == "teacher_note":
+        note = escalation.drafted_note or escalation.summary
+        run.outbound.append(
+            OutboundMessage(channel=family.channel, chat_ref=family.chat_ref, text=note)
+        )
+    elif option_key == "reduce_load":
+        if not escalation.student_id or not escalation.competency_id:
+            raise ValueError("load reduction requires a student and competency")
+        apply_adaptation(
+            services,
+            family,
+            escalation.student_id,
+            escalation.competency_id,
+            "reduce_load",
+            source=f"escalation:{escalation.id}",
+        )
+    else:
+        raise ValueError("this option is not implemented")
     run.escalation = escalation.model_copy(
         update={
             "status": EscalationStatus.RESOLVED,
@@ -150,7 +245,6 @@ def resolve_escalation(
             "resolved_at": services.clock.now(),
         }
     )
-    services.store.put_escalation(run.escalation)
     run.outbound.append(
         OutboundMessage(
             channel=family.channel,
@@ -158,7 +252,8 @@ def resolve_escalation(
             text=msg("escalation_ack", family.lang, option=option_label(escalation, option_key)),
         )
     )
-    deliver_outbound(services, run.outbound)
+    deliver_outbound(services, run.outbound, f"escalation#{escalation.id}", family.id)
+    services.store.put_escalation(run.escalation)
     return run
 
 

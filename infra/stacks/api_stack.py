@@ -3,6 +3,8 @@ from pathlib import Path
 import aws_cdk as cdk
 from aws_cdk import aws_apigatewayv2 as apigwv2
 from aws_cdk import aws_apigatewayv2_integrations as integrations
+from aws_cdk import aws_events as events
+from aws_cdk import aws_events_targets as targets
 from aws_cdk import aws_iam as iam
 from aws_cdk import aws_lambda as lambda_
 from aws_cdk import aws_lambda_event_sources as sources
@@ -13,7 +15,7 @@ from constructs import Construct
 from stacks.foundation_stack import FoundationStack
 from stacks.messaging_stack import MessagingStack
 
-SOURCE_ROOT = str(Path(__file__).resolve().parents[2] / "src")
+REPO_ROOT = str(Path(__file__).resolve().parents[2])
 BEDROCK_ACTIONS = ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"]
 BATCH_SIZE = 5
 
@@ -45,13 +47,12 @@ class ApiStack(cdk.Stack):
         self.config = config
         self.foundation = foundation
         self.messaging = messaging
-        self.code = lambda_.Code.from_asset(SOURCE_ROOT)
 
         self.webhook = self._function("webhook", memory=512, timeout=cdk.Duration.seconds(30))
         self.worker = self._function(
             "worker",
             memory=1024,
-            timeout=cdk.Duration.minutes(config.queue_visibility_minutes),
+            timeout=cdk.Duration.minutes(10),
         )
         self.scheduler = self._function("scheduler", memory=512, timeout=cdk.Duration.minutes(1))
         self.functions = {
@@ -63,6 +64,17 @@ class ApiStack(cdk.Stack):
         self._wire_webhook()
         self._wire_worker()
         self._wire_scheduler()
+        events.Rule(
+            self,
+            "DailyCloseTimer",
+            schedule=events.Schedule.cron(hour="3", minute="50"),
+            targets=[
+                targets.LambdaFunction(
+                    self.scheduler,
+                    event=events.RuleTargetInput.from_object({"kind": "daily_close"}),
+                )
+            ],
+        )
         self.http_api = self._http_api()
 
     def _function(self, name: str, memory: int, timeout: cdk.Duration) -> lambda_.Function:
@@ -74,14 +86,29 @@ class ApiStack(cdk.Stack):
             retention=RETENTION.get(self.config.log_retention_days, logs.RetentionDays.ONE_MONTH),
             removal_policy=cdk.RemovalPolicy.DESTROY,
         )
-        return lambda_.Function(
+        return lambda_.DockerImageFunction(
             self,
             f"{name.capitalize()}Function",
             function_name=resource_name,
-            runtime=lambda_.Runtime.PYTHON_3_12,
             architecture=lambda_.Architecture.ARM_64,
-            handler=f"repaso.lambdas.{name}.handler",
-            code=self.code,
+            code=lambda_.DockerImageCode.from_image_asset(
+                REPO_ROOT,
+                file="deploy/lambda/Dockerfile",
+                cmd=[f"repaso.lambdas.{name}.handler"],
+                exclude=[
+                    "*",
+                    "!pyproject.toml",
+                    "!requirements.lock",
+                    "!README.md",
+                    "!LICENSE",
+                    "!src",
+                    "!deploy/lambda/Dockerfile",
+                    "**/__pycache__",
+                    "**/*.pyc",
+                    "**/*.egg-info",
+                ],
+                ignore_mode=cdk.IgnoreMode.DOCKER,
+            ),
             memory_size=memory,
             timeout=timeout,
             environment=self._environment(),
@@ -97,6 +124,9 @@ class ApiStack(cdk.Stack):
             "REPASO_CURRICULUM_BUCKET": self.foundation.curriculum_bucket.bucket_name,
             "REPASO_EVENT_BUS": self.messaging.bus.event_bus_name,
             "REPASO_SCHEDULER_GROUP": config.bare(),
+            "REPASO_LOCAL_DATA_DIR": "/tmp/repaso",
+            "REPASO_CURRICULUM_SOURCE": "bundled",
+            "REPASO_AGENTCORE_RUNTIME_ARN_PARAMETER": config.parameter("agentcore", "runtime-arn"),
             "REPASO_TELEGRAM_SECRET_NAME": config.secret("telegram"),
             "REPASO_JUDGE_CODE_SECRET_NAME": config.secret("judge"),
             "REPASO_INVITE_CODES_SECRET_NAME": config.secret("pilot-invite-codes"),
@@ -127,6 +157,24 @@ class ApiStack(cdk.Stack):
         self.foundation.invite_codes_secret.grant_read(self.worker)
         self.messaging.bus.grant_put_events_to(self.worker)
         self.worker.add_to_role_policy(self._bedrock_statement())
+        self.worker.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["bedrock-agentcore:InvokeAgentRuntime"],
+                resources=[
+                    f"arn:{self.partition}:bedrock-agentcore:{self.region}:"
+                    f"{self.account}:runtime/{self.config.bare()}*"
+                ],
+            )
+        )
+        self.worker.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["ssm:GetParameter"],
+                resources=[
+                    f"arn:{self.partition}:ssm:{self.region}:{self.account}:"
+                    f"parameter/{self.config.bare()}/agentcore/runtime-arn"
+                ],
+            )
+        )
         for queue in (
             self.messaging.ingest_queue,
             self.messaging.tutor_queue,
@@ -159,10 +207,10 @@ class ApiStack(cdk.Stack):
             methods=[apigwv2.HttpMethod.POST],
             integration=integration,
         )
-        for path in ("/judge", "/judge/{proxy+}", "/health"):
+        for path in ("/judge", "/judge/{proxy+}", "/health", "/healthz", "/readyz"):
             http_api.add_routes(
                 path=path,
-                methods=[apigwv2.HttpMethod.GET],
+                methods=[apigwv2.HttpMethod.ANY],
                 integration=integration,
             )
         cdk.CfnOutput(self, "HttpApiUrl", value=http_api.api_endpoint)

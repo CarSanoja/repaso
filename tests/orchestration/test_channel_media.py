@@ -108,8 +108,10 @@ async def test_the_downloaded_bytes_are_kept_so_a_redelivery_never_downloads_twi
 
     assert (first.route, second.route) == (Route.MATERIAL, Route.MATERIAL)
     assert len(spy.calls) == 1
-    assert services.media.get(FILE_ID) == FRACTION_TEXT
-    assert services.media.content_type(FILE_ID) == "application/pdf"
+    assert services.media.get(FILE_ID) is None
+    material = services.store.list_materials("f1")[0]
+    assert services.media.get(material.media_ref) == FRACTION_TEXT
+    assert services.media.content_type(material.media_ref) == "application/octet-stream"
 
 
 async def test_bytes_already_in_the_store_are_never_fetched_again(settings):
@@ -136,7 +138,9 @@ async def test_a_file_that_cannot_be_fetched_asks_the_parent_to_send_it_again(se
     assert run.route is Route.MEDIA_UNAVAILABLE
     assert run.ingest is None
     assert [message.text for message in run.outbound] == [msg("media_unreadable", family.lang)]
-    assert [event.name for event in services.telemetry.events] == ["media_unavailable"]
+    assert [event.name for event in services.telemetry.events if event.kind == "channel"] == [
+        "media_unavailable"
+    ]
     assert services.sender.sent[0]["text"] == msg("media_unreadable", Lang.ES)
 
 
@@ -162,7 +166,7 @@ async def test_a_store_that_is_down_still_answers_the_parent(settings):
 
     assert run.route is Route.MEDIA_UNAVAILABLE
     assert [message.text for message in run.outbound] == [msg("media_unreadable", family.lang)]
-    assert [event.name for event in services.telemetry.events] == [
+    assert [event.name for event in services.telemetry.events if event.kind == "channel"] == [
         "media_error",
         "media_unavailable",
     ]

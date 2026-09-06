@@ -1,5 +1,6 @@
 from datetime import UTC, date, datetime, timedelta
 from typing import Protocol, runtime_checkable
+from zoneinfo import ZoneInfo
 
 
 @runtime_checkable
@@ -14,7 +15,7 @@ class SystemClock:
         return datetime.now(UTC)
 
     def today(self) -> date:
-        return self.now().date()
+        return local_date(self.now())
 
 
 class SimClock:
@@ -27,7 +28,7 @@ class SimClock:
         return self._now
 
     def today(self) -> date:
-        return self._now.date()
+        return local_date(self._now)
 
     def advance(self, days: int = 0, hours: int = 0, minutes: int = 0) -> datetime:
         self._now = self._now + timedelta(days=days, hours=hours, minutes=minutes)
@@ -36,3 +37,10 @@ class SimClock:
     def set_time(self, hour: int, minute: int = 0) -> datetime:
         self._now = self._now.replace(hour=hour, minute=minute, second=0, microsecond=0)
         return self._now
+
+
+def local_date(at: datetime) -> date:
+    from repaso.core.telemetry.context import invocation_context
+
+    zone = (invocation_context.get() or {}).get("timezone", "UTC")
+    return at.astimezone(ZoneInfo(zone)).date()

@@ -131,10 +131,32 @@ async def test_judge_transcript_returns_pending_work(client, container):
 
 async def test_judge_transcript_is_empty_for_an_unknown_family(client):
     response = await client.get("/judge/transcript/nope", headers=JUDGE_HEADER)
-    assert response.json() == {"escalations": [], "quarantine": []}
+    assert response.status_code == 404
+    assert response.json() == {"detail": "family_not_shared"}
 
 
 async def test_judge_page_is_served(client):
     response = await client.get("/judge/")
     assert response.status_code == 200
-    assert "X-Judge-Code" in response.text
+    assert "Interactive simulation" in response.text
+    asset = await client.get("/judge/assets/judge.js")
+    assert asset.status_code == 200 and "X-Judge-Code" in asset.text
+
+
+@pytest.mark.parametrize("decision,count", [("teacher_note", 3), ("reduce_load", 1)])
+async def test_complete_judge_run_is_isolated_and_keeps_rejected_material_visible_as_rejected(
+    client, container, decision, count
+):
+    private_family = make_family("not-shared", "56789")
+    container.store.put_family(private_family)
+    before = container.store.list_families()
+    result = await client.post("/judge/demo/run", headers=JUDGE_HEADER, json={"decision": decision})
+    assert result.status_code == 200
+    data = result.json()
+    assert data["passed"] and not data["live_inference"]
+    assert "not-shared" not in result.text
+    assert container.store.list_families() == before
+    final = data["checkpoints"][-1]
+    assert len(final["sessions"][-1]["capsule"]["item_ids"]) == count
+    rejected = [m for m in final["materials"] if m["status"] == "rejected"]
+    assert len(rejected) == 1 and "2/3 = 4/9" in rejected[0]["parsed_text"]

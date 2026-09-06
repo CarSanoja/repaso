@@ -24,7 +24,7 @@ def _media(message: dict[str, Any]) -> InboundMedia | None:
     return None
 
 
-def parse_update(update: dict[str, Any]) -> InboundMessage | None:
+def parse_update(update: dict[str, Any], now: datetime | None = None) -> InboundMessage | None:
     callback = update.get("callback_query")
     if callback:
         message = callback.get("message") or {}
@@ -36,7 +36,7 @@ def parse_update(update: dict[str, Any]) -> InboundMessage | None:
             chat_ref=str(chat["id"]),
             message_ref=str(callback["id"]),
             callback_data=callback.get("data"),
-            received_at=_received_at(message),
+            received_at=now or datetime.now(UTC),
         )
     message = update.get("message")
     if not message:

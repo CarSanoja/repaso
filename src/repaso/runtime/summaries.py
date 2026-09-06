@@ -71,6 +71,8 @@ def close_summary(run: CloseRun) -> dict[str, Any]:
 
 
 def channel_summary(run: ChannelRun) -> dict[str, Any]:
+    if run.replayed_summary is not None:
+        return run.replayed_summary
     return {
         "handled": True,
         "route": run.route.value,

@@ -1,8 +1,11 @@
+from hashlib import sha256
+
 from pydantic import BaseModel
 
 from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.capsule_composer import SYSTEM
 from repaso.i18n import msg
+from repaso.i18n.competencies import competency_label
 from repaso.schemas.channel import Button, ChannelKind, OutboundMessage
 from repaso.schemas.common import Lang
 from repaso.schemas.competency import Competency
@@ -25,9 +28,13 @@ def item_buttons(session_id: str, item: Item) -> list[Button]:
     if item.kind is not ItemKind.MCQ:
         return []
     return [
-        Button(label=option, callback_data=f"ans:{session_id}:{item.id}:{number}")
+        Button(label=option, callback_data=f"ans:{answer_ref(session_id, item.id)}:{number}")
         for number, option in enumerate(item.options, start=1)
     ]
+
+
+def answer_ref(session_id: str, item_id: str) -> str:
+    return sha256(f"{session_id}:{item_id}".encode()).hexdigest()[:24]
 
 
 async def compose_capsule(
@@ -40,7 +47,10 @@ async def compose_capsule(
 ) -> tuple[Capsule, OutboundMessage]:
     snippet = await _snippet(competency, lang, model)
     capsule = Capsule(concept_snippet=snippet, item_ids=[item.id for item in items])
-    parts = [msg("capsule_header", lang, alias=alias, competency=competency.name), snippet]
+    parts = [
+        msg("capsule_header", lang, alias=alias, competency=competency_label(competency, lang)),
+        snippet,
+    ]
     first = items[0] if items else None
     if first is not None:
         parts.append(render_item(first))
@@ -54,6 +64,11 @@ async def compose_capsule(
 
 
 async def _snippet(competency: Competency, lang: Lang, model) -> str:
+    fallback = (
+        f"Hoy practicamos {competency_label(competency, lang)}. Lee cada pregunta con calma."
+        if lang is Lang.ES
+        else competency.description
+    )
     text = (
         f"Language code: {lang.value}\n"
         f"Subject: {competency.subject}\n"
@@ -65,5 +80,5 @@ async def _snippet(competency: Competency, lang: Lang, model) -> str:
     try:
         result = await structured(model, Snippet, SYSTEM, text)
     except StructuredCallFailed:
-        return competency.description
-    return result.text.strip() or competency.description
+        return fallback
+    return result.text.strip() or fallback

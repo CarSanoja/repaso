@@ -28,3 +28,5 @@ class PracticeSession(StrictBaseModel):
     current_item_index: int = 0
     delivered_at: datetime | None = None
     completed_at: datetime | None = None
+    planned_item_ids: list[ItemId] = []
+    delivery_message: dict | None = None

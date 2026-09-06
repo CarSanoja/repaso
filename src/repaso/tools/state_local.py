@@ -16,6 +16,7 @@ from repaso.schemas.family import Family
 from repaso.schemas.item import Item, ItemStatus
 from repaso.schemas.mastery import MasteryState
 from repaso.schemas.material import Material
+from repaso.schemas.operation import OperationRecord
 from repaso.schemas.review import QuarantineItem, QuarantineStatus
 from repaso.schemas.schedule import ExamDate, SpacedItemState
 from repaso.schemas.session import PracticeSession
@@ -42,18 +43,42 @@ class LocalStateStore:
 
     def forget_family(self, family_id: FamilyId) -> None:
         family = self.get_family(family_id)
-        for student in self.list_students(family_id):
-            self._tables.delete_where("mastery", MasteryState, student_id=student.id)
-            self._tables.delete_where("spaced", SpacedItemState, student_id=student.id)
-            self._tables.delete_where("exams", ExamDate, student_id=student.id)
-            self._tables.delete_where("sessions", PracticeSession, student_id=student.id)
-        self._tables.delete_where("students", Student, family_id=family_id)
-        self._tables.delete_where("materials", Material, family_id=family_id)
-        self._tables.delete_where("escalations", Escalation, family_id=family_id)
-        self._tables.delete_where("quarantine", QuarantineItem, family_id=family_id)
-        if family is not None:
-            self._tables.delete("enrollment", f"{family.channel}#{family.chat_ref}")
-        self._tables.delete("families", family_id)
+        students = {s.id for s in self.list_students(family_id)}
+        identifiers = {family_id, *students, *(m.id for m in self.list_materials(family_id))}
+        if family:
+            identifiers.update({f"chat:{family.chat_ref}", f"{family.channel}#{family.chat_ref}"})
+        with self._tables.exclusive():
+            self._tables.recover()
+            updates = {}
+            for table in (
+                "families",
+                "students",
+                "mastery",
+                "spaced",
+                "exams",
+                "sessions",
+                "materials",
+                "escalations",
+                "quarantine",
+                "items",
+                "operations",
+                "outcomes",
+                "enrollment",
+                "claims",
+                "budgets",
+            ):
+                kept = {}
+                for key, value in self._tables.read(table).items():
+                    keyed = key in identifiers or bool(set(key.split("#")) & identifiers)
+                    owned = isinstance(value, dict) and (
+                        value.get("family_id") == family_id
+                        or value.get("student_id") in students
+                        or value.get("scope") in identifiers
+                    )
+                    if not keyed and not owned:
+                        kept[key] = value
+                updates[table] = kept
+            self._tables.transaction(updates)
 
     def put_student(self, student: Student) -> None:
         self._tables.put("students", student.id, student)
@@ -89,6 +114,9 @@ class LocalStateStore:
 
     def delete_exam_date(self, student_id: StudentId, exam_date: date) -> None:
         self._tables.delete("exams", f"{student_id}#{exam_date}")
+
+    def list_family_items(self, family_id: str) -> list[Item]:
+        return self._tables.where("items", Item, family_id=family_id)
 
     def put_item(self, item: Item) -> None:
         self._tables.put("items", item.id, item)
@@ -157,3 +185,84 @@ class LocalStateStore:
 
     def claim(self, key: str, owner: str) -> bool:
         return self._tables.claim("claims", key, owner)
+
+    def release_claim(self, key: str, owner: str) -> None:
+        with self._tables.exclusive():
+            rows = self._tables.read("claims")
+            if rows.get(key) == owner:
+                rows.pop(key)
+                self._tables.write("claims", rows)
+
+    def put_record(self, record: OperationRecord) -> None:
+        self._tables.put("operations", f"{record.scope}#{record.key}", record)
+
+    def get_record(self, scope: str, key: str) -> OperationRecord | None:
+        return self._tables.get("operations", f"{scope}#{key}", OperationRecord)
+
+    def list_records(self, scope: str, prefix: str = "") -> list[OperationRecord]:
+        return [
+            r
+            for r in self._tables.where("operations", OperationRecord, scope=scope)
+            if r.key.startswith(prefix)
+        ]
+
+    def delete_records(self, scope: str) -> None:
+        self._tables.delete_where("operations", OperationRecord, scope=scope)
+
+    def acquire_lease(self, scope, owner, expires) -> bool:
+        import time
+
+        with self._tables.exclusive():
+            rows = self._tables.read("leases")
+            previous = rows.get(scope)
+            if previous and previous["expires"] > time.time():
+                return False
+            rows[scope] = {"owner": owner, "expires": expires}
+            self._tables.write("leases", rows)
+            return True
+
+    def reserve_budget(self, scope, day, limit, global_limit) -> bool:
+        with self._tables.exclusive():
+            rows = self._tables.read("budgets")
+            family_key, global_key = f"{day}#{scope}", f"{day}#GLOBAL"
+            if rows.get(family_key, 0) >= limit or rows.get(global_key, 0) >= global_limit:
+                return False
+            rows[family_key] = rows.get(family_key, 0) + 1
+            rows[global_key] = rows.get(global_key, 0) + 1
+            self._tables.write("budgets", rows)
+            return True
+
+    def release_lease(self, scope, owner) -> None:
+        with self._tables.exclusive():
+            rows = self._tables.read("leases")
+            if rows.get(scope, {}).get("owner") == owner:
+                rows.pop(scope)
+                self._tables.write("leases", rows)
+
+    def list_materials(self, family_id: str) -> list[Material]:
+        return self._tables.where("materials", Material, family_id=family_id)
+
+    def list_sessions(self, student_id: str) -> list[PracticeSession]:
+        return self._tables.where("sessions", PracticeSession, student_id=student_id)
+
+    def list_quarantine(self, family_id: str) -> list[QuarantineItem]:
+        return self._tables.where("quarantine", QuarantineItem, family_id=family_id)
+
+    def apply_outcome(self, key, mastery, spaced, previous) -> bool:
+        with self._tables.exclusive():
+            self._tables.recover()
+            markers = self._tables.read("outcomes")
+            marker = f"{mastery.student_id}#{key}"
+            if marker in markers:
+                return True
+            states = self._tables.read("mastery")
+            state_key = f"{mastery.student_id}#{mastery.competency_id}"
+            expected = previous.model_dump(mode="json") if previous else None
+            if states.get(state_key) != expected:
+                return False
+            spacing = self._tables.read("spaced")
+            states[state_key] = mastery.model_dump(mode="json")
+            spacing[f"{spaced.student_id}#{spaced.item_id}"] = spaced.model_dump(mode="json")
+            markers[marker] = {"student_id": mastery.student_id}
+            self._tables.transaction({"mastery": states, "spaced": spacing, "outcomes": markers})
+            return True

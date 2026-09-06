@@ -61,7 +61,6 @@ def test_telegram_send_posts_expected_payload():
     assert captured["payload"] == {
         "chat_id": "chat-1",
         "text": "Hola <b>Ana</b>",
-        "parse_mode": "HTML",
     }
     assert ref == "77"
 

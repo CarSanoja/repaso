@@ -1,8 +1,9 @@
 import argparse
 import asyncio
-import shutil
+import json
 import sys
 import time
+from dataclasses import asdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
@@ -33,15 +34,20 @@ def main() -> int:
     parser = argparse.ArgumentParser(prog="run_demo_scenario")
     parser.add_argument("--data-dir", default=".local_data/demo_scenario")
     parser.add_argument("--cassette", default=str(CASSETTE_PATH))
+    parser.add_argument(
+        "--decision", choices=("teacher_note", "reduce_load"), default="teacher_note"
+    )
+    parser.add_argument("--report", help="Write the complete synthetic journey as JSON")
     args = parser.parse_args()
 
     data_dir = Path(args.data_dir)
     cassette = Path(args.cassette)
-    shutil.rmtree(data_dir, ignore_errors=True)
+    if data_dir.exists() and any(data_dir.iterdir()):
+        parser.error("data-dir must be empty; choose a new directory to preserve previous runs")
     settings = scenario_settings(data_dir, cassette)
 
     started = time.perf_counter()
-    result = asyncio.run(run_demo_scenario(settings))
+    result = asyncio.run(run_demo_scenario(settings, decision=args.decision))
     elapsed = time.perf_counter() - started
 
     print(LEGEND)
@@ -52,7 +58,11 @@ def main() -> int:
     print()
     print(cost_line(token_totals(load_cassette(cassette))))
     print(PROVENANCE)
-    print(f"one family, one school day, replayed in {elapsed:.1f}s into {data_dir}")
+    print(f"one family, four labeled school days, simulated in {elapsed:.1f}s into {data_dir}")
+    if args.report:
+        report = Path(args.report)
+        report.parent.mkdir(parents=True, exist_ok=True)
+        report.write_text(json.dumps(asdict(result), ensure_ascii=False, indent=2, default=str))
     print()
     print(f"{'beat':56} {'expected':>24} {'actual':>24}  verdict")
     for beat in result.beats:

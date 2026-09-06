@@ -16,6 +16,7 @@ class AppContainer:
     publisher: EventPublisher
     telegram_secret: str = ""
     judge_code: str = ""
+    clock: object | None = None
 
 
 def build_container(

@@ -177,6 +177,9 @@ def build_knowledge_retriever(
 ) -> KnowledgeRetriever:
     if settings.local_mode:
         return LocalTaxonomyRetriever(local_taxonomy_path(settings))
+    knowledge_base_id = knowledge_base_id or settings.knowledge_base_id
+    if settings.curriculum_source == "bundled" and not knowledge_base_id:
+        return LocalTaxonomyRetriever(DEFAULT_TAXONOMY_PATH)
     if not knowledge_base_id:
         raise ValueError("knowledge_base_id is required outside local mode")
     return KnowledgeBaseRetriever(knowledge_base_id, region_name=settings.aws_region)

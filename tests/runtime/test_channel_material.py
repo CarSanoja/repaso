@@ -74,4 +74,6 @@ def test_a_reference_the_fetcher_can_still_resolve_becomes_material(settings):
 
     assert route_of(response) == "material"
     assert len(response["result"]["ingest"]["kept_item_ids"]) == 2
-    assert services.media.get(FILE_ID) == FRACTION_TEXT
+    assert services.media.get(FILE_ID) is None
+    material = services.store.list_materials("f1")[0]
+    assert services.media.get(material.media_ref) == FRACTION_TEXT

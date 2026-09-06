@@ -1,12 +1,16 @@
 import logging
 from typing import Any
+from zoneinfo import ZoneInfo
 
+from repaso.config.settings import get_settings
+from repaso.core.harness.calendar import is_scheduled
 from repaso.core.harness.clock import SystemClock
 from repaso.core.harness.idempotency import job_key
 from repaso.core.harness.pause import is_paused
 from repaso.lambdas.bootstrap import publisher, store
 from repaso.schemas.common import FamilyId
 from repaso.schemas.events import DomainEvent, EventKind
+from repaso.schemas.operation import OperationRecord
 
 FAMILY_KEY = "family_id"
 STUDENT_KEY = "student_id"
@@ -34,7 +38,7 @@ def _students(family_id: str, student_id: str) -> list[str]:
 
 def _fire(family_id: str, student_id: str, day: str, now: Any) -> str:
     key = job_key(JOB_KIND, student_id, day)
-    if not store().claim(key, OWNER):
+    if store().get_record(family_id, key):
         logger.info("scheduler tick already fired for %s", key)
         return ""
     publisher().publish(
@@ -46,23 +50,47 @@ def _fire(family_id: str, student_id: str, day: str, now: Any) -> str:
             payload={STUDENT_KEY: student_id},
         )
     )
+    store().put_record(OperationRecord(scope=family_id, key=key, payload={"published": True}))
     return key
 
 
 def handler(event: dict[str, Any], context: Any = None) -> dict[str, Any]:
     tick = event if isinstance(event, dict) else {}
+    if tick.get("kind") == "daily_close":
+        now = SystemClock().now()
+        day = now.astimezone(ZoneInfo("America/Caracas")).date().isoformat()
+        publisher().publish(
+            DomainEvent(
+                kind=EventKind.DAILY_CLOSE,
+                family_id=None,
+                idempotency_key=f"close#{day}",
+                occurred_at=now,
+                payload={},
+            )
+        )
+        return {"ok": True, "kind": "daily_close"}
     family_id = _text(tick, FAMILY_KEY)
     if not family_id:
         logger.error("scheduler tick arrived without a family reference")
         return {"ok": False, "error": "missing_family_id"}
+    family = store().get_family(FamilyId(family_id))
+    if family is None:
+        return {"ok": True, "fired": [], "skipped": [], "forgotten": True}
     if _paused(family_id):
         logger.info("scheduler tick skipped: family %s is paused", family_id)
         return {"ok": True, "family_id": family_id, "fired": [], "skipped": [], "paused": True}
     now = SystemClock().now()
-    day = now.date().isoformat()
+    local_day = now.astimezone(ZoneInfo(family.timezone)).date()
+    if not is_scheduled(local_day, family.rest_weekdays, get_settings().holiday_dates):
+        return {"ok": True, "fired": [], "skipped": [], "rest_day": True}
+    day = local_day.isoformat()
     fired: list[str] = []
     skipped: list[str] = []
     for student_id in _students(family_id, _text(tick, STUDENT_KEY)):
+        student = store().get_student(student_id)
+        if student is None or student.family_id != family_id:
+            skipped.append(student_id)
+            continue
         try:
             key = _fire(family_id, student_id, day, now)
         except ValueError:

@@ -41,6 +41,9 @@ class RecordingModel(Model):
         self.inner = inner
         self._writer = writer
         self._role = role
+        self.evidence_origin = getattr(inner, "evidence_origin", None) or (
+            "live" if type(inner).__name__ == "BedrockModel" else "simulation"
+        )
 
     def update_config(self, **model_config: Any) -> None:
         self.inner.update_config(**model_config)

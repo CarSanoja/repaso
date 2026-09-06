@@ -8,6 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    judge_family_ids: str = ""
     model_config = SettingsConfigDict(
         env_prefix="REPASO_", env_file=".env", extra="ignore", case_sensitive=False
     )
@@ -23,6 +24,12 @@ class Settings(BaseSettings):
     curriculum_bucket: str = ""
     event_bus: str = "repaso"
     scheduler_group: str = "repaso"
+    scheduler_target_arn: str = ""
+    scheduler_role_arn: str = ""
+    agentcore_runtime_arn: str = ""
+    agentcore_runtime_arn_parameter: str = "/repaso/agentcore/runtime-arn"
+    knowledge_base_id: str = ""
+    curriculum_source: str = "bundled"
     telegram_secret_name: str = "repaso/telegram"
     judge_code_secret_name: str = "repaso/judge"
     invite_codes_secret_name: str = "repaso/pilot-invite-codes"
@@ -39,6 +46,7 @@ class Settings(BaseSettings):
     escalation_min_samples: int = Field(default=9, ge=1)
     legibility_blur_floor: float = Field(default=300.0, gt=0.0)
     daily_llm_budget_calls: int = Field(default=40, ge=1)
+    global_daily_llm_budget_calls: int = Field(default=400, ge=1)
     rework_max_iterations: int = Field(default=2, ge=0)
     item_regen_max_rounds: int = Field(default=2, ge=0)
 

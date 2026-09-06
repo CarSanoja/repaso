@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from uuid import uuid4
 
 from repaso.config.models import ModelRole
 from repaso.config.settings import Settings
@@ -88,13 +89,13 @@ def inbound(
     callback: str | None = None,
     media: InboundMedia | None = None,
     chat_ref: str = NEW_CHAT,
-    message_ref: str = "1",
+    message_ref: str | None = None,
     received_at: datetime = START,
 ) -> InboundMessage:
     return InboundMessage(
         channel=ChannelKind.TELEGRAM,
         chat_ref=chat_ref,
-        message_ref=message_ref,
+        message_ref=message_ref or uuid4().hex,
         text=text,
         callback_data=callback,
         media=media,

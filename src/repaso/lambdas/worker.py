@@ -1,9 +1,9 @@
 import json
 import logging
+from hashlib import sha256
 from typing import Any
 
 from repaso.core.harness.idempotency import KEY_SEPARATOR
-from repaso.lambdas.bootstrap import store
 from repaso.schemas.events import DomainEvent
 
 BATCH_FAILURES_KEY = "batchItemFailures"
@@ -43,6 +43,12 @@ def first_delivery(record: dict[str, Any]) -> bool:
 
 
 def _dispatch(event: DomainEvent) -> Any:
+    from repaso.config.settings import get_settings
+
+    if not get_settings().local_mode:
+        from repaso.tools.agentcore import invoke_runtime
+
+        return invoke_runtime(event, get_settings())
     from repaso.runtime.entrypoint import invoke
 
     return invoke(event.model_dump(mode="json"))
@@ -59,13 +65,10 @@ def _reason(result: Any) -> str:
 def _process(record: dict[str, Any]) -> bool:
     event = decode(record)
     key = worker_key(event)
-    if first_delivery(record) and not store().claim(key, OWNER):
-        logger.info("worker skipped an already claimed event %s", key)
-        return True
     result = _dispatch(event)
     if isinstance(result, dict) and result.get(OK_KEY) is True:
         return True
-    logger.error("runtime rejected %s: %s", key, _reason(result))
+    logger.error("runtime rejected %s: %s", sha256(key.encode()).hexdigest()[:24], _reason(result))
     return False
 
 
@@ -83,8 +86,8 @@ def handler(event: dict[str, Any], context: Any = None) -> dict[str, list[dict[s
         identifier = _identifier(record)
         try:
             accepted = _process(record)
-        except Exception:
-            logger.exception("worker failed on message %s", identifier or "<unidentified>")
+        except Exception as error:
+            logger.error("worker failed type=%s", type(error).__name__)
             accepted = False
         if not accepted and identifier:
             failures.append({ITEM_IDENTIFIER_KEY: identifier})

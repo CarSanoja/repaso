@@ -1,6 +1,8 @@
 import re
+import unicodedata
 from dataclasses import dataclass
 from datetime import datetime, time
+from hashlib import sha256
 from uuid import uuid4
 
 from repaso.channel.telegram.allowlist import valid_invite
@@ -55,8 +57,11 @@ def parse_practice_time(text: str) -> tuple[int, int] | None:
 
 
 def advance(
-    progress: EnrollmentProgress, message: InboundMessage, store: StateStore,
-    now: datetime, invite_codes: frozenset[str],
+    progress: EnrollmentProgress,
+    message: InboundMessage,
+    store: StateStore,
+    now: datetime,
+    invite_codes: frozenset[str],
 ) -> EnrollmentReply:
     text = (message.text or "").strip()
     if progress.step is EnrollmentStep.CONSENT:
@@ -91,8 +96,11 @@ def _single(progress: EnrollmentProgress, key: str, **kwargs: object) -> Enrollm
 
 
 def _consent_step(
-    progress: EnrollmentProgress, message: InboundMessage, store: StateStore,
-    text: str, invite_codes: frozenset[str],
+    progress: EnrollmentProgress,
+    message: InboundMessage,
+    store: StateStore,
+    text: str,
+    invite_codes: frozenset[str],
 ) -> EnrollmentReply:
     if message.callback_data == CONSENT_NO:
         store.delete_enrollment(progress.channel.value, progress.chat_ref)
@@ -134,7 +142,7 @@ def _grade_step(progress: EnrollmentProgress, text: str) -> EnrollmentReply:
         grade = int(text)
     except ValueError:
         return _single(progress, "ask_grade")
-    if not 1 <= grade <= 12:
+    if grade != 4:
         return _single(progress, "ask_grade")
     progress.grade = grade
     progress.step = EnrollmentStep.SECTION
@@ -144,7 +152,7 @@ def _grade_step(progress: EnrollmentProgress, text: str) -> EnrollmentReply:
 def _section_step(progress: EnrollmentProgress, text: str) -> EnrollmentReply:
     if not text:
         return _single(progress, "ask_section")
-    progress.section_key = "-".join(text.lower().split())
+    progress.section_key = normalize_section(text)
     progress.step = EnrollmentStep.SCHEDULE
     return _single(progress, "ask_schedule")
 
@@ -179,6 +187,9 @@ def _complete(progress: EnrollmentProgress, store: StateStore, now: datetime) ->
         alias=progress.alias or "",
         grade=progress.grade or 1,
         section_key=progress.section_key or "",
+        cohort_id=sha256(f"{progress.invite_code}:{progress.section_key}".encode()).hexdigest()[
+            :24
+        ],
         created_at=now,
     )
     store.put_family(family)
@@ -192,3 +203,10 @@ def _complete(progress: EnrollmentProgress, store: StateStore, now: datetime) ->
         ],
         done=True,
     )
+
+
+def normalize_section(text: str) -> str:
+    text = unicodedata.normalize("NFKD", text.casefold())
+    text = "".join(c for c in text if not unicodedata.combining(c))
+    text = re.sub(r"(\d+)(?:to|º|°|th)\b", r"\1", text)
+    return "-".join(re.findall(r"[a-z0-9]+", text))

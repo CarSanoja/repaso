@@ -1,13 +1,14 @@
 from repaso.core.orchestration.context import Services
 from repaso.schemas.escalation import EscalationKind, EscalationStatus
 from repaso.schemas.grading import EvidenceSpan
+from repaso.tools.grade_log import effective_grades
 
 LATENCY_WINDOW = 20
 EVIDENCE_SPANS = 3
 
 
 def latency_window(services: Services, student_id: str, latest: float) -> list[float]:
-    grades = services.grade_log.by_student(student_id)
+    grades = effective_grades(services.grade_log.by_student(student_id))
     window = [g.latency_seconds for g in grades if g.latency_seconds is not None]
     return window[-LATENCY_WINDOW:] + [latest]
 
@@ -33,7 +34,7 @@ def struggle_evidence(
     fallback: EvidenceSpan,
 ) -> list[EvidenceSpan]:
     spans = []
-    for grade in reversed(services.grade_log.by_student(student_id)):
+    for grade in reversed(effective_grades(services.grade_log.by_student(student_id))):
         if grade.correct is False:
             item = services.store.get_item(grade.item_id)
             if item is not None and item.competency_id == competency_id:

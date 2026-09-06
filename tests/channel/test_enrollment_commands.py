@@ -26,8 +26,12 @@ NO = "consent:no"
 
 def inbound(text: str | None = None, callback: str | None = None) -> InboundMessage:
     return InboundMessage(
-        channel=ChannelKind.TELEGRAM, chat_ref=CHAT, message_ref="m1", text=text,
-        callback_data=callback, received_at=NOW,
+        channel=ChannelKind.TELEGRAM,
+        chat_ref=CHAT,
+        message_ref="m1",
+        text=text,
+        callback_data=callback,
+        received_at=NOW,
     )
 
 
@@ -80,7 +84,7 @@ def test_full_enrollment_walk_creates_family_and_student(store):
     assert enrolled.status is FamilyStatus.ACTIVE and enrolled.invite_code == "PILOTO-1"
     assert enrolled.practice_time == time(hour=19, minute=30)
     assert (enrolled.consent.version, enrolled.consent.chat_ref) == ("v1", CHAT)
-    assert (student.alias, student.grade, student.section_key) == ("Leo", 4, "san-josé-4to-b")
+    assert (student.alias, student.grade, student.section_key) == ("Leo", 4, "san-jose-4-b")
     assert store.get_enrollment(CHANNEL, CHAT) is None
 
 

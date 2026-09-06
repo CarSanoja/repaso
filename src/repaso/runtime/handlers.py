@@ -66,9 +66,7 @@ def resolve_student(services: Services, family: Family, student_id: str) -> Stud
     return student
 
 
-def resolve_escalation_record(
-    services: Services, family: Family, escalation_id: str
-) -> Escalation:
+def resolve_escalation_record(services: Services, family: Family, escalation_id: str) -> Escalation:
     escalation = services.store.get_escalation(EscalationId(escalation_id))
     if escalation is None:
         raise InvocationError(ErrorCode.NOT_FOUND, f"escalation not found: {escalation_id}")
@@ -106,9 +104,7 @@ def resolve_material_data(services: Services, data: MaterialPayload) -> bytes:
     return blob
 
 
-async def on_material_uploaded(
-    services: Services, request: InvocationRequest
-) -> dict[str, Any]:
+async def on_material_uploaded(services: Services, request: InvocationRequest) -> dict[str, Any]:
     data = validate(MaterialPayload, request.payload)
     family = resolve_family(services, request)
     student = resolve_student(services, family, data.student_id)
@@ -123,27 +119,33 @@ async def on_material_uploaded(
     return ingest_summary(run)
 
 
-async def on_daily_session_due(
-    services: Services, request: InvocationRequest
-) -> dict[str, Any]:
+async def on_daily_session_due(services: Services, request: InvocationRequest) -> dict[str, Any]:
     data = validate(StudentScoped, request.payload)
     family = resolve_family(services, request)
     student = resolve_student(services, family, data.student_id)
     return tutor_summary(await start_daily_session(services, family, student))
 
 
-async def on_response_received(
-    services: Services, request: InvocationRequest
-) -> dict[str, Any]:
+async def on_response_received(services: Services, request: InvocationRequest) -> dict[str, Any]:
     data = validate(AnswerPayload, request.payload)
     family = resolve_family(services, request)
     student = resolve_student(services, family, data.student_id)
-    run = await handle_answer(services, family, student, data.text, data.latency_seconds)
+    run = await handle_answer(
+        services,
+        family,
+        student,
+        data.text,
+        data.latency_seconds,
+        response_id=request.idempotency_key or None,
+    )
     return tutor_summary(run)
 
 
 async def on_daily_close(services: Services, request: InvocationRequest) -> dict[str, Any]:
-    return close_summary(await run_daily_close(services))
+    from repaso.runtime.recovery import recover_pending
+
+    recovered = await recover_pending(services)
+    return close_summary(await run_daily_close(services)) | {"recovery": recovered}
 
 
 async def on_channel_message(services: Services, request: InvocationRequest) -> dict[str, Any]:
@@ -151,26 +153,18 @@ async def on_channel_message(services: Services, request: InvocationRequest) -> 
     return channel_summary(await handle_channel_message(services, message))
 
 
-async def on_escalation_resolved(
-    services: Services, request: InvocationRequest
-) -> dict[str, Any]:
+async def on_escalation_resolved(services: Services, request: InvocationRequest) -> dict[str, Any]:
     data = validate(EscalationPayload, request.payload)
     family = resolve_family(services, request)
     escalation = resolve_escalation_record(services, family, data.escalation_id)
-    return escalation_summary(
-        resolve_escalation(services, family, escalation, data.option_key)
-    )
+    return escalation_summary(resolve_escalation(services, family, escalation, data.option_key))
 
 
-async def on_quarantine_resolved(
-    services: Services, request: InvocationRequest
-) -> dict[str, Any]:
+async def on_quarantine_resolved(services: Services, request: InvocationRequest) -> dict[str, Any]:
     data = validate(QuarantinePayload, request.payload)
     family = resolve_family(services, request)
     quarantine = resolve_quarantine_record(services, family, data.quarantine_id)
-    return quarantine_summary(
-        resolve_quarantine(services, family, quarantine, data.accepted)
-    )
+    return quarantine_summary(resolve_quarantine(services, family, quarantine, data.accepted))
 
 
 async def on_exam_announced(services: Services, request: InvocationRequest) -> dict[str, Any]:

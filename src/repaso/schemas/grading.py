@@ -9,6 +9,7 @@ from repaso.schemas.common import FrozenStrictModel, ItemId, StrictBaseModel, St
 class GradedBy(StrEnum):
     DETERMINISTIC = "deterministic"
     LLM = "llm"
+    HUMAN = "human"
 
 
 class EvidenceSpan(FrozenStrictModel):
@@ -25,6 +26,8 @@ class StudentResponse(FrozenStrictModel):
 
 
 class GradeResult(StrictBaseModel):
+    id: str | None = None
+    supersedes: str | None = None
     student_id: StudentId
     item_id: ItemId
     correct: bool | None
@@ -35,4 +38,5 @@ class GradeResult(StrictBaseModel):
     evidence: EvidenceSpan
     feedback: str
     quarantined: bool = False
+    responded_at: datetime | None = None
     graded_at: datetime

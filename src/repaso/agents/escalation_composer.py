@@ -11,6 +11,7 @@ from repaso.agents.prompts.escalation_composer import (
 )
 from repaso.config.models import ModelRole
 from repaso.i18n.catalog import msg
+from repaso.i18n.competencies import competency_label
 from repaso.schemas.common import EscalationId, FamilyId, Lang, StudentId
 from repaso.schemas.competency import Competency
 from repaso.schemas.escalation import Escalation, EscalationKind, EscalationOption
@@ -19,7 +20,6 @@ from repaso.schemas.grading import EvidenceSpan
 NOTE_ROLE = ModelRole.GENERATE
 EVIDENCE_SEPARATOR = "; "
 OPTION_MESSAGE_KEYS: tuple[tuple[str, str], ...] = (
-    ("guided_session", "option_guided_session"),
     ("teacher_note", "option_teacher_note"),
     ("reduce_load", "option_reduce_load"),
 )
@@ -66,12 +66,12 @@ async def compose_struggle(
         "struggle_summary",
         lang,
         alias=alias,
-        competency=competency.name,
+        competency=competency_label(competency, lang),
         evidence=evidence_digest(evidence),
     )
     request = STRUGGLE_REQUEST.format(
         lang=lang.value,
-        competency=competency.name,
+        competency=competency_label(competency, lang),
         evidence_count=len(evidence),
     )
     return Escalation(
@@ -130,11 +130,11 @@ async def compose_cohort(
         lang,
         count=count,
         section=section_key,
-        competency=competency.name,
+        competency=competency_label(competency, lang),
     )
     request = COHORT_REQUEST.format(
         lang=lang.value,
-        competency=competency.name,
+        competency=competency_label(competency, lang),
         section=section_key,
         count=count,
     )

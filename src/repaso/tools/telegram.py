@@ -10,7 +10,6 @@ from repaso.schemas.channel import Button, OutboundMessage
 TELEGRAM_API_BASE = "https://api.telegram.org"
 OUTBOX_FILENAME = "outbox.jsonl"
 DEFAULT_TIMEOUT_SECONDS = 15.0
-PARSE_MODE = "HTML"
 
 
 @runtime_checkable
@@ -19,6 +18,8 @@ class ChannelSender(Protocol):
 
 
 def _inline_keyboard(buttons: list[Button]) -> str:
+    if any(not 1 <= len(b.callback_data.encode("utf-8")) <= 64 for b in buttons):
+        raise ValueError("Telegram callback_data must be between 1 and 64 bytes")
     rows = [[{"text": button.label, "callback_data": button.callback_data}] for button in buttons]
     return json.dumps({"inline_keyboard": rows}, ensure_ascii=False)
 
@@ -29,6 +30,7 @@ class LocalOutbox:
         self.sent: list[dict] = []
 
     def send(self, message: OutboundMessage) -> str:
+        _inline_keyboard(message.buttons)
         record = {
             "chat_ref": message.chat_ref,
             "text": message.text,
@@ -56,13 +58,14 @@ class TelegramSender:
         payload = {
             "chat_id": message.chat_ref,
             "text": message.text,
-            "parse_mode": PARSE_MODE,
         }
         if message.buttons:
             payload["reply_markup"] = _inline_keyboard(message.buttons)
         response = self._client.post(self.url, json=payload)
         response.raise_for_status()
         body = response.json()
+        if body.get("ok") is False:
+            raise RuntimeError("Telegram rejected the message")
         result = body.get("result", body)
         return str(result["message_id"])
 

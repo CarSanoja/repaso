@@ -55,7 +55,7 @@ def make_response(student_id: str, item_id: str, text: str, latency: float = 20.
     )
 
 
-async def test_session_graph_plans_and_delivers_capsule(settings):
+async def test_session_graph_prepares_capsule_before_transport_ack(settings):
     services = make_services(settings)
     family, student = seed_family(services.store)
     seed_item(services.store, "i1")
@@ -66,7 +66,9 @@ async def test_session_graph_plans_and_delivers_capsule(settings):
     await build_session_graph(services, run).invoke_async("session")
 
     assert run.terminal is None
-    assert run.session.status is SessionStatus.DELIVERED
+    assert run.session.status is SessionStatus.PLANNED
+    assert run.session.delivery_message is not None
+    assert run.session.delivered_at is None
     assert run.session.capsule is not None
     message = run.outbound[0]
     assert message.chat_ref == family.chat_ref
@@ -95,7 +97,10 @@ async def test_mcq_correct_updates_mastery_and_moves_to_next_item(settings):
     services.models[ModelRole.STRUCTURED].enqueue({"action": "continue", "reason": "ok"})
 
     run = TutorRun(
-        family=family, student=student, session=session, items=[item],
+        family=family,
+        student=student,
+        session=session,
+        items=[item],
         response=make_response(student.id, "i1", "1/2"),
     )
     await build_response_graph(services, run).invoke_async("response")
@@ -117,7 +122,10 @@ async def test_last_item_completes_the_session_with_streak(settings):
     services.models[ModelRole.STRUCTURED].enqueue({"action": "continue", "reason": "ok"})
 
     run = TutorRun(
-        family=family, student=student, session=session, items=[item],
+        family=family,
+        student=student,
+        session=session,
+        items=[item],
         response=make_response(student.id, "i1", "1/2"),
     )
     await build_response_graph(services, run).invoke_async("response")
@@ -136,7 +144,10 @@ async def test_open_low_confidence_quarantines_and_never_guesses(settings):
     )
 
     run = TutorRun(
-        family=family, student=student, session=session, items=[item],
+        family=family,
+        student=student,
+        session=session,
+        items=[item],
         response=make_response(student.id, "i1", "porque los dos son la mitad"),
     )
     await build_response_graph(services, run).invoke_async("response")
@@ -145,7 +156,7 @@ async def test_open_low_confidence_quarantines_and_never_guesses(settings):
     assert run.grade.quarantined is True
     assert services.store.list_pending_quarantine(family.id)
     prompt = run.outbound[0]
-    assert len(prompt.buttons) == 2
+    assert len(prompt.buttons) == 3
     assert services.store.get_mastery(student.id, FRACTIONS) is None
 
 
@@ -156,8 +167,12 @@ async def test_struggle_hard_rule_escalates_even_when_model_says_continue(settin
     session = seed_session(services, student.id, ["i1"])
     services.store.put_mastery(
         MasteryState(
-            student_id=student.id, competency_id=FRACTIONS,
-            ema_accuracy=0.2, attempts=9, correct=1, streak=-4,
+            student_id=student.id,
+            competency_id=FRACTIONS,
+            ema_accuracy=0.2,
+            attempts=9,
+            correct=1,
+            streak=-4,
             level=MasteryLevel.STRUGGLING,
         )
     )
@@ -165,14 +180,17 @@ async def test_struggle_hard_rule_escalates_even_when_model_says_continue(settin
     services.models[ModelRole.GENERATE].enqueue({"text": "Estimada maestra, un estudiante..."})
 
     run = TutorRun(
-        family=family, student=student, session=session, items=[item],
+        family=family,
+        student=student,
+        session=session,
+        items=[item],
         response=make_response(student.id, "i1", "2/8"),
     )
     await build_response_graph(services, run).invoke_async("response")
 
     assert run.decision_action == "escalate_struggle"
     assert run.escalations and run.escalations[0].kind is EscalationKind.STRUGGLE_TRIAGE
-    assert len(run.escalations[0].options) == 3
+    assert len(run.escalations[0].options) == 2
     assert any(m.buttons and m.buttons[0].callback_data.startswith("esc:") for m in run.outbound)
     note_calls = services.models[ModelRole.GENERATE].calls
     assert note_calls and all("Leo" not in str(call) for call in note_calls)

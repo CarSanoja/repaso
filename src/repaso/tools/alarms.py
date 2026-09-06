@@ -14,6 +14,7 @@ STATE_DISABLED = "DISABLED"
 class AlarmSpec(FrozenStrictModel):
     name: str
     cron: str
+    timezone: str = "UTC"
     enabled: bool = True
     payload: dict[str, str] = {}
 
@@ -125,6 +126,7 @@ class SchedulerAlarms:
         return AlarmSpec(
             name=described["Name"],
             cron=described["ScheduleExpression"],
+            timezone=described.get("ScheduleExpressionTimezone", "UTC"),
             enabled=described.get("State", STATE_ENABLED) == STATE_ENABLED,
             payload={str(key): str(value) for key, value in raw.items()},
         )
@@ -134,6 +136,7 @@ class SchedulerAlarms:
             "Name": spec.name,
             "GroupName": self._group,
             "ScheduleExpression": spec.cron,
+            "ScheduleExpressionTimezone": spec.timezone,
             "FlexibleTimeWindow": {"Mode": "OFF"},
             "State": STATE_ENABLED if spec.enabled else STATE_DISABLED,
             "Target": {

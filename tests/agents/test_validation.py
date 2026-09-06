@@ -133,11 +133,11 @@ async def test_probe_returns_none_when_the_model_breaks():
     assert await probe_blind(mcq(), BrokenModel()) is None
 
 
-def test_combine_flips_acceptance_and_appends_the_flaw():
+def test_a_single_blind_hit_is_advisory_and_cannot_veto_the_critic():
     result = combine(verdict(accepted=True), True)
 
-    assert result.accepted is False
-    assert result.flaws == [ItemFlaw.ANSWERABLE_WITHOUT_MATERIAL]
+    assert result.accepted is True
+    assert result.flaws == []
     assert result.probe_answered_blind is True
 
 

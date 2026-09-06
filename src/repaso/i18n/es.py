@@ -1,4 +1,9 @@
 MESSAGES = {
+    "model_waiting": (
+        "El servicio de IA está temporalmente sin capacidad. Guardé el trabajo "
+        "pendiente; no hace falta repetir tu respuesta. La práctica continuará "
+        "cuando vuelva a estar disponible. "
+    ),
     "welcome": (
         "Hola, soy Repaso, el tutor de refuerzo de tu familia. Yo trabajo contigo, "
         "el representante: tú me mandas el material del colegio y yo armo una práctica "
@@ -9,27 +14,27 @@ MESSAGES = {
         "1. La cuenta es tuya, del representante. Tu hijo o hija nunca usa Telegram: "
         "la práctica llega a este chat y ustedes la hacen juntos.\n"
         "2. Nunca me des el nombre real del estudiante. Usaremos un alias que tú elijas; "
-        "los nombres reales jamás llegan al sistema.\n"
+        "evita también nombres o datos personales en las hojas.\n"
         "3. Guardo solo lo necesario: el alias, el grado, el material que envíes y las "
-        "respuestas de práctica. Puedes borrarlo todo cuando quieras con /forget.\n"
+        "respuestas de práctica. /forget borra los datos activos. Los registros operativos "
+        "se conservan hasta 7 días y las copias de respaldo hasta 35 días; el historial "
+        "del chat se gestiona en Telegram.\n"
         "4. Este proyecto es de código abierto, pero tus datos no: nada de lo que envíes "
-        "se publica ni se comparte.\n"
+        "se publica. Telegram y AWS procesan los datos para prestar el servicio.\n"
         "¿Aceptas estas condiciones?"
     ),
     "consent_accept": "Acepto",
     "consent_declined": "Entendido. Si cambias de opinión, escribe /start cuando quieras.",
     "ask_alias": "¿Qué alias usamos para el estudiante? (por ejemplo: Leo, Estrella, Campeón)",
-    "alias_warning": (
-        "Ese parece un nombre real. Mejor usa un apodo que solo ustedes conozcan."
-    ),
-    "ask_grade": "¿En qué grado está? (1 a 12)",
+    "alias_warning": ("Ese parece un nombre real. Mejor usa un apodo que solo ustedes conozcan."),
+    "ask_grade": "Este piloto cubre matemática de cuarto grado. Escribe 4 para continuar.",
     "ask_section": (
         "¿Colegio, grado y sección? (por ejemplo: San José 4to B). Esto me deja avisarte "
         "si varias familias de la misma sección tropiezan con el mismo tema."
     ),
     "ask_schedule": "¿A qué hora quieres la práctica diaria? (por ejemplo: 7pm)",
     "ask_first_material": (
-        "Listo. Mándame una foto del cuaderno, la guía o el plan de la semana y armo la "
+        "Listo. Mándame una foto de una hoja impresa o un PDF de una página y armo la "
         "primera práctica de {alias}."
     ),
     "enrollment_done": (
@@ -40,7 +45,9 @@ MESSAGES = {
     "capsule_header": "Práctica de hoy para {alias} — {competency}",
     "feedback_correct": "¡Correcto! {feedback}",
     "feedback_incorrect": "Todavía no. {feedback}",
-    "session_complete": "¡Práctica de hoy completa! Racha de {streak} días. Hasta mañana.",
+    "session_complete": (
+        "¡Práctica de hoy completa! Racha de {streak} respuestas correctas. Hasta mañana."
+    ),
     "material_received": "Recibido ✅ Estoy preparando el material.",
     "material_ready": "Material listo: preparé {item_count} ejercicios sobre {competencies}.",
     "material_rejected": (
@@ -65,7 +72,7 @@ MESSAGES = {
         "envías de nuevo?"
     ),
     "quarantine_prompt": (
-        "Necesito tu ojo: {alias} respondió \"{answer}\" y no estoy seguro de cómo "
+        'Necesito tu ojo: {alias} respondió "{answer}" y no estoy seguro de cómo '
         "calificarla. ¿La das por buena?"
     ),
     "quarantine_approve": "Está bien",
@@ -74,7 +81,7 @@ MESSAGES = {
         "Gracias. La cuento como correcta y ya suma al avance de esta semana."
     ),
     "quarantine_ack_rejected": (
-        "Gracias. La dejo fuera del avance: no suma ni resta."
+        "Gracias. La registro como incorrecta y ajusto el repaso con ese resultado."
     ),
     "struggle_summary": (
         "{alias} lleva varios días tropezando con {competency}. Esta es la evidencia: "
@@ -82,7 +89,7 @@ MESSAGES = {
     ),
     "option_guided_session": "Sesión guiada de 10 min juntos esta noche (te la preparo)",
     "option_teacher_note": "Nota para la maestra (ya está redactada, tú decides enviarla)",
-    "option_reduce_load": "Bajar el ritmo y consolidar el tema anterior",
+    "option_reduce_load": "Un ejercicio por práctica durante siete días",
     "engagement_alert": (
         "{alias} lleva {days} días de clase sin practicar. ¿Reducimos la carga o cambiamos el "
         "horario? /schedule cambia la hora, /pause detiene sin borrar nada."
@@ -97,20 +104,19 @@ MESSAGES = {
     ),
     "exam_ack": "Anotado: examen de {competency} el {date}. Ajusto el plan de repaso.",
     "exam_ask_date": (
-        "Lo anoto con gusto, pero me falta el día. ¿Cuándo es? Por ejemplo: 12/09 o "
-        "12-09-2026."
+        "Lo anoto con gusto, pero me falta el día. ¿Cuándo es? Por ejemplo: 12/09 o 12-09-2026."
     ),
-    "escalation_ack": (
-        "Listo, seguimos con: {option}. Ajusto el plan de práctica desde hoy."
-    ),
+    "escalation_ack": ("Listo: {option}."),
     "mastery_summary": "{mastered} dominados · {developing} en camino · {struggling} difíciles",
     "paused": "Pausado. Nada se borra; /resume retoma cuando quieran.",
     "resumed": "¡De vuelta! Mañana a las {time} llega la próxima práctica.",
     "forget_confirm": (
-        "Esto borra TODO: alias, material, historial y estadísticas. No se puede "
-        "deshacer. ¿Seguro?"
+        "Esto borra TODO: alias, material, historial y estadísticas. No se puede deshacer. ¿Seguro?"
     ),
-    "forget_done": "Todo borrado. Gracias por confiar en Repaso.",
+    "forget_done": (
+        "Perfil, material, respuestas y alarmas borrados del servicio activo. Las copias "
+        "de seguridad vencen en hasta 35 días y los registros técnicos en siete días."
+    ),
     "forget_yes": "Sí, borrar todo",
     "forget_no": "No, conservar",
     "consent_decline": "No acepto",
@@ -130,4 +136,14 @@ MESSAGES = {
     ),
     "unknown_command": "No conozco ese comando. /help muestra lo que sé hacer.",
     "status_line": "{alias}: {sessions} prácticas, dominio {mastery_map}, racha {streak}.",
+    "supported_material": (
+        "En este piloto trabajamos matemática de cuarto grado con fotos de texto impreso "
+        "y PDF de una página (hasta 10 MB). Voz y manuscritos todavía no están "
+        "disponibles."
+    ),
+    "quarantine_unsure": "No sé todavía",
+    "quarantine_deferred": (
+        "La respuesta queda pendiente, sin cambiar el avance. Puedes revisarla con el "
+        "docente y volver a estos botones."
+    ),
 }

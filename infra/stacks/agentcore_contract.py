@@ -14,7 +14,7 @@ DOCKERFILE = "deploy/agentcore/Dockerfile"
 
 ENVIRONMENT_GROUPS = ("region", "resources", "runtime_only", "models", "tuning")
 UNRESOLVED = re.compile(r"REPASO_[A-Z_]+")
-BUILT_FROM = ("pyproject.toml", "README.md", "LICENSE", "src", DOCKERFILE)
+BUILT_FROM = ("pyproject.toml", "README.md", "LICENSE", "requirements.lock", "src", DOCKERFILE)
 NEVER_BUILT_FROM = ("**/__pycache__", "**/*.egg-info", "**/*.pyc")
 
 
@@ -34,11 +34,7 @@ def environment(contract: dict[str, Any], overrides: dict[str, str]) -> dict[str
             declared[name] = str(value)
     declared.update(overrides)
     never_set = set(block.get("never_set") or ())
-    return {
-        name: value
-        for name, value in declared.items()
-        if value and name not in never_set
-    }
+    return {name: value for name, value in declared.items() if value and name not in never_set}
 
 
 def _resolved(filename: str, values: dict[str, str]) -> dict[str, Any]:

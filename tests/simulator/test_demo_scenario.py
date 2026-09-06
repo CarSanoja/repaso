@@ -53,6 +53,12 @@ EXPECTED_BEATS = [
     "every runtime invocation was accepted",
     "roles played from the cassette",
     "cassette entries left unplayed",
+    "persistent difficulty reaches the parent",
+    "the chosen action is resolved",
+    "the drafted note is actually delivered",
+    "the next scheduled practice reflects the plan",
+    "the complete journey has no runtime failures",
+    "followup scripts were fully consumed",
 ]
 CRITIC_FINDINGS = 12
 CRITIC_REJECTIONS = 5
@@ -88,13 +94,14 @@ async def test_the_transcript_is_the_chat_the_family_would_have_had(demo_setting
 
     assert spoken[0] == Speech(speaker=PARENT, text=INVITE_CODE)
     assert any(entry.speaker is BOT and "Acepto" in entry.buttons for entry in spoken)
-    assert [entry.text for entry in spoken if entry.speaker == CHILD] == [
-        "3/4",
+    assert [entry.text for entry in spoken if entry.speaker == CHILD][:3] == [
+        "2/4",
         WRONG_ANSWER,
         HEDGED_ANSWER,
     ]
     assert spoken[-1].speaker == BOT
-    assert "no los puedo dar por buenos" in spoken[-1].text
+    assert any("no los puedo dar por buenos" in e.text for e in spoken)
+    assert len([e for e in spoken if e.speaker == CHILD]) == 9
 
 
 async def test_the_parent_is_asked_to_settle_the_answer_the_grader_would_not(demo_settings):
@@ -106,7 +113,7 @@ async def test_the_parent_is_asked_to_settle_the_answer_the_grader_would_not(dem
     ]
 
     assert len(prompts) == 1
-    assert prompts[0].buttons == ("Está bien", "Está mal")
+    assert prompts[0].buttons == ("Está bien", "Está mal", "No sé todavía")
     assert HEDGED_ANSWER in prompts[0].text
 
 
@@ -119,6 +126,8 @@ async def test_a_harness_reading_follows_every_answer_and_the_review(demo_settin
         "after answer 2",
         "after answer 3",
         "after the parent's review",
+        "SIMULATED TIME JUMP · day 2",
+        "SIMULATED TIME JUMP · day 3",
     ]
     assert [name for name, _ in taken[0].values] == [
         "mastery EMA",

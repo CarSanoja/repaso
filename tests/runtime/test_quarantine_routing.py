@@ -94,9 +94,7 @@ def test_the_quarantine_button_travels_from_the_chat_to_a_released_answer(settin
     item = seed_open_item(services.store)
     seed_held_answer(services.store, family.id, student.id)
 
-    tap = invoke(
-        channel_request(inbound(callback="quar:q1:yes", chat_ref=FAMILY_CHAT)), services
-    )
+    tap = invoke(channel_request(inbound(callback="quar:q1:yes", chat_ref=FAMILY_CHAT)), services)
 
     assert tap["result"]["route"] == "quarantine"
     assert tap["result"]["events"] == ["quarantine_resolved"]
@@ -160,6 +158,7 @@ def test_the_parent_rejecting_discards_the_answer_and_is_told_so(settings):
     )
 
     assert response["result"]["status"] == QuarantineStatus.REJECTED.value
-    assert response["result"]["released_item_id"] is None
+    assert response["result"]["released_item_id"] == "i1"
     assert response["result"]["outbound"][0]["text"] == msg("quarantine_ack_rejected", Lang.ES)
-    assert services.store.get_mastery(student.id, FRACTIONS) is None
+    assert services.store.get_mastery(student.id, FRACTIONS).correct == 0
+    assert services.store.get_mastery(student.id, FRACTIONS).attempts == 1

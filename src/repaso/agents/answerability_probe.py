@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.answerability_probe import SYSTEM
-from repaso.schemas.item import Item, ItemFlaw, ItemKind, ItemVerdict
+from repaso.schemas.item import Item, ItemKind, ItemVerdict
 
 NUMBER_NOISE = "().:-# "
 
@@ -28,7 +28,7 @@ def render_blind(item: Item) -> str:
     options = "\n".join(
         f"{number}. {option}" for number, option in enumerate(item.options, start=1)
     )
-    return f"Question:\n{item.stem}\n\nOptions:\n{options}"
+    return f"The question is withheld. Inspect only these options:\n{options}"
 
 
 async def probe_blind(item: Item, model) -> bool | None:
@@ -44,16 +44,9 @@ async def probe_blind(item: Item, model) -> bool | None:
 
 
 def combine(verdict: ItemVerdict, answered_blind: bool | None) -> ItemVerdict:
-    flaws = list(verdict.flaws)
-    if answered_blind is True and ItemFlaw.ANSWERABLE_WITHOUT_MATERIAL not in flaws:
-        flaws.append(ItemFlaw.ANSWERABLE_WITHOUT_MATERIAL)
-    return verdict.model_copy(
-        update={
-            "accepted": verdict.accepted and answered_blind is not True,
-            "flaws": flaws,
-            "probe_answered_blind": answered_blind,
-        }
-    )
+    # A single hit cannot distinguish a clue from chance. Keep this diagnostic
+    # for evaluation; only the grounded critic can reject the exercise.
+    return verdict.model_copy(update={"probe_answered_blind": answered_blind})
 
 
 def rejection_rate(verdicts: list[ItemVerdict]) -> float:

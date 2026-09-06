@@ -186,7 +186,7 @@ def test_local_taxonomy_path_keeps_operator_edits(settings):
     ]
 
 
-def test_factory_requires_knowledge_base_id_outside_local_mode():
+def test_factory_uses_bundled_curriculum_without_an_optional_knowledge_base():
     cloud = Settings(aws_region="us-east-1")
-    with pytest.raises(ValueError):
-        build_knowledge_retriever(cloud)
+    retriever = build_knowledge_retriever(cloud)
+    assert retriever.list_competencies(4, "math")

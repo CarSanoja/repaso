@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
-      - run: pip install ruff
+      - run: pip install -c requirements.lock ruff
       - run: ruff check .
 
   test:
@@ -43,8 +43,16 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
-      - run: pip install -e ".[dev]"
+      - run: pip install -c requirements.lock -e ".[dev]"
       - run: pytest -q
+      - run: python -m build --wheel --no-isolation
+      - name: Test the installed wheel outside the source checkout
+        run: |
+          python -m venv /tmp/repaso-wheel
+          /tmp/repaso-wheel/bin/pip install -c requirements.lock dist/*.whl
+          cp scripts/check_installed_package.py /tmp/check_repaso_package.py
+          cd /tmp
+          /tmp/repaso-wheel/bin/python check_repaso_package.py
 
   infra:
     name: infra
@@ -59,7 +67,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
-      - run: pip install -e ".[dev,deploy]"
+      - run: pip install -c requirements.lock -e ".[dev,deploy]"
       - run: pytest -q tests/infra
 
   hygiene:

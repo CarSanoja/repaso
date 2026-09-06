@@ -16,8 +16,12 @@ def seed_struggling_family(services, family_id: str, chat_ref: str) -> None:
     _, student = seed_family(services.store, family_id, chat_ref)
     services.store.put_mastery(
         MasteryState(
-            student_id=student.id, competency_id=FRACTIONS,
-            ema_accuracy=0.2, attempts=9, correct=1, level=MasteryLevel.STRUGGLING,
+            student_id=student.id,
+            competency_id=FRACTIONS,
+            ema_accuracy=0.2,
+            attempts=9,
+            correct=1,
+            level=MasteryLevel.STRUGGLING,
         )
     )
 
@@ -34,7 +38,7 @@ async def test_cohort_signal_fires_once_per_section_and_week(settings):
     await build_quality_graph(services, run).invoke_async("close")
 
     assert len(run.cohort_fired) == 1
-    assert len(run.outbound) == 3
+    assert len(run.outbound) == 1  # one shared note, not three copies
     assert all("familias" in message.text for message in run.outbound)
 
     rerun = CloseRun()
@@ -59,19 +63,29 @@ async def test_optimizer_retires_items_that_measure_nothing(settings):
     for index in range(4):
         seed_family(services.store, f"f{index}", str(200 + index))
     item = Item(
-        id="easy1", competency_id=FRACTIONS, kind=ItemKind.MCQ, difficulty=1,
-        stem="1/2 equals 2/4?", options=["yes", "no"], answer_key="yes",
-        rationale="trivial", status=ItemStatus.ACTIVE,
+        id="easy1",
+        competency_id=FRACTIONS,
+        kind=ItemKind.MCQ,
+        difficulty=1,
+        stem="1/2 equals 2/4?",
+        options=["yes", "no"],
+        answer_key="yes",
+        rationale="trivial",
+        status=ItemStatus.ACTIVE,
         provenance=Provenance(source=Source.GENERATED, created_at=START),
     )
     services.store.put_item(item)
     for index in range(8):
         services.grade_log.append(
             GradeResult(
-                student_id=f"s-f{index % 4}", item_id="easy1", correct=True,
-                confidence=1.0, graded_by=GradedBy.DETERMINISTIC,
+                student_id=f"s-f{index % 4}",
+                item_id="easy1",
+                correct=True,
+                confidence=1.0,
+                graded_by=GradedBy.DETERMINISTIC,
                 evidence=EvidenceSpan(quote="yes", source_ref=f"response:{index}"),
-                feedback="", graded_at=START,
+                feedback="",
+                graded_at=START,
             )
         )
 

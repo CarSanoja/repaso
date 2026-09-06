@@ -12,7 +12,6 @@ from repaso.agents.intake_screener import (
 from repaso.agents.material_parser import (
     BLURRY_PHOTO,
     EMPTY_TEXT,
-    LOW_CONFIDENCE,
     UNREADABLE_IMAGE,
     parse_material,
 )
@@ -135,8 +134,6 @@ def test_intake_decision_defaults_to_no_reasons_and_the_prompt_is_versioned():
     assert PROMPT_VERSION.startswith("v")
 
 
-
-
 def test_a_sharp_photo_parses_with_its_legibility_recorded():
     extractor = FakeExtractor("Resolver 3x + 5 = 20", 0.9)
     parsed = parse(MediaKind.PHOTO, photo_bytes(), extractor)
@@ -154,7 +151,7 @@ def test_a_blurred_photo_is_sent_back_for_a_rephoto():
     assert parsed.status is MaterialStatus.ILLEGIBLE
     assert parsed.rejection_reason == BLURRY_PHOTO
     assert parsed.parsed_text is None
-    assert parsed.effective_confidence < MIN_CONFIDENCE
+    assert parsed.effective_confidence is None  # rejected before OCR
 
 
 @pytest.mark.parametrize("data", [b"", b"\xff\xfe\x00\x01 not an image"])
@@ -184,8 +181,8 @@ def test_a_binary_pdf_yields_no_text_and_is_illegible():
 def test_a_low_confidence_voice_note_is_illegible():
     parsed = parse(MediaKind.VOICE, b"audio", FakeExtractor("no se entiende", 0.2))
     assert parsed.status is MaterialStatus.ILLEGIBLE
-    assert parsed.rejection_reason == LOW_CONFIDENCE
-    assert parsed.ocr_confidence == 0.2
+    assert parsed.rejection_reason == "unsupported_voice"
+    assert parsed.ocr_confidence is None
 
 
 def test_parsing_leaves_the_received_material_untouched():

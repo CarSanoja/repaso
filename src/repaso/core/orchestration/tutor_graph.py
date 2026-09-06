@@ -11,10 +11,13 @@ from repaso.agents.session_planner import (
     plan_items,
 )
 from repaso.config.models import ModelRole
+from repaso.core.orchestration.adaptations import open_variants, select_adapted
 from repaso.core.orchestration.context import Services, TutorRun
 from repaso.core.orchestration.nodes import StepNode
+from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.item import ItemStatus
 from repaso.schemas.mastery import MasteryState
+from repaso.schemas.provenance import Source
 from repaso.schemas.schedule import ExamDate
 from repaso.schemas.session import SessionStatus
 
@@ -23,10 +26,23 @@ EXAM_ITEM_CAP = 4
 
 
 def active_items(services: Services, run: TutorRun) -> list:
-    items = []
-    for competency in services.retriever.list_competencies(run.student.grade, "math"):
-        items.extend(services.store.list_items_by_competency(competency.id, ItemStatus.ACTIVE))
-    return items
+    competencies = {c.id for c in services.retriever.list_competencies(run.student.grade, "math")}
+    items = {
+        i.id: i
+        for i in services.store.list_family_items(run.family.id)
+        if i.competency_id in competencies
+        and i.status is ItemStatus.ACTIVE
+        and i.variant_of is None
+    }
+    for competency_id in competencies:
+        for item in services.store.list_items_by_competency(competency_id, ItemStatus.ACTIVE):
+            shared = item.family_id is None and (
+                services.settings.local_mode
+                or item.provenance.source in {Source.SYSTEM, Source.SIMULATED}
+            )
+            if shared and item.variant_of is None:
+                items[item.id] = item
+    return list(items.values())
 
 
 def exam_is_near(exams: list[ExamDate], today: date) -> bool:
@@ -42,19 +58,34 @@ def weakest_first(items: list, mastery: list[MasteryState]) -> list:
 def build_session_graph(services: Services, run: TutorRun):
     async def plan() -> None:
         today = services.clock.today()
-        if services.store.get_session_by_date(run.student.id, today) is not None:
-            run.terminal = "already_planned"
-            return
-        spaced = services.store.list_spaced(run.student.id)
+        existing = services.store.get_session_by_date(run.student.id, today)
+        if existing is not None:
+            if existing.status is not SessionStatus.PLANNED:
+                run.terminal = "already_planned"
+                return
+            run.session = existing
+            if existing.delivery_message:
+                run.outbound.append(OutboundMessage.model_validate(existing.delivery_message))
+                run.terminal = "delivery_resumed"
+                return
+            run.items = [services.store.get_item(i) for i in existing.planned_item_ids]
+            if run.items and all(run.items):
+                run.competency = services.retriever.get_competency(run.items[0].competency_id)
+                return
+        available, adaptive_limit = select_adapted(services, run, active_items(services, run))
+        allowed = {item.id for item in available}
+        spaced = [s for s in services.store.list_spaced(run.student.id) if s.item_id in allowed]
         mastery = services.store.list_mastery(run.student.id)
         urgent = exam_is_near(services.store.list_exam_dates(run.student.id), today)
         limit = min(DAILY_ITEM_LIMIT + 1, EXAM_ITEM_CAP) if urgent else DAILY_ITEM_LIMIT
-        item_ids = plan_items(spaced, mastery, active_items(services, run), today, limit)
+        limit = min(limit, adaptive_limit)
+        item_ids = plan_items(spaced, mastery, available, today, limit)
         if not item_ids:
             run.terminal = "nothing_due"
             return
         planned = [services.store.get_item(item_id) for item_id in item_ids]
         run.items = weakest_first(planned, mastery) if urgent else planned
+        run.items = open_variants(services, run, run.items)
         run.session = build_session(
             run.student.id, today, [item.id for item in run.items], uuid4().hex
         )
@@ -73,14 +104,16 @@ def build_session_graph(services: Services, run: TutorRun):
         run.session = run.session.model_copy(
             update={
                 "capsule": capsule,
-                "status": SessionStatus.DELIVERED,
-                "delivered_at": services.clock.now(),
+                "status": SessionStatus.PLANNED,
             }
         )
-        services.store.put_session(run.session)
         stamped = message.model_copy(
             update={"channel": run.family.channel, "chat_ref": run.family.chat_ref}
         )
+        run.session = run.session.model_copy(
+            update={"delivery_message": stamped.model_dump(mode="json")}
+        )
+        services.store.put_session(run.session)
         run.outbound.append(stamped)
 
     def alive(_state) -> bool:

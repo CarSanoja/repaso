@@ -57,8 +57,12 @@ def struggling_school(settings, today: date):
         services.store.put_family(family.model_copy(update={"rest_weekdays": WEEKEND}))
         services.store.put_mastery(
             MasteryState(
-                student_id=student.id, competency_id=FRACTIONS,
-                ema_accuracy=0.2, attempts=9, correct=1, level=MasteryLevel.STRUGGLING,
+                student_id=student.id,
+                competency_id=FRACTIONS,
+                ema_accuracy=0.2,
+                attempts=9,
+                correct=1,
+                level=MasteryLevel.STRUGGLING,
             )
         )
         services.models[ModelRole.GENERATE].enqueue({"text": "Estimada maestra..."})
@@ -90,9 +94,7 @@ async def test_a_school_break_is_not_disengagement(settings):
 
 
 async def test_the_same_break_alarms_a_school_with_no_calendar_configured(settings):
-    services, family, _ = open_school(
-        settings, BEFORE_THE_BREAK, date(2026, 9, 16), calendar=False
-    )
+    services, family, _ = open_school(settings, BEFORE_THE_BREAK, date(2026, 9, 16), calendar=False)
 
     run = await close(services)
 
@@ -120,9 +122,7 @@ async def test_two_scheduled_silent_days_are_still_below_the_floor(settings):
 
 
 async def test_a_cohort_wide_outage_is_not_disengagement(settings):
-    services, family, _ = open_school(
-        settings, BEFORE_THE_OUTAGE, date(2026, 9, 10), quiet=OUTAGE
-    )
+    services, family, _ = open_school(settings, BEFORE_THE_OUTAGE, date(2026, 9, 10), quiet=OUTAGE)
 
     run = await close(services)
 
@@ -140,9 +140,7 @@ async def test_the_same_silence_alarms_when_the_rest_of_the_cohort_kept_answerin
 
 
 async def test_a_dropout_whose_silence_starts_in_the_outage_is_still_caught(settings):
-    services, family, _ = open_school(
-        settings, BEFORE_THE_OUTAGE, date(2026, 9, 16), quiet=OUTAGE
-    )
+    services, family, _ = open_school(settings, BEFORE_THE_OUTAGE, date(2026, 9, 16), quiet=OUTAGE)
 
     await close(services)
     assert engagement_alerts(services, family.id) == []
@@ -181,7 +179,7 @@ async def test_a_holiday_close_defers_the_cohort_signal_without_burning_its_clai
     run = await close(services)
 
     assert len(run.cohort_fired) == 1
-    assert len(run.outbound) == 3
+    assert len(run.outbound) == 1  # one shared note, not three copies
 
 
 async def test_daily_counts_keep_calendar_days_and_scheduled_counts_drop_closed_ones(settings):

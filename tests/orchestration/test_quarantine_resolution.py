@@ -85,9 +85,7 @@ def test_accepting_releases_the_held_answer_into_the_normal_flow(settings):
     assert resolved.status is QuarantineStatus.APPROVED
     assert resolved.resolved_at == services.clock.now()
     assert services.store.list_pending_quarantine(family.id) == []
-    assert [message.text for message in run.outbound] == [
-        msg("quarantine_ack_approved", Lang.ES)
-    ]
+    assert [message.text for message in run.outbound] == [msg("quarantine_ack_approved", Lang.ES)]
 
 
 def test_rejecting_discards_the_held_answer_and_closes_the_quarantine(settings):
@@ -99,11 +97,10 @@ def test_rejecting_discards_the_held_answer_and_closes_the_quarantine(settings):
     run = resolve_quarantine(services, family, quarantine, accepted=False)
 
     assert run.terminal is None
-    assert run.released_item_id is None
-    assert services.store.get_mastery(student.id, FRACTIONS) is None
-    assert services.store.list_spaced(student.id) == []
+    assert run.released_item_id == "i1"
+    assert services.store.get_mastery(student.id, FRACTIONS).correct == 0
+    assert services.store.get_mastery(student.id, FRACTIONS).attempts == 1
+    assert len(services.store.list_spaced(student.id)) == 1
     assert services.store.get_quarantine(family.id, "q1").status is QuarantineStatus.REJECTED
     assert services.store.list_pending_quarantine(family.id) == []
-    assert [message.text for message in run.outbound] == [
-        msg("quarantine_ack_rejected", Lang.ES)
-    ]
+    assert [message.text for message in run.outbound] == [msg("quarantine_ack_rejected", Lang.ES)]

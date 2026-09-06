@@ -14,13 +14,21 @@ BUDGET_LIMITS = (25, 40)
 STACKS = ("foundation", "messaging", "guardrails", "api", "agentcore", "observability")
 HARM_FILTERS = ("HATE", "INSULTS", "SEXUAL", "VIOLENCE", "MISCONDUCT")
 PII_ENTITIES = ("NAME", "PHONE", "EMAIL", "ADDRESS", "AGE")
-NEVER_SET = ("REPASO_LOCAL_MODE", "REPASO_LOCAL_DATA_DIR", "REPASO_LIVE_TESTS")
+NEVER_SET = ("REPASO_LOCAL_MODE", "REPASO_LIVE_TESTS")
 QUEUES = ("ingest", "tutor", "quality")
 GUARDRAIL = "AWS::Bedrock::Guardrail"
 RUNTIME = "AWS::BedrockAgentCore::Runtime"
 PARAMETER = "AWS::SSM::Parameter"
 AGENTCORE_ASSETS = "repaso-agentcore.assets.json"
-IMAGE_CONTEXT = {"LICENSE", "README.md", "deploy", "pyproject.toml", "src"}
+IMAGE_CONTEXT = {
+    ".dockerignore",
+    "LICENSE",
+    "README.md",
+    "deploy",
+    "pyproject.toml",
+    "requirements.lock",
+    "src",
+}
 INVITE_CODES_SECRET = "repaso/pilot-invite-codes"
 
 
@@ -58,9 +66,7 @@ def test_every_stack_renders_a_template_with_resources(assembly, name):
 
 
 def test_the_guardrail_filters_harm_hard_in_both_directions(assembly):
-    filters = only(assembly, "guardrails", GUARDRAIL)["ContentPolicyConfig"][
-        "FiltersConfig"
-    ]
+    filters = only(assembly, "guardrails", GUARDRAIL)["ContentPolicyConfig"]["FiltersConfig"]
     strengths = {
         entry["Type"]: (entry["InputStrength"], entry["OutputStrength"]) for entry in filters
     }
@@ -70,9 +76,9 @@ def test_the_guardrail_filters_harm_hard_in_both_directions(assembly):
 
 
 def test_the_guardrail_anonymizes_what_identifies_a_child(assembly):
-    entities = only(assembly, "guardrails", GUARDRAIL)[
-        "SensitiveInformationPolicyConfig"
-    ]["PiiEntitiesConfig"]
+    entities = only(assembly, "guardrails", GUARDRAIL)["SensitiveInformationPolicyConfig"][
+        "PiiEntitiesConfig"
+    ]
 
     assert {entry["Type"]: entry["Action"] for entry in entities} == {
         name: "ANONYMIZE" for name in PII_ENTITIES
@@ -108,7 +114,11 @@ def test_the_runtime_is_a_public_http_container(assembly):
 
 def runtime_image(assembly: Path) -> dict:
     manifest = json.loads((assembly / AGENTCORE_ASSETS).read_text(encoding="utf-8"))
-    images = list(manifest["dockerImages"].values())
+    images = [
+        i
+        for i in manifest["dockerImages"].values()
+        if i["source"]["dockerFile"] == "deploy/agentcore/Dockerfile"
+    ]
     assert len(images) == 1
     return images[0]["source"]
 
@@ -129,10 +139,16 @@ def test_the_runtime_environment_holds_no_empty_or_forbidden_value(assembly):
     assert not [name for name in NEVER_SET if name in environment]
     assert "REPASO_TELEGRAM_TOKEN" not in environment
     assert environment["REPASO_MODEL_GENERATE"]
+    assert environment["REPASO_LOCAL_DATA_DIR"] == "/tmp/repaso"
 
 
 def role_statements(assembly: Path) -> list[dict]:
-    role = only(assembly, "agentcore", "AWS::IAM::Role")
+    roles = template(assembly, "agentcore").find_resources("AWS::IAM::Role")
+    role = next(
+        r["Properties"]
+        for r in roles.values()
+        if r["Properties"].get("RoleName") == "repaso-agentcore-runtime"
+    )
     return [
         statement
         for policy in role["Policies"]

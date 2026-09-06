@@ -91,37 +91,31 @@ def test_worker_retries_a_redelivered_record_past_its_own_claim(lambda_env, runt
     assert runtime.keys == ["12345#10", "12345#10"]
 
 
-def test_worker_processes_a_repeated_delivery_once(lambda_env, runtime):
+def test_worker_delegates_repeat_delivery_to_durable_runtime(lambda_env, runtime):
     record = make_record(make_domain_event(idempotency_key="12345#10"))
     worker.handler(make_batch(record), None)
     assert worker.handler(make_batch(record), None) == NO_FAILURES
-    assert runtime.keys == ["12345#10"]
+    assert runtime.keys == ["12345#10", "12345#10"]
 
 
-def test_worker_deduplicates_inside_a_single_batch(lambda_env, runtime):
+def test_worker_delegates_batch_duplicates_to_durable_runtime(lambda_env, runtime):
     event = make_domain_event(idempotency_key="12345#10")
-    batch = make_batch(
-        make_record(event, message_id="m1"), make_record(event, message_id="m2")
-    )
+    batch = make_batch(make_record(event, message_id="m1"), make_record(event, message_id="m2"))
     assert worker.handler(batch, None) == NO_FAILURES
-    assert runtime.keys == ["12345#10"]
+    assert runtime.keys == ["12345#10", "12345#10"]
 
 
-def test_worker_keeps_its_claims_apart_from_publisher_claims(lambda_env, runtime):
+def test_worker_does_not_burn_claims_before_the_runtime_commits(lambda_env, runtime):
     published_key = "job#daily_session#f1#2026-09-01"
-    event = make_domain_event(
-        kind=EventKind.DAILY_SESSION_DUE, idempotency_key=published_key
-    )
+    event = make_domain_event(kind=EventKind.DAILY_SESSION_DUE, idempotency_key=published_key)
     worker.handler(make_batch(make_record(event)), None)
     assert bootstrap.store().claim(published_key, "scheduler-tick") is True
-    assert bootstrap.store().claim(worker.worker_key(event), "sqs-worker") is False
+    assert bootstrap.store().claim(worker.worker_key(event), "sqs-worker") is True
 
 
 def test_worker_separates_the_same_key_across_event_kinds(lambda_env, runtime):
     channel = make_domain_event(idempotency_key="12345#10")
-    response = make_domain_event(
-        kind=EventKind.RESPONSE_RECEIVED, idempotency_key="12345#10"
-    )
+    response = make_domain_event(kind=EventKind.RESPONSE_RECEIVED, idempotency_key="12345#10")
     batch = make_batch(
         make_record(channel, message_id="m1"), make_record(response, message_id="m2")
     )

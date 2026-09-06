@@ -16,6 +16,7 @@ class MediaStore(Protocol):
     def get(self, ref: str) -> bytes | None: ...
 
     def exists(self, ref: str) -> bool: ...
+    def delete_prefix(self, prefix: str) -> None: ...
 
 
 def normalize_ref(ref: str) -> str:
@@ -58,6 +59,20 @@ class LocalMediaStore:
 
     def content_type(self, ref: str) -> str | None:
         return self._read_index().get(normalize_ref(ref))
+
+    def delete_prefix(self, prefix: str) -> None:
+        prefix = normalize_ref(prefix) + "/"
+        index = self._read_index()
+        # Walk files as well as the index: a crash may leave an unindexed upload.
+        if self._media_dir.exists():
+            for path in self._media_dir.rglob("*"):
+                if path.is_file() and path.relative_to(self._media_dir).as_posix().startswith(
+                    prefix
+                ):
+                    path.unlink()
+        kept = {key: value for key, value in index.items() if not key.startswith(prefix)}
+        self._index_path.parent.mkdir(parents=True, exist_ok=True)
+        self._index_path.write_text(json.dumps(kept))
 
     def _read_index(self) -> dict[str, str]:
         if not self._index_path.is_file():
@@ -112,6 +127,21 @@ class S3MediaStore:
         if client is None:
             raise RuntimeError("s3 client is unavailable in local mode")
         return client
+
+    def delete_prefix(self, prefix: str) -> None:
+        client = self._client()
+        prefix = normalize_ref(prefix) + "/"
+        for page in client.get_paginator("list_object_versions").paginate(
+            Bucket=self._bucket, Prefix=prefix
+        ):
+            objects = [
+                {"Key": v["Key"], "VersionId": v["VersionId"]}
+                for v in page.get("Versions", []) + page.get("DeleteMarkers", [])
+            ]
+            if objects:
+                result = client.delete_objects(Bucket=self._bucket, Delete={"Objects": objects})
+                if result.get("Errors"):
+                    raise RuntimeError("some material versions could not be deleted")
 
 
 def _is_missing(error: Exception) -> bool:

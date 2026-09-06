@@ -87,16 +87,18 @@ def test_scheduler_fires_a_student_once_per_day(lambda_env):
     assert len(published_events()) == 1
 
 
-def test_scheduler_claims_the_day_before_publishing(lambda_env):
+def test_scheduler_records_the_day_only_after_publication(lambda_env):
     seed_student()
     scheduler.handler(TICK, None)
     key = published_events()[0].idempotency_key
-    assert bootstrap.store().claim(key, "other-owner") is False
+    assert bootstrap.store().get_record("f1", key).payload["published"] is True
 
 
 def test_scheduler_publishes_nothing_for_a_family_without_students(lambda_env):
+    seed_student()
+    bootstrap.store().forget_family("f1")
     response = scheduler.handler(TICK, None)
-    assert response == {"ok": True, "family_id": "f1", "fired": [], "skipped": []}
+    assert response == {"ok": True, "forgotten": True, "fired": [], "skipped": []}
     assert published_events() == []
 
 
@@ -145,6 +147,7 @@ def test_scheduler_rejects_a_tick_that_is_not_an_object(lambda_env):
 
 
 def test_scheduler_skips_a_student_reference_holding_a_key_separator(lambda_env):
+    seed_student()
     response = scheduler.handler({"family_id": "f1", "student_id": "s1#s2"}, None)
     assert response["fired"] == []
     assert response["skipped"] == ["s1#s2"]

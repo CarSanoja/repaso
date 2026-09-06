@@ -67,7 +67,7 @@ class EventBridgePublisher:
         from repaso.config.clients import events_client
 
         client = events_client()
-        client.put_events(
+        result = client.put_events(
             Entries=[
                 {
                     "EventBusName": self._bus_name,
@@ -77,6 +77,8 @@ class EventBridgePublisher:
                 }
             ]
         )
+        if result.get("FailedEntryCount", 0):
+            raise RuntimeError("EventBridge did not accept the event; retry required")
 
 
 def build_event_publisher(settings: Settings) -> EventPublisher:

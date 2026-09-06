@@ -1,6 +1,6 @@
 from datetime import UTC, date, datetime
 
-from repaso.agents.capsule_composer import Snippet, compose_capsule, render_item
+from repaso.agents.capsule_composer import Snippet, answer_ref, compose_capsule, render_item
 from repaso.agents.session_planner import DAILY_ITEM_LIMIT, build_session, plan_items
 from repaso.schemas.channel import ChannelKind
 from repaso.schemas.common import Lang
@@ -117,7 +117,11 @@ def test_plan_returns_nothing_when_nothing_is_due_and_nothing_is_unseen():
 
 def test_build_session_starts_planned_without_a_capsule():
     assert SESSION == PracticeSession(
-        id="sess-1", student_id="s1", session_date=TODAY, status=SessionStatus.PLANNED
+        id="sess-1",
+        student_id="s1",
+        session_date=TODAY,
+        status=SessionStatus.PLANNED,
+        planned_item_ids=["i1", "i2"],
     )
     assert SESSION.capsule is None
 
@@ -146,9 +150,7 @@ async def test_buttons_carry_one_based_callback_data():
 
     assert [button.label for button in message.buttons] == ["1/2", "2/4", "3/4"]
     assert [button.callback_data for button in message.buttons] == [
-        "ans:sess-1:i1:1",
-        "ans:sess-1:i1:2",
-        "ans:sess-1:i1:3",
+        *[f"ans:{answer_ref(SESSION.id, 'i1')}:{n}" for n in range(1, 4)],
     ]
 
 
@@ -163,14 +165,17 @@ async def test_open_item_produces_no_buttons():
     assert render_item(item) == "¿Cuál equivale a 2/4?"
 
 
-async def test_broken_model_falls_back_to_the_competency_description():
+async def test_broken_model_falls_back_to_a_reminder_in_the_family_language():
     items = [make_item("i1")]
     model = BrokenModel()
 
     capsule, message = await compose_capsule(SESSION, items, FRACTIONS, "Leo", Lang.ES, model)
 
-    assert capsule.concept_snippet == FRACTIONS.description
-    assert FRACTIONS.description in message.text
+    assert (
+        capsule.concept_snippet
+        == "Hoy practicamos Fracciones equivalentes. Lee cada pregunta con calma."
+    )
+    assert capsule.concept_snippet in message.text
 
 
 def test_grade_log_round_trips_by_item_and_by_student(tmp_path):

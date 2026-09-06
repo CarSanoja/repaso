@@ -26,6 +26,10 @@ payload:
     - daily_session_due
     - response_received
     - daily_close
+    - channel_message
+    - escalation_resolved
+    - quarantine_resolved
+    - exam_announced
 
 graphs:
   - kind: material_uploaded
@@ -89,7 +93,6 @@ environment:
     REPASO_HOLIDAY_DATES: "[]"
   never_set:
     - REPASO_LOCAL_MODE
-    - REPASO_LOCAL_DATA_DIR
     - REPASO_LIVE_TESTS
 
 iam:

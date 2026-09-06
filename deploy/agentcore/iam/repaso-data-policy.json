@@ -12,7 +12,8 @@
         "dynamodb:DeleteItem",
         "dynamodb:BatchWriteItem",
         "dynamodb:ConditionCheckItem",
-        "dynamodb:Query"
+        "dynamodb:Query",
+        "dynamodb:Scan"
       ],
       "Resource": [
         "arn:aws:dynamodb:us-east-1:123456789012:table/repaso",
@@ -24,7 +25,9 @@
       "Effect": "Allow",
       "Action": [
         "s3:GetObject",
-        "s3:PutObject"
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:DeleteObjectVersion"
       ],
       "Resource": [
         "arn:aws:s3:::REPASO_MEDIA_BUCKET/*"
@@ -34,7 +37,8 @@
       "Sid": "MediaBucketListing",
       "Effect": "Allow",
       "Action": [
-        "s3:ListBucket"
+        "s3:ListBucket",
+        "s3:ListBucketVersions"
       ],
       "Resource": [
         "arn:aws:s3:::REPASO_MEDIA_BUCKET"

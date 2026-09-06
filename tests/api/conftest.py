@@ -23,7 +23,7 @@ CHAT = {"id": 12345, "type": "private"}
 
 @pytest.fixture
 def api_settings(tmp_path) -> Settings:
-    return Settings(local_mode=True, local_data_dir=tmp_path / "api_data")
+    return Settings(local_mode=True, local_data_dir=tmp_path / "api_data", judge_family_ids="f1")
 
 
 @pytest.fixture

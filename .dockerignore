@@ -1,0 +1,14 @@
+.git
+.venv
+.local_data
+.env
+.env.*
+private
+node_modules
+build
+dist
+infra/cdk.out
+**/__pycache__
+**/*.pyc
+**/*.egg-info
+.bedrock_agentcore.yaml

@@ -29,6 +29,9 @@ class ItemFlaw(StrEnum):
 
 class Item(StrictBaseModel):
     id: ItemId
+    family_id: str | None = None
+    material_id: str | None = None
+    variant_of: str | None = None
     competency_id: CompetencyId
     kind: ItemKind
     difficulty: int = Field(ge=1, le=5)

@@ -1,105 +1,14 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Repaso Judge Mirror</title>
-<style>
-  :root { color-scheme: light dark; }
-  body {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    margin: 0 auto; max-width: 60rem; padding: 1.5rem; line-height: 1.5;
-  }
-  h1 { font-size: 1.25rem; margin: 0 0 1rem; }
-  .row { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .75rem; }
-  input, button {
-    font: inherit; padding: .4rem .6rem; border-radius: .3rem;
-    border: 1px solid currentColor; background: transparent; color: inherit;
-  }
-  button { cursor: pointer; }
-  pre {
-    overflow-x: auto; padding: 1rem; border-radius: .3rem;
-    border: 1px solid currentColor; white-space: pre-wrap; word-break: break-word;
-  }
-  .hint { opacity: .7; font-size: .85rem; }
-</style>
-</head>
-<body>
-<h1>Repaso judge mirror</h1>
-<p class="hint">Read-only view of enrolled students and pending human decisions.</p>
-
-<div class="row">
-  <input id="code" type="password" placeholder="Judge access code" autocomplete="off">
-  <button id="login">Use code</button>
-  <span id="status" class="hint"></span>
-</div>
-
-<div class="row">
-  <button id="students">List students</button>
-  <input id="family" type="text" placeholder="family id" autocomplete="off">
-  <button id="transcript">View transcript</button>
-</div>
-
-<pre id="out">No data loaded yet.</pre>
-
-<script>
-  var judgeCode = "";
-  var out = document.getElementById("out");
-  var statusLabel = document.getElementById("status");
-
-  function render(value) {
-    out.textContent = typeof value === "string" ? value : JSON.stringify(value, null, 2);
-  }
-
-  function get(path) {
-    if (!judgeCode) {
-      render("Enter the judge access code first.");
-      return Promise.resolve();
-    }
-    return fetch(path, { headers: { "X-Judge-Code": judgeCode } })
-      .then(function (response) {
-        return response.json().then(function (body) {
-          render(response.ok ? body : { status: response.status, body: body });
-        });
-      })
-      .catch(function (error) {
-        render("Request failed: " + error);
-      });
-  }
-
-  document.getElementById("login").addEventListener("click", function () {
-    var code = document.getElementById("code").value;
-    fetch("/judge/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code: code })
-    })
-      .then(function (response) {
-        if (!response.ok) {
-          judgeCode = "";
-          statusLabel.textContent = "Rejected (" + response.status + ")";
-          return;
-        }
-        judgeCode = code;
-        statusLabel.textContent = "Code accepted.";
-      })
-      .catch(function (error) {
-        statusLabel.textContent = "Login failed: " + error;
-      });
-  });
-
-  document.getElementById("students").addEventListener("click", function () {
-    get("/judge/students");
-  });
-
-  document.getElementById("transcript").addEventListener("click", function () {
-    var familyId = document.getElementById("family").value.trim();
-    if (!familyId) {
-      render("Enter a family id.");
-      return;
-    }
-    get("/judge/transcript/" + encodeURIComponent(familyId));
-  });
-</script>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Repaso · A family routine, made visible</title><link rel="stylesheet" href="/judge/assets/judge.css"><script src="/judge/assets/judge.js" defer></script></head>
+<body><header><a class="brand" href="/judge/" aria-label="Repaso home"><span class="mark">r.</span> repaso<span class="wordmark-note">a little practice, every day</span></a><span class="edition">Agents for Humans · judge experience</span></header>
+<main><section class="intro"><div><p class="eyebrow">THE FAMILY IS IN CONTROL</p><h1>School material in.<br>A daily routine out.</h1><p class="lead">Repaso prepares practice from a school page, follows the child's progress, and brings the parent a decision when help is needed.</p></div><div class="scope"><span class="dot"></span><div><strong>A focused first version</strong><p>Grade 4 mathematics. One parent, one child, one Telegram chat. Printed photos and single-page PDFs.</p></div></div></section>
+<section id="login" class="login-panel"><div><h2>Follow Sofi's family</h2><p>Open the judge experience with the access code from the submission.</p></div><form id="login-form"><label for="code">Access code</label><div class="input-row"><input id="code" type="password" autocomplete="off" required><button type="submit">Enter experience <span aria-hidden="true">→</span></button></div></form></section>
+<p id="status" role="status" aria-live="polite"></p>
+<div id="experience" hidden><section class="demo-banner"><div><strong>Interactive simulation</strong><p>Every run executes the application graphs with authored model responses and a simulated clock. No messages are sent to real families. This is not evidence of live AI quality or learning gains.</p></div><span id="verified" class="badge">Ready to run</span></section>
+<div class="controls"><div><label for="decision">When difficulty persists, the parent chooses</label><select id="decision"><option value="teacher_note">Give me the note for the teacher</option><option value="reduce_load">One exercise per practice for seven days</option></select></div><button id="run">Run the complete journey <span aria-hidden="true">↻</span></button></div>
+<div id="journey" hidden><nav id="steps" class="steps" aria-label="Journey stages"></nav>
+<section class="journey-heading"><div><p class="eyebrow" id="day"></p><h2 id="stage-title"></h2><p id="explanation"></p></div><div class="arrows"><button id="previous" class="secondary" aria-label="Previous stage">←</button><button id="next" class="secondary">Next stage →</button></div></section>
+<div class="workspace"><section class="phone"><div class="phone-top"><div class="avatar">r.</div><div><strong>Repaso × Carla</strong><span>Sofi practises with her parent</span></div><span class="phone-label">SIMULATED CHAT</span></div><div id="chat" class="chat" aria-label="Family conversation"></div></section>
+<aside class="evidence"><div class="metrics"><div><strong id="attempts">0</strong><span>reviewed answers</span></div><div><strong id="pending">0</strong><span>waiting for a person</span></div><div><strong id="completed">0</strong><span>practices completed</span></div></div><section class="card"><p class="eyebrow">WHAT CHANGES</p><h3 id="outcome-title"></h3><p id="outcome"></p><div id="adaptations"></div></section><section class="card"><p class="eyebrow">FROM THE SCHOOL PAGE</p><div id="material"></div></section><section class="card"><p class="eyebrow">THE NEXT PRACTICE</p><div id="practice"></div></section></aside></div>
+<details class="technical"><summary>Inspect the evidence · Strands graphs, delivery and human decisions</summary><div class="technical-grid"><div><h3>Recorded transitions</h3><div id="trace" class="trace"></div></div><div><h3>Assertions checked in this run</h3><ul id="checks"></ul><p class="muted">Latency here measures local simulation. Token usage and live inference cost are not available for this run.</p></div></div></details>
+<div class="endnote"><p>Everyday Agents · Repaso helps the parent maintain an agreed routine and reserves extra alerts for decisions.</p><button class="secondary" id="download">Download this run's evidence ↓</button></div></div></div></main><footer>Built with Strands Agents · production integration targets Amazon Bedrock AgentCore<br><span>Model decisions propose actions. Durable state, authorization and learning updates are enforced by application code.</span></footer></body></html>

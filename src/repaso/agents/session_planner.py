@@ -2,7 +2,7 @@ from datetime import date
 
 from repaso.core.harness.sm2 import due_items
 from repaso.schemas.common import SessionId, StudentId
-from repaso.schemas.item import Item, ItemStatus
+from repaso.schemas.item import Item, ItemKind, ItemStatus
 from repaso.schemas.mastery import MasteryState
 from repaso.schemas.schedule import SpacedItemState
 from repaso.schemas.session import PracticeSession, SessionStatus
@@ -42,6 +42,21 @@ def _weakest_unseen(
         item for item in active_items if item.id not in seen and item.status is ItemStatus.ACTIVE
     ]
     unseen.sort(key=lambda item: (ema.get(item.competency_id, UNKNOWN_EMA), item.id))
+    # Mix recognition and explanation within the weakest competency. Keeping
+    # a reasoning question in the capsule avoids measuring only option picking.
+    if remaining >= 3 and unseen:
+        weakest = unseen[0].competency_id
+        pool = [i for i in unseen if i.competency_id == weakest]
+        mcqs = sorted(
+            (i for i in pool if i.kind is ItemKind.MCQ), key=lambda i: (i.difficulty, i.stem)
+        )
+        opens = sorted(
+            (i for i in pool if i.kind is ItemKind.OPEN), key=lambda i: (i.difficulty, i.stem)
+        )
+        if mcqs and opens:
+            mixed = mcqs[:1] + opens[: remaining - 1]
+            chosen = {i.id for i in mixed}
+            unseen = mixed + [i for i in unseen if i.id not in chosen]
     return [item.id for item in unseen[:remaining]]
 
 
@@ -54,4 +69,5 @@ def build_session(
         session_date=session_date,
         capsule=None,
         status=SessionStatus.PLANNED,
+        planned_item_ids=item_ids,
     )

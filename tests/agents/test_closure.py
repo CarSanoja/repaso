@@ -22,12 +22,24 @@ ALIAS = "Estrella"
 NOW = datetime(2026, 8, 20, 19, 0, tzinfo=UTC)
 TODAY = NOW.date()
 SECTION = "San Jose 4to B"
-FRACTIONS = Competency(id="c-fractions", subject="math", grade=4, name="Fracciones equivalentes",
-                       description="Comparar y sumar fracciones con distinto denominador")
-EVIDENCE = [EvidenceSpan(quote="1/2 + 1/3 = 2/5", source_ref="resp-1"),
-            EvidenceSpan(quote="3/4 = 6/12", source_ref="resp-2")]
-PATTERNS = {"i-all-correct": "11111111", "i-flat": "11110000", "i-healthy": "01011111",
-            "f-one": "00011110", "f-two": "10101010"}
+FRACTIONS = Competency(
+    id="c-fractions",
+    subject="math",
+    grade=4,
+    name="Fracciones equivalentes",
+    description="Comparar y sumar fracciones con distinto denominador",
+)
+EVIDENCE = [
+    EvidenceSpan(quote="1/2 + 1/3 = 2/5", source_ref="resp-1"),
+    EvidenceSpan(quote="3/4 = 6/12", source_ref="resp-2"),
+]
+PATTERNS = {
+    "i-all-correct": "11111111",
+    "i-flat": "11110000",
+    "i-healthy": "01011111",
+    "f-one": "00011110",
+    "f-two": "10101010",
+}
 
 
 class RecordingModel(LocalPlaybackModel):
@@ -51,50 +63,84 @@ class BrokenModel:
 
 
 def make_grade(student_id: str, item_id: str, correct: bool | None) -> GradeResult:
-    return GradeResult(student_id=student_id, item_id=item_id, correct=correct, confidence=0.9,
-                       graded_by=GradedBy.DETERMINISTIC, evidence=EVIDENCE[0], feedback="",
-                       graded_at=NOW)
+    return GradeResult(
+        student_id=student_id,
+        item_id=item_id,
+        correct=correct,
+        confidence=0.9,
+        graded_by=GradedBy.DETERMINISTIC,
+        evidence=EVIDENCE[0],
+        feedback="",
+        graded_at=NOW,
+    )
 
 
 def make_item(item_id: str, status: ItemStatus) -> Item:
-    return Item(id=item_id, competency_id=FRACTIONS.id, kind=ItemKind.OPEN, difficulty=3,
-                stem="Suma 1/2 + 1/3", answer_key="5/6", rationale="denominador comun",
-                status=status, provenance=Provenance(source=Source.GENERATED, created_at=NOW))
+    return Item(
+        id=item_id,
+        competency_id=FRACTIONS.id,
+        kind=ItemKind.OPEN,
+        difficulty=3,
+        stem="Suma 1/2 + 1/3",
+        answer_key="5/6",
+        rationale="denominador comun",
+        status=status,
+        provenance=Provenance(source=Source.GENERATED, created_at=NOW),
+    )
 
 
 def make_response(student_id: str, item_id: str) -> StudentResponse:
-    return StudentResponse(student_id=student_id, item_id=item_id, text="respuesta",
-                           latency_seconds=12.0, received_at=NOW)
+    return StudentResponse(
+        student_id=student_id,
+        item_id=item_id,
+        text="respuesta",
+        latency_seconds=12.0,
+        received_at=NOW,
+    )
 
 
 def scored_grades() -> list[GradeResult]:
-    return [make_grade(f"s{index}", item_id, flag == "1")
-            for item_id, pattern in PATTERNS.items() for index, flag in enumerate(pattern)]
+    return [
+        make_grade(f"s{index}", item_id, flag == "1")
+        for item_id, pattern in PATTERNS.items()
+        for index, flag in enumerate(pattern)
+    ]
 
 
 def failure(family_id: str, days_ago: int, section_key: str = "4B") -> CohortFailure:
-    return CohortFailure(family_id=family_id, section_key=section_key,
-                         competency_id=FRACTIONS.id, failed_on=TODAY - timedelta(days=days_ago))
+    return CohortFailure(
+        family_id=family_id,
+        section_key=section_key,
+        competency_id=FRACTIONS.id,
+        failed_on=TODAY - timedelta(days=days_ago),
+    )
 
 
 async def struggle(model) -> Escalation:
-    return await composer.compose_struggle("fam-1", "st-1", ALIAS, FRACTIONS, EVIDENCE,
-                                           Lang.ES, model, NOW)
+    return await composer.compose_struggle(
+        "fam-1", "st-1", ALIAS, FRACTIONS, EVIDENCE, Lang.ES, model, NOW
+    )
 
 
-FAILURES = [failure("f1", 0), failure("f1", 1), failure("f2", 2), failure("f4", 3),
-            failure("f3", 9), failure("f5", 0, "5A")]
+FAILURES = [
+    failure("f1", 0),
+    failure("f1", 1),
+    failure("f2", 2),
+    failure("f4", 3),
+    failure("f3", 9),
+    failure("f5", 0, "5A"),
+]
 COHORT = CohortKey(section_key="4B", competency_id=FRACTIONS.id)
 
 
-async def test_struggle_escalation_carries_three_options_and_a_drafted_note():
+async def test_struggle_escalation_carries_implemented_options_and_a_drafted_note():
     model = RecordingModel([composer.TeacherNote(text="Buenas tardes, hemos notado...")])
     escalation = await struggle(model)
     keys = [option.key for option in escalation.options]
     assert escalation.kind is EscalationKind.STRUGGLE_TRIAGE
-    assert keys == ["guided_session", "teacher_note", "reduce_load"]
-    assert escalation.options[1].label.startswith("Nota para la maestra")
-    assert [option.tradeoff for option in escalation.options] == ["", "", ""]
+    assert keys == ["teacher_note", "reduce_load"]
+    assert escalation.options[0].label.startswith("Nota para la maestra")
+    assert [option.tradeoff for option in escalation.options] == ["", ""]
     assert escalation.drafted_note == "Buenas tardes, hemos notado..."
     assert ALIAS in escalation.summary
     assert "1/2 + 1/3 = 2/5; 3/4 = 6/12" in escalation.summary
@@ -113,7 +159,7 @@ async def test_the_teacher_note_prompt_never_carries_the_alias_or_the_quotes():
 async def test_struggle_survives_a_broken_model_without_a_note():
     escalation = await struggle(BrokenModel())
     assert escalation.drafted_note is None
-    assert len(escalation.options) == 3
+    assert len(escalation.options) == 2
     assert escalation.evidence == EVIDENCE
 
 
@@ -149,16 +195,26 @@ def test_signal_claim_key_is_stable_across_the_iso_week():
 
 def test_daily_close_reports_the_planted_gap_and_spends_rework():
     sessions = [
-        PracticeSession(id="ses-done", student_id="st1", session_date=TODAY,
-                        status=SessionStatus.COMPLETED),
+        PracticeSession(
+            id="ses-done", student_id="st1", session_date=TODAY, status=SessionStatus.COMPLETED
+        ),
         PracticeSession(id="ses-stuck", student_id="st2", session_date=TODAY),
         PracticeSession(id="ses-later", student_id="st3", session_date=TODAY + timedelta(days=1)),
     ]
-    quarantines = [QuarantineItem(id="q1", kind=QuarantineKind.LOW_CONFIDENCE_GRADE,
-                                  family_id="fam-1", evidence=EVIDENCE[0], payload={},
-                                  created_at=NOW)]
-    escalations = [composer.compose_rephoto("fam-1", Lang.ES, NOW),
-                   composer.compose_rephoto("fam-2", Lang.ES, NOW - timedelta(days=1))]
+    quarantines = [
+        QuarantineItem(
+            id="q1",
+            kind=QuarantineKind.LOW_CONFIDENCE_GRADE,
+            family_id="fam-1",
+            evidence=EVIDENCE[0],
+            payload={},
+            created_at=NOW,
+        )
+    ]
+    escalations = [
+        composer.compose_rephoto("fam-1", Lang.ES, NOW),
+        composer.compose_rephoto("fam-2", Lang.ES, NOW - timedelta(days=1)),
+    ]
     responses = [make_response("st1", "i1"), make_response("st2", "i2")]
     grades = [make_grade("st1", "i1", True)]
     rework = BoundedAttempts(1)

@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from repaso.agents.capsule_composer import item_buttons
 from repaso.channel.telegram.enrollment import CONSENT_YES
 from repaso.config.models import ModelRole
 from repaso.config.settings import Settings
@@ -11,6 +12,7 @@ from repaso.core.orchestration.runner import active_session, current_item
 from repaso.i18n import msg
 from repaso.schemas.common import Lang
 from repaso.schemas.item import ItemKind
+from repaso.simulator.demo_followup import checkpoint, followup
 from repaso.simulator.demo_ledger import close_ledger, harness_reading
 from repaso.simulator.demo_material import (
     GUIDE_REF,
@@ -27,7 +29,7 @@ from repaso.tools.media_fetcher import INBOX_DIRNAME
 from repaso.tools.media_store import normalize_ref
 
 CASSETTE_PATH = Path(__file__).parent / "cassettes" / "demo_fracciones.jsonl"
-START = datetime(2026, 9, 15, 19, 0, tzinfo=UTC)
+START = datetime(2026, 9, 1, 22, 43, tzinfo=UTC)
 INVITE_CODE = "REPASO-PILOTO-4B"
 TELEGRAM = "telegram"
 ANSWERS_EXPECTED = 3
@@ -73,20 +75,28 @@ def fill_inbox(settings: Settings) -> None:
 
 
 async def run_demo_scenario(
-    settings: Settings, services: Services | None = None
+    settings: Settings,
+    services: Services | None = None,
+    decision: str = "teacher_note",
+    stage_factory=None,
 ) -> ScenarioResult:
     clear_cassette_cache()
     fill_inbox(settings)
-    stage = Stage(services or build_scenario_services(settings))
+    stage = (stage_factory or Stage)(services or build_scenario_services(settings))
     await _enrol(stage)
     family = stage.services.store.find_family_by_chat(TELEGRAM, CHAT_REF)
     student = stage.services.store.list_students(family.id)[0]
     await _notebook(stage)
+    checkpoint(stage, family, student, "Material revisado")
     await _open_session(stage, family, student)
+    checkpoint(stage, family, student, "Práctica entregada")
     await _practice(stage, family, student)
+    checkpoint(stage, family, student, "Respuesta pendiente de revisión")
     await _review(stage, family, student)
+    checkpoint(stage, family, student, "Decisión humana aplicada")
     await _guide(stage)
     close_ledger(stage, family, student)
+    await followup(stage, family, student, decision)
     return stage.result
 
 
@@ -109,7 +119,7 @@ async def _notebook(stage: Stage) -> None:
     ingest = summary.get("ingest") or {}
     stage.beat("the notebook photo becomes practice", "material", summary.get("route"))
     stage.beat("questions written from the page", 8, ingest.get("generated"))
-    stage.beat("questions that survived review", 3, len(ingest.get("kept_item_ids", [])))
+    stage.beat("questions that survived review", 7, len(ingest.get("kept_item_ids", [])))
 
 
 async def _open_session(stage: Stage, family: Any, student: Any) -> None:
@@ -132,7 +142,9 @@ async def _practice(stage: Stage, family: Any, student: Any) -> None:
         if item.kind is ItemKind.MCQ:
             choice = item.options.index(item.answer_key) + 1
             summary = await stage.says(
-                CHILD, item.answer_key, callback=f"ans:{session.id}:{item.id}:{choice}"
+                CHILD,
+                item.answer_key,
+                callback=item_buttons(session.id, item)[choice - 1].callback_data,
             )
         else:
             answer = HEDGED_ANSWER if opens else WRONG_ANSWER

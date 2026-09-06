@@ -41,6 +41,7 @@ class Beat:
 class ScenarioResult:
     transcript: list[Speech | Reading] = field(default_factory=list)
     beats: list[Beat] = field(default_factory=list)
+    checkpoints: list[dict] = field(default_factory=list)
 
     @property
     def failures(self) -> list[Beat]:

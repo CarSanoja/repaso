@@ -32,6 +32,7 @@ class QuarantineItem(StrictBaseModel):
 
 
 class HeldAnswer(StrictBaseModel):
+    grade_id: str | None = None
     item_id: ItemId
     student_id: StudentId
     answer: str

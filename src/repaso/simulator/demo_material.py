@@ -1,7 +1,7 @@
 NOTEBOOK_REF = "demo/cuaderno-fracciones.png"
 GUIDE_REF = "demo/guia-refuerzo.png"
 
-NOTEBOOK_TEXT = """Matemática — 4to grado — martes 15 de septiembre
+NOTEBOOK_TEXT = """Matemática — 4to grado — martes 1 de septiembre
 Tema: fracciones equivalentes
 Regla del cuaderno: si multiplico arriba y abajo por el mismo
 número, la fracción sigue valiendo igual.

@@ -45,6 +45,8 @@ def _parse_photo(
         score = legibility_score(data)
     except (ValueError, OSError):
         return _illegible(material, UNREADABLE_IMAGE)
+    if score < blur_floor:
+        return _illegible(material, BLURRY_PHOTO, legibility_score=score)
     result = extractor.extract(data, material.kind)
     effective = effective_confidence(result.confidence, score, blur_floor)
     if needs_rephoto(result.confidence, score, blur_floor, min_confidence):
@@ -61,6 +63,8 @@ def _parse_photo(
 def _parse_document(
     material: Material, data: bytes, extractor: TextExtractor, min_confidence: float
 ) -> Material:
+    if material.kind is MediaKind.VOICE:
+        return _illegible(material, "unsupported_voice")
     result = extractor.extract(data, material.kind)
     if not result.text.strip():
         return _illegible(material, EMPTY_TEXT, ocr_confidence=result.confidence)
@@ -81,6 +85,8 @@ def parse_material(
     blur_floor: float,
     min_confidence: float,
 ) -> Material:
+    if len(data) > 10 * 1024 * 1024:
+        raise ValueError("material_too_large")
     if material.kind is MediaKind.PHOTO:
         return _parse_photo(material, data, extractor, blur_floor, min_confidence)
     return _parse_document(material, data, extractor, min_confidence)

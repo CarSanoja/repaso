@@ -56,7 +56,8 @@ def test_the_escalation_button_travels_from_the_chat_to_a_resolved_escalation(se
     result = resolution["result"]
     assert result["status"] == EscalationStatus.RESOLVED.value
     assert result["chosen_option"] == TEACHER_NOTE
-    assert result["outbound"] == [
+    assert result["outbound"][0]["text"] == services.store.get_escalation("e1").summary
+    assert result["outbound"][1:] == [
         {
             "channel": family.channel.value,
             "chat_ref": family.chat_ref,
@@ -84,7 +85,7 @@ def test_resolving_the_same_escalation_twice_changes_nothing(settings):
     assert again["result"]["outbound"] == []
 
 
-def test_an_unknown_option_key_is_still_recorded_verbatim(settings):
+def test_an_unknown_option_is_rejected_without_side_effects(settings):
     services = pilot(settings)
     family, _ = seed_family(services.store)
     seed_escalation(services, family.id)
@@ -94,10 +95,9 @@ def test_an_unknown_option_key_is_still_recorded_verbatim(settings):
         services,
     )
 
-    assert response["result"]["chosen_option"] == "whatever"
-    assert msg("escalation_ack", Lang.ES, option="whatever") in response["result"]["outbound"][0][
-        "text"
-    ]
+    assert response["ok"] is False
+    assert services.store.get_escalation("e1").status is EscalationStatus.PENDING
+    assert services.sender.sent == []
 
 
 def test_an_escalation_belonging_to_another_family_is_refused(settings):

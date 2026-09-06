@@ -2,6 +2,7 @@ import aws_cdk as cdk
 from aws_cdk import aws_bedrockagentcore as agentcore
 from aws_cdk import aws_ecr_assets as ecr_assets
 from aws_cdk import aws_iam as iam
+from aws_cdk import aws_logs as logs
 from aws_cdk import aws_ssm as ssm
 from config import DeployConfig
 from constructs import Construct
@@ -36,10 +37,12 @@ class AgentCoreStack(cdk.Stack):
         foundation: FoundationStack,
         messaging: MessagingStack,
         guardrails: GuardrailsStack,
+        api,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
         self.config = config
+        self.api = api
         self.contract = load_contract()
 
         self.image = ecr_assets.DockerImageAsset(
@@ -89,6 +92,12 @@ class AgentCoreStack(cdk.Stack):
         )
 
         self._publish_runtime_arn()
+        logs.LogRetention(
+            self,
+            "RuntimeLogRetention",
+            log_group_name=f"/aws/bedrock-agentcore/runtimes/{self.runtime.attr_agent_runtime_id}-DEFAULT",
+            retention=logs.RetentionDays.ONE_WEEK,
+        )
 
     def _substitutions(
         self, foundation: FoundationStack, guardrails: GuardrailsStack
@@ -119,6 +128,10 @@ class AgentCoreStack(cdk.Stack):
             "REPASO_CURRICULUM_BUCKET": foundation.curriculum_bucket.bucket_name,
             "REPASO_EVENT_BUS": messaging.bus.event_bus_name,
             "REPASO_SCHEDULER_GROUP": config.bare(),
+            "REPASO_SCHEDULER_TARGET_ARN": self.api.scheduler.function_arn,
+            "REPASO_SCHEDULER_ROLE_ARN": messaging.scheduler_role.role_arn,
+            "REPASO_LOCAL_DATA_DIR": "/tmp/repaso",
+            "REPASO_CURRICULUM_SOURCE": "bundled",
             "REPASO_TELEGRAM_SECRET_NAME": config.secret("telegram"),
             "REPASO_JUDGE_CODE_SECRET_NAME": config.secret("judge"),
             "REPASO_INVITE_CODES_SECRET_NAME": config.secret("pilot-invite-codes"),

@@ -34,8 +34,13 @@ class BrokenModel:
 
 def make_item(**overrides) -> Item:
     defaults = dict(
-        id="i1", competency_id="c1", kind=ItemKind.MCQ, difficulty=2, answer_key="1/2",
-        stem="Cuanto es 2/4 simplificado?", options=["1/2", "2/8", "4/2"],
+        id="i1",
+        competency_id="c1",
+        kind=ItemKind.MCQ,
+        difficulty=2,
+        answer_key="1/2",
+        stem="Cuanto es 2/4 simplificado?",
+        options=["1/2", "2/8", "4/2"],
         rationale="dividing both terms by two",
         provenance=Provenance(source=Source.GENERATED, created_at=GRADED_AT),
     )
@@ -50,16 +55,25 @@ def make_response(text: str) -> StudentResponse:
 
 def make_signals(**overrides) -> PolicySignals:
     defaults = dict(
-        struggle=False, disengaged=False, fast_guessing=False,
-        ema_accuracy=0.6, streak=1, attempts=10,
+        struggle=False,
+        disengaged=False,
+        fast_guessing=False,
+        ema_accuracy=0.6,
+        streak=1,
+        attempts=10,
     )
     return PolicySignals(**{**defaults, **overrides})
 
 
 def make_state(**overrides) -> MasteryState:
     defaults = dict(
-        student_id="s1", competency_id="c1", ema_accuracy=0.2,
-        attempts=MIN_SAMPLES, correct=1, streak=0, level=MasteryLevel.STRUGGLING,
+        student_id="s1",
+        competency_id="c1",
+        ema_accuracy=0.2,
+        attempts=MIN_SAMPLES,
+        correct=1,
+        streak=0,
+        level=MasteryLevel.STRUGGLING,
     )
     return MasteryState(**{**defaults, **overrides})
 
@@ -67,8 +81,12 @@ def make_state(**overrides) -> MasteryState:
 async def run_open(model, text: str, rubric: str | None = "2 points for the reason"):
     return await grade_open(
         item=make_item(kind=ItemKind.OPEN, options=[], rubric=rubric),
-        response=make_response(text), lang=Lang.ES, model=model,
-        confidence_threshold=0.7, graded_at=GRADED_AT, family_id="f1",
+        response=make_response(text),
+        lang=Lang.ES,
+        model=model,
+        confidence_threshold=0.7,
+        graded_at=GRADED_AT,
+        family_id="f1",
     )
 
 
@@ -127,6 +145,7 @@ async def test_open_answer_below_threshold_is_quarantined_without_a_verdict():
     assert quarantine.family_id == "f1"
     assert quarantine.status is QuarantineStatus.PENDING
     assert quarantine.payload == {
+        "grade_id": None,
         "item_id": "i1",
         "student_id": "s1",
         "answer": "mitad",
@@ -148,9 +167,13 @@ async def test_open_answer_quarantines_instead_of_guessing_when_the_model_breaks
 
 def signals_from(state: MasteryState, counts: list[int], latencies: list[float]) -> PolicySignals:
     return build_signals(
-        mastery=state, daily_response_counts=counts, latencies=latencies,
-        expected_seconds=EXPECTED_SECONDS, min_samples=MIN_SAMPLES,
-        last_escalated_days_ago=None, cooldown_days=7,
+        mastery=state,
+        daily_response_counts=counts,
+        latencies=latencies,
+        expected_seconds=EXPECTED_SECONDS,
+        min_samples=MIN_SAMPLES,
+        last_escalated_days_ago=None,
+        cooldown_days=7,
     )
 
 

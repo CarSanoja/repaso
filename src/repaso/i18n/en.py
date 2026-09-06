@@ -1,4 +1,9 @@
 MESSAGES = {
+    "model_waiting": (
+        "The AI service is temporarily at capacity. Your pending work is saved; you "
+        "do not need to repeat your answer. Practice will continue when service is "
+        "available. "
+    ),
     "welcome": (
         "Hi, I'm Repaso, your family's reinforcement tutor. I work with you, the "
         "parent: you send me whatever the school shares and I build a short daily "
@@ -9,18 +14,19 @@ MESSAGES = {
         "1. The account is yours, the parent's. Your child never uses Telegram: "
         "practice arrives in this chat and you do it together.\n"
         "2. Never give me the student's real name. We'll use an alias you choose; "
-        "real names never reach the system.\n"
+        "also keep names and personal details out of the uploaded pages.\n"
         "3. I store only what's needed: the alias, the grade, the material you send "
-        "and the practice answers. Erase everything anytime with /forget.\n"
+        "and the practice answers. /forget erases active data. Operational logs remain "
+        "for up to 7 days and backups for up to 35 days; manage chat history in Telegram.\n"
         "4. This project is open source, but your data is not: nothing you send is "
-        "published or shared.\n"
+        "published. Telegram and AWS process data to provide the service.\n"
         "Do you accept?"
     ),
     "consent_accept": "I accept",
     "consent_declined": "Understood. If you change your mind, type /start anytime.",
     "ask_alias": "What alias should we use for the student? (e.g. Leo, Star, Champ)",
     "alias_warning": "That looks like a real name. Better use a nickname only you know.",
-    "ask_grade": "What grade are they in? (1 to 12)",
+    "ask_grade": "This pilot covers fourth-grade math. Enter 4 to continue.",
     "ask_section": (
         "School, grade and section? (e.g. San Jose 4th B). This lets me tell you when "
         "several families in the same section struggle with the same topic."
@@ -38,7 +44,9 @@ MESSAGES = {
     "capsule_header": "Today's practice for {alias} — {competency}",
     "feedback_correct": "Correct! {feedback}",
     "feedback_incorrect": "Not yet. {feedback}",
-    "session_complete": "Today's practice complete! {streak}-day streak. See you tomorrow.",
+    "session_complete": (
+        "Today's practice complete! {streak} correct-answer streak. See you tomorrow."
+    ),
     "material_received": "Received ✅ Preparing the material.",
     "material_ready": "Material ready: I prepared {item_count} exercises on {competencies}.",
     "material_rejected": (
@@ -63,7 +71,7 @@ MESSAGES = {
         "send it again?"
     ),
     "quarantine_prompt": (
-        "I need your eyes: {alias} answered \"{answer}\" and I'm not sure how to grade "
+        'I need your eyes: {alias} answered "{answer}" and I\'m not sure how to grade '
         "it. Should it count as correct?"
     ),
     "quarantine_approve": "It's right",
@@ -72,7 +80,7 @@ MESSAGES = {
         "Thank you. I am counting it as right and it already adds to this week's progress."
     ),
     "quarantine_ack_rejected": (
-        "Thank you. I am leaving it out of progress: it neither adds nor subtracts."
+        "Thank you. I record it as incorrect and use that result to adjust practice."
     ),
     "struggle_summary": (
         "{alias} has been struggling with {competency} for several days. Here is the "
@@ -80,7 +88,7 @@ MESSAGES = {
     ),
     "option_guided_session": "A guided 10-min session together tonight (I'll prepare it)",
     "option_teacher_note": "A note for the teacher (already drafted, you decide to send it)",
-    "option_reduce_load": "Slow down and consolidate the previous topic",
+    "option_reduce_load": "One question per practice for seven days",
     "engagement_alert": (
         "{alias} hasn't practiced in {days} school days. Should we reduce the load or change "
         "the time? /schedule changes the hour, /pause stops without erasing anything."
@@ -91,16 +99,13 @@ MESSAGES = {
     ),
     "weekly_digest": (
         "{alias}'s weekly summary: {sessions} practices, {accuracy}% correct, "
-        "{streak}-day streak. Mastery by topic: {mastery_map}"
+        "{streak} correct-answer streak. Mastery by topic: {mastery_map}"
     ),
     "exam_ack": "Noted: {competency} exam on {date}. Adjusting the review plan.",
     "exam_ask_date": (
-        "Happy to note it, but I'm missing the day. When is it? For example: 12/09 or "
-        "12-09-2026."
+        "Happy to note it, but I'm missing the day. When is it? For example: 12/09 or 12-09-2026."
     ),
-    "escalation_ack": (
-        "Done, we go with: {option}. I am adjusting the practice plan from today."
-    ),
+    "escalation_ack": ("Done: {option}."),
     "mastery_summary": "{mastered} mastered · {developing} on track · {struggling} tricky",
     "paused": "Paused. Nothing is erased; /resume picks up whenever you want.",
     "resumed": "Back! Tomorrow at {time} the next practice arrives.",
@@ -108,7 +113,10 @@ MESSAGES = {
         "This erases EVERYTHING: alias, material, history and statistics. It cannot be "
         "undone. Are you sure?"
     ),
-    "forget_done": "Everything erased. Thank you for trusting Repaso.",
+    "forget_done": (
+        "Profile, material, answers and alarms erased from the active service. Backups "
+        "expire within 35 days and technical logs within seven days."
+    ),
     "forget_yes": "Yes, erase everything",
     "forget_no": "No, keep it",
     "consent_decline": "I do not accept",
@@ -128,4 +136,13 @@ MESSAGES = {
     ),
     "unknown_command": "I don't know that command. /help shows what I can do.",
     "status_line": "{alias}: {sessions} practices, mastery {mastery_map}, streak {streak}.",
+    "supported_material": (
+        "This pilot supports fourth-grade math: printed-text photos and single-page PDFs "
+        "(up to 10 MB). Voice and handwriting are not available yet."
+    ),
+    "quarantine_unsure": "Not sure yet",
+    "quarantine_deferred": (
+        "The answer stays pending and does not change progress. You can review it with "
+        "the teacher and return to these buttons."
+    ),
 }

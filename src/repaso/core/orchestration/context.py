@@ -15,6 +15,7 @@ from repaso.schemas.family import Family
 from repaso.schemas.grading import GradeResult, StudentResponse
 from repaso.schemas.item import Item, ItemVerdict
 from repaso.schemas.material import Material
+from repaso.schemas.operation import OperationRecord
 from repaso.schemas.review import QuarantineItem
 from repaso.schemas.session import PracticeSession
 from repaso.schemas.student import Student
@@ -46,6 +47,15 @@ class Services:
     invites: InviteCodeSource
     models: dict[ModelRole, Any]
     telemetry: TelemetrySink = field(default_factory=NullTelemetrySink)
+    alarms: Any = None
+
+    def __post_init__(self):
+        if self.alarms is None:
+            from repaso.tools.alarms import build_alarm_scheduler
+
+            self.alarms = build_alarm_scheduler(
+                self.settings, self.settings.scheduler_target_arn, self.settings.scheduler_role_arn
+            )
 
     def model(self, role: ModelRole) -> Any:
         return self.models[role]
@@ -81,6 +91,7 @@ class TutorRun:
     escalations: list[Escalation] = field(default_factory=list)
     outbound: list[OutboundMessage] = field(default_factory=list)
     terminal: str | None = None
+    operation: OperationRecord | None = None
 
 
 @dataclass
@@ -118,6 +129,7 @@ class ChannelRun:
     events: list[DomainEvent] = field(default_factory=list)
     ingest: IngestRun | None = None
     tutor: TutorRun | None = None
+    replayed_summary: dict | None = None
 
 
 @dataclass

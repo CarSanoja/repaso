@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 from repaso.tools.cassette_model import CassetteExhausted
 from repaso.tools.llm import PlaybackExhausted
+from repaso.tools.model_limits import ModelLimitReached
 
 
 def user_message(text: str) -> dict:
@@ -19,7 +20,7 @@ async def structured[T: BaseModel](model, output_model: type[T], system: str, te
         async for event in events:
             if "output" in event:
                 output = event["output"]
-    except (CassetteExhausted, PlaybackExhausted):
+    except (CassetteExhausted, PlaybackExhausted, ModelLimitReached):
         raise
     except Exception as error:
         raise StructuredCallFailed(str(error)) from error
