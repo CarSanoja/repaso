@@ -165,6 +165,16 @@ def test_the_execution_role_drops_the_statement_with_no_resource(assembly):
     assert "CurriculumKnowledgeBaseRetrieve" not in sids
 
 
+def test_listing_family_alarms_is_not_scoped_to_a_schedule_arn(assembly):
+    statements = role_statements(assembly)
+    listing = next(s for s in statements if s["Sid"] == "FamilyAlarmListing")
+    lifecycle = next(s for s in statements if s["Sid"] == "FamilyAlarmSchedules")
+
+    assert listing["Action"] == "scheduler:ListSchedules"
+    assert listing["Resource"] == "*"
+    assert "scheduler:ListSchedules" not in lifecycle["Action"]
+
+
 def test_the_runtime_may_read_every_secret_it_resolves_at_run_time(assembly):
     granted = json.dumps(role_statements(assembly))
     environment = only(assembly, "agentcore", RUNTIME)["EnvironmentVariables"]

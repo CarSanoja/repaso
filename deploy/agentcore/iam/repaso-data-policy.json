@@ -96,12 +96,19 @@
         "scheduler:CreateSchedule",
         "scheduler:UpdateSchedule",
         "scheduler:DeleteSchedule",
-        "scheduler:GetSchedule",
-        "scheduler:ListSchedules"
+        "scheduler:GetSchedule"
       ],
       "Resource": [
         "arn:aws:scheduler:us-east-1:123456789012:schedule/repaso/*"
       ]
+    },
+    {
+      "Sid": "FamilyAlarmListing",
+      "Effect": "Allow",
+      "Action": [
+        "scheduler:ListSchedules"
+      ],
+      "Resource": "*"
     },
     {
       "Sid": "PassSchedulerRole",
