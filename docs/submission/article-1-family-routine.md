@@ -10,7 +10,7 @@ That review needs context. The parent sees the question, the child's answer, the
 
 After two labeled jumps in simulated time, repeated difficulty reaches the configured evidence threshold. The parent chooses between receiving a note for the teacher and reducing practice for seven days. The note is delivered to the parent to review and forward. In the other branch, the next session contains one exercise. This is the crucial product test: a decision must change what happens next.
 
-The judge experience makes these stages visible without IDs or command-line work. It runs the application graphs in isolated state with authored model responses. Its dates, conversation and assertions are synthetic. A separate real Textract call recognized a new printed Spanish fractions page, but Bedrock inference remains blocked by the authorized account's quota. No live family benefit is claimed.
+The judge experience makes these stages visible without IDs or command-line work. It runs the application graphs in isolated state with authored model responses. Its dates, conversation and assertions are synthetic. A separate real Textract call recognized a new printed Spanish fractions page, and a bounded live run confirmed that every configured Bedrock model answers and fills the schema its agent asks for. Neither is a family using the product, and no live family benefit is claimed.
 
 The next evaluation measures adult attention directly. A three-day pilot kit records preparation, accompaniment, review, corrections and operator help, with a comparable manual task. The desired result is practical—less preparation or a routine a family chooses to repeat. A small observational pilot would not establish improved learning.
 

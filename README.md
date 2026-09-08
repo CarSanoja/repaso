@@ -2,7 +2,7 @@
 
 Repaso turns a fourth-grade math sheet into a daily practice routine in a parent's Telegram chat. It prepares practice, follows responses, changes the next session and asks the adult for a decision when an answer is uncertain or difficulty persists.
 
-**Current evidence:** the complete journey is reproducible with synthetic data. Its model outputs are authored simulations. A separate, actual Amazon Textract call recognized a new printed Spanish fractions page on September 6, 2026. Live Bedrock inference remains blocked by the authorized account's daily quota. No measured learning benefit, family pilot or deployed cloud journey is claimed. See the [evidence register](docs/evidence/README.md).
+**Current evidence:** the complete journey is reproducible with synthetic data. Its model outputs are authored simulations. A separate, actual Amazon Textract call recognized a new printed Spanish fractions page on September 6, 2026, and on September 12 every configured Bedrock model answered and filled its schema in 27 of 27 bounded probe calls. No measured learning benefit, family pilot or deployed cloud journey is claimed. See the [evidence register](docs/evidence/README.md).
 
 ## Try the complete journey
 
@@ -72,7 +72,7 @@ The full suite includes ten complete transport simulations through webhook, Even
 
 The 60-answer evaluation set has proposed synthetic examples and a separate blind teacher-review file. Its independent labels are deliberately blank. Validation cannot award model-quality scores without independent review and real predictions. [Evaluation protocol](evaluation/README.md) · [Pilot kit](docs/pilot/README.md).
 
-Live checks are opt-in and incur AWS charges. Use only the authorized `quanta` account and region, with the access problem resolved first. [Live conformance](tests/live/README.md) · [Deployment](deploy/README.md) · [Product details](docs/product/product-overview.md) · [Submission materials](docs/submission/README.md).
+Live checks are opt-in and incur AWS charges. Use only the authorized `quanta` account and region. [Live conformance](tests/live/README.md) · [Deployment](deploy/README.md) · [Product details](docs/product/product-overview.md) · [Submission materials](docs/submission/README.md).
 
 ## Evidence and limits
 

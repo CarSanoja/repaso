@@ -13,7 +13,7 @@
 | Construction/provenance and individual eligibility | Owner verification pending |
 | Three Builder Center URLs | Drafts prepared; publication pending |
 | Availability operator through October 8 | Owner assignment pending |
-| Successful real scheduled journey and ten cloud runs | Blocked by live inference/deployment acceptance |
+| Successful real scheduled journey and ten cloud runs | Not performed; the models answer, nothing is deployed |
 | Family pilot and independent teacher review | Not performed; kit prepared |
 
 Before freezing: verify the official deadline and rules, run the candidate checks, record their outputs, check all public links without login and submit before the deadline. No completed box should be inferred from a file existing locally. The owner should retain the exact submitted commit, archive, captions, video and form receipt.

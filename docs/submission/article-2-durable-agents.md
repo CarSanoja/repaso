@@ -14,6 +14,6 @@ Ten complete adapter simulations now run that chain with Moto emulating AWS, aut
 
 One limitation stays explicit. Telegram sendMessage has no application idempotency key. If the remote service accepts a message and its acknowledgment is lost, a retry may duplicate it. Idempotent learning effects and exactly-once visible delivery are different properties. The repository claims the first only within its tested operation contract and describes delivery as at least once.
 
-Real inference and deployed acceptance still need the authorized account's quota restored. The useful progress is a concrete, testable path that can recover when services fail, plus documentation that says what each result actually proves.
+The models answer now: a bounded live run parsed twenty-seven of twenty-seven schema calls across all five roles. Deployed acceptance does not exist, and twenty-seven probe calls say nothing about sustained throughput under a pilot's load. The useful progress is a concrete, testable path that can recover when services fail, plus documentation that says what each result actually proves.
 
 See the [runtime invocation contract](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html) and [implementation guide](../product/how-it-works.md).

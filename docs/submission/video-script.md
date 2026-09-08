@@ -52,8 +52,8 @@ The worker invokes AgentCore through SSM. DynamoDB transactions protect learning
 
 ## 00:04:00–00:04:20 · Evidence has different meanings
 
-Ten full adapter simulations passed with injected failures. A separate actual Textract call read a new printed page. Neither proves live model quality or family benefit.
+Ten full adapter simulations passed with injected failures. A real Textract call read a new printed page, and every configured model answered its schema. None of it proves model quality or family benefit.
 
 ## 00:04:20–00:04:40 · Try the whole story. Inspect the evidence.
 
-The candidate covers fourth-grade math and printed material. Bedrock quota, deployed acceptance, teacher review and a family pilot remain open. This preview reconstructs authored simulation data.
+The candidate covers fourth-grade math and printed material. Deployed acceptance, teacher review and a family pilot remain open. This preview reconstructs authored simulation data.
