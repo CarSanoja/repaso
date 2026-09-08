@@ -7,6 +7,8 @@ from aws_cdk import aws_secretsmanager as secretsmanager
 from config import DeployConfig
 from constructs import Construct
 
+TLS_FLOOR = 1.2
+
 
 class FoundationStack(cdk.Stack):
     def __init__(
@@ -23,6 +25,8 @@ class FoundationStack(cdk.Stack):
             encryption=s3.BucketEncryption.KMS,
             encryption_key=self.key,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            enforce_ssl=True,
+            minimum_tls_version=TLS_FLOOR,
             lifecycle_rules=[
                 s3.LifecycleRule(
                     expiration=cdk.Duration.days(config.media_retention_days)
@@ -36,6 +40,8 @@ class FoundationStack(cdk.Stack):
             "CurriculumBucket",
             encryption=s3.BucketEncryption.S3_MANAGED,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            enforce_ssl=True,
+            minimum_tls_version=TLS_FLOOR,
             removal_policy=cdk.RemovalPolicy.DESTROY,
             auto_delete_objects=True,
         )
@@ -47,6 +53,8 @@ class FoundationStack(cdk.Stack):
             partition_key=dynamodb.Attribute(name="pk", type=dynamodb.AttributeType.STRING),
             sort_key=dynamodb.Attribute(name="sk", type=dynamodb.AttributeType.STRING),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            encryption=dynamodb.TableEncryption.CUSTOMER_MANAGED,
+            encryption_key=self.key,
             time_to_live_attribute="expires_at",
             point_in_time_recovery_specification=dynamodb.PointInTimeRecoverySpecification(
                 point_in_time_recovery_enabled=True
@@ -66,7 +74,10 @@ class FoundationStack(cdk.Stack):
             self, "JudgeSecret", secret_name=config.secret("judge")
         )
         self.invite_codes_secret = secretsmanager.Secret(
-            self, "InviteCodesSecret", secret_name=config.secret("pilot-invite-codes")
+            self,
+            "InviteCodesSecret",
+            secret_name=config.secret("pilot-invite-codes"),
+            encryption_key=self.key,
         )
 
         alert_email = config.alert_email

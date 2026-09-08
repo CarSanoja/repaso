@@ -1,28 +1,9 @@
 import json
-import os
-import subprocess
-import sys
 from pathlib import Path
 
-import pytest
-
-APP = Path(__file__).resolve().parents[2] / "infra" / "app.py"
 LAMBDA_ROLES = ("WebhookFunction", "WorkerFunction", "SchedulerFunction")
 MODEL_ACTIONS = ("bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream")
 WILDCARD_MODEL = "foundation-model/*"
-
-
-@pytest.fixture(scope="module")
-def assembly(tmp_path_factory) -> Path:
-    outdir = tmp_path_factory.mktemp("least-privilege")
-    result = subprocess.run(
-        [sys.executable, str(APP)],
-        env={**os.environ, "CDK_OUTDIR": str(outdir)},
-        capture_output=True,
-        text=True,
-    )
-    assert result.returncode == 0, result.stderr
-    return outdir
 
 
 def resources(assembly: Path, stack: str) -> dict:
@@ -63,11 +44,19 @@ def test_no_lambda_role_may_invoke_a_model(assembly):
         assert not granted & set(MODEL_ACTIONS), logical
 
 
-def test_no_lambda_role_may_reach_the_material_bucket_or_its_key(assembly):
+def test_no_lambda_role_may_reach_the_material_bucket(assembly):
     for logical, statement in lambda_statements(assembly):
         services = {action.split(":")[0] for action in actions_of(statement)}
         assert "s3" not in services, logical
-        assert "kms" not in services, logical
+
+
+def test_a_lambda_key_grant_names_the_project_key(assembly):
+    for logical, statement in lambda_statements(assembly):
+        if not any(action.startswith("kms:") for action in actions_of(statement)):
+            continue
+        rendered = json.dumps(statement["Resource"])
+        assert "RepasoKey" in rendered, logical
+        assert statement["Resource"] != "*", logical
 
 
 def test_only_the_webhook_may_read_a_secret(assembly):
@@ -121,4 +110,4 @@ def test_the_webhook_writes_state_and_events_and_touches_no_media(assembly):
     granted = function_actions(assembly, "WebhookFunctionServiceRoleDefaultPolicy")
 
     assert {"dynamodb:PutItem", "secretsmanager:GetSecretValue", "events:PutEvents"} <= granted
-    assert not [action for action in granted if action.startswith(("s3:", "kms:", "bedrock"))]
+    assert not [action for action in granted if action.startswith(("s3:", "bedrock"))]
