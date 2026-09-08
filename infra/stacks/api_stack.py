@@ -9,6 +9,7 @@ from aws_cdk import aws_iam as iam
 from aws_cdk import aws_lambda as lambda_
 from aws_cdk import aws_lambda_event_sources as sources
 from aws_cdk import aws_logs as logs
+from aws_cdk import aws_sqs as sqs
 from config import DeployConfig
 from constructs import Construct
 
@@ -54,7 +55,12 @@ class ApiStack(cdk.Stack):
             memory=1024,
             timeout=cdk.Duration.minutes(10),
         )
-        self.scheduler = self._function("scheduler", memory=512, timeout=cdk.Duration.minutes(1))
+        self.scheduler = self._function(
+            "scheduler",
+            memory=512,
+            timeout=cdk.Duration.minutes(1),
+            dead_letter_queue=messaging.scheduler_dlq,
+        )
         self.functions = {
             "webhook": self.webhook,
             "worker": self.worker,
@@ -77,7 +83,13 @@ class ApiStack(cdk.Stack):
         )
         self.http_api = self._http_api()
 
-    def _function(self, name: str, memory: int, timeout: cdk.Duration) -> lambda_.Function:
+    def _function(
+        self,
+        name: str,
+        memory: int,
+        timeout: cdk.Duration,
+        dead_letter_queue: sqs.Queue | None = None,
+    ) -> lambda_.Function:
         resource_name = self.config.resource(name)
         log_group = logs.LogGroup(
             self,
@@ -113,6 +125,8 @@ class ApiStack(cdk.Stack):
             timeout=timeout,
             environment=self._environment(),
             log_group=log_group,
+            dead_letter_queue=dead_letter_queue,
+            dead_letter_queue_enabled=dead_letter_queue is not None,
         )
 
     def _environment(self) -> dict[str, str]:

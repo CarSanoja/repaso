@@ -208,3 +208,23 @@ def test_every_work_queue_has_a_dead_letter_queue_behind_it(assembly):
     for name in QUEUES:
         assert f"repaso-{name}-dlq" in queues
         assert queues[f"repaso-{name}"]["RedrivePolicy"]["maxReceiveCount"] == 3
+
+
+def test_a_schedule_tick_that_keeps_failing_lands_somewhere_visible(assembly):
+    functions = {
+        entry["Properties"]["FunctionName"]: entry["Properties"]
+        for entry in template(assembly, "api").find_resources("AWS::Lambda::Function").values()
+    }
+    alarms = {
+        entry["Properties"]["AlarmName"]
+        for entry in template(assembly, "observability")
+        .find_resources("AWS::CloudWatch::Alarm")
+        .values()
+    }
+
+    assert functions["repaso-scheduler"]["DeadLetterConfig"]["TargetArn"]
+    assert "repaso-scheduler-dlq" in {
+        entry["Properties"]["QueueName"]
+        for entry in template(assembly, "messaging").find_resources("AWS::SQS::Queue").values()
+    }
+    assert "repaso-scheduler-dlq-depth" in alarms

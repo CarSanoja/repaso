@@ -20,6 +20,7 @@ class MessagingStack(cdk.Stack):
         self.ingest_queue, self.ingest_dlq = self._queue_pair("ingest")
         self.tutor_queue, self.tutor_dlq = self._queue_pair("tutor")
         self.quality_queue, self.quality_dlq = self._queue_pair("quality")
+        self.scheduler_dlq = self._dlq("scheduler")
 
         self._rule("IngestRule", ["material_uploaded"], self.ingest_queue)
         self._rule(
@@ -46,13 +47,16 @@ class MessagingStack(cdk.Stack):
         )
         self.bus.grant_put_events_to(self.scheduler_role)
 
-    def _queue_pair(self, name: str) -> tuple[sqs.Queue, sqs.Queue]:
-        dlq = sqs.Queue(
+    def _dlq(self, name: str) -> sqs.Queue:
+        return sqs.Queue(
             self,
             f"{name.capitalize()}Dlq",
             queue_name=self.config.resource(name, "dlq"),
             retention_period=cdk.Duration.days(self.config.dlq_retention_days),
         )
+
+    def _queue_pair(self, name: str) -> tuple[sqs.Queue, sqs.Queue]:
+        dlq = self._dlq(name)
         queue = sqs.Queue(
             self,
             f"{name.capitalize()}Queue",

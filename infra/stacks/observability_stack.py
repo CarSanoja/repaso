@@ -48,6 +48,7 @@ class ObservabilityStack(cdk.Stack):
             "ingest": messaging.ingest_dlq,
             "tutor": messaging.tutor_dlq,
             "quality": messaging.quality_dlq,
+            "scheduler": messaging.scheduler_dlq,
         }
 
         for name, dlq in self.dlqs.items():
