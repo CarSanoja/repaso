@@ -1,0 +1,450 @@
+{
+  "written_at": "2026-09-12T06:27:31.763841Z",
+  "samples_per_schema": 3,
+  "calls": 27,
+  "parsed": 27,
+  "input_tokens": 28497,
+  "output_tokens": 6046,
+  "total_usd": 0.158851965,
+  "latency": [
+    {
+      "role": "classify",
+      "calls": 3,
+      "p50_ms": 627.6659999999999,
+      "p95_ms": 881.4459999999999
+    },
+    {
+      "role": "generate",
+      "calls": 9,
+      "p50_ms": 3083.616,
+      "p95_ms": 13807.835000000001
+    },
+    {
+      "role": "judge",
+      "calls": 6,
+      "p50_ms": 2781.463,
+      "p95_ms": 7086.477999999999
+    },
+    {
+      "role": "probe",
+      "calls": 3,
+      "p50_ms": 493.422,
+      "p95_ms": 837.861
+    },
+    {
+      "role": "structured",
+      "calls": 6,
+      "p50_ms": 1228.4170000000001,
+      "p95_ms": 1430.845
+    }
+  ],
+  "schemas": [
+    {
+      "role": "classify",
+      "output_schema": "IntakeDecision",
+      "calls": 3,
+      "parsed": 3,
+      "input_tokens": 2763,
+      "output_tokens": 60,
+      "estimated_usd": 0.00018018
+    },
+    {
+      "role": "generate",
+      "output_schema": "GeneratedBatch",
+      "calls": 3,
+      "parsed": 3,
+      "input_tokens": 4581,
+      "output_tokens": 3480,
+      "estimated_usd": 0.0725373
+    },
+    {
+      "role": "generate",
+      "output_schema": "Snippet",
+      "calls": 3,
+      "parsed": 3,
+      "input_tokens": 2550,
+      "output_tokens": 434,
+      "estimated_usd": 0.015576000000000003
+    },
+    {
+      "role": "generate",
+      "output_schema": "TeacherNote",
+      "calls": 3,
+      "parsed": 3,
+      "input_tokens": 2550,
+      "output_tokens": 450,
+      "estimated_usd": 0.01584
+    },
+    {
+      "role": "judge",
+      "output_schema": "CriticFinding",
+      "calls": 3,
+      "parsed": 3,
+      "input_tokens": 4554,
+      "output_tokens": 667,
+      "estimated_usd": 0.0260337
+    },
+    {
+      "role": "judge",
+      "output_schema": "OpenGrade",
+      "calls": 3,
+      "parsed": 3,
+      "input_tokens": 3447,
+      "output_tokens": 463,
+      "estimated_usd": 0.0190146
+    },
+    {
+      "role": "probe",
+      "output_schema": "ProbeAnswer",
+      "calls": 3,
+      "parsed": 3,
+      "input_tokens": 1551,
+      "output_tokens": 45,
+      "estimated_usd": 0.000060585000000000004
+    },
+    {
+      "role": "structured",
+      "output_schema": "MappingDecision",
+      "calls": 3,
+      "parsed": 3,
+      "input_tokens": 3819,
+      "output_tokens": 165,
+      "estimated_usd": 0.005108400000000001
+    },
+    {
+      "role": "structured",
+      "output_schema": "PolicyDecision",
+      "calls": 3,
+      "parsed": 3,
+      "input_tokens": 2682,
+      "output_tokens": 282,
+      "estimated_usd": 0.0045012
+    }
+  ],
+  "rows": [
+    {
+      "sample": 1,
+      "role": "classify",
+      "output_schema": "IntakeDecision",
+      "model_id": "us.amazon.nova-lite-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 881.4459999999999,
+      "input_tokens": 921,
+      "output_tokens": 20,
+      "estimated_usd": 0.000060060000000000004,
+      "error": ""
+    },
+    {
+      "sample": 2,
+      "role": "classify",
+      "output_schema": "IntakeDecision",
+      "model_id": "us.amazon.nova-lite-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 627.6659999999999,
+      "input_tokens": 921,
+      "output_tokens": 20,
+      "estimated_usd": 0.000060060000000000004,
+      "error": ""
+    },
+    {
+      "sample": 3,
+      "role": "classify",
+      "output_schema": "IntakeDecision",
+      "model_id": "us.amazon.nova-lite-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 591.814,
+      "input_tokens": 921,
+      "output_tokens": 20,
+      "estimated_usd": 0.000060060000000000004,
+      "error": ""
+    },
+    {
+      "sample": 1,
+      "role": "structured",
+      "output_schema": "MappingDecision",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 1228.4170000000001,
+      "input_tokens": 1273,
+      "output_tokens": 55,
+      "estimated_usd": 0.0017028000000000002,
+      "error": ""
+    },
+    {
+      "sample": 2,
+      "role": "structured",
+      "output_schema": "MappingDecision",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 887.193,
+      "input_tokens": 1273,
+      "output_tokens": 55,
+      "estimated_usd": 0.0017028000000000002,
+      "error": ""
+    },
+    {
+      "sample": 3,
+      "role": "structured",
+      "output_schema": "MappingDecision",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 918.717,
+      "input_tokens": 1273,
+      "output_tokens": 55,
+      "estimated_usd": 0.0017028000000000002,
+      "error": ""
+    },
+    {
+      "sample": 1,
+      "role": "structured",
+      "output_schema": "PolicyDecision",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 1296.448,
+      "input_tokens": 894,
+      "output_tokens": 88,
+      "estimated_usd": 0.0014674,
+      "error": ""
+    },
+    {
+      "sample": 2,
+      "role": "structured",
+      "output_schema": "PolicyDecision",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 1430.845,
+      "input_tokens": 894,
+      "output_tokens": 94,
+      "estimated_usd": 0.0015004,
+      "error": ""
+    },
+    {
+      "sample": 3,
+      "role": "structured",
+      "output_schema": "PolicyDecision",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 1376.088,
+      "input_tokens": 894,
+      "output_tokens": 100,
+      "estimated_usd": 0.0015333999999999999,
+      "error": ""
+    },
+    {
+      "sample": 1,
+      "role": "generate",
+      "output_schema": "GeneratedBatch",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 13097.871,
+      "input_tokens": 1527,
+      "output_tokens": 1117,
+      "estimated_usd": 0.023469600000000004,
+      "error": ""
+    },
+    {
+      "sample": 2,
+      "role": "generate",
+      "output_schema": "GeneratedBatch",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 13807.835000000001,
+      "input_tokens": 1527,
+      "output_tokens": 1192,
+      "estimated_usd": 0.0247071,
+      "error": ""
+    },
+    {
+      "sample": 3,
+      "role": "generate",
+      "output_schema": "GeneratedBatch",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 12994.842999999999,
+      "input_tokens": 1527,
+      "output_tokens": 1171,
+      "estimated_usd": 0.024360600000000003,
+      "error": ""
+    },
+    {
+      "sample": 1,
+      "role": "generate",
+      "output_schema": "Snippet",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 3008.87,
+      "input_tokens": 850,
+      "output_tokens": 149,
+      "estimated_usd": 0.005263500000000001,
+      "error": ""
+    },
+    {
+      "sample": 2,
+      "role": "generate",
+      "output_schema": "Snippet",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 2777.132,
+      "input_tokens": 850,
+      "output_tokens": 136,
+      "estimated_usd": 0.0050490000000000005,
+      "error": ""
+    },
+    {
+      "sample": 3,
+      "role": "generate",
+      "output_schema": "Snippet",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 2774.556,
+      "input_tokens": 850,
+      "output_tokens": 149,
+      "estimated_usd": 0.005263500000000001,
+      "error": ""
+    },
+    {
+      "sample": 1,
+      "role": "generate",
+      "output_schema": "TeacherNote",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 2869.891,
+      "input_tokens": 850,
+      "output_tokens": 145,
+      "estimated_usd": 0.0051975,
+      "error": ""
+    },
+    {
+      "sample": 2,
+      "role": "generate",
+      "output_schema": "TeacherNote",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 3083.616,
+      "input_tokens": 850,
+      "output_tokens": 156,
+      "estimated_usd": 0.005379,
+      "error": ""
+    },
+    {
+      "sample": 3,
+      "role": "generate",
+      "output_schema": "TeacherNote",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 4753.156,
+      "input_tokens": 850,
+      "output_tokens": 149,
+      "estimated_usd": 0.005263500000000001,
+      "error": ""
+    },
+    {
+      "sample": 1,
+      "role": "judge",
+      "output_schema": "CriticFinding",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 4669.125,
+      "input_tokens": 1518,
+      "output_tokens": 218,
+      "estimated_usd": 0.0086064,
+      "error": ""
+    },
+    {
+      "sample": 2,
+      "role": "judge",
+      "output_schema": "CriticFinding",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 7086.477999999999,
+      "input_tokens": 1518,
+      "output_tokens": 237,
+      "estimated_usd": 0.0089199,
+      "error": ""
+    },
+    {
+      "sample": 3,
+      "role": "judge",
+      "output_schema": "CriticFinding",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 4176.577,
+      "input_tokens": 1518,
+      "output_tokens": 212,
+      "estimated_usd": 0.0085074,
+      "error": ""
+    },
+    {
+      "sample": 1,
+      "role": "judge",
+      "output_schema": "OpenGrade",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 2781.463,
+      "input_tokens": 1149,
+      "output_tokens": 159,
+      "estimated_usd": 0.0064152,
+      "error": ""
+    },
+    {
+      "sample": 2,
+      "role": "judge",
+      "output_schema": "OpenGrade",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 2688.62,
+      "input_tokens": 1149,
+      "output_tokens": 149,
+      "estimated_usd": 0.006250199999999999,
+      "error": ""
+    },
+    {
+      "sample": 3,
+      "role": "judge",
+      "output_schema": "OpenGrade",
+      "model_id": "us.anthropic.claude-sonnet-4-6",
+      "outcome": "parsed",
+      "latency_ms": 2656.911,
+      "input_tokens": 1149,
+      "output_tokens": 155,
+      "estimated_usd": 0.0063492,
+      "error": ""
+    },
+    {
+      "sample": 1,
+      "role": "probe",
+      "output_schema": "ProbeAnswer",
+      "model_id": "us.amazon.nova-micro-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 837.861,
+      "input_tokens": 517,
+      "output_tokens": 15,
+      "estimated_usd": 0.000020195000000000002,
+      "error": ""
+    },
+    {
+      "sample": 2,
+      "role": "probe",
+      "output_schema": "ProbeAnswer",
+      "model_id": "us.amazon.nova-micro-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 471.531,
+      "input_tokens": 517,
+      "output_tokens": 15,
+      "estimated_usd": 0.000020195000000000002,
+      "error": ""
+    },
+    {
+      "sample": 3,
+      "role": "probe",
+      "output_schema": "ProbeAnswer",
+      "model_id": "us.amazon.nova-micro-v1:0",
+      "outcome": "parsed",
+      "latency_ms": 493.422,
+      "input_tokens": 517,
+      "output_tokens": 15,
+      "estimated_usd": 0.000020195000000000002,
+      "error": ""
+    }
+  ]
+}

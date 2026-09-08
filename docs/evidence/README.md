@@ -1,6 +1,8 @@
-# Evidence register — September 6, 2026
+# Evidence register — September 6, 2026, with a September 12 addition
 
 These artifacts record the pre-commit verification after the gap remediation. The implementation is now committed locally as `08826b26f8df5dbd3a125539666cbf7058f3f9cd`, and the evaluation kit as `42d7096fe349a741ac174f6ec5e00513ec98ae03`. The release manifest records the original candidate's exact file hashes and base commit. No cloud deployment or publication has occurred. Historical August figures are not substituted for this evidence.
+
+One row is dated September 12: on that day Bedrock answered, and the entry it replaces said it did not. Every other row is the September 6 record and is unchanged.
 
 | Claim | Evidence | What it does and does not establish |
 | --- | --- | --- |
@@ -10,7 +12,7 @@ These artifacts record the pre-commit verification after the gap remediation. Th
 | ARM64 containers can start and serve application routes | [HTTP smoke report](container-smoke.json) | AgentCore /ping and valid daily close; Lambda health, assets, login and a 23-check judge journey; local mode without AWS inference |
 | Package includes working assets and scenario data | `scripts/check_installed_package.py`; verification summary | Wheel installed into an empty environment, run from /private/tmp; both complete journeys and HTTP/assets pass |
 | A new printed Spanish page is recognized outside the cassette | [Actual OCR result](live-ocr.json), [synthetic input](printed-synthetic-page.png) | One actual Textract request; no embedded text; confidence 0.9957223510742188; not an end-to-end tutor or handwriting-quality result |
-| Bedrock is currently unavailable in the authorized account | [Access check](live-inference-access.json) | Four short actual calls, all daily-token throttled; no successful model quality, latency or cost measurement |
+| Bedrock answered on September 12 and every configured schema parsed | [Conformance report](live-conformance-2026-09-12.json); the September 6 [access check](live-inference-access.json) it supersedes | 27 of 27 calls parsed at three samples per schema across all five roles; 28,497 input and 6,046 output tokens, $0.1589 at the geographic rates recorded in `config/pricing.py`; p50 and p95 latency per role. Not a deployment, not a family journey, and not a model quality result |
 | Independent evaluation is prepared | [Validation result](answer-evaluation-validation.json), [60-answer protocol](../../evaluation/README.md) | Cases validated, zero model predictions, zero independent reviews; quality claims are not allowed |
 | Family-impact evidence is prepared for collection | [Pilot kit](../pilot/README.md) | Empty observation template and aggregate analyzer; no participants or savings reported |
 
@@ -22,4 +24,4 @@ Application traces distinguish simulation and live origin and report tokens only
 
 DynamoDB transaction tests and local WAL tests cover duplicate/conflicting learning effects. Telegram delivery remains at least once when acknowledgment is lost. Family deletion covers active records and S3 versions; retention of logs, backups and Telegram history is described in the consent.
 
-Remaining external gates: usable Bedrock quota; actual cloud deployment and scheduled delivery; independent labels/calibration and probe ablation; observed families and teacher feedback; public repository, hosted demo, video, Builder articles and submission identity/provenance. None is marked complete because a local file exists.
+Remaining external gates: actual cloud deployment and scheduled delivery; independent labels/calibration and probe ablation; observed families and teacher feedback; public repository, hosted demo, video, articles and submission identity/provenance. None is marked complete because a local file exists. Model access is no longer one of them, but a run of twenty-seven probe calls says nothing about sustained throughput under a pilot's load.
