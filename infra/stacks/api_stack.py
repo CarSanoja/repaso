@@ -17,7 +17,6 @@ from stacks.foundation_stack import FoundationStack
 from stacks.messaging_stack import MessagingStack
 
 REPO_ROOT = str(Path(__file__).resolve().parents[2])
-BEDROCK_ACTIONS = ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"]
 BATCH_SIZE = 5
 
 RETENTION = {
@@ -146,31 +145,13 @@ class ApiStack(cdk.Stack):
             "REPASO_INVITE_CODES_SECRET_NAME": config.secret("pilot-invite-codes"),
         }
 
-    def _bedrock_statement(self) -> iam.PolicyStatement:
-        return iam.PolicyStatement(
-            actions=BEDROCK_ACTIONS,
-            resources=[
-                f"arn:{self.partition}:bedrock:*::foundation-model/*",
-                f"arn:{self.partition}:bedrock:{self.region}:{self.account}:inference-profile/*",
-            ],
-        )
-
     def _wire_webhook(self) -> None:
         self.foundation.table.grant_read_write_data(self.webhook)
-        self.foundation.media_bucket.grant_read_write(self.webhook)
         self.foundation.telegram_secret.grant_read(self.webhook)
         self.foundation.judge_secret.grant_read(self.webhook)
         self.messaging.bus.grant_put_events_to(self.webhook)
 
     def _wire_worker(self) -> None:
-        self.foundation.table.grant_read_write_data(self.worker)
-        self.foundation.media_bucket.grant_read_write(self.worker)
-        self.foundation.curriculum_bucket.grant_read(self.worker)
-        self.foundation.telegram_secret.grant_read(self.worker)
-        self.foundation.judge_secret.grant_read(self.worker)
-        self.foundation.invite_codes_secret.grant_read(self.worker)
-        self.messaging.bus.grant_put_events_to(self.worker)
-        self.worker.add_to_role_policy(self._bedrock_statement())
         self.worker.add_to_role_policy(
             iam.PolicyStatement(
                 actions=["bedrock-agentcore:InvokeAgentRuntime"],

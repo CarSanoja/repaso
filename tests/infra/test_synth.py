@@ -210,6 +210,38 @@ def test_every_work_queue_has_a_dead_letter_queue_behind_it(assembly):
         assert queues[f"repaso-{name}"]["RedrivePolicy"]["maxReceiveCount"] == 3
 
 
+def function_actions(assembly: Path, prefix: str) -> set[str]:
+    policies = template(assembly, "api").find_resources("AWS::IAM::Policy")
+    document = next(
+        entry["Properties"]["PolicyDocument"]
+        for name, entry in policies.items()
+        if name.startswith(prefix)
+    )
+    granted: set[str] = set()
+    for statement in document["Statement"]:
+        action = statement["Action"]
+        granted.update([action] if isinstance(action, str) else action)
+    return granted
+
+
+def test_the_worker_may_reach_the_runtime_and_nothing_the_runtime_reaches(assembly):
+    granted = function_actions(assembly, "WorkerFunctionServiceRoleDefaultPolicy")
+
+    assert "bedrock-agentcore:InvokeAgentRuntime" in granted
+    assert "ssm:GetParameter" in granted
+    assert "sqs:ReceiveMessage" in granted
+    assert not [action for action in granted if action.startswith(("bedrock:", "dynamodb:"))]
+    assert not [action for action in granted if action.startswith(("s3:", "kms:", "secrets"))]
+    assert "events:PutEvents" not in granted
+
+
+def test_the_webhook_writes_state_and_events_and_touches_no_media(assembly):
+    granted = function_actions(assembly, "WebhookFunctionServiceRoleDefaultPolicy")
+
+    assert {"dynamodb:PutItem", "secretsmanager:GetSecretValue", "events:PutEvents"} <= granted
+    assert not [action for action in granted if action.startswith(("s3:", "kms:", "bedrock"))]
+
+
 def test_a_schedule_tick_that_keeps_failing_lands_somewhere_visible(assembly):
     functions = {
         entry["Properties"]["FunctionName"]: entry["Properties"]
