@@ -10,6 +10,7 @@ from repaso.tools.media_store import S3MediaStore
 from repaso.tools.state_dynamo import DynamoStateStore
 from tests.orchestration.fixtures import FRACTIONS, seed_family, seed_held_answer, seed_open_item
 from tests.orchestration.test_gap_recovery import IntermittentSender, make_services, seed_mcqs
+from tests.tools.aws_doubles import OneRequestAtATime
 
 
 @pytest.fixture
@@ -37,6 +38,7 @@ def cloud_services(settings, monkeypatch):
                 }
             ],
         )
+        client = OneRequestAtATime(client)
         for module in (
             "repaso.config.clients",
             "repaso.tools.state_dynamo",
