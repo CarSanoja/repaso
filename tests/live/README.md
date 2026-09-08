@@ -84,25 +84,28 @@ This is a real run, three samples per schema, on 2026-09-12:
 schema conformance at 3 samples per schema
 role       schema             calls   ok       in     out       usd
 classify   IntakeDecision         3    3     2763      60    0.0002
-generate   GeneratedBatch         3    3     4581    3531    0.0667
-generate   Snippet                3    3     2550     430    0.0141
-generate   TeacherNote            3    3     2550     445    0.0143
-judge      CriticFinding          3    3     4554     629    0.0231
-judge      OpenGrade              3    3     3447     483    0.0176
+generate   GeneratedBatch         3    3     4581    3480    0.0725
+generate   Snippet                3    3     2550     434    0.0156
+generate   TeacherNote            3    3     2550     450    0.0158
+judge      CriticFinding          3    3     4554     667    0.0260
+judge      OpenGrade              3    3     3447     463    0.0190
 probe      ProbeAnswer            3    3     1551      45    0.0001
-structured MappingDecision        3    3     3819     165    0.0046
-structured PolicyDecision         3    3     2682     255    0.0040
-total                            27   27    28497    6043    0.1447
+structured MappingDecision        3    3     3819     165    0.0051
+structured PolicyDecision         3    3     2682     282    0.0045
+total                            27   27    28497    6046    0.1589
 
 role        calls    p50 ms    p95 ms
-classify        3     578.9     871.8
-generate        9    3138.2   16609.4
-judge           6    3894.8    4982.6
-probe           3     500.8     773.4
-structured      6    1155.3    1364.1
+classify        3     627.7     881.4
+generate        9    3083.6   13807.8
+judge           6    2781.5    7086.5
+probe           3     493.4     837.9
+structured      6    1228.4    1430.8
 
-parsed 27/27, estimated spend $0.1447
+parsed 27/27, estimated spend $0.1589
 ```
+
+The run is kept in the repository as
+[docs/evidence/live-conformance-2026-09-12.json](../../docs/evidence/live-conformance-2026-09-12.json).
 
 The `ok` column against `calls` is the conformance figure, and the run fails
 unless they match on every line: a schema that parsed four times out of five is
