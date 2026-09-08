@@ -28,7 +28,7 @@ repaso-observability
 
 | Stack | What it creates | Survives teardown |
 | --- | --- | --- |
-| `repaso-foundation` | KMS key `alias/repaso`, media bucket (SSE-KMS, 90-day expiry), curriculum bucket, DynamoDB table `repaso` with `gsi1` and PITR, three Secrets Manager entries, two monthly budget alarms | key, media bucket, table |
+| `repaso-foundation` | KMS key `alias/repaso`, media bucket (SSE-KMS, 90-day expiry), curriculum bucket, DynamoDB table `repaso` with `gsi1` and PITR, three Secrets Manager entries, two monthly budget alarms | the key but not its alias, the media bucket, the table |
 | `repaso-messaging` | Event bus `repaso`, three work queues with their dead letter queues, the schedule tick dead letter queue, three routing rules, schedule group `repaso`, role `repaso-scheduler` | nothing |
 | `repaso-guardrails` | Guardrail `repaso` and one published version, two SSM parameters | nothing |
 | `repaso-api` | Three ARM64 container Lambdas (`repaso-webhook`, `repaso-worker`, `repaso-scheduler`), their log groups, the HTTP API and its routes, the daily-close rule | nothing |
@@ -343,21 +343,34 @@ AWS budgets alert; they do not stop anything.
 cd infra && AWS_PROFILE=quanta npx aws-cdk@2 destroy --all
 ```
 
-**[unverified]**. It removes the stacks in reverse dependency order. It does not
-remove:
+**[unverified]**. It removes the stacks in reverse dependency order and leaves
+four things behind, which fail in two different ways.
 
-- the DynamoDB table `repaso`, the media bucket and the KMS key `alias/repaso`,
-  all three retained on purpose so a teardown cannot erase pilot data;
-- the bootstrap stack, its staging bucket or the ECR repository — `cdk destroy`
-  never touches those;
-- the three secrets, which enter a recovery window rather than disappearing.
+**Loudly, on the next deploy.** The DynamoDB table is retained under the fixed
+name `repaso`, so `CreateTable` fails until you delete it. The three secrets are
+deleted into a thirty-day recovery window, and `CreateSecret` fails on a name
+that window still holds. The preflight reports both as blockers before you spend
+twenty minutes finding out from CloudFormation. Release them with
+`aws dynamodb delete-table --table-name repaso` and
+`aws secretsmanager delete-secret --force-delete-without-recovery`.
 
-Each of those is a name a later deployment wants back. A redeploy will fail on
-the table name, on the key alias, and on any secret still inside its window. The
-preflight reports all three as blockers before you spend twenty minutes finding
-out from CloudFormation. To actually release a name: `aws dynamodb delete-table`,
-`aws kms delete-alias` (the key itself needs a scheduled deletion with a minimum
-seven-day window), and `aws secretsmanager delete-secret --force-delete-without-recovery`.
+**Quietly, forever.** The KMS key is retained but its alias is not, and the media
+bucket is retained under a generated name. So a redeploy does not collide with
+either: it mints a fresh key, takes the free `alias/repaso`, and creates a new
+bucket. The old key keeps costing a dollar a month, the old bucket keeps holding
+the pilot's material, and the only thing that still links them is that the data
+in one is encrypted by the other. Nothing reports this — not CloudFormation, not
+the preflight, which sees the alias as free because it is. After a teardown you
+must decide about them by hand: `aws kms list-aliases`, `aws s3 ls`, then either
+schedule the key for deletion (minimum seven days, and it takes the bucket's
+readability with it) or keep both and know why.
+
+The bootstrap stack, its staging bucket and the ECR repository survive too;
+`cdk destroy` never touches them. That is usually what you want, since
+rebootstrapping is slower than leaving them. Note also that SQS refuses to
+recreate a queue with a name deleted in the last sixty seconds, so a destroy
+immediately followed by a deploy fails in the messaging stack and succeeds on a
+second try a minute later.
 
 To stop the service without deleting anything, `scripts/infra_toggle.py off`
 disables the schedules and routing rules. Inspect what it targets before running
