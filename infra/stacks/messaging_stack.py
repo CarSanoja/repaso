@@ -45,7 +45,6 @@ class MessagingStack(cdk.Stack):
             role_name=config.resource("scheduler"),
             assumed_by=iam.ServicePrincipal("scheduler.amazonaws.com"),
         )
-        self.bus.grant_put_events_to(self.scheduler_role)
 
     def _dlq(self, name: str) -> sqs.Queue:
         return sqs.Queue(

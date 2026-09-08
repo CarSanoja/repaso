@@ -68,14 +68,13 @@
       ]
     },
     {
-      "Sid": "ChannelJudgeAndInviteSecrets",
+      "Sid": "ChannelAndInviteSecrets",
       "Effect": "Allow",
       "Action": [
         "secretsmanager:GetSecretValue"
       ],
       "Resource": [
         "arn:aws:secretsmanager:us-east-1:123456789012:secret:repaso/telegram-*",
-        "arn:aws:secretsmanager:us-east-1:123456789012:secret:repaso/judge-*",
         "arn:aws:secretsmanager:us-east-1:123456789012:secret:repaso/pilot-invite-codes-*"
       ]
     },

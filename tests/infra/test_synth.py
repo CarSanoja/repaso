@@ -189,6 +189,15 @@ def test_the_runtime_may_read_every_secret_it_resolves_at_run_time(assembly):
 
     assert environment["REPASO_INVITE_CODES_SECRET_NAME"] == INVITE_CODES_SECRET
     assert f"secret:{INVITE_CODES_SECRET}-*" in granted
+    assert "secret:repaso/telegram-*" in granted
+    assert "secret:repaso/judge-*" not in granted
+
+
+def test_the_schedule_role_may_only_start_the_tick_it_exists_to_start(assembly):
+    policies = template(assembly, "messaging").find_resources("AWS::IAM::Policy")
+    granted = json.dumps(policies)
+
+    assert "events:PutEvents" not in granted
 
 
 def test_the_runtime_arn_is_published_for_whatever_invokes_it(assembly):
