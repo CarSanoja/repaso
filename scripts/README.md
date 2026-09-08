@@ -9,6 +9,7 @@
 | `run_answer_evaluation.py` | Validate 60 synthetic cases; explicit `--live` collects bounded predictions; `--predictions` scores independent labels | No model quality score from authored labels; see evaluation/README.md |
 | `analyze_pilot.py` | Aggregate an observed CSV; missing values stay missing | No participants currently; see docs/pilot/README.md |
 | `check_repo_hygiene.py` | Scan tracked files and selected patterns | Run additionally against the release archive; not a general secrets certification |
+| `preflight_deploy.py` | Read the account before deploying: caller, region, bootstrap qualifier, the four inference profiles, one bounded model call, Docker, the three secrets and every name the stacks claim | Reads only, exits non-zero on a blocker; a clean run says nothing about whether a deployment succeeds |
 | `infra_toggle.py` | Pause/resume the named Repaso routing and schedule resources | External mutation: inspect target account/resources first |
 
 A run must have its own output directory. The family CLI refuses to replace an existing nonempty directory. Keep private transcripts and observations under `private/` or `.local_data/`, both excluded from release.
