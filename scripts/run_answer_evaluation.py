@@ -120,10 +120,13 @@ def score(cases, predictions, labels):
 async def collect(cases, output, max_calls):
     import boto3
 
+    expected = os.environ.get("REPASO_EVALUATION_ACCOUNT_ID", "").strip()
+    if not expected:
+        raise ValueError("set REPASO_EVALUATION_ACCOUNT_ID to the authorized account")
     os.environ["AWS_PROFILE"] = "quanta"
     session = boto3.Session(profile_name="quanta", region_name="us-east-1")
-    if session.client("sts").get_caller_identity()["Account"] != "811479699647":
-        raise ValueError("evaluation must stay in the authorized Quanta account")
+    if session.client("sts").get_caller_identity()["Account"] != expected:
+        raise ValueError("evaluation must stay in the authorized account")
     settings = Settings(local_mode=False, aws_region="us-east-1", local_data_dir=output.parent)
     model = InstrumentedModel(
         build_model(ModelRole.JUDGE, settings),

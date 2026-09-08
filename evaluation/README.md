@@ -10,13 +10,13 @@ Validate without calls:
 python scripts/run_answer_evaluation.py
 ```
 
-After authorized Bedrock access is usable, collect a bounded batch using a new output file:
+Collect a bounded batch using a new output file. `REPASO_EVALUATION_ACCOUNT_ID` names the account the batch is allowed to run in; without it the collector refuses to make a call:
 
 ```bash
-python scripts/run_answer_evaluation.py --live --max-calls 15 --output private/reports/evaluation-batch-1.jsonl
+REPASO_EVALUATION_ACCOUNT_ID=<account> python scripts/run_answer_evaluation.py --live --max-calls 15 --output private/reports/evaluation-batch-1.jsonl
 ```
 
-The collector asserts the authorized Quanta account, omits gold labels from prompts, preserves provider errors and stops at the first error. Use a distinct dataset slice/output for each later batch; never replace failed evidence with a successful retry. Store model ID, prompt version, candidate commit and collection timestamp with the batch. A screened injection has a rule outcome, not a model judgment.
+The collector asserts that account, omits gold labels from prompts, preserves provider errors and stops at the first error. Use a distinct dataset slice/output for each later batch; never replace failed evidence with a successful retry. Store model ID, prompt version, candidate commit and collection timestamp with the batch. A screened injection has a rule outcome, not a model judgment.
 
 To score completed batches:
 
