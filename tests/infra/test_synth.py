@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -101,6 +102,13 @@ def test_the_guardrail_is_published_and_reachable_from_ssm(assembly):
         "/repaso/guardrail/id",
         "/repaso/guardrail/version",
     ]
+
+
+def test_the_published_version_carries_the_digest_of_what_it_publishes(assembly):
+    version = only(assembly, "guardrails", "AWS::Bedrock::GuardrailVersion")
+    digest = version["Description"].split()[-1]
+
+    assert re.fullmatch(r"[0-9a-f]{16}", digest)
 
 
 def test_the_runtime_is_a_public_http_container(assembly):

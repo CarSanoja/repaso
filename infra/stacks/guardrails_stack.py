@@ -1,3 +1,6 @@
+import json
+from hashlib import sha256
+
 import aws_cdk as cdk
 from aws_cdk import aws_bedrock as bedrock
 from aws_cdk import aws_ssm as ssm
@@ -25,6 +28,25 @@ DESCRIPTION = (
     "Screens every message exchanged with a student before it reaches a model "
     "and every answer before it reaches the family"
 )
+VERSION_DESCRIPTION = "Published by the repaso guardrails stack for policy {digest}"
+
+
+def policy_digest() -> str:
+    shape = json.dumps(
+        [
+            HARM_FILTERS,
+            PROMPT_ATTACK,
+            PII_ENTITIES,
+            HIGH,
+            NONE,
+            ANONYMIZE,
+            BLOCKED_INPUT,
+            BLOCKED_OUTPUT,
+            DESCRIPTION,
+        ],
+        sort_keys=True,
+    )
+    return sha256(shape.encode("utf-8")).hexdigest()[:16]
 
 
 class GuardrailsStack(cdk.Stack):
@@ -49,7 +71,7 @@ class GuardrailsStack(cdk.Stack):
             self,
             "PublishedVersion",
             guardrail_identifier=self.guardrail.attr_guardrail_id,
-            description="Published by the repaso guardrails stack",
+            description=VERSION_DESCRIPTION.format(digest=policy_digest()),
         )
 
         self._publish("id", self.guardrail.attr_guardrail_id)
