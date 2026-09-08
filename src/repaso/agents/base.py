@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from typing import Any, get_origin
+
+from pydantic import BaseModel, model_validator
 
 from repaso.tools.cassette_model import CassetteExhausted
 from repaso.tools.llm import PlaybackExhausted
@@ -7,6 +9,20 @@ from repaso.tools.model_limits import ModelLimitReached
 
 def user_message(text: str) -> dict:
     return {"role": "user", "content": [{"text": text}]}
+
+
+class ModelOutput(BaseModel):
+    @model_validator(mode="before")
+    @classmethod
+    def an_absent_list_is_an_empty_one(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+        emptied = {
+            name: []
+            for name, field in cls.model_fields.items()
+            if data.get(name, ...) is None and get_origin(field.annotation) is list
+        }
+        return {**data, **emptied} if emptied else data
 
 
 class StructuredCallFailed(RuntimeError):

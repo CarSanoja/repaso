@@ -132,6 +132,16 @@ async def test_invalid_drafts_are_dropped_and_counted(competency):
     assert draft_report(drafts, items) == {"generated": 7, "kept": 1, "dropped": 6}
 
 
+async def test_an_open_draft_whose_options_came_back_null_is_still_a_draft(competency):
+    payload = open_draft().model_dump(mode="json") | {"options": None}
+    batch = GeneratedBatch.model_validate({"items": [mcq_draft().model_dump(mode="json"), payload]})
+
+    items = await generate_items(MATERIAL, competency, 2, 4, LocalPlaybackModel([batch]), NOW)
+
+    assert [item.kind for item in items] == [ItemKind.MCQ, ItemKind.OPEN]
+    assert batch.items[1].options == []
+
+
 async def test_generator_returns_nothing_when_the_model_fails(competency):
     assert await generate_items(MATERIAL, competency, 3, 4, BrokenModel(), NOW) == []
 

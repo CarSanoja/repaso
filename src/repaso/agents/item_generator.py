@@ -1,9 +1,7 @@
 from datetime import datetime
 from hashlib import sha256
 
-from pydantic import BaseModel
-
-from repaso.agents.base import StructuredCallFailed, structured
+from repaso.agents.base import ModelOutput, StructuredCallFailed, structured
 from repaso.agents.prompts.item_generator import PROMPT_VERSION, SYSTEM
 from repaso.schemas.common import CompetencyId, ItemId, Lang
 from repaso.schemas.competency import Competency
@@ -18,7 +16,7 @@ MAX_DIFFICULTY = 5
 LANGUAGE_NAMES: dict[Lang, str] = {Lang.ES: "Spanish", Lang.EN: "English"}
 
 
-class ItemDraft(BaseModel):
+class ItemDraft(ModelOutput):
     kind: ItemKind
     difficulty: int
     stem: str
@@ -28,7 +26,7 @@ class ItemDraft(BaseModel):
     rubric: str | None = None
 
 
-class GeneratedBatch(BaseModel):
+class GeneratedBatch(ModelOutput):
     items: list[ItemDraft] = []
 
 

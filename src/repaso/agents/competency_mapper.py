@@ -1,6 +1,5 @@
-from pydantic import BaseModel
 
-from repaso.agents.base import StructuredCallFailed, structured
+from repaso.agents.base import ModelOutput, StructuredCallFailed, structured
 from repaso.agents.prompts.competency_mapper import SYSTEM
 from repaso.schemas.competency import CompetencyMatch
 from repaso.tools.knowledge import KnowledgeRetriever
@@ -9,7 +8,7 @@ MIN_RETRIEVAL_SCORE = 0.15
 CANDIDATE_LIMIT = 8
 
 
-class MappingDecision(BaseModel):
+class MappingDecision(ModelOutput):
     competency_ids: list[str] = []
 
 

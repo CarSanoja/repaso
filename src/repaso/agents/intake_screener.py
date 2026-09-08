@@ -1,6 +1,5 @@
-from pydantic import BaseModel
 
-from repaso.agents.base import StructuredCallFailed, structured
+from repaso.agents.base import ModelOutput, StructuredCallFailed, structured
 from repaso.agents.prompts.intake_screener import SYSTEM
 from repaso.tools.guardrails import SCREENER_ERROR_REASON, Screener, ScreenVerdict
 
@@ -12,7 +11,7 @@ UNTRUSTED_FRAME = (
 )
 
 
-class IntakeDecision(BaseModel):
+class IntakeDecision(ModelOutput):
     safe: bool
     reasons: list[str] = []
 

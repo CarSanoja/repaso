@@ -1,6 +1,5 @@
-from pydantic import BaseModel
 
-from repaso.agents.base import StructuredCallFailed, structured
+from repaso.agents.base import ModelOutput, StructuredCallFailed, structured
 from repaso.agents.prompts.item_critic import SYSTEM
 from repaso.schemas.item import Item, ItemFlaw, ItemVerdict
 
@@ -16,7 +15,7 @@ FLAW_CODES: dict[str, ItemFlaw] = {flaw.value: flaw for flaw in ItemFlaw}
 FLAW_VOCABULARY = ", ".join(FLAW_CODES)
 
 
-class CriticFinding(BaseModel):
+class CriticFinding(ModelOutput):
     accepted: bool
     flaws: list[str] = []
     notes: str = ""
