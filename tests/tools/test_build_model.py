@@ -7,7 +7,13 @@ from repaso.config.settings import Settings
 from repaso.tools.cassette import CassetteEntry, CassetteWriter
 from repaso.tools.cassette_model import CassetteModel
 from repaso.tools.guardrails import DEFAULT_GUARDRAIL_VERSION
-from repaso.tools.llm import LocalPlaybackModel, PlaybackExhausted, build_model
+from repaso.tools.llm import (
+    BLOCKED_OUTPUT_REPLACEMENT,
+    SYNCHRONOUS_SCREENING,
+    LocalPlaybackModel,
+    PlaybackExhausted,
+    build_model,
+)
 from repaso.tools.recording_model import RecordingModel
 
 
@@ -141,3 +147,24 @@ def test_build_model_falls_back_to_the_draft_version(tmp_path, stub_bedrock):
     model = build_model(ModelRole.PROBE, deployed(tmp_path, guardrail_id="gr-abc123"))
 
     assert model.kwargs["guardrail_version"] == DEFAULT_GUARDRAIL_VERSION
+
+
+def test_build_model_screens_the_output_side_explicitly(tmp_path, stub_bedrock):
+    model = build_model(ModelRole.GENERATE, deployed(tmp_path, guardrail_id="gr-abc123"))
+
+    assert model.kwargs["guardrail_redact_output"] is True
+    assert model.kwargs["guardrail_redact_output_message"] == BLOCKED_OUTPUT_REPLACEMENT
+    assert model.kwargs["guardrail_stream_processing_mode"] == SYNCHRONOUS_SCREENING
+
+
+def test_the_output_replacement_never_leaks_the_blocked_text(tmp_path, stub_bedrock):
+    model = build_model(ModelRole.JUDGE, deployed(tmp_path, guardrail_id="gr-abc123"))
+
+    assert "[Assistant output redacted.]" not in model.kwargs.values()
+    assert BLOCKED_OUTPUT_REPLACEMENT.startswith("Prefiero no responder")
+
+
+def test_an_unconfigured_guardrail_leaves_the_output_side_untouched(tmp_path, stub_bedrock):
+    model = build_model(ModelRole.GENERATE, deployed(tmp_path))
+
+    assert "guardrail_redact_output" not in model.kwargs

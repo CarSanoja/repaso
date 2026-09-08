@@ -27,6 +27,12 @@ T = TypeVar("T", bound=BaseModel)
 
 ScriptEntry = str | BaseModel | dict[str, Any]
 
+SYNCHRONOUS_SCREENING = "sync"
+BLOCKED_OUTPUT_REPLACEMENT = (
+    "Prefiero no responder eso. Sigamos con tu repaso y me cuentas "
+    "en que ejercicio te quedaste."
+)
+
 
 class PlaybackExhausted(RuntimeError):
     pass
@@ -117,12 +123,15 @@ def clear_cassette_cache() -> None:
     _cassette_writer.cache_clear()
 
 
-def guardrail_config(settings: Settings) -> dict[str, str]:
+def guardrail_config(settings: Settings) -> dict[str, Any]:
     if not settings.guardrail_id:
         return {}
     return {
         "guardrail_id": settings.guardrail_id,
         "guardrail_version": settings.guardrail_version or DEFAULT_GUARDRAIL_VERSION,
+        "guardrail_stream_processing_mode": SYNCHRONOUS_SCREENING,
+        "guardrail_redact_output": True,
+        "guardrail_redact_output_message": BLOCKED_OUTPUT_REPLACEMENT,
     }
 
 
