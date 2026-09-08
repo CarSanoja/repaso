@@ -16,9 +16,9 @@ class TokenPrice(FrozenStrictModel):
 
 
 PRICES: dict[str, TokenPrice] = {
-    "us.anthropic.claude-sonnet-4-6": TokenPrice(input_usd_per_1k=0.003, output_usd_per_1k=0.015),
+    "us.anthropic.claude-sonnet-4-6": TokenPrice(input_usd_per_1k=0.0033, output_usd_per_1k=0.0165),
     "us.anthropic.claude-haiku-4-5-20251001-v1:0": TokenPrice(
-        input_usd_per_1k=0.001, output_usd_per_1k=0.005
+        input_usd_per_1k=0.0011, output_usd_per_1k=0.0055
     ),
     "us.amazon.nova-lite-v1:0": TokenPrice(input_usd_per_1k=0.00006, output_usd_per_1k=0.00024),
     "us.amazon.nova-micro-v1:0": TokenPrice(input_usd_per_1k=0.000035, output_usd_per_1k=0.00014),

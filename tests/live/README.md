@@ -41,22 +41,28 @@ for every model in the default and fallback chains. The estimate is printed
 whether or not it passes, and a run priced above `REPASO_LIVE_BUDGET_USD` is
 refused before a single call is made.
 
-At the default five samples that is 55 calls and an estimate of $0.60. Real
+At the default five samples that is 55 calls and an estimate of $0.66. Real
 spend comes in well under the estimate, because the allowance assumes far longer
 prompts and answers than these probes produce; the report tells you the measured
-figure. Raising the sample count raises the estimate proportionally: 16 samples
-still fits under the default ceiling and 17 does not.
+figure. Raising the sample count raises the estimate proportionally: 15 samples
+still fits under the default ceiling and 16 does not.
 
 The prices behind all of this live in `src/repaso/config/pricing.py`, one entry
-per model id the fleet can reach. They were last checked on 2026-09-03: the
-Amazon Nova Lite and Nova Micro rates against the AWS Price List bulk export
-for Amazon Bedrock in `us-east-1` (publication date 2026-09-01), and the
-Anthropic model rates against the published Bedrock on-demand rates for those
-models, which that export does not yet carry. A test asserts that every model
-the fleet is configured to use has a price and that no unused model is priced,
-so adding a model to the fleet fails the offline suite until its rate is
-recorded — but the numbers themselves are a snapshot, and re-checking them is
-part of turning this tier on after a long gap.
+per model id the fleet can reach. The Amazon Nova Lite and Nova Micro rates were
+checked on 2026-09-03 against the AWS Price List bulk export for Amazon Bedrock
+in `us-east-1` (publication date 2026-09-01). The Anthropic rates were checked
+on 2026-09-12 against the Price List API for `AmazonBedrockFoundationModels` in
+`US East (N. Virginia)`, and they are the `USE1_InputTokenCount` and
+`USE1_OutputTokenCount` dimensions — the geographic cross-Region rate, which is
+what a `us.` inference profile charges. The `_Global` dimensions of the same
+products are about ten percent lower and belong to the `global.` profiles the
+fleet does not call.
+
+A test asserts that every model the fleet is configured to use has a price, that
+no unused model is priced, and that the two Anthropic entries match the
+geographic rate per million tokens, so adding a model to the fleet fails the
+offline suite until its rate is recorded — but the numbers themselves are a
+snapshot, and re-checking them is part of turning this tier on after a long gap.
 
 ## What it writes
 
@@ -72,28 +78,30 @@ question the table does not answer can be answered from the rows.
 
 ## Reading the table
 
+This is a real run, three samples per schema, on 2026-09-12:
+
 ```
-schema conformance at 5 samples per schema
+schema conformance at 3 samples per schema
 role       schema             calls   ok       in     out       usd
-classify   IntakeDecision         5    5     3100     200    0.0002
-generate   GeneratedBatch         5    5     3800    6200    0.1044
-generate   Snippet                5    5     1250     550    0.0120
-generate   TeacherNote            5    5     1000     650    0.0127
-judge      CriticFinding          5    5     4500     450    0.0202
-judge      OpenGrade              5    5     2000     400    0.0120
-probe      ProbeAnswer            5    5      600     100    0.0000
-structured MappingDecision        5    5     3500     300    0.0050
-structured PolicyDecision         5    5     1650     350    0.0034
-total                            45   45    21400    9200    0.1701
+classify   IntakeDecision         3    3     2763      60    0.0002
+generate   GeneratedBatch         3    3     4581    3531    0.0667
+generate   Snippet                3    3     2550     430    0.0141
+generate   TeacherNote            3    3     2550     445    0.0143
+judge      CriticFinding          3    3     4554     629    0.0231
+judge      OpenGrade              3    3     3447     483    0.0176
+probe      ProbeAnswer            3    3     1551      45    0.0001
+structured MappingDecision        3    3     3819     165    0.0046
+structured PolicyDecision         3    3     2682     255    0.0040
+total                            27   27    28497    6043    0.1447
 
 role        calls    p50 ms    p95 ms
-classify        5     380.0     425.6
-generate       15    1720.0    8288.0
-judge          10    1467.2    2968.0
-probe           5     410.0     459.2
-structured     10     563.2     716.8
+classify        3     578.9     871.8
+generate        9    3138.2   16609.4
+judge           6    3894.8    4982.6
+probe           3     500.8     773.4
+structured      6    1155.3    1364.1
 
-parsed 45/45, estimated spend $0.1701
+parsed 27/27, estimated spend $0.1447
 ```
 
 The `ok` column against `calls` is the conformance figure, and the run fails

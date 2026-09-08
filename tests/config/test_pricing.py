@@ -25,6 +25,22 @@ def test_output_tokens_are_never_cheaper_than_input_tokens():
         assert price.output_usd_per_1k >= price.input_usd_per_1k, model_id
 
 
+@pytest.mark.parametrize(
+    ("model_id", "input_per_million", "output_per_million"),
+    [
+        ("us.anthropic.claude-sonnet-4-6", 3.30, 16.50),
+        ("us.anthropic.claude-haiku-4-5-20251001-v1:0", 1.10, 5.50),
+    ],
+)
+def test_anthropic_is_priced_at_the_geographic_profile_the_fleet_calls(
+    model_id, input_per_million, output_per_million
+):
+    price = price_for(model_id)
+
+    assert price.input_usd_per_1k * 1000 == pytest.approx(input_per_million)
+    assert price.output_usd_per_1k * 1000 == pytest.approx(output_per_million)
+
+
 def test_estimate_charges_input_and_output_at_their_own_rates():
     cost = estimate_cost_usd("us.amazon.nova-micro-v1:0", 2000, 1000)
     assert cost == pytest.approx(2 * 0.000035 + 1 * 0.00014)
