@@ -46,6 +46,31 @@ def test_an_account_with_no_bootstrap_says_which_command_makes_one():
     assert "bootstrap" in found.remedy
 
 
+def test_a_bootstrap_under_another_qualifier_is_named_so_it_is_not_mistaken():
+    elsewhere = {
+        "get_parameter": AwsError("ParameterNotFound"),
+        "get_parameters_by_path": {
+            "Parameters": [
+                {"Name": "/cdk-bootstrap/hnb659fds/version"},
+                {"Name": "/cdk-bootstrap/otherproj/version"},
+            ]
+        },
+    }
+    found = account.bootstrap(session(ssm=elsewhere))
+
+    assert found.status is Status.BLOCKER
+    assert "hnb659fds, otherproj is" in found.detail
+
+
+def test_a_qualifier_listing_the_caller_cannot_read_is_not_an_error():
+    blind = {
+        "get_parameter": AwsError("ParameterNotFound"),
+        "get_parameters_by_path": AwsError("AccessDeniedException"),
+    }
+
+    assert account.bootstrap(session(ssm=blind)).status is Status.BLOCKER
+
+
 @pytest.mark.parametrize(
     ("version", "status"), [("6", Status.OK), ("21", Status.OK), ("5", Status.BLOCKER)]
 )

@@ -7,7 +7,8 @@ from preflight_findings import AwsSession, Finding, Status, absent, code_of
 PROJECT = "repaso"
 REGION = "us-east-1"
 QUALIFIER = "repaso01"
-BOOTSTRAP_PARAMETER = f"/cdk-bootstrap/{QUALIFIER}/version"
+BOOTSTRAP_PATH = "/cdk-bootstrap"
+BOOTSTRAP_PARAMETER = f"{BOOTSTRAP_PATH}/{QUALIFIER}/version"
 BOOTSTRAP_FLOOR = 6
 PROBE_MODEL = "us.amazon.nova-micro-v1:0"
 MODELS = (
@@ -51,15 +52,28 @@ def region(session: AwsSession) -> Finding:
     )
 
 
-def bootstrap(session: AwsSession) -> Finding:
+def other_qualifiers(client) -> list[str]:
     try:
-        found = session.client("ssm").get_parameter(Name=BOOTSTRAP_PARAMETER)
+        answer = client.get_parameters_by_path(Path=BOOTSTRAP_PATH, Recursive=True)
+    except Exception:
+        return []
+    names = (str(entry.get("Name", "")) for entry in answer.get("Parameters", []))
+    found = {name.split("/")[2] for name in names if name.count("/") >= 2}
+    return sorted(found - {QUALIFIER})
+
+
+def bootstrap(session: AwsSession) -> Finding:
+    client = session.client("ssm")
+    try:
+        found = client.get_parameter(Name=BOOTSTRAP_PARAMETER)
     except Exception as error:
         if absent(error):
+            others = other_qualifiers(client)
+            elsewhere = f", though {', '.join(others)} is" if others else ""
             return Finding(
                 check="cdk bootstrap",
                 status=Status.BLOCKER,
-                detail=f"{BOOTSTRAP_PARAMETER} does not exist",
+                detail=f"{BOOTSTRAP_PARAMETER} does not exist{elsewhere}",
                 remedy=BOOTSTRAP_REMEDY,
             )
         return Finding(
