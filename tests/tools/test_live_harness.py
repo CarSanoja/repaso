@@ -86,6 +86,13 @@ def test_usage_is_ignored_when_the_stream_carries_no_metadata():
     assert (counted.input_tokens, counted.output_tokens) == (7, 3)
 
 
+def test_usage_is_read_from_the_wrapper_a_structured_call_puts_it_in():
+    wrapped = {"event": {"metadata": {"usage": {"inputTokens": 436, "outputTokens": 25}}}}
+    counted = usage_from_event(wrapped)
+
+    assert (counted.input_tokens, counted.output_tokens) == (436, 25)
+
+
 async def test_instrumented_model_passes_usage_through_and_traces_the_call(tmp_path):
     sink = LocalTelemetrySink(tmp_path / "telemetry.jsonl", SimClock(START))
     probe = build_registry()[0]

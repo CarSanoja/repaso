@@ -16,6 +16,12 @@ from repaso.tools.cassette import (
 
 T = TypeVar("T", bound=BaseModel)
 
+USAGE_PATHS = (
+    ("metadata", "usage"),
+    ("chunk", "metadata", "usage"),
+    ("event", "metadata", "usage"),
+)
+
 
 def _mapping(value: Any, key: str) -> dict[str, Any]:
     inner = value.get(key) if isinstance(value, dict) else None
@@ -27,13 +33,18 @@ def _streamed_text(event: Any) -> str | None:
     return text if isinstance(text, str) else None
 
 
-def _reported_usage(event: Any) -> Usage | None:
-    usage = _mapping(_mapping(event, "metadata"), "usage")
-    if not usage:
-        usage = _mapping(_mapping(_mapping(event, "chunk"), "metadata"), "usage")
-    if "inputTokens" not in usage or "outputTokens" not in usage:
-        return None
-    return Usage(input_tokens=usage["inputTokens"], output_tokens=usage["outputTokens"])
+def _nested(event: Any, path: tuple[str, ...]) -> dict[str, Any]:
+    for key in path:
+        event = _mapping(event, key)
+    return event
+
+
+def reported_usage(event: Any) -> Usage | None:
+    for path in USAGE_PATHS:
+        usage = _nested(event, path)
+        if "inputTokens" in usage and "outputTokens" in usage:
+            return Usage(input_tokens=usage["inputTokens"], output_tokens=usage["outputTokens"])
+    return None
 
 
 class RecordingModel(Model):
@@ -65,7 +76,7 @@ class RecordingModel(Model):
             text = _streamed_text(event)
             if text is not None:
                 chunks.append(text)
-            usage = _reported_usage(event) or usage
+            usage = reported_usage(event) or usage
             yield event
         self._writer.append(
             CassetteEntry(
@@ -93,7 +104,7 @@ class RecordingModel(Model):
             output = event.get("output") if isinstance(event, dict) else None
             if isinstance(output, BaseModel):
                 payload = output.model_dump(mode="json")
-            usage = _reported_usage(event) or usage
+            usage = reported_usage(event) or usage
             yield event
         if payload is None:
             return

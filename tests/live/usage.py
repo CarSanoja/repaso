@@ -1,12 +1,9 @@
-from collections.abc import Mapping
 from typing import Any
 
 from pydantic import Field
 
 from repaso.schemas.common import FrozenStrictModel
-
-INPUT_KEY = "inputTokens"
-OUTPUT_KEY = "outputTokens"
+from repaso.tools.recording_model import reported_usage
 
 
 class CallUsage(FrozenStrictModel):
@@ -20,21 +17,8 @@ class CallUsage(FrozenStrictModel):
         )
 
 
-def _counted(usage: Mapping[str, Any], key: str) -> int:
-    value = usage.get(key, 0)
-    return int(value) if isinstance(value, int | float) else 0
-
-
 def usage_from_event(event: Any) -> CallUsage | None:
-    if not isinstance(event, Mapping):
+    counted = reported_usage(event)
+    if counted is None:
         return None
-    metadata = event.get("metadata")
-    if not isinstance(metadata, Mapping):
-        return None
-    usage = metadata.get("usage")
-    if not isinstance(usage, Mapping):
-        return None
-    return CallUsage(
-        input_tokens=_counted(usage, INPUT_KEY),
-        output_tokens=_counted(usage, OUTPUT_KEY),
-    )
+    return CallUsage(input_tokens=counted.input_tokens, output_tokens=counted.output_tokens)
