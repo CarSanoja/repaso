@@ -94,7 +94,7 @@ EMAIL_PATTERN = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 NATIONAL_ID_PATTERN = re.compile(r"\b[VEJGPvejgp][-.\s]?\d{6,9}\b")
 PHONE_PATTERN = re.compile(r"\+?\d(?:[ -]?\d){6,}")
 
-WHITESPACE_PATTERN = re.compile(r"\s+")
+INVISIBLE_CATEGORIES = frozenset({"Cc", "Cf", "Mn", "Me"})
 LEET_TABLE = str.maketrans("01345789@$", "oieastbgas")
 GLYPH_TABLE = str.maketrans("l", "i")
 
@@ -119,12 +119,12 @@ def _redact_text(text: str) -> str:
 
 def _fold(text: str) -> str:
     decomposed = unicodedata.normalize("NFKD", text.casefold())
-    return "".join(char for char in decomposed if not unicodedata.combining(char))
+    return "".join(c for c in decomposed if unicodedata.category(c) not in INVISIBLE_CATEGORIES)
 
 
 def canonical(text: str) -> str:
     folded = _fold(text).translate(LEET_TABLE).translate(GLYPH_TABLE)
-    return WHITESPACE_PATTERN.sub("", folded)
+    return "".join(folded.split())
 
 
 def _needles(markers: tuple[str, ...]) -> tuple[tuple[str, str], ...]:
