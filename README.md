@@ -4,6 +4,8 @@ Repaso turns a fourth-grade math sheet into a daily practice routine in a parent
 
 **Current evidence:** the complete journey is reproducible with synthetic data. Its model outputs are authored simulations. A separate, actual Amazon Textract call recognized a new printed Spanish fractions page on September 6, 2026, and on September 12 every configured Bedrock model answered and filled its schema in 27 of 27 bounded probe calls. No measured learning benefit, family pilot or deployed cloud journey is claimed. See the [evidence register](docs/evidence/README.md).
 
+**Evaluating this?** [docs/submission/judging.md](docs/submission/judging.md) is a five-minute path that needs no account, no keys and no deployment.
+
 ## Try the complete journey
 
 Python 3.12 or newer; no AWS account or Telegram token required for this demo.
