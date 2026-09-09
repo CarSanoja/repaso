@@ -34,7 +34,7 @@ Synthesis fails if any rendered resource names, imports or grants access to some
 
 A rejected synthesis exits non-zero and deletes the templates it had just written, so a failed check cannot be ignored and deployed from a cached `cdk.out`.
 
-Grants that genuinely address resources this project does not create are declared one by one in `namespace.py` with the actions they may carry: foundation-model and inference-profile ARNs, the AgentCore runtime log namespace, the container asset repository of this bootstrap qualifier, and the handful of actions that admit no resource at all. Anything not declared stops the build, so widening access is a visible edit rather than a silent one.
+Grants that genuinely address resources this project does not create are declared one by one in `namespace.py` with the actions they may carry: foundation-model and inference-profile ARNs, the AgentCore runtime log namespace, the container asset repository of this bootstrap qualifier, and the handful of actions that admit no resource at all. Anything not declared stops the build, so widening access is a visible edit rather than a silent one. [Isolation and reversal](../docs/operations/isolation.md) lists every one of those grants as the templates actually render them, and what each can and cannot touch.
 
 ## Notes
 

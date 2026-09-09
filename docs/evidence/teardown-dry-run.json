@@ -1,7 +1,7 @@
 {
-  "checked_at": "2026-09-12T05:26:57+00:00",
+  "checked_at": "2026-09-12T07:05:00+00:00",
   "region": "us-east-1",
-  "command": "python scripts/teardown.py --region us-east-1 --json",
+  "command": "python scripts/teardown.py --region us-east-1",
   "mutating_calls": 0,
   "plan": {
     "project": "repaso",
@@ -10,19 +10,31 @@
     "keeps": [],
     "refusals": []
   },
-  "inventory_read": {
+  "prefix_bound_discovery": {
+    "cloudformation_stacks": 0,
+    "s3_buckets": 0,
+    "secrets": 0,
+    "log_groups": 0
+  },
+  "account_census_read_separately": {
     "cloudformation_stacks": 0,
     "s3_buckets": 6,
     "secrets": 9,
     "log_groups": 13,
-    "inside_the_repaso_namespace": 0
+    "lambda_functions": 2,
+    "dynamodb_tables": 1
+  },
+  "refusal_rule_applied_to_that_census_by_hand": {
+    "outside the repaso namespace": 28,
+    "not a kind this teardown knows how to remove": 3,
+    "selected": 0
   },
   "establishes": [
-    "the planner reads real account inventory and selects nothing from it",
-    "every resource that exists today is outside the repaso prefix and is not a target",
+    "the planner's discovery returns nothing in this account, so the plan is empty: no removes, no keeps, no refusals",
     "the default invocation performs no mutation and needs no confirmation"
   ],
   "does_not_establish": [
+    "that the planner examined the resources counted above: discovery is bound to the repaso prefix at the API call itself, so nothing outside the prefix is ever a candidate and the empty refusal list is not a list of things it looked at and declined",
     "that a removal succeeds: --apply was never run, here or anywhere",
     "that the stack deletion order, bucket emptying or secret force-delete work against AWS",
     "anything about deployment: no stack of this project has ever existed in this account"

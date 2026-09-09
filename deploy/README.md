@@ -56,6 +56,12 @@ out of commits, out of logs and out of recordings.
 
 ## Before you deploy
 
+The account already runs unrelated infrastructure, and this project is built to
+leave it alone. [Isolation and reversal](../docs/operations/isolation.md) is the
+page to read first: what else is in the account, why nothing deployed here can
+reach it, every out-of-prefix grant the templates actually contain, and what a
+removal takes and leaves in each mode.
+
 Install the project and the deploy extra into the virtualenv, then run the
 offline gate **[run]**:
 
@@ -362,6 +368,9 @@ topic whose only subscriber is the address given at deploy time.
 is enforced and the test that proves it.
 
 ## Teardown
+
+What a removal takes and leaves in each mode is stated with the rest of the
+isolation argument in [isolation and reversal](../docs/operations/isolation.md).
 
 `scripts/teardown.py` removes this project and refuses everything else. It
 discovers only names inside the `repaso` prefix, checks the `project=repaso` tag
