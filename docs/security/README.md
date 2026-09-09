@@ -105,19 +105,29 @@ store had always matched chat scopes; the DynamoDB path now does too.
 
 **Consent against behaviour.** This is the finding the review treats as most severe, and there
 was one. The consent asked the parent to agree to a list — the alias, the grade, the material and
-the practice answers — and enrollment then asked four further questions and kept all four
-answers: the school and section, the practice time, the timezone, and any exam date later sent.
+the practice answers — and enrollment then asked three further questions and kept all three
+answers: the school and section, the practice time, and any exam date later sent.
 
 The school and section is the one that matters. "San José 4to B" together with a grade and an
 alias identifies a child far better than any of those alone, and it is exactly what the consent's
 own framing — use an alias, keep names off the pages — exists to avoid needing. Every one of the
-four is explained at the point it is asked, so nothing was concealed; what was wrong is that the
+three is explained at the point it is asked, so nothing was concealed; what was wrong is that the
 paragraph the parent taps "Acepto" on did not describe the record being consented to.
 
-The consent now names all of them. Nothing about what is collected or retained changed: the
+The consent now names those three. Nothing about what is collected or retained changed: the
 mismatch was closed by correcting the description, not the behaviour, which is the only safe
 direction for a reviewer to close it in. `CONSENT_VERSION` moved to v2, because a family that
 enrolled under v1 agreed to the shorter list and their stored record must say so.
+
+Three fields the record holds are still not in that paragraph, and the review does not close
+them. The family row carries a `timezone`, which no question asks and no command changes: it is
+the fixed default `America/Caracas` that the scheduler reads, so nothing about the family is
+learned from it. The family row and the consent record both carry the Telegram `chat_ref`, which
+is how the service reaches the parent at all and what `/forget` erases. And the section is not
+only stored: once `cohort_min_families` families in one section struggle with the same
+competency, each of them is told how many, so one family's difficulty becomes an aggregate
+another family reads. The chat reference and the cohort signal are decisions for whoever runs the
+pilot, not wording a reviewer should settle alone.
 
 ## IAM
 
