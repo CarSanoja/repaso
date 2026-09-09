@@ -3,10 +3,13 @@ from botocore.exceptions import ClientError
 from repaso.config.models import ModelRole
 from repaso.core.telemetry.sink import LocalTelemetrySink
 from repaso.i18n import msg
+from repaso.runtime.ceilings import NOTICES
+from repaso.runtime.ceilings import SPENT as SPENT_REASONS
 from repaso.runtime.errors import ErrorCode
 from repaso.schemas.channel import InboundMedia, MediaKind
 from repaso.schemas.common import Lang
 from repaso.tools.llm import LocalPlaybackModel
+from repaso.tools.model_limits import LimitReason
 from tests.orchestration.fixtures import accepted_verdict, mcq_draft, seed_family
 from tests.runtime.fixtures import (
     FAMILY_CHAT,
@@ -17,7 +20,7 @@ from tests.runtime.fixtures import (
 )
 
 MEDIA_REF = "inbox/tg-file-1"
-SPENT = ErrorCode.SPEND_CEILING_REACHED.value
+CEILING_CODE = ErrorCode.SPEND_CEILING_REACHED.value
 
 
 class Throttled(LocalPlaybackModel):
@@ -68,6 +71,11 @@ def traces(services) -> list[str]:
     return [f"{event.kind}.{event.name}.{event.status}" for event in services.telemetry.events]
 
 
+def test_every_way_a_call_can_be_refused_has_something_to_say():
+    assert set(NOTICES) == set(LimitReason)
+    assert SPENT_REASONS < set(LimitReason)
+
+
 def test_a_spent_day_tells_the_family_the_practice_is_paused(settings):
     services, _ = spent_pilot(settings, daily_llm_budget_calls=1)
 
@@ -106,7 +114,7 @@ def test_a_spent_ceiling_is_not_reported_to_the_channel_as_a_crash(settings):
     response = photograph(services)
 
     assert response["ok"] is False
-    assert response["error"]["code"] == SPENT
+    assert response["error"]["code"] == CEILING_CODE
 
 
 def test_the_family_hears_about_the_pause_once_not_once_per_event(settings):
