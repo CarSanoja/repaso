@@ -387,10 +387,14 @@ Things that remain true after this review.
 - **The webhook's admission claim has a small loss window.** If the process dies between claiming
   and publishing — not an exception, which is compensated, but a hard stop — the update is not
   retried, because the claim is held.
-- **One test is flaky.** `test_concurrent_distinct_answers_preserve_all_learning[dynamo]` failed
-  twice in full-suite runs and passed in isolation both times, including against unmodified code.
-  It looks like a Moto concurrency issue rather than a defect in the system under test, but it has
-  not been diagnosed.
+- **The concurrency tests exercise a double, not DynamoDB.** The flake this section used to
+  record — `test_concurrent_distinct_answers_preserve_all_learning[dynamo]` failing under load —
+  was diagnosed and removed: the fixture handed one boto3 client over Moto's in-process backend
+  to several threads, and Moto does not execute a transaction atomically against everything else,
+  so two threads could satisfy the same condition and both write. The double now serves one
+  request at a time, which is the guarantee the service gives. What remains true is that the
+  compare-and-swap these tests are about has still only been observed against Moto; a real
+  `TransactWriteItems` conflict has not been.
 
 ## What deployment must prove
 
