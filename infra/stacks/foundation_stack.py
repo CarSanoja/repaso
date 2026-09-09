@@ -1,5 +1,4 @@
 import aws_cdk as cdk
-from aws_cdk import aws_budgets as budgets
 from aws_cdk import aws_dynamodb as dynamodb
 from aws_cdk import aws_kms as kms
 from aws_cdk import aws_s3 as s3
@@ -7,7 +6,10 @@ from aws_cdk import aws_secretsmanager as secretsmanager
 from config import DeployConfig
 from constructs import Construct
 
+from stacks.budget_alerts import add_budget_alerts
+
 TLS_FLOOR = 1.2
+RETAINED_OUTPUT = "RetainedOnDelete"
 
 
 class FoundationStack(cdk.Stack):
@@ -16,8 +18,16 @@ class FoundationStack(cdk.Stack):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
         self.config = config
+        mode = config.mode
 
-        self.key = kms.Key(self, "RepasoKey", alias=config.bare(), enable_key_rotation=True)
+        self.key = kms.Key(
+            self,
+            "RepasoKey",
+            alias=config.bare(),
+            enable_key_rotation=True,
+            removal_policy=mode.data_removal_policy,
+            pending_window=mode.key_pending_window,
+        )
 
         self.media_bucket = s3.Bucket(
             self,
@@ -32,7 +42,8 @@ class FoundationStack(cdk.Stack):
                     expiration=cdk.Duration.days(config.media_retention_days)
                 )
             ],
-            removal_policy=cdk.RemovalPolicy.RETAIN,
+            removal_policy=mode.data_removal_policy,
+            auto_delete_objects=mode.empties_buckets,
         )
 
         self.curriculum_bucket = s3.Bucket(
@@ -59,7 +70,7 @@ class FoundationStack(cdk.Stack):
             point_in_time_recovery_specification=dynamodb.PointInTimeRecoverySpecification(
                 point_in_time_recovery_enabled=True
             ),
-            removal_policy=cdk.RemovalPolicy.RETAIN,
+            removal_policy=mode.data_removal_policy,
         )
         self.table.add_global_secondary_index(
             index_name="gsi1",
@@ -80,30 +91,5 @@ class FoundationStack(cdk.Stack):
             encryption_key=self.key,
         )
 
-        alert_email = config.alert_email
-        if alert_email:
-            for limit in config.budget_limits_usd:
-                budgets.CfnBudget(
-                    self,
-                    f"Budget{limit}",
-                    budget=budgets.CfnBudget.BudgetDataProperty(
-                        budget_name=config.resource(str(limit)),
-                        budget_type="COST",
-                        time_unit="MONTHLY",
-                        budget_limit=budgets.CfnBudget.SpendProperty(amount=limit, unit="USD"),
-                    ),
-                    notifications_with_subscribers=[
-                        budgets.CfnBudget.NotificationWithSubscribersProperty(
-                            notification=budgets.CfnBudget.NotificationProperty(
-                                notification_type="ACTUAL",
-                                comparison_operator="GREATER_THAN",
-                                threshold=config.budget_alert_threshold_pct,
-                            ),
-                            subscribers=[
-                                budgets.CfnBudget.SubscriberProperty(
-                                    subscription_type="EMAIL", address=alert_email
-                                )
-                            ],
-                        )
-                    ],
-                )
+        add_budget_alerts(self, config)
+        cdk.CfnOutput(self, RETAINED_OUTPUT, value=mode.survivors)

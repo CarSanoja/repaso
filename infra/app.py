@@ -11,6 +11,7 @@ from stacks.messaging_stack import MessagingStack
 from stacks.observability_stack import ObservabilityStack
 
 DEFAULT_OUTDIR = str(Path(__file__).resolve().parent / "cdk.out")
+MODE_OUTPUT = "DeploymentMode"
 
 app = cdk.App(outdir=os.environ.get("CDK_OUTDIR") or DEFAULT_OUTDIR)
 config = DeployConfig.from_app(app)
@@ -20,7 +21,7 @@ foundation = FoundationStack(app, config.stack("foundation"), **shared)
 messaging = MessagingStack(app, config.stack("messaging"), **shared)
 guardrails = GuardrailsStack(app, config.stack("guardrails"), **shared)
 api = ApiStack(app, config.stack("api"), foundation=foundation, messaging=messaging, **shared)
-AgentCoreStack(
+agentcore = AgentCoreStack(
     app,
     config.stack("agentcore"),
     foundation=foundation,
@@ -29,9 +30,14 @@ AgentCoreStack(
     api=api,
     **shared,
 )
-ObservabilityStack(app, config.stack("observability"), api=api, messaging=messaging, **shared)
+observability = ObservabilityStack(
+    app, config.stack("observability"), api=api, messaging=messaging, **shared
+)
 
-cdk.Tags.of(app).add("project", config.project)
-cdk.Tags.of(app).add("managed-by", "cdk")
+for stack in (foundation, messaging, guardrails, api, agentcore, observability):
+    cdk.CfnOutput(stack, MODE_OUTPUT, value=config.mode.value)
+
+for tag, value in config.tags.items():
+    cdk.Tags.of(app).add(tag, value)
 
 app.synth()

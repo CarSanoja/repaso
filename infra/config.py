@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 import aws_cdk as cdk
+from retention import DeploymentMode
 
 PROJECT = "repaso"
 REGION = "us-east-1"
@@ -24,6 +25,7 @@ class DeployConfig:
     api_rate_limit_rps: int
     api_burst_limit: int
     bootstrap_qualifier: str
+    mode: DeploymentMode
 
     @classmethod
     def from_app(cls, app: cdk.App) -> "DeployConfig":
@@ -42,6 +44,7 @@ class DeployConfig:
             api_rate_limit_rps=int(ctx("api_rate_limit_rps") or API_RATE_LIMIT_RPS),
             api_burst_limit=int(ctx("api_burst_limit") or API_BURST_LIMIT),
             bootstrap_qualifier=ctx("@aws-cdk/core:bootstrapQualifier") or BOOTSTRAP_QUALIFIER,
+            mode=DeploymentMode.parse(ctx("deployment_mode")),
         )
 
     @staticmethod
@@ -51,6 +54,10 @@ class DeployConfig:
         if isinstance(raw, str):
             return tuple(int(x) for x in raw.split(",") if x.strip())
         return tuple(int(x) for x in raw)
+
+    @property
+    def tags(self) -> dict[str, str]:
+        return {"project": self.project, "managed-by": "cdk", "deployment-mode": self.mode.value}
 
     @property
     def synthesizer(self) -> cdk.DefaultStackSynthesizer:
