@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-09-12T05:26:57+00:00",
+  "region": "us-east-1",
+  "command": "python scripts/teardown.py --region us-east-1 --json",
+  "mutating_calls": 0,
+  "plan": {
+    "project": "repaso",
+    "mode": "unknown",
+    "removes": [],
+    "keeps": [],
+    "refusals": []
+  },
+  "inventory_read": {
+    "cloudformation_stacks": 0,
+    "s3_buckets": 6,
+    "secrets": 9,
+    "log_groups": 13,
+    "inside_the_repaso_namespace": 0
+  },
+  "establishes": [
+    "the planner reads real account inventory and selects nothing from it",
+    "every resource that exists today is outside the repaso prefix and is not a target",
+    "the default invocation performs no mutation and needs no confirmation"
+  ],
+  "does_not_establish": [
+    "that a removal succeeds: --apply was never run, here or anywhere",
+    "that the stack deletion order, bucket emptying or secret force-delete work against AWS",
+    "anything about deployment: no stack of this project has ever existed in this account"
+  ]
+}

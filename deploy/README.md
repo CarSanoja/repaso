@@ -174,6 +174,23 @@ cd infra
 AWS_PROFILE=quanta npx aws-cdk@2 deploy --all -c alert_email=<your address>
 ```
 
+That is a durable deployment: the KMS key, the media bucket and the state table
+are retained, and removing the stacks leaves them standing with everything in
+them. A pilot that will be raised and torn down repeatedly, and that holds
+nothing anyone would miss, adds one flag:
+
+```
+AWS_PROFILE=quanta npx aws-cdk@2 deploy --all -c alert_email=<your address> -c deployment_mode=ephemeral
+```
+
+Ephemeral means every uploaded page, every enrollment, schedule, answer,
+adaptation and consent record goes when the deployment goes, and the key that
+encrypted them is scheduled for deletion. Nothing survives and nothing is
+recoverable. The mode is not a runtime setting: it is fixed by the deploy that
+created the stacks, every stack outputs the `DeploymentMode` it was built from,
+and the foundation stack outputs `RetainedOnDelete`. Changing mode means
+deploying again with the other flag.
+
 The CLI prompts before every stack that creates or widens a role — foundation,
 messaging, api and agentcore. Answer each prompt, or pass
 `--require-approval never` once you have read the diff.
@@ -340,12 +357,55 @@ AWS budgets alert; they do not stop anything.
 
 ## Teardown
 
+`scripts/teardown.py` removes this project and refuses everything else. It
+discovers only names inside the `repaso` prefix, checks the `project=repaso` tag
+on each one, and aborts the entire run — deleting nothing — if any candidate is
+inside the prefix without the tag or carries the tag outside the prefix. It
+reads the deployment mode from the stack tags rather than from a flag, so it
+cannot erase data that was deployed durable.
+
+```
+AWS_PROFILE=quanta python scripts/teardown.py --region us-east-1            # dry run, the default
+AWS_PROFILE=quanta python scripts/teardown.py --region us-east-1 --json     # the same plan as data
+AWS_PROFILE=quanta python scripts/teardown.py --region us-east-1 --apply    # removes, after a typed confirmation
+```
+
+A dry run reads and prints; it never mutates. `--apply` prints the same plan,
+then requires the operator to type `remove repaso` before anything is deleted;
+any other answer stops the run. It then empties whatever has to be empty before
+it can go, deletes the stacks in the reverse of their dependency order —
+observability, agentcore, api, guardrails, messaging, foundation — waiting for
+each, and finally removes what the stacks leave behind.
+
+What each mode leaves behind after `--apply`:
+
+- **durable** — the key, the media bucket with its objects and the state table
+  with its records stay, and are reported by name as deliberately kept, along
+  with any project secret or log group still present. Re-deploying into the same
+  account will adopt or collide with them; that is the point of the mode.
+- **ephemeral** — the media bucket is emptied of every object version and delete
+  marker before its stack goes, and after the stacks are gone the script removes
+  what CloudFormation cannot remove on its own: the AgentCore runtime and helper
+  log groups that outlive their stacks, and the project secrets, deleted without
+  a recovery window so the same names are reusable at once. A secret that
+  Secrets Manager has already placed inside a recovery window is reported by name
+  as reserved until that window closes, because nothing can shorten it.
+
+In both modes the schedule group goes with the messaging stack, and EventBridge
+Scheduler deletes the family alarms inside it with the group, so no schedule
+outlives the deployment that created it. A durable removal therefore keeps the
+records but stops the deliveries; re-deploying does not bring the alarms back on
+its own.
+
+### Removing the stacks by hand
+
 ```
 cd infra && AWS_PROFILE=quanta npx aws-cdk@2 destroy --all
 ```
 
-**[unverified]**. It removes the stacks in reverse dependency order and leaves
-four things behind, which fail in two different ways.
+This is the same stack removal without the discovery, the tag check or the sweep
+that follows. After a durable deploy it leaves four things behind, which fail in
+two different ways.
 
 **Loudly, on the next deploy.** The DynamoDB table is retained under the fixed
 name `repaso`, so `CreateTable` fails until you delete it. The three secrets are
@@ -361,17 +421,19 @@ either: it mints a fresh key, takes the free `alias/repaso`, and creates a new
 bucket. The old key keeps costing a dollar a month, the old bucket keeps holding
 the pilot's material, and the only thing that still links them is that the data
 in one is encrypted by the other. Nothing reports this — not CloudFormation, not
-the preflight, which sees the alias as free because it is. After a teardown you
-must decide about them by hand: `aws kms list-aliases`, `aws s3 ls`, then either
-schedule the key for deletion (minimum seven days, and it takes the bucket's
-readability with it) or keep both and know why.
+the preflight, which sees the alias as free because it is. After such a teardown
+you must decide about them by hand: `aws kms list-aliases`, `aws s3 ls`, then
+either schedule the key for deletion (minimum seven days, and it takes the
+bucket's readability with it) or keep both and know why. This is the sweep
+`scripts/teardown.py` reports and, in ephemeral mode, performs.
 
-The bootstrap stack, its staging bucket and the ECR repository survive too;
+The bootstrap stack, its staging bucket and the `cdk-repaso01-*` asset
+repository survive either route: they are outside the script's namespace and
 `cdk destroy` never touches them. That is usually what you want, since
-rebootstrapping is slower than leaving them. Note also that SQS refuses to
-recreate a queue with a name deleted in the last sixty seconds, so a destroy
-immediately followed by a deploy fails in the messaging stack and succeeds on a
-second try a minute later.
+rebootstrapping is slower than leaving them; removing them is a separate,
+deliberate operation. Note also that SQS refuses to recreate a queue with a name
+deleted in the last sixty seconds, so a destroy immediately followed by a deploy
+fails in the messaging stack and succeeds on a second try a minute later.
 
 To stop the service without deleting anything, `scripts/infra_toggle.py off`
 disables the schedules and routing rules. Inspect what it targets before running
@@ -381,7 +443,9 @@ it; it mutates the account.
 
 A successful synthesis is not a deployment. A built image is not a pushed image.
 A green preflight is not a successful deploy. A 200 from `/ping` is not a working
-fleet. The evidence register in [docs/evidence](../docs/evidence/README.md)
+fleet. A teardown dry run is not a teardown: neither `scripts/teardown.py` nor
+any other removal path has been run against a deployment, because no stack of
+this project has been deployed. The evidence register in [docs/evidence](../docs/evidence/README.md)
 records what has actually been observed; its line about live inference being
 unavailable was written on 2026-09-06 and is superseded by the live conformance
 run above.
