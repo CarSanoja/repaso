@@ -4,7 +4,9 @@ from aws_cdk import aws_apigatewayv2_integrations as integrations
 from aws_cdk import aws_events as events
 from aws_cdk import aws_events_targets as targets
 from aws_cdk import aws_iam as iam
+from aws_cdk import aws_lambda as lambda_
 from aws_cdk import aws_lambda_event_sources as sources
+from aws_cdk import aws_sqs as sqs
 from config import DeployConfig
 from constructs import Construct
 
@@ -70,7 +72,15 @@ class ApiStack(cdk.Stack):
         )
         self.http_api = self._http_api()
 
-    def _function(self, name, memory, timeout, reserved, variables, dead_letter_queue=None):
+    def _function(
+        self,
+        name: str,
+        memory: int,
+        timeout: cdk.Duration,
+        reserved: int,
+        variables: dict[str, str],
+        dead_letter_queue: sqs.Queue | None = None,
+    ) -> lambda_.Function:
         return build_function(
             self, self.config, name, memory, timeout, reserved, variables, dead_letter_queue
         )
