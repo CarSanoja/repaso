@@ -352,8 +352,14 @@ that is a policy question, not a saving.
 **The daily call budget, not the table, is what bounds the bill.**
 `REPASO_GLOBAL_DAILY_LLM_BUDGET_CALLS` is 400 and `REPASO_DAILY_LLM_BUDGET_CALLS`
 is 40 per family. Four hundred Sonnet calls a day at the largest measured shape
-is about $139 a month. That is the ceiling the reservation enforces. The monthly
-AWS budgets alert; they do not stop anything.
+is about $139 a month. That is the ceiling the reservation enforces. The family,
+fleet and per-message ceilings are hard reservations taken before each model
+call; the monthly AWS budgets and every alarm are notifications, not cutoffs.
+The budgets filter on the project cost allocation tag and read zero until that
+tag is activated in billing, and every budget and alarm publishes to one alerts
+topic whose only subscriber is the address given at deploy time.
+[The controls page](../docs/operations/controls.md) lists each control, where it
+is enforced and the test that proves it.
 
 ## Teardown
 

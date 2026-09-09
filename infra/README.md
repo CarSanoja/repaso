@@ -1,6 +1,6 @@
 # Infrastructure
 
-Six CloudFormation stacks use the `repaso` name/tag: foundation (data, KMS, secrets and budget alerts), messaging (EventBridge, SQS and Scheduler), guardrails, API (three Lambda containers and HTTP routes), AgentCore (runtime image, IAM, SSM ARN and seven-day logs), and observability.
+Six CloudFormation stacks use the `repaso` name/tag: foundation (data, KMS, secrets, the alerts topic and tag-filtered budgets), messaging (EventBridge, SQS and Scheduler), guardrails, API (three Lambda containers and HTTP routes), AgentCore (runtime image, IAM, SSM ARN and seven-day logs), and observability.
 
 Both API and AgentCore deployment build Linux ARM64 images. Synthesis needs no Docker daemon or AWS credentials, but uses the local CDK cache. Install with `pip install -c requirements.lock -e ".[deploy]"`, then run `python app.py` from `infra/`. Output goes to `infra/cdk.out`; `CDK_OUTDIR` overrides it.
 
@@ -38,4 +38,4 @@ Grants that genuinely address resources this project does not create are declare
 
 ## Notes
 
-The [deployment guide](../deploy/README.md) is the current source for release inputs, deploy and teardown commands, and cloud acceptance. Use only the authorized Quanta profile/account. Budget alarms notify; they do not stop all charges. In durable mode, stack removal does not erase pilot data. No stack is claimed deployed from synthesis alone.
+The [deployment guide](../deploy/README.md) is the current source for release inputs, deploy and teardown commands, and cloud acceptance. Every control that bounds spend or reach, and where each one is enforced, is in [the controls page](../docs/operations/controls.md). Use only the authorized Quanta profile/account. Budgets and alarms notify; they do not stop all charges, and the budgets read zero until the project cost allocation tag is activated. In durable mode, stack removal does not erase pilot data. No stack is claimed deployed from synthesis alone.
