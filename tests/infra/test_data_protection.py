@@ -70,6 +70,14 @@ def test_the_table_recovers_to_a_point_in_time(assembly):
     assert recovery["PointInTimeRecoveryEnabled"] is True
 
 
+def test_the_public_endpoint_is_throttled(assembly):
+    stages = of_type(assembly, "api", "AWS::ApiGatewayV2::Stage")
+    assert len(stages) == 1
+    settings = stages[0]["DefaultRouteSettings"]
+    assert settings["ThrottlingRateLimit"] > 0
+    assert settings["ThrottlingBurstLimit"] >= settings["ThrottlingRateLimit"]
+
+
 def test_material_expires_on_a_stated_schedule(assembly):
     buckets = of_type(assembly, "foundation", BUCKET)
     rules = [b["LifecycleConfiguration"]["Rules"] for b in buckets if "LifecycleConfiguration" in b]

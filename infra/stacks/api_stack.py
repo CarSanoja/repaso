@@ -208,5 +208,13 @@ class ApiStack(cdk.Stack):
                 methods=[apigwv2.HttpMethod.ANY],
                 integration=integration,
             )
+        self._throttle(http_api)
         cdk.CfnOutput(self, "HttpApiUrl", value=http_api.api_endpoint)
         return http_api
+
+    def _throttle(self, http_api: apigwv2.HttpApi) -> None:
+        stage = http_api.default_stage.node.default_child
+        stage.default_route_settings = apigwv2.CfnStage.RouteSettingsProperty(
+            throttling_rate_limit=self.config.api_rate_limit_rps,
+            throttling_burst_limit=self.config.api_burst_limit,
+        )

@@ -5,6 +5,8 @@ import aws_cdk as cdk
 PROJECT = "repaso"
 REGION = "us-east-1"
 BOOTSTRAP_QUALIFIER = "repaso01"
+API_RATE_LIMIT_RPS = 20
+API_BURST_LIMIT = 40
 
 
 @dataclass(frozen=True)
@@ -19,6 +21,8 @@ class DeployConfig:
     queue_visibility_minutes: int
     queue_max_receive: int
     log_retention_days: int
+    api_rate_limit_rps: int
+    api_burst_limit: int
     bootstrap_qualifier: str
 
     @classmethod
@@ -35,6 +39,8 @@ class DeployConfig:
             queue_visibility_minutes=int(ctx("queue_visibility_minutes") or 15),
             queue_max_receive=int(ctx("queue_max_receive") or 3),
             log_retention_days=int(ctx("log_retention_days") or 7),
+            api_rate_limit_rps=int(ctx("api_rate_limit_rps") or API_RATE_LIMIT_RPS),
+            api_burst_limit=int(ctx("api_burst_limit") or API_BURST_LIMIT),
             bootstrap_qualifier=ctx("@aws-cdk/core:bootstrapQualifier") or BOOTSTRAP_QUALIFIER,
         )
 
