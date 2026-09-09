@@ -9,6 +9,7 @@ from stacks.foundation_stack import FoundationStack
 from stacks.guardrails_stack import GuardrailsStack
 from stacks.messaging_stack import MessagingStack
 from stacks.observability_stack import ObservabilityStack
+from tagging import TagEveryResource
 
 DEFAULT_OUTDIR = str(Path(__file__).resolve().parent / "cdk.out")
 MODE_OUTPUT = "DeploymentMode"
@@ -39,5 +40,6 @@ for stack in (foundation, messaging, guardrails, api, agentcore, observability):
 
 for tag, value in config.tags.items():
     cdk.Tags.of(app).add(tag, value)
+cdk.Aspects.of(app).add(TagEveryResource(config.tags))
 
 app.synth()
