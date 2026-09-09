@@ -76,6 +76,8 @@ The 60-answer evaluation set has proposed synthetic examples and a separate blin
 
 Live checks are opt-in and incur AWS charges. Use only the authorized `quanta` account and region. [Live conformance](tests/live/README.md) · [Deployment](deploy/README.md) · [Product details](docs/product/product-overview.md) · [Submission materials](docs/submission/README.md).
 
+This system stores a record about a child and sends material a stranger could have influenced to a model. What that record holds, how it is encrypted, what erasure reaches, how prompt injection is screened in both directions, and which assurances only a deployment can give, are written down in the [security posture](docs/security/README.md).
+
 ## Evidence and limits
 
 Every claim in the submission should point to the [current evidence register](docs/evidence/README.md). Historical August seed sweeps describe their own simulator versions and assumptions; they are not current product accuracy or family-impact measurements. Self-reported model confidence is not a calibrated probability. The options-only answerability probe is advisory; guessing a correct choice does not veto an otherwise valid math exercise. A shared section signal is experimental and does not establish formal anonymity.
