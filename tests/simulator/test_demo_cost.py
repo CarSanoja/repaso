@@ -1,10 +1,11 @@
 from repaso.simulator.demo_cost import NOT_RECORDED, cost_line, token_totals
-from repaso.tools.cassette import CassetteEntry, Usage
+from repaso.tools.cassette import CassetteEntry
+from repaso.tools.model_usage import CallUsage
 
 PAYLOAD = {"safe": True, "reasons": []}
 
 
-def entry(usage: Usage | None) -> CassetteEntry:
+def entry(usage: CallUsage | None) -> CassetteEntry:
     return CassetteEntry(
         role="classify",
         kind="structured_output",
@@ -15,7 +16,7 @@ def entry(usage: Usage | None) -> CassetteEntry:
 
 
 def test_totals_add_up_over_the_entries_that_carry_usage():
-    totals = token_totals([entry(Usage(input_tokens=100, output_tokens=20)), entry(None)])
+    totals = token_totals([entry(CallUsage(input_tokens=100, output_tokens=20)), entry(None)])
 
     assert totals.calls == 2
     assert totals.priced == 1
@@ -35,7 +36,7 @@ def test_an_empty_cassette_reads_as_not_recorded():
 
 
 def test_a_partly_priced_cassette_says_how_much_is_missing():
-    priced = entry(Usage(input_tokens=1200, output_tokens=340))
+    priced = entry(CallUsage(input_tokens=1200, output_tokens=340))
     line = cost_line(token_totals([priced, entry(None)]))
 
     assert "1,200 input + 340 output" in line
@@ -43,7 +44,7 @@ def test_a_partly_priced_cassette_says_how_much_is_missing():
 
 
 def test_a_fully_priced_cassette_does_not_mention_a_gap():
-    line = cost_line(token_totals([entry(Usage(input_tokens=10, output_tokens=5))]))
+    line = cost_line(token_totals([entry(CallUsage(input_tokens=10, output_tokens=5))]))
 
     assert NOT_RECORDED not in line
     assert "1 of 1 model calls" in line

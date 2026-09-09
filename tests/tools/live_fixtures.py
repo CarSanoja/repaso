@@ -2,6 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 from repaso.config.models import model_for
 from repaso.tools.llm import LocalPlaybackModel
+from repaso.tools.model_usage import CallUsage, usage_metadata
 from tests.live.calls import run_probe
 from tests.live.registry import build_registry
 from tests.live.reporter import ConformanceReporter
@@ -56,14 +57,22 @@ class RampClock:
 class MeteredPlaybackModel(LocalPlaybackModel):
     def __init__(self, script, input_tokens: int, output_tokens: int) -> None:
         super().__init__(script)
-        self._usage = {"inputTokens": input_tokens, "outputTokens": output_tokens}
+        self.usage = CallUsage(input_tokens=input_tokens, output_tokens=output_tokens)
+
+    def _metered(self, event):
+        return event
 
     async def structured_output(self, output_model, prompt, system_prompt=None, **kwargs):
-        yield {"metadata": {"usage": dict(self._usage)}}
+        yield self._metered(usage_metadata(self.usage))
         async for event in super().structured_output(
             output_model, prompt, system_prompt=system_prompt, **kwargs
         ):
             yield event
+
+
+class NestedMetadataModel(MeteredPlaybackModel):
+    def _metered(self, event):
+        return {"event": event}
 
 
 async def record_registry(

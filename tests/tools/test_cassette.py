@@ -7,9 +7,9 @@ from repaso.tools.cassette import (
     CassetteEntry,
     CassetteFormatError,
     CassetteWriter,
-    Usage,
     load_cassette,
 )
+from repaso.tools.model_usage import CallUsage
 
 SNIPPET = "Dos fracciones equivalen cuando nombran la misma cantidad."
 
@@ -24,7 +24,7 @@ def structured_entry(role: str = "judge", name: str = "OpenGrade") -> CassetteEn
         kind="structured_output",
         output_model=name,
         payload={"correct": True, "confidence": 0.9},
-        usage=Usage(input_tokens=120, output_tokens=8),
+        usage=CallUsage(input_tokens=120, output_tokens=8),
         latency_ms=412.5,
     )
 
@@ -53,7 +53,7 @@ def test_unknown_fields_are_rejected():
 
 def test_negative_usage_and_latency_are_rejected():
     with pytest.raises(ValidationError):
-        Usage(input_tokens=-1, output_tokens=0)
+        CallUsage(input_tokens=-1, output_tokens=0)
     with pytest.raises(ValidationError):
         CassetteEntry(role="judge", kind="stream", text="hola", latency_ms=-0.1)
 

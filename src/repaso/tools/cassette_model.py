@@ -9,6 +9,7 @@ from strands.types.streaming import StreamEvent
 from strands.types.tools import ToolChoice, ToolSpec
 
 from repaso.tools.cassette import STREAM_KIND, STRUCTURED_KIND, CassetteEntry
+from repaso.tools.model_usage import usage_metadata
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -70,14 +71,7 @@ class CassetteModel(Model):
         yield {"contentBlockStop": {}}
         yield {"messageStop": {"stopReason": "end_turn"}}
         if entry.usage is not None:
-            yield {
-                "metadata": {
-                    "usage": {
-                        "inputTokens": entry.usage.input_tokens,
-                        "outputTokens": entry.usage.output_tokens,
-                    }
-                }
-            }
+            yield usage_metadata(entry.usage)
 
     async def structured_output(
         self,
@@ -87,4 +81,6 @@ class CassetteModel(Model):
         **kwargs: Any,
     ) -> AsyncGenerator[dict[str, T | Any], None]:
         entry = self._take(STRUCTURED_KIND, output_model.__name__)
+        if entry.usage is not None:
+            yield {"event": usage_metadata(entry.usage)}
         yield {"output": output_model.model_validate(entry.payload)}

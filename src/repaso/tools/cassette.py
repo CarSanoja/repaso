@@ -5,6 +5,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from repaso.tools.model_usage import CallUsage
+
 STREAM_KIND = "stream"
 STRUCTURED_KIND = "structured_output"
 
@@ -15,13 +17,6 @@ class CassetteFormatError(ValueError):
     pass
 
 
-class Usage(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    input_tokens: int = Field(ge=0)
-    output_tokens: int = Field(ge=0)
-
-
 class CassetteEntry(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -30,7 +25,7 @@ class CassetteEntry(BaseModel):
     output_model: str | None = None
     payload: dict[str, Any] | None = None
     text: str | None = None
-    usage: Usage | None = None
+    usage: CallUsage | None = None
     latency_ms: float | None = Field(default=None, ge=0.0)
 
     @model_validator(mode="after")

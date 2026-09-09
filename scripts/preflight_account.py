@@ -4,6 +4,8 @@ import subprocess
 
 from preflight_findings import AwsSession, Finding, Status, absent, code_of
 
+from repaso.tools.model_usage import CallUsage, usage_from_response
+
 PROJECT = "repaso"
 REGION = "us-east-1"
 QUALIFIER = "repaso01"
@@ -127,11 +129,11 @@ def inference(session: AwsSession) -> Finding:
             detail=f"{PROBE_MODEL} refused: {code_of(error)}",
             remedy=THROUGHPUT_REMEDY,
         )
-    usage = answer["usage"]
+    counted = usage_from_response(answer) or CallUsage()
     return Finding(
         check="bedrock inference",
         status=Status.OK,
-        detail=f"{PROBE_MODEL} answered in {usage['inputTokens']}/{usage['outputTokens']} tokens",
+        detail=f"{PROBE_MODEL} answered in {counted.input_tokens}/{counted.output_tokens} tokens",
     )
 
 

@@ -8,8 +8,8 @@ from repaso.agents.base import user_message
 from repaso.config.pricing import estimate_cost_usd
 from repaso.core.harness.clock import Clock
 from repaso.schemas.common import FrozenStrictModel
+from repaso.tools.model_usage import CallUsage, usage_from_event
 from tests.live.registry import SchemaProbe
-from tests.live.usage import CallUsage, usage_from_event
 
 DEFAULT_TIMEOUT_SECONDS = 120.0
 NO_OUTPUT = "the model returned no structured output"
@@ -45,9 +45,7 @@ async def _drain(model: Model, probe: SchemaProbe) -> CallUsage:
         probe.output_schema, [user_message(probe.prompt)], system_prompt=probe.system
     )
     async for event in events:
-        counted = usage_from_event(event)
-        if counted is not None:
-            usage = usage.plus(counted)
+        usage = usage_from_event(event) or usage
         if isinstance(event, dict) and "output" in event:
             output = event["output"]
     if not isinstance(output, probe.output_schema):

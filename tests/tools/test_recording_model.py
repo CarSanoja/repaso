@@ -44,14 +44,6 @@ class MetadataModel(Model):
         yield {"output": output_model(text=self.text)}
 
 
-class WrappedMetadataModel(MetadataModel):
-    async def structured_output(self, output_model, prompt, system_prompt=None, **kwargs: Any):
-        yield {"event": {"messageStart": {"role": "assistant"}}}
-        if self.usage is not None:
-            yield {"event": {"metadata": {"usage": self.usage, "metrics": {"latencyMs": 474}}}}
-        yield {"output": output_model(text=self.text)}
-
-
 class SilentModel(Model):
     def update_config(self, **model_config: Any) -> None:
         return None
@@ -141,14 +133,6 @@ async def test_usage_is_taken_from_the_chunk_a_structured_call_forwards(tmp_path
 
     usage = load_cassette(tmp_path / "cassette.jsonl")[0].usage
     assert (usage.input_tokens, usage.output_tokens) == (90, 12)
-
-
-async def test_usage_is_taken_from_the_wrapper_bedrock_puts_a_structured_call_in(tmp_path):
-    inner = WrappedMetadataModel("una pista", {"inputTokens": 436, "outputTokens": 25})
-    await structured(recorder(tmp_path, inner), Snippet)
-
-    usage = load_cassette(tmp_path / "cassette.jsonl")[0].usage
-    assert (usage.input_tokens, usage.output_tokens) == (436, 25)
 
 
 async def test_a_model_that_reports_no_usage_records_none(tmp_path):

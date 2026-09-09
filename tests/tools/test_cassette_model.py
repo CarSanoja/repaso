@@ -1,8 +1,9 @@
 import pytest
 from pydantic import BaseModel
 
-from repaso.tools.cassette import CassetteEntry, Usage
+from repaso.tools.cassette import CassetteEntry
 from repaso.tools.cassette_model import CassetteExhausted, CassetteModel
+from repaso.tools.model_usage import CallUsage
 
 
 class Snippet(BaseModel):
@@ -22,7 +23,7 @@ def structured(role: str, name: str, payload: dict) -> CassetteEntry:
     return CassetteEntry(role=role, kind="structured_output", output_model=name, payload=payload)
 
 
-def streamed(role: str, text: str, usage: Usage | None = None) -> CassetteEntry:
+def streamed(role: str, text: str, usage: CallUsage | None = None) -> CassetteEntry:
     return CassetteEntry(role=role, kind="stream", text=text, usage=usage)
 
 
@@ -116,12 +117,14 @@ async def test_stream_replays_the_recorded_text_as_converse_events():
 
 
 async def test_recorded_usage_is_replayed_as_a_metadata_event():
-    usage = Usage(input_tokens=311, output_tokens=27)
+    usage = CallUsage(input_tokens=311, output_tokens=27)
     model = CassetteModel([streamed("generate", "hola", usage)], "generate")
 
     events = await collect(model.stream([user_message("hola")]))
 
-    assert events[-1] == {"metadata": {"usage": {"inputTokens": 311, "outputTokens": 27}}}
+    assert events[-1] == {
+        "metadata": {"usage": {"inputTokens": 311, "outputTokens": 27, "totalTokens": 338}}
+    }
 
 
 async def test_streams_and_structured_outputs_draw_from_separate_queues():

@@ -8,15 +8,16 @@ from repaso.core.harness.clock import SimClock
 from repaso.core.telemetry.sink import LocalTelemetrySink
 from repaso.tools.instrumented_model import InstrumentedModel
 from repaso.tools.llm import LocalPlaybackModel
+from repaso.tools.model_usage import usage_from_event
 from tests.live.calls import CallOutcome, run_probe
 from tests.live.registry import build_registry
 from tests.live.report import percentile
 from tests.live.reporter import FILE_PREFIX, ConformanceReporter
-from tests.live.usage import usage_from_event
 from tests.tools.live_fixtures import (
     PAYLOADS,
     START,
     MeteredPlaybackModel,
+    NestedMetadataModel,
     RampClock,
     record_registry,
 )
@@ -86,11 +87,17 @@ def test_usage_is_ignored_when_the_stream_carries_no_metadata():
     assert (counted.input_tokens, counted.output_tokens) == (7, 3)
 
 
-def test_usage_is_read_from_the_wrapper_a_structured_call_puts_it_in():
-    wrapped = {"event": {"metadata": {"usage": {"inputTokens": 436, "outputTokens": 25}}}}
-    counted = usage_from_event(wrapped)
+async def test_a_structured_call_is_priced_from_the_nested_metadata_event(tmp_path):
+    clock = RampClock()
+    reporter = ConformanceReporter(clock, 1, tmp_path / "live")
+    probe = build_registry()[0]
+    model = NestedMetadataModel([PAYLOADS[probe.name]], 410, 14)
 
-    assert (counted.input_tokens, counted.output_tokens) == (436, 25)
+    call = await run_probe(model, probe, model_for(probe.role), clock)
+    reporter.record(call, 1)
+
+    assert (call.input_tokens, call.output_tokens) == (410, 14)
+    assert call.estimated_usd > 0.0
 
 
 async def test_instrumented_model_passes_usage_through_and_traces_the_call(tmp_path):

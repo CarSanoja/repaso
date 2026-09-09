@@ -9,7 +9,7 @@ from strands.types.content import Messages
 from repaso.config.models import ModelRole
 from repaso.tools.cassette import STREAM_KIND, STRUCTURED_KIND
 from repaso.tools.model_limits import ModelLimitReached
-from repaso.tools.recording_model import reported_usage
+from repaso.tools.model_usage import usage_from_event
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -47,7 +47,7 @@ class InstrumentedModel(Model):
                 raise
         try:
             async for event in self.inner.stream(messages, *args, **kwargs):
-                usage = reported_usage(event) or usage
+                usage = usage_from_event(event) or usage
                 yield event
         except Exception as error:
             if self._limits:
@@ -108,7 +108,7 @@ class InstrumentedModel(Model):
             async for event in self.inner.structured_output(
                 output_model, prompt, system_prompt=system_prompt, **kwargs
             ):
-                usage = reported_usage(event) or usage
+                usage = usage_from_event(event) or usage
                 yield event
         except Exception as error:
             if self._limits:
