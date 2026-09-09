@@ -15,7 +15,7 @@ from repaso.schemas.family import Family, FamilyStatus
 from repaso.schemas.student import Student
 from repaso.tools.state_store import StateStore
 
-CONSENT_VERSION = "v1"
+CONSENT_VERSION = "v2"
 CONSENT_YES = "consent:yes"
 CONSENT_NO = "consent:no"
 ALIAS_MAX_LENGTH = 20

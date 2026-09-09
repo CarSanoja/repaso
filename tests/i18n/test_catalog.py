@@ -42,6 +42,23 @@ def test_consent_states_the_hard_rules():
         assert "alias" in consent
 
 
+def test_consent_names_everything_enrollment_goes_on_to_ask_for():
+    asked = {
+        Lang.ES: ("colegio", "secci", "hora de práctica", "examen"),
+        Lang.EN: ("school", "section", "practice time", "exam"),
+    }
+    for lang, expected in asked.items():
+        consent = msg("consent", lang).lower()
+        for item in expected:
+            assert item in consent, (lang, item)
+
+
+def test_consent_states_both_retention_windows():
+    for lang in (Lang.ES, Lang.EN):
+        consent = msg("consent", lang)
+        assert "7" in consent and "35" in consent
+
+
 def test_no_student_facing_message_asks_for_real_names():
     for key in known_keys():
         for catalog in (EN, ES):

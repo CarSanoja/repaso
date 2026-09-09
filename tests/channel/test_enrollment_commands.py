@@ -5,7 +5,12 @@ import pytest
 from repaso.channel.delivery import deliver, deliver_for_family
 from repaso.channel.telegram.allowlist import is_known, valid_invite
 from repaso.channel.telegram.commands import handle_command, handle_forget_callback
-from repaso.channel.telegram.enrollment import advance, parse_practice_time, start_enrollment
+from repaso.channel.telegram.enrollment import (
+    CONSENT_VERSION,
+    advance,
+    parse_practice_time,
+    start_enrollment,
+)
 from repaso.i18n import msg
 from repaso.schemas.channel import ChannelKind, InboundMessage, OutboundMessage
 from repaso.schemas.common import Lang
@@ -83,7 +88,7 @@ def test_full_enrollment_walk_creates_family_and_student(store):
     student = store.list_students(enrolled.id)[0]
     assert enrolled.status is FamilyStatus.ACTIVE and enrolled.invite_code == "PILOTO-1"
     assert enrolled.practice_time == time(hour=19, minute=30)
-    assert (enrolled.consent.version, enrolled.consent.chat_ref) == ("v1", CHAT)
+    assert (enrolled.consent.version, enrolled.consent.chat_ref) == (CONSENT_VERSION, CHAT)
     assert (student.alias, student.grade, student.section_key) == ("Leo", 4, "san-jose-4-b")
     assert store.get_enrollment(CHANNEL, CHAT) is None
 
