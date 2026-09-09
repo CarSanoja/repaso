@@ -11,6 +11,9 @@ COPY src ./src
 
 RUN pip install --no-cache-dir setuptools==80.9.0 && pip install --no-build-isolation --no-cache-dir -c requirements.lock ".[runtime]"
 
+RUN useradd --system --uid 10001 --user-group --no-create-home repaso
+USER 10001
+
 EXPOSE 8080
 
 ENTRYPOINT ["python", "-m", "repaso.runtime.app"]
