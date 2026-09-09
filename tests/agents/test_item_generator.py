@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 import pytest
 
 from repaso.agents.item_generator import (
+    MAX_OVERPRODUCTION,
     GeneratedBatch,
     ItemDraft,
     draft_report,
@@ -153,6 +154,22 @@ async def test_generator_asks_for_the_family_language(competency):
     assert "exactly 1 items" in model.texts[0]
     assert "grade 4" in model.system_prompts[0]
     assert competency.description in model.texts[0]
+
+
+async def test_a_model_that_floods_the_batch_is_cut_to_twice_what_was_asked(competency):
+    drafts = [mcq_draft(stem=f"¿Cuál equivale a {n}/8?") for n in range(60)]
+    model = LocalPlaybackModel([GeneratedBatch(items=drafts)])
+
+    items = await generate_items(MATERIAL, competency, 6, 4, model, NOW)
+
+    assert len(items) == 6 * MAX_OVERPRODUCTION
+
+
+async def test_a_model_that_writes_a_few_extra_items_keeps_them(competency):
+    drafts = [mcq_draft(stem=f"¿Cuál equivale a {n}/8?") for n in range(8)]
+    model = LocalPlaybackModel([GeneratedBatch(items=drafts)])
+
+    assert len(await generate_items(MATERIAL, competency, 6, 4, model, NOW)) == 8
 
 
 async def test_generator_rejects_a_non_positive_count(competency):

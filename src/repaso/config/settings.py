@@ -47,6 +47,7 @@ class Settings(BaseSettings):
     legibility_blur_floor: float = Field(default=300.0, gt=0.0)
     daily_llm_budget_calls: int = Field(default=40, ge=1)
     global_daily_llm_budget_calls: int = Field(default=400, ge=1)
+    message_llm_budget_calls: int = Field(default=24, ge=1)
     rework_max_iterations: int = Field(default=2, ge=0)
     item_regen_max_rounds: int = Field(default=2, ge=0)
 

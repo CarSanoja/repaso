@@ -12,16 +12,24 @@ from repaso.runtime.errors import ErrorCode, InvocationError
 from repaso.runtime.handlers import HANDLERS
 from repaso.runtime.payload import parse_request
 from repaso.runtime.results import error_result, kind_hint, ok_result
+from repaso.schemas.events import EventKind
 from repaso.schemas.operation import OperationRecord
-from repaso.tools.model_limits import ModelLimitReached
+from repaso.tools.model_limits import MESSAGE_SCOPE_KEY, ModelLimitReached
 
 logger = logging.getLogger(__name__)
 
 LOOP_MESSAGE = "invoke() cannot run inside a running event loop; await invoke_async() instead"
+COHORT_WIDE_KINDS = frozenset({EventKind.DAILY_CLOSE})
 
 
 def supported_kinds() -> list[str]:
     return sorted(kind.value for kind in HANDLERS)
+
+
+def _message_bound(kind: EventKind, correlation: str) -> dict[str, str]:
+    if kind in COHORT_WIDE_KINDS:
+        return {}
+    return {MESSAGE_SCOPE_KEY: correlation}
 
 
 async def invoke_async(payload: dict[str, Any], services: Services | None = None) -> dict[str, Any]:
@@ -60,13 +68,15 @@ async def invoke_async(payload: dict[str, Any], services: Services | None = None
                     context.store.release_lease(held, owner)
                 raise RuntimeError("family operation in progress; retry required")
             acquired.append(lease)
+        correlation = sha256((key or owner).encode()).hexdigest()[:24]
         token = invocation_context.set(
             {
                 "family_id": scope,
                 "timezone": family.timezone
                 if family
                 else ("America/Caracas" if kind == "daily_close" else "UTC"),
-                "correlation_id": sha256((key or owner).encode()).hexdigest()[:24],
+                "correlation_id": correlation,
+                **_message_bound(request.kind, correlation),
             }
         )
         try:

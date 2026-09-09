@@ -13,6 +13,7 @@ MIN_OPTIONS = 3
 MAX_OPTIONS = 5
 MIN_DIFFICULTY = 1
 MAX_DIFFICULTY = 5
+MAX_OVERPRODUCTION = 2
 LANGUAGE_NAMES: dict[Lang, str] = {Lang.ES: "Spanish", Lang.EN: "English"}
 
 
@@ -121,8 +122,9 @@ async def generate_items(
         )
     except StructuredCallFailed:
         return []
-    return [
+    kept = [
         _to_item(draft, competency, now, model_id, prompt_version)
         for draft in batch.items
         if is_valid_draft(draft)
     ]
+    return kept[: count * MAX_OVERPRODUCTION]
