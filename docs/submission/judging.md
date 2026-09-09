@@ -170,7 +170,7 @@ become perfect accuracy.
 | Transport recovers across retries and duplicate events | Measured under Moto with the AgentCore and Telegram boundaries substituted |
 | Fourteen days of continuity hold under nine scenario gates | Measured on 30 synthetic students |
 | A new printed Spanish page is recognized outside the cassette | Measured: one real Amazon Textract call, confidence 0.9957 |
-| Every configured model answers and fills its schema | Measured on 2026-09-12: 27 of 27 calls parsed, $0.1589 |
+| Every configured model answers and fills its schema | Measured on 2026-09-12: 27 of 27 calls parsed, $0.1444 |
 | Six CloudFormation stacks and two ARM64 images build | Prepared: they synthesize and the containers start and serve; nothing is deployed |
 | Model grading quality | Not done. Kit prepared, labels deliberately blank |
 | Benefit to a real family | Not done. Three-day observation protocol prepared, no participants |

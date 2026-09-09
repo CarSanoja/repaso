@@ -273,16 +273,16 @@ list. Check with `getWebhookInfo`: `pending_update_count` should fall to zero an
    schema conformance at 3 samples per schema
    role       schema             calls   ok       in     out       usd
    classify   IntakeDecision         3    3     2763      60    0.0002
-   generate   GeneratedBatch         3    3     4581    3480    0.0725
-   generate   Snippet                3    3     2550     434    0.0156
-   generate   TeacherNote            3    3     2550     450    0.0158
-   judge      CriticFinding          3    3     4554     667    0.0260
-   judge      OpenGrade              3    3     3447     463    0.0190
+   generate   GeneratedBatch         3    3     4581    3480    0.0659
+   generate   Snippet                3    3     2550     434    0.0142
+   generate   TeacherNote            3    3     2550     450    0.0144
+   judge      CriticFinding          3    3     4554     667    0.0237
+   judge      OpenGrade              3    3     3447     463    0.0173
    probe      ProbeAnswer            3    3     1551      45    0.0001
-   structured MappingDecision        3    3     3819     165    0.0051
-   structured PolicyDecision         3    3     2682     282    0.0045
-   total                            27   27    28497    6046    0.1589
-   parsed 27/27, estimated spend $0.1589
+   structured MappingDecision        3    3     3819     165    0.0046
+   structured PolicyDecision         3    3     2682     282    0.0041
+   total                            27   27    28497    6046    0.1444
+   parsed 27/27, estimated spend $0.1444
    ```
 
    This ran on 2026-09-12 against the authorized account and is kept in

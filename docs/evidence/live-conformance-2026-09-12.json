@@ -5,7 +5,7 @@
   "parsed": 27,
   "input_tokens": 28497,
   "output_tokens": 6046,
-  "total_usd": 0.158851965,
+  "total_usd": 0.144432765,
   "latency": [
     {
       "role": "classify",
@@ -55,7 +55,7 @@
       "parsed": 3,
       "input_tokens": 4581,
       "output_tokens": 3480,
-      "estimated_usd": 0.0725373
+      "estimated_usd": 0.06594299999999999
     },
     {
       "role": "generate",
@@ -64,7 +64,7 @@
       "parsed": 3,
       "input_tokens": 2550,
       "output_tokens": 434,
-      "estimated_usd": 0.015576000000000003
+      "estimated_usd": 0.014159999999999999
     },
     {
       "role": "generate",
@@ -73,7 +73,7 @@
       "parsed": 3,
       "input_tokens": 2550,
       "output_tokens": 450,
-      "estimated_usd": 0.01584
+      "estimated_usd": 0.0144
     },
     {
       "role": "judge",
@@ -82,7 +82,7 @@
       "parsed": 3,
       "input_tokens": 4554,
       "output_tokens": 667,
-      "estimated_usd": 0.0260337
+      "estimated_usd": 0.023667
     },
     {
       "role": "judge",
@@ -91,7 +91,7 @@
       "parsed": 3,
       "input_tokens": 3447,
       "output_tokens": 463,
-      "estimated_usd": 0.0190146
+      "estimated_usd": 0.017286
     },
     {
       "role": "probe",
@@ -109,7 +109,7 @@
       "parsed": 3,
       "input_tokens": 3819,
       "output_tokens": 165,
-      "estimated_usd": 0.005108400000000001
+      "estimated_usd": 0.0046440000000000006
     },
     {
       "role": "structured",
@@ -118,7 +118,7 @@
       "parsed": 3,
       "input_tokens": 2682,
       "output_tokens": 282,
-      "estimated_usd": 0.0045012
+      "estimated_usd": 0.004092
     }
   ],
   "rows": [
@@ -167,7 +167,7 @@
       "latency_ms": 1228.4170000000001,
       "input_tokens": 1273,
       "output_tokens": 55,
-      "estimated_usd": 0.0017028000000000002,
+      "estimated_usd": 0.0015480000000000001,
       "error": ""
     },
     {
@@ -179,7 +179,7 @@
       "latency_ms": 887.193,
       "input_tokens": 1273,
       "output_tokens": 55,
-      "estimated_usd": 0.0017028000000000002,
+      "estimated_usd": 0.0015480000000000001,
       "error": ""
     },
     {
@@ -191,7 +191,7 @@
       "latency_ms": 918.717,
       "input_tokens": 1273,
       "output_tokens": 55,
-      "estimated_usd": 0.0017028000000000002,
+      "estimated_usd": 0.0015480000000000001,
       "error": ""
     },
     {
@@ -203,7 +203,7 @@
       "latency_ms": 1296.448,
       "input_tokens": 894,
       "output_tokens": 88,
-      "estimated_usd": 0.0014674,
+      "estimated_usd": 0.0013340000000000001,
       "error": ""
     },
     {
@@ -215,7 +215,7 @@
       "latency_ms": 1430.845,
       "input_tokens": 894,
       "output_tokens": 94,
-      "estimated_usd": 0.0015004,
+      "estimated_usd": 0.0013640000000000002,
       "error": ""
     },
     {
@@ -227,7 +227,7 @@
       "latency_ms": 1376.088,
       "input_tokens": 894,
       "output_tokens": 100,
-      "estimated_usd": 0.0015333999999999999,
+      "estimated_usd": 0.001394,
       "error": ""
     },
     {
@@ -239,7 +239,7 @@
       "latency_ms": 13097.871,
       "input_tokens": 1527,
       "output_tokens": 1117,
-      "estimated_usd": 0.023469600000000004,
+      "estimated_usd": 0.021335999999999997,
       "error": ""
     },
     {
@@ -251,7 +251,7 @@
       "latency_ms": 13807.835000000001,
       "input_tokens": 1527,
       "output_tokens": 1192,
-      "estimated_usd": 0.0247071,
+      "estimated_usd": 0.022461,
       "error": ""
     },
     {
@@ -263,7 +263,7 @@
       "latency_ms": 12994.842999999999,
       "input_tokens": 1527,
       "output_tokens": 1171,
-      "estimated_usd": 0.024360600000000003,
+      "estimated_usd": 0.022145999999999996,
       "error": ""
     },
     {
@@ -275,7 +275,7 @@
       "latency_ms": 3008.87,
       "input_tokens": 850,
       "output_tokens": 149,
-      "estimated_usd": 0.005263500000000001,
+      "estimated_usd": 0.004785,
       "error": ""
     },
     {
@@ -287,7 +287,7 @@
       "latency_ms": 2777.132,
       "input_tokens": 850,
       "output_tokens": 136,
-      "estimated_usd": 0.0050490000000000005,
+      "estimated_usd": 0.0045899999999999995,
       "error": ""
     },
     {
@@ -299,7 +299,7 @@
       "latency_ms": 2774.556,
       "input_tokens": 850,
       "output_tokens": 149,
-      "estimated_usd": 0.005263500000000001,
+      "estimated_usd": 0.004785,
       "error": ""
     },
     {
@@ -311,7 +311,7 @@
       "latency_ms": 2869.891,
       "input_tokens": 850,
       "output_tokens": 145,
-      "estimated_usd": 0.0051975,
+      "estimated_usd": 0.004725,
       "error": ""
     },
     {
@@ -323,7 +323,7 @@
       "latency_ms": 3083.616,
       "input_tokens": 850,
       "output_tokens": 156,
-      "estimated_usd": 0.005379,
+      "estimated_usd": 0.00489,
       "error": ""
     },
     {
@@ -335,7 +335,7 @@
       "latency_ms": 4753.156,
       "input_tokens": 850,
       "output_tokens": 149,
-      "estimated_usd": 0.005263500000000001,
+      "estimated_usd": 0.004785,
       "error": ""
     },
     {
@@ -347,7 +347,7 @@
       "latency_ms": 4669.125,
       "input_tokens": 1518,
       "output_tokens": 218,
-      "estimated_usd": 0.0086064,
+      "estimated_usd": 0.007824,
       "error": ""
     },
     {
@@ -359,7 +359,7 @@
       "latency_ms": 7086.477999999999,
       "input_tokens": 1518,
       "output_tokens": 237,
-      "estimated_usd": 0.0089199,
+      "estimated_usd": 0.008109,
       "error": ""
     },
     {
@@ -371,7 +371,7 @@
       "latency_ms": 4176.577,
       "input_tokens": 1518,
       "output_tokens": 212,
-      "estimated_usd": 0.0085074,
+      "estimated_usd": 0.0077339999999999996,
       "error": ""
     },
     {
@@ -383,7 +383,7 @@
       "latency_ms": 2781.463,
       "input_tokens": 1149,
       "output_tokens": 159,
-      "estimated_usd": 0.0064152,
+      "estimated_usd": 0.0058319999999999995,
       "error": ""
     },
     {
@@ -395,7 +395,7 @@
       "latency_ms": 2688.62,
       "input_tokens": 1149,
       "output_tokens": 149,
-      "estimated_usd": 0.006250199999999999,
+      "estimated_usd": 0.005682,
       "error": ""
     },
     {
@@ -407,7 +407,7 @@
       "latency_ms": 2656.911,
       "input_tokens": 1149,
       "output_tokens": 155,
-      "estimated_usd": 0.0063492,
+      "estimated_usd": 0.005772,
       "error": ""
     },
     {

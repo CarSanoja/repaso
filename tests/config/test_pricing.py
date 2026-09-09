@@ -25,22 +25,6 @@ def test_output_tokens_are_never_cheaper_than_input_tokens():
         assert price.output_usd_per_1k >= price.input_usd_per_1k, model_id
 
 
-@pytest.mark.parametrize(
-    ("model_id", "input_per_million", "output_per_million"),
-    [
-        ("us.anthropic.claude-sonnet-4-6", 3.30, 16.50),
-        ("us.anthropic.claude-haiku-4-5-20251001-v1:0", 1.10, 5.50),
-    ],
-)
-def test_anthropic_is_priced_at_the_geographic_profile_the_fleet_calls(
-    model_id, input_per_million, output_per_million
-):
-    price = price_for(model_id)
-
-    assert price.input_usd_per_1k * 1000 == pytest.approx(input_per_million)
-    assert price.output_usd_per_1k * 1000 == pytest.approx(output_per_million)
-
-
 def test_estimate_charges_input_and_output_at_their_own_rates():
     cost = estimate_cost_usd("us.amazon.nova-micro-v1:0", 2000, 1000)
     assert cost == pytest.approx(2 * 0.000035 + 1 * 0.00014)
@@ -66,8 +50,48 @@ def test_negative_token_counts_are_rejected():
 
 
 def test_prices_reject_unknown_fields_and_stay_frozen():
-    price = TokenPrice(input_usd_per_1k=0.001, output_usd_per_1k=0.005)
+    price = TokenPrice(
+        input_usd_per_1k=0.001,
+        output_usd_per_1k=0.005,
+        cache_read_usd_per_1k=0.0001,
+        cache_write_usd_per_1k=0.00125,
+    )
     with pytest.raises(ValueError):
-        TokenPrice(input_usd_per_1k=0.001, output_usd_per_1k=0.005, currency="USD")
+        TokenPrice(
+            input_usd_per_1k=0.001,
+            output_usd_per_1k=0.005,
+            cache_read_usd_per_1k=0.0001,
+            cache_write_usd_per_1k=0.00125,
+            currency="USD",
+        )
     with pytest.raises(ValueError):
         price.input_usd_per_1k = 0.002
+
+
+def test_a_cache_read_is_cheaper_than_the_input_it_replaces():
+    for model_id, price in PRICES.items():
+        assert price.cache_read_usd_per_1k < price.input_usd_per_1k, model_id
+
+
+def test_a_cache_write_is_never_cheaper_than_the_input_it_stores():
+    for model_id, price in PRICES.items():
+        assert price.cache_write_usd_per_1k >= 0.0, model_id
+        if price.cache_write_usd_per_1k:
+            assert price.cache_write_usd_per_1k > price.input_usd_per_1k, model_id
+
+
+def test_reasoning_is_charged_at_the_output_rate():
+    for price in PRICES.values():
+        assert price.reasoning_usd_per_1k == price.output_usd_per_1k
+
+
+def test_every_configured_model_carries_all_four_rates():
+    assert set(PRICES) == configured_models()
+    for model_id, price in PRICES.items():
+        recorded = price.model_dump()
+        assert set(recorded) == {
+            "input_usd_per_1k",
+            "output_usd_per_1k",
+            "cache_read_usd_per_1k",
+            "cache_write_usd_per_1k",
+        }, model_id

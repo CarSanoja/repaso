@@ -41,28 +41,56 @@ for every model in the default and fallback chains. The estimate is printed
 whether or not it passes, and a run priced above `REPASO_LIVE_BUDGET_USD` is
 refused before a single call is made.
 
-At the default five samples that is 55 calls and an estimate of $0.66. Real
+At the default five samples that is 55 calls and an estimate of $0.60. Real
 spend comes in well under the estimate, because the allowance assumes far longer
 prompts and answers than these probes produce; the report tells you the measured
-figure. Raising the sample count raises the estimate proportionally: 15 samples
-still fits under the default ceiling and 16 does not.
+figure. Raising the sample count raises the estimate proportionally: 16 samples
+still fits under the default ceiling and 17 does not.
 
-The prices behind all of this live in `src/repaso/config/pricing.py`, one entry
-per model id the fleet can reach. The Amazon Nova Lite and Nova Micro rates were
-checked on 2026-09-03 against the AWS Price List bulk export for Amazon Bedrock
-in `us-east-1` (publication date 2026-09-01). The Anthropic rates were checked
-on 2026-09-12 against the Price List API for `AmazonBedrockFoundationModels` in
-`US East (N. Virginia)`, and they are the `USE1_InputTokenCount` and
-`USE1_OutputTokenCount` dimensions — the geographic cross-Region rate, which is
-what a `us.` inference profile charges. The `_Global` dimensions of the same
-products are about ten percent lower and belong to the `global.` profiles the
-fleet does not call.
+The prices behind all of this live in `src/repaso/config/pricing.py`, four
+rates per model id the fleet can reach: input, output, prompt-cache read and
+prompt-cache write. Reasoning tokens are charged at the output rate.
 
-A test asserts that every model the fleet is configured to use has a price, that
-no unused model is priced, and that the two Anthropic entries match the
-geographic rate per million tokens, so adding a model to the fleet fails the
+They were last checked on 2026-09-12, for `us-east-1` standard on-demand
+inference:
+
+| Model | input | output | cache read | cache write |
+| --- | --- | --- | --- | --- |
+| Claude Sonnet 4.6 | $3.00 | $15.00 | $0.30 | $3.75 |
+| Claude Haiku 4.5 | $1.00 | $5.00 | $0.10 | $1.25 |
+| Amazon Nova Lite | $0.06 | $0.24 | $0.015 | $0.00 |
+| Amazon Nova Micro | $0.035 | $0.14 | $0.00875 | $0.00 |
+
+Dollars per million tokens, as the source states them; the table in the code
+is per thousand. The Nova rates come from the AWS Price List API for Amazon
+Bedrock in `us-east-1`, `On-demand Inference`, token types `Input tokens`,
+`Output tokens`, `Prompt cache read input tokens` and `Prompt cache write
+input tokens`. The Anthropic rates come from the price map the Amazon Bedrock
+pricing page itself renders, `US East (N. Virginia)`, standard tier,
+publication date 2026-09-11; that page's Priority tier quotes 10 percent
+more and is not what these calls buy. The Price List API export does not yet
+carry Claude Sonnet 4.6 or Claude Haiku 4.5.
+
+The cache-write column is the five-minute rate. Both Anthropic models also
+publish a higher one-hour rate, and a call that writes a one-hour checkpoint
+is under-priced here by the difference. The Converse response says which was
+used — a measured cache write reported `cacheDetails: [{"ttl": "5m", ...}]` —
+but neither the Converse usage block nor the Strands `Usage` type carries
+that field into the usage the harness reads, so the ledger records the
+five-minute price and nothing in this repository claims otherwise.
+
+The four token classes are billed apart, not nested. A measured pair of calls
+with a 3,723-token cached system prefix reported `inputTokens: 15` with
+`cacheWriteInputTokens: 3723` on the cold call and `cacheReadInputTokens:
+3723` on the warm one, with `totalTokens: 3742` on both — input, output and
+the cache class sum to the total, so the cost report charges each class at
+its own rate and adds them.
+
+A test asserts that every model the fleet is configured to use has a price and
+that no unused model is priced, so adding a model to the fleet fails the
 offline suite until its rate is recorded — but the numbers themselves are a
-snapshot, and re-checking them is part of turning this tier on after a long gap.
+snapshot, and re-checking them is part of turning this tier on after a long
+gap.
 
 ## What it writes
 
@@ -84,15 +112,15 @@ This is a real run, three samples per schema, on 2026-09-12:
 schema conformance at 3 samples per schema
 role       schema             calls   ok       in     out       usd
 classify   IntakeDecision         3    3     2763      60    0.0002
-generate   GeneratedBatch         3    3     4581    3480    0.0725
-generate   Snippet                3    3     2550     434    0.0156
-generate   TeacherNote            3    3     2550     450    0.0158
-judge      CriticFinding          3    3     4554     667    0.0260
-judge      OpenGrade              3    3     3447     463    0.0190
+generate   GeneratedBatch         3    3     4581    3480    0.0659
+generate   Snippet                3    3     2550     434    0.0142
+generate   TeacherNote            3    3     2550     450    0.0144
+judge      CriticFinding          3    3     4554     667    0.0237
+judge      OpenGrade              3    3     3447     463    0.0173
 probe      ProbeAnswer            3    3     1551      45    0.0001
-structured MappingDecision        3    3     3819     165    0.0051
-structured PolicyDecision         3    3     2682     282    0.0045
-total                            27   27    28497    6046    0.1589
+structured MappingDecision        3    3     3819     165    0.0046
+structured PolicyDecision         3    3     2682     282    0.0041
+total                            27   27    28497    6046    0.1444
 
 role        calls    p50 ms    p95 ms
 classify        3     627.7     881.4
@@ -101,7 +129,7 @@ judge           6    2781.5    7086.5
 probe           3     493.4     837.9
 structured      6    1228.4    1430.8
 
-parsed 27/27, estimated spend $0.1589
+parsed 27/27, estimated spend $0.1444
 ```
 
 The run is kept in the repository as

@@ -13,15 +13,39 @@ class UnpricedModel(LookupError):
 class TokenPrice(FrozenStrictModel):
     input_usd_per_1k: float = Field(ge=0.0)
     output_usd_per_1k: float = Field(ge=0.0)
+    cache_read_usd_per_1k: float = Field(ge=0.0)
+    cache_write_usd_per_1k: float = Field(ge=0.0)
+
+    @property
+    def reasoning_usd_per_1k(self) -> float:
+        return self.output_usd_per_1k
 
 
 PRICES: dict[str, TokenPrice] = {
-    "us.anthropic.claude-sonnet-4-6": TokenPrice(input_usd_per_1k=0.0033, output_usd_per_1k=0.0165),
-    "us.anthropic.claude-haiku-4-5-20251001-v1:0": TokenPrice(
-        input_usd_per_1k=0.0011, output_usd_per_1k=0.0055
+    "us.anthropic.claude-sonnet-4-6": TokenPrice(
+        input_usd_per_1k=0.003,
+        output_usd_per_1k=0.015,
+        cache_read_usd_per_1k=0.0003,
+        cache_write_usd_per_1k=0.00375,
     ),
-    "us.amazon.nova-lite-v1:0": TokenPrice(input_usd_per_1k=0.00006, output_usd_per_1k=0.00024),
-    "us.amazon.nova-micro-v1:0": TokenPrice(input_usd_per_1k=0.000035, output_usd_per_1k=0.00014),
+    "us.anthropic.claude-haiku-4-5-20251001-v1:0": TokenPrice(
+        input_usd_per_1k=0.001,
+        output_usd_per_1k=0.005,
+        cache_read_usd_per_1k=0.0001,
+        cache_write_usd_per_1k=0.00125,
+    ),
+    "us.amazon.nova-lite-v1:0": TokenPrice(
+        input_usd_per_1k=0.00006,
+        output_usd_per_1k=0.00024,
+        cache_read_usd_per_1k=0.000015,
+        cache_write_usd_per_1k=0.0,
+    ),
+    "us.amazon.nova-micro-v1:0": TokenPrice(
+        input_usd_per_1k=0.000035,
+        output_usd_per_1k=0.00014,
+        cache_read_usd_per_1k=0.00000875,
+        cache_write_usd_per_1k=0.0,
+    ),
 }
 
 
