@@ -148,11 +148,16 @@ encryption now requires. The worker holds neither the table nor the bus: in a de
 decodes an SQS record and calls `InvokeAgentRuntime`, and the state and the events on the far
 side of that call are the runtime's, behind the runtime's own role.
 
-The AgentCore execution role was already well shaped and is unchanged: models named individually,
-the key scoped, secrets scoped by name, `iam:PassRole` conditioned on the service it may be
-passed to, and the statements whose placeholders never resolved dropped at synthesis rather than
-deployed half-formed. Its three remaining `Resource: "*"` statements are ECR authorization, X-Ray,
-and Textract; the two CloudWatch ones are conditioned on namespace.
+The AgentCore execution role was already well shaped: models named individually, the key scoped,
+secrets scoped by name, `iam:PassRole` conditioned on the service it may be passed to, and the
+statements whose placeholders never resolved dropped at synthesis rather than deployed
+half-formed. Two changes reached it from the deployment work rather than from this review. It
+lost `repaso/judge`, which nothing in the runtime resolves, and it gained
+`scheduler:ListSchedules`, which the runtime needs to find the family alarms it owns and which
+admits no resource, so that grant is region-wide. Read out of the rendered template it now holds
+four `Resource: "*"` statements: ECR authorization, X-Ray, Textract and that schedule listing;
+the two CloudWatch ones are conditioned on namespace. Every one of them is declared, with what it
+can and cannot reach, in [isolation and reversal](../operations/isolation.md).
 
 `tests/infra/test_least_privilege.py` reads the templates and fails if any Lambda role regains a
 model action, an S3 action, a secret the webhook does not need, an unconditioned wildcard
