@@ -3,6 +3,7 @@ from pathlib import Path
 
 import aws_cdk as cdk
 from config import DeployConfig
+from namespace_guard import enforce_assembly
 from stacks.agentcore_stack import AgentCoreStack
 from stacks.api_stack import ApiStack
 from stacks.foundation_stack import FoundationStack
@@ -42,4 +43,4 @@ for tag, value in config.tags.items():
     cdk.Tags.of(app).add(tag, value)
 cdk.Aspects.of(app).add(TagEveryResource(config.tags))
 
-app.synth()
+enforce_assembly(app.synth(), config.project, config.bootstrap_qualifier)
