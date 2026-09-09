@@ -103,7 +103,7 @@ class DynamoStateStore:
             )
             metadata = (
                 pk.startswith("CLAIM#")
-                and bool(set(pk.split("#")) & owned)
+                and bool(set(pk.split("#")) & (owned | scopes))
                 or pk == f"DATA#{family_id}"
                 or sk == f"FAMILY#{family_id}"
             )

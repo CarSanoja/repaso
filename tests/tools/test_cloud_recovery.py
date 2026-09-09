@@ -132,3 +132,19 @@ def test_erasure_resumes_after_partial_delete_and_finds_an_orphaned_copy(
     assert s.store.get_family(family.id) is None and s.store.get_student(student.id) is None
     assert s.store.get_family(other.id) is not None
     assert not s.store.list_family_items(family.id)
+
+
+def test_erasure_reaches_the_claim_that_admitted_a_message(cloud_services):
+    s, client, _ = cloud_services
+    family, _ = seed_family(s.store)
+    other, _ = seed_family(s.store, "f2", "200")
+    mine = f"chat:{family.chat_ref}#published#42"
+    theirs = f"chat:{other.chat_ref}#published#43"
+    assert s.store.claim(mine, "telegram-webhook")
+    assert s.store.claim(theirs, "telegram-webhook")
+
+    forget_family(s, family)
+
+    rows = client.scan(TableName="repaso")["Items"]
+    claims = sorted(r["pk"]["S"] for r in rows if r["pk"]["S"].startswith("CLAIM#"))
+    assert claims == [f"CLAIM#{theirs}"]
