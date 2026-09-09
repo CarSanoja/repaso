@@ -48,6 +48,8 @@ class Settings(BaseSettings):
     daily_llm_budget_calls: int = Field(default=40, ge=1)
     global_daily_llm_budget_calls: int = Field(default=400, ge=1)
     message_llm_budget_calls: int = Field(default=24, ge=1)
+    chat_messages_per_minute: int = Field(default=12, ge=1)
+    unknown_chat_daily_messages: int = Field(default=8, ge=1)
     rework_max_iterations: int = Field(default=2, ge=0)
     item_regen_max_rounds: int = Field(default=2, ge=0)
 

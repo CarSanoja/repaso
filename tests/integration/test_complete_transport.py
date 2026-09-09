@@ -22,6 +22,7 @@ from repaso.simulator.demo_scenario import (
 from repaso.simulator.demo_stage import CHAT_REF, Stage
 from repaso.simulator.demo_transcript import PARENT
 from repaso.tools.alarms import SchedulerAlarms
+from repaso.tools.call_quota import build_call_quota
 from repaso.tools.event_bus import EventBridgePublisher
 from repaso.tools.telegram import TelegramSender
 from tests.tools.test_cloud_recovery import cloud_services as cloud_services
@@ -133,6 +134,8 @@ async def test_ten_complete_transport_journeys(cloud_services, monkeypatch, tmp_
         services.sender,
         services.fetcher,
         services.publisher,
+        build_call_quota(settings),
+        services.telemetry,
         telegram_secret="synthetic-secret",
         clock=services.clock,
     )

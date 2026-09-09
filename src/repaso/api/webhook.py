@@ -7,7 +7,9 @@ from fastapi import APIRouter, HTTPException, Request, status
 
 from repaso.api.dependencies import AppContainer
 from repaso.channel.telegram.parser import parse_update, update_id_of
+from repaso.channel.throttle import Admission, admit, report
 from repaso.schemas.channel import InboundMessage
+from repaso.schemas.common import utc_now
 from repaso.schemas.events import DomainEvent, EventKind
 from repaso.schemas.operation import OperationRecord
 
@@ -46,10 +48,29 @@ async def telegram_webhook(request: Request) -> dict[str, Any]:
     except (json.JSONDecodeError, UnicodeDecodeError):
         logger.warning("telegram webhook ignored malformed JSON")
         return {"ok": True, "error": "logged"}
+    now = container.clock.now() if container.clock else utc_now()
     try:
-        message = parse_update(update, now=container.clock.now() if container.clock else None)
+        message = parse_update(update, now=now)
         if message is None:
             return {"ok": True, "ignored": True}
+        admission = admit(
+            container.store,
+            container.quota,
+            container.settings,
+            now,
+            message.channel.value,
+            message.chat_ref,
+        )
+        if admission is not Admission.ADMITTED:
+            report(
+                container.telemetry,
+                container.quota,
+                now,
+                message.channel.value,
+                message.chat_ref,
+                admission,
+            )
+            return {"ok": True, "throttled": admission.value}
         scope = f"chat:{message.chat_ref}"
         key = f"published#{update_id_of(update) or message.message_ref}"
         if not container.store.claim(f"{scope}#{key}", ADMISSION_OWNER):

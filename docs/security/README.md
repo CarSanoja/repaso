@@ -301,9 +301,17 @@ alarms do not, because a flood of correct refusals is neither an error nor a thr
 API had no throttle at all, so the first limit anything met was account Lambda concurrency. It now
 carries a default route throttle — 20 requests per second, burst 40, both settable from context.
 
-This bounds the cost of a flood. It does not authenticate the sender earlier, which is the real
-fix and a larger change: rejecting unknown chats at the webhook needs the invite codes there, and
-the webhook is deliberately the component that holds almost nothing.
+The webhook also decides admission before it publishes anything. Every chat is reserved against a
+per-minute count, and a chat it does not recognise -- no family, no enrollment in progress -- is
+reserved against a daily one as well. A refused message is answered 200 and never becomes an
+event, so the flood stops before the bus, the queue and the AgentCore session rather than being
+paid for and then refused, and each reason is traced once per window where an alarm can see it.
+
+That bounds what a stranger costs; it still does not authenticate one. The check asks whether the
+chat is already known, not whether whoever is typing should be, so a stranger's first messages
+each day are admitted exactly as before and answered by the fleet. Refusing an unknown chat
+outright at the webhook needs the invite codes there, and the webhook is deliberately the
+component that holds almost nothing.
 
 **A looping family** is bounded by the same per-family budget of 40 model calls a day, and by the
 media fetcher's size caps and content-type checks on anything uploaded.

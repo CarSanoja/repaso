@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 
 from repaso.config.settings import Settings
+from repaso.core.telemetry.sink import TelemetrySink, build_telemetry_sink
+from repaso.tools.call_quota import CallQuota, build_call_quota
 from repaso.tools.event_bus import EventPublisher, build_event_publisher
 from repaso.tools.media_fetcher import MediaFetcher, build_media_fetcher
 from repaso.tools.state_store import StateStore, build_state_store
@@ -14,6 +16,8 @@ class AppContainer:
     sender: ChannelSender
     fetcher: MediaFetcher
     publisher: EventPublisher
+    quota: CallQuota
+    telemetry: TelemetrySink
     telegram_secret: str = ""
     judge_code: str = ""
     clock: object | None = None
@@ -31,6 +35,8 @@ def build_container(
         sender=build_channel_sender(settings, telegram_token),
         fetcher=build_media_fetcher(settings, telegram_token),
         publisher=build_event_publisher(settings),
+        quota=build_call_quota(settings),
+        telemetry=build_telemetry_sink(settings),
         telegram_secret=telegram_secret,
         judge_code=judge_code,
     )
