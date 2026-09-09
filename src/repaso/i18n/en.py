@@ -1,4 +1,9 @@
 MESSAGES = {
+    "practice_paused_today": (
+        "Practice is paused for the rest of today: the daily service limit was "
+        "reached. Nothing you sent was lost, and tomorrow picks up where you left "
+        "off."
+    ),
     "model_waiting": (
         "The AI service is temporarily at capacity. Your pending work is saved; you "
         "do not need to repeat your answer. Practice will continue when service is "

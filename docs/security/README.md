@@ -285,6 +285,13 @@ there alarms. A record that fails to decode is caught and reported as a failure 
 so a malformed body redrives and lands rather than looping. This was read from the templates and
 the handler; it was not exercised against deployed queues.
 
+One refusal is deliberately not a failure. A spent daily or per-message ceiling returns
+`spend_ceiling_reached`, and the worker accepts the message rather than redriving work that cannot
+succeed until the allowance resets. The family is told once per reason per day that practice is
+paused and that nothing they sent was lost, and the ceiling raises its own signal, so a paused
+pilot shows up as a pause instead of as a dead letter queue filling with messages that were never
+poison.
+
 **A stranger could drive runtime invocations, and now costs more to do it.** A message from an
 unknown chat is authenticated as coming from Telegram, not as coming from a family, so it passes
 the webhook, becomes an event, crosses the bus and a queue, and starts an AgentCore session that

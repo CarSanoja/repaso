@@ -4,6 +4,7 @@ from hashlib import sha256
 from typing import Any
 
 from repaso.core.harness.idempotency import KEY_SEPARATOR
+from repaso.runtime.errors import ErrorCode
 from repaso.schemas.events import DomainEvent
 
 BATCH_FAILURES_KEY = "batchItemFailures"
@@ -21,6 +22,7 @@ FIRST_DELIVERY = "1"
 UNREADABLE_RESULT = "unreadable_result"
 OWNER = "sqs-worker"
 WORKER_KEY_PREFIX = "worker"
+TERMINAL_REASONS = frozenset({ErrorCode.SPEND_CEILING_REACHED.value})
 
 logger = logging.getLogger(__name__)
 
@@ -68,8 +70,9 @@ def _process(record: dict[str, Any]) -> bool:
     result = _dispatch(event)
     if isinstance(result, dict) and result.get(OK_KEY) is True:
         return True
-    logger.error("runtime rejected %s: %s", sha256(key.encode()).hexdigest()[:24], _reason(result))
-    return False
+    reason = _reason(result)
+    logger.error("runtime rejected %s: %s", sha256(key.encode()).hexdigest()[:24], reason)
+    return reason in TERMINAL_REASONS
 
 
 def _identifier(record: Any) -> str:

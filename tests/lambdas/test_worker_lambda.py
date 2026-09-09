@@ -39,6 +39,19 @@ def test_worker_reports_only_the_record_the_runtime_rejected(lambda_env, runtime
     assert runtime.keys == ["12345#10", "12345#11", "12345#12"]
 
 
+def test_worker_does_not_redeliver_work_a_spent_ceiling_refused(lambda_env, runtime, caplog):
+    runtime.spent.add("12345#11")
+    batch = make_batch(
+        make_record(make_domain_event(idempotency_key="12345#10"), message_id="m1"),
+        make_record(make_domain_event(idempotency_key="12345#11"), message_id="m2"),
+    )
+
+    with caplog.at_level(logging.ERROR):
+        assert worker.handler(batch, None) == NO_FAILURES
+
+    assert "spend_ceiling_reached" in caplog.text
+
+
 def test_worker_reports_a_body_that_is_not_json(lambda_env, runtime):
     batch = make_batch(
         make_record(body="{not json", message_id="m1"),

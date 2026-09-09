@@ -56,6 +56,7 @@ class RuntimeSpy:
         self.calls: list[dict[str, Any]] = []
         self.rejecting: set[str] = set()
         self.raising: set[str] = set()
+        self.spent: set[str] = set()
 
     def invoke(self, payload: dict[str, Any]) -> dict[str, Any]:
         self.calls.append(payload)
@@ -63,13 +64,15 @@ class RuntimeSpy:
         kind = payload.get("kind")
         if key in self.raising:
             raise RuntimeError("runtime dispatch exploded")
+        if key in self.spent:
+            return self._refused(kind, "spend_ceiling_reached", "daily allowance exhausted")
         if key in self.rejecting:
-            return {
-                "ok": False,
-                "kind": kind,
-                "error": {"code": "handler_failed", "message": "graph failed"},
-            }
+            return self._refused(kind, "handler_failed", "graph failed")
         return {"ok": True, "kind": kind, "result": {}}
+
+    @staticmethod
+    def _refused(kind: Any, code: str, message: str) -> dict[str, Any]:
+        return {"ok": False, "kind": kind, "error": {"code": code, "message": message}}
 
     @property
     def keys(self) -> list[str]:

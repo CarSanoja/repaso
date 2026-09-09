@@ -1,4 +1,9 @@
 MESSAGES = {
+    "practice_paused_today": (
+        "Por hoy la práctica queda en pausa: se alcanzó el límite diario de uso del "
+        "servicio. No se perdió nada de lo que enviaron y mañana seguimos donde "
+        "quedaron."
+    ),
     "model_waiting": (
         "El servicio de IA está temporalmente sin capacidad. Guardé el trabajo "
         "pendiente; no hace falta repetir tu respuesta. La práctica continuará "

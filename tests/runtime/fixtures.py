@@ -8,6 +8,9 @@ from repaso.schemas.channel import ChannelKind, InboundMedia, InboundMessage
 from repaso.schemas.item import Item, ItemKind, ItemStatus
 from repaso.schemas.provenance import Provenance, Source
 from repaso.schemas.session import Capsule, PracticeSession, SessionStatus
+from repaso.tools.call_quota import build_call_quota
+from repaso.tools.instrumented_model import instrument_models
+from repaso.tools.model_limits import ModelLimits
 from tests.orchestration.fixtures import FRACTIONS, accepted_verdict, make_services, mcq_draft
 
 START = datetime(2026, 9, 1, 19, 0, tzinfo=UTC)
@@ -114,6 +117,30 @@ def channel_request(message: InboundMessage) -> dict:
 
 def pilot(settings):
     return make_services(pilot_settings(settings))
+
+
+def bounded_pilot(settings, **limits):
+    services = make_services(
+        Settings(
+            local_mode=True,
+            local_data_dir=settings.local_data_dir,
+            pilot_invite_codes=INVITE_CODE,
+            **limits,
+        )
+    )
+    inner = dict(services.models)
+    services.models = instrument_models(
+        inner,
+        services.telemetry,
+        ModelLimits(
+            services.settings, services.store, services.clock, build_call_quota(services.settings)
+        ),
+    )
+    return services, inner
+
+
+def model_calls(inner) -> int:
+    return sum(len(model.calls) for model in inner.values())
 
 
 def send(services, message) -> dict:

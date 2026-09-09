@@ -7,6 +7,7 @@ from uuid import uuid4
 
 from repaso.core.orchestration.context import Services
 from repaso.core.telemetry.context import invocation_context
+from repaso.runtime.ceilings import announce, is_spent
 from repaso.runtime.context import runtime_services
 from repaso.runtime.errors import ErrorCode, InvocationError
 from repaso.runtime.handlers import HANDLERS
@@ -103,8 +104,10 @@ async def invoke_async(payload: dict[str, Any], services: Services | None = None
                     )
             try:
                 result = await handler(context, request)
-            except ModelLimitReached:
-                _notify_waiting(context, request, scope)
+            except ModelLimitReached as limit:
+                announce(context, request, scope, limit.reason)
+                if is_spent(limit.reason):
+                    return error_result(ErrorCode.SPEND_CEILING_REACHED, str(limit), kind)
                 raise
             response = ok_result(kind, result)
             forgotten = request.payload.get("callback_data") == "forget:yes"
@@ -134,21 +137,3 @@ def invoke(payload: dict[str, Any], services: Services | None = None) -> dict[st
     except RuntimeError:
         return asyncio.run(invoke_async(payload, services))
     return error_result(ErrorCode.EVENT_LOOP_RUNNING, LOOP_MESSAGE, kind_hint(payload))
-
-
-def _notify_waiting(services, request, scope):
-    from repaso.core.orchestration.outbox import deliver
-    from repaso.i18n import msg
-    from repaso.schemas.channel import ChannelKind, OutboundMessage
-    from repaso.schemas.common import Lang
-
-    family = services.store.get_family(scope)
-    chat = family.chat_ref if family else request.payload.get("chat_ref")
-    if not chat:
-        return
-    message = OutboundMessage(
-        channel=family.channel if family else ChannelKind.TELEGRAM,
-        chat_ref=str(chat),
-        text=msg("model_waiting", family.lang if family else Lang.ES),
-    )
-    deliver(services, [message], f"model-waiting#{services.clock.today()}", scope)

@@ -8,6 +8,7 @@ class ErrorCode(StrEnum):
     NOT_FOUND = "not_found"
     HANDLER_FAILED = "handler_failed"
     EVENT_LOOP_RUNNING = "event_loop_running"
+    SPEND_CEILING_REACHED = "spend_ceiling_reached"
 
 
 class InvocationError(RuntimeError):
