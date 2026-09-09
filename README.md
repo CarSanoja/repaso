@@ -32,7 +32,7 @@ These are executions of the actual orchestration with authored model outputs, lo
 
 The current pilot scope is one child per family, fourth-grade math, a clear printed Spanish PNG/JPEG or an unencrypted one-page PDF, at most 10 MB. Voice notes, Spanish handwriting, other subjects and broader grade coverage are outside this release. The bundled taxonomy contains neighboring grades for development, but enrollment exposes fourth grade.
 
-- Enroll with an invitation, choose an alias, class section, time and timezone. A family alarm is created; pause, resume, schedule changes and deletion update that alarm.
+- Enroll with an invitation, choose an alias, class section and practice time. A family alarm is created at that time, in the pilot's single configured timezone, which enrollment does not ask for and no command changes; pause, resume, schedule changes and deletion update that alarm.
 - Submit material. Legibility and supported-format checks precede OCR; content and generated items are reviewed before activation. Items derived from one family's sheet stay scoped to that family.
 - Receive practice at the agreed time. A session is marked delivered after the transport acknowledges it. Unacknowledged messages remain recoverable.
 - Answer and receive feedback. Rules update mastery and spaced review. Persistent difficulty, fast guessing and adult choices can change difficulty, require an explanation or reduce the next workload for a limited time.
