@@ -1,36 +1,21 @@
-from pathlib import Path
-
 import aws_cdk as cdk
 from aws_cdk import aws_apigatewayv2 as apigwv2
 from aws_cdk import aws_apigatewayv2_integrations as integrations
 from aws_cdk import aws_events as events
 from aws_cdk import aws_events_targets as targets
 from aws_cdk import aws_iam as iam
-from aws_cdk import aws_lambda as lambda_
 from aws_cdk import aws_lambda_event_sources as sources
-from aws_cdk import aws_logs as logs
-from aws_cdk import aws_sqs as sqs
 from config import DeployConfig
 from constructs import Construct
 
+from stacks.api_functions import build_function, environment
 from stacks.foundation_stack import FoundationStack
 from stacks.messaging_stack import MessagingStack
 
-REPO_ROOT = str(Path(__file__).resolve().parents[2])
+METRIC_ACTION = "cloudwatch:PutMetricData"
 BATCH_SIZE = 5
-
-RETENTION = {
-    1: logs.RetentionDays.ONE_DAY,
-    3: logs.RetentionDays.THREE_DAYS,
-    5: logs.RetentionDays.FIVE_DAYS,
-    7: logs.RetentionDays.ONE_WEEK,
-    14: logs.RetentionDays.TWO_WEEKS,
-    30: logs.RetentionDays.ONE_MONTH,
-    60: logs.RetentionDays.TWO_MONTHS,
-    90: logs.RetentionDays.THREE_MONTHS,
-    180: logs.RetentionDays.SIX_MONTHS,
-    365: logs.RetentionDays.ONE_YEAR,
-}
+WEBHOOK_PATH = "/telegram/webhook"
+PUBLIC_PATHS = ("/judge", "/judge/{proxy+}", "/health", "/healthz", "/readyz")
 
 
 class ApiStack(cdk.Stack):
@@ -48,17 +33,20 @@ class ApiStack(cdk.Stack):
         self.foundation = foundation
         self.messaging = messaging
 
-        self.webhook = self._function("webhook", memory=512, timeout=cdk.Duration.seconds(30))
+        variables = environment(config, self.region, foundation, messaging)
+        self.webhook = self._function(
+            "webhook", 512, cdk.Duration.seconds(30), config.webhook_reserved_concurrency, variables
+        )
         self.worker = self._function(
-            "worker",
-            memory=1024,
-            timeout=cdk.Duration.minutes(10),
+            "worker", 1024, cdk.Duration.minutes(10), config.worker_reserved_concurrency, variables
         )
         self.scheduler = self._function(
             "scheduler",
-            memory=512,
-            timeout=cdk.Duration.minutes(1),
-            dead_letter_queue=messaging.scheduler_dlq,
+            512,
+            cdk.Duration.minutes(1),
+            config.scheduler_reserved_concurrency,
+            variables,
+            messaging.scheduler_dlq,
         )
         self.functions = {
             "webhook": self.webhook,
@@ -82,76 +70,27 @@ class ApiStack(cdk.Stack):
         )
         self.http_api = self._http_api()
 
-    def _function(
-        self,
-        name: str,
-        memory: int,
-        timeout: cdk.Duration,
-        dead_letter_queue: sqs.Queue | None = None,
-    ) -> lambda_.Function:
-        resource_name = self.config.resource(name)
-        log_group = logs.LogGroup(
-            self,
-            f"{name.capitalize()}Logs",
-            log_group_name=f"/aws/lambda/{resource_name}",
-            retention=RETENTION.get(self.config.log_retention_days, logs.RetentionDays.ONE_MONTH),
-            removal_policy=cdk.RemovalPolicy.DESTROY,
-        )
-        return lambda_.DockerImageFunction(
-            self,
-            f"{name.capitalize()}Function",
-            function_name=resource_name,
-            architecture=lambda_.Architecture.ARM_64,
-            code=lambda_.DockerImageCode.from_image_asset(
-                REPO_ROOT,
-                file="deploy/lambda/Dockerfile",
-                cmd=[f"repaso.lambdas.{name}.handler"],
-                exclude=[
-                    "*",
-                    "!pyproject.toml",
-                    "!requirements.lock",
-                    "!README.md",
-                    "!LICENSE",
-                    "!src",
-                    "!deploy/lambda/Dockerfile",
-                    "**/__pycache__",
-                    "**/*.pyc",
-                    "**/*.egg-info",
-                ],
-                ignore_mode=cdk.IgnoreMode.DOCKER,
-            ),
-            memory_size=memory,
-            timeout=timeout,
-            environment=self._environment(),
-            log_group=log_group,
-            dead_letter_queue=dead_letter_queue,
-            dead_letter_queue_enabled=dead_letter_queue is not None,
+    def _function(self, name, memory, timeout, reserved, variables, dead_letter_queue=None):
+        return build_function(
+            self, self.config, name, memory, timeout, reserved, variables, dead_letter_queue
         )
 
-    def _environment(self) -> dict[str, str]:
-        config = self.config
-        return {
-            "REPASO_AWS_REGION": self.region,
-            "REPASO_DDB_TABLE": self.foundation.table.table_name,
-            "REPASO_MEDIA_BUCKET": self.foundation.media_bucket.bucket_name,
-            "REPASO_CURRICULUM_BUCKET": self.foundation.curriculum_bucket.bucket_name,
-            "REPASO_EVENT_BUS": self.messaging.bus.event_bus_name,
-            "REPASO_SCHEDULER_GROUP": config.bare(),
-            "REPASO_LOCAL_DATA_DIR": "/tmp/repaso",
-            "REPASO_CURRICULUM_SOURCE": "bundled",
-            "REPASO_AGENTCORE_RUNTIME_ARN_PARAMETER": config.parameter("agentcore", "runtime-arn"),
-            "REPASO_TELEGRAM_SECRET_NAME": config.secret("telegram"),
-            "REPASO_JUDGE_CODE_SECRET_NAME": config.secret("judge"),
-            "REPASO_INVITE_CODES_SECRET_NAME": config.secret("pilot-invite-codes"),
-        }
+    def _metric_statement(self) -> iam.PolicyStatement:
+        return iam.PolicyStatement(
+            actions=[METRIC_ACTION],
+            resources=["*"],
+            conditions={"StringEquals": {"cloudwatch:namespace": self.config.bare()}},
+        )
 
     def _wire_webhook(self) -> None:
+        self.webhook.add_to_role_policy(self._metric_statement())
         self.foundation.table.grant_read_write_data(self.webhook)
         self.foundation.telegram_secret.grant_read(self.webhook)
         self.foundation.judge_secret.grant_read(self.webhook)
         self.messaging.bus.grant_put_events_to(self.webhook)
 
     def _wire_worker(self) -> None:
+        self.worker.add_to_role_policy(self._metric_statement())
         self.worker.add_to_role_policy(
             iam.PolicyStatement(
                 actions=["bedrock-agentcore:InvokeAgentRuntime"],
@@ -179,11 +118,13 @@ class ApiStack(cdk.Stack):
                 sources.SqsEventSource(
                     queue,
                     batch_size=BATCH_SIZE,
+                    max_concurrency=self.config.worker_queue_concurrency,
                     report_batch_item_failures=True,
                 )
             )
 
     def _wire_scheduler(self) -> None:
+        self.scheduler.add_to_role_policy(self._metric_statement())
         self.foundation.table.grant_read_write_data(self.scheduler)
         self.messaging.bus.grant_put_events_to(self.scheduler)
         invoker = iam.Role.from_role_arn(
@@ -198,11 +139,11 @@ class ApiStack(cdk.Stack):
         integration = integrations.HttpLambdaIntegration("WebhookIntegration", self.webhook)
         http_api = apigwv2.HttpApi(self, "HttpApi", api_name=self.config.resource("api"))
         http_api.add_routes(
-            path="/telegram/webhook",
+            path=WEBHOOK_PATH,
             methods=[apigwv2.HttpMethod.POST],
             integration=integration,
         )
-        for path in ("/judge", "/judge/{proxy+}", "/health", "/healthz", "/readyz"):
+        for path in PUBLIC_PATHS:
             http_api.add_routes(
                 path=path,
                 methods=[apigwv2.HttpMethod.ANY],
@@ -215,6 +156,6 @@ class ApiStack(cdk.Stack):
     def _throttle(self, http_api: apigwv2.HttpApi) -> None:
         stage = http_api.default_stage.node.default_child
         stage.default_route_settings = apigwv2.CfnStage.RouteSettingsProperty(
-            throttling_rate_limit=self.config.api_rate_limit_rps,
-            throttling_burst_limit=self.config.api_burst_limit,
+            throttling_rate_limit=self.config.webhook_rate_limit,
+            throttling_burst_limit=self.config.webhook_burst_limit,
         )

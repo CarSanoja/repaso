@@ -8,6 +8,7 @@ import pytest
 
 APP = Path(__file__).resolve().parents[2] / "infra" / "app.py"
 ALERT_EMAIL = "alerts@example.com"
+ADDRESSED = {"alert_email": ALERT_EMAIL}
 STACKS = ("foundation", "messaging", "guardrails", "api", "agentcore", "observability")
 
 
@@ -18,7 +19,7 @@ def synthesize(outdir: Path, context: dict) -> Path:
         env={
             **os.environ,
             "CDK_OUTDIR": str(outdir),
-            "CDK_CONTEXT_JSON": json.dumps({"alert_email": ALERT_EMAIL, **context}),
+            "CDK_CONTEXT_JSON": json.dumps(context),
         },
         capture_output=True,
         text=True,
@@ -36,16 +37,26 @@ def templates(assembly: Path) -> dict[str, dict]:
 
 @pytest.fixture(scope="session")
 def assembly(tmp_path_factory) -> Path:
-    return synthesize(tmp_path_factory.mktemp("cloud-assembly-shared"), {})
+    return synthesize(tmp_path_factory.mktemp("durable"), ADDRESSED)
 
 
 @pytest.fixture(scope="session")
-def durable(tmp_path_factory) -> dict[str, dict]:
-    return templates(synthesize(tmp_path_factory.mktemp("durable"), {}))
-
-
-@pytest.fixture(scope="session")
-def ephemeral(tmp_path_factory) -> dict[str, dict]:
-    return templates(
-        synthesize(tmp_path_factory.mktemp("ephemeral"), {"deployment_mode": "ephemeral"})
+def ephemeral_assembly(tmp_path_factory) -> Path:
+    return synthesize(
+        tmp_path_factory.mktemp("ephemeral"), {**ADDRESSED, "deployment_mode": "ephemeral"}
     )
+
+
+@pytest.fixture(scope="session")
+def unaddressed_assembly(tmp_path_factory) -> Path:
+    return synthesize(tmp_path_factory.mktemp("unaddressed"), {})
+
+
+@pytest.fixture(scope="session")
+def durable(assembly) -> dict[str, dict]:
+    return templates(assembly)
+
+
+@pytest.fixture(scope="session")
+def ephemeral(ephemeral_assembly) -> dict[str, dict]:
+    return templates(ephemeral_assembly)

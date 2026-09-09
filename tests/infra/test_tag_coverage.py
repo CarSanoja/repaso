@@ -1,3 +1,4 @@
+import json
 import sys
 from pathlib import Path
 
@@ -36,6 +37,16 @@ def untagged(templates: dict[str, dict]) -> list[str]:
             if not REQUIRED <= tag_keys(resource):
                 missing.append(f"{stack}.{logical_id} ({resource['Type']})")
     return missing
+
+
+def validation_issues(assembly: Path) -> list:
+    report = json.loads((assembly / "validation-report.json").read_text(encoding="utf-8"))
+    return report["pluginReports"]
+
+
+@pytest.mark.parametrize("mode", ["assembly", "ephemeral_assembly"])
+def test_no_tag_lands_on_a_resource_cloudformation_refuses_to_tag(request, mode):
+    assert validation_issues(request.getfixturevalue(mode)) == []
 
 
 def test_nothing_the_durable_deployment_creates_is_untagged(durable):

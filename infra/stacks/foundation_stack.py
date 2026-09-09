@@ -6,7 +6,7 @@ from aws_cdk import aws_secretsmanager as secretsmanager
 from config import DeployConfig
 from constructs import Construct
 
-from stacks.budget_alerts import add_budget_alerts
+from stacks.budget_alerts import alerts_topic, monthly_budgets
 
 TLS_FLOOR = 1.2
 RETAINED_OUTPUT = "RetainedOnDelete"
@@ -91,5 +91,6 @@ class FoundationStack(cdk.Stack):
             encryption_key=self.key,
         )
 
-        add_budget_alerts(self, config)
+        self.alerts_topic = alerts_topic(self, config)
+        self.budgets = monthly_budgets(self, config, self.alerts_topic)
         cdk.CfnOutput(self, RETAINED_OUTPUT, value=mode.survivors)

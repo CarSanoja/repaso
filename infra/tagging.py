@@ -17,6 +17,7 @@ UNTAGGABLE = frozenset(
         "AWS::Lambda::Permission",
         "AWS::S3::BucketPolicy",
         "AWS::SNS::Subscription",
+        "AWS::SNS::TopicPolicy",
         "AWS::SQS::QueuePolicy",
     }
 )

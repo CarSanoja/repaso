@@ -33,7 +33,12 @@ agentcore = AgentCoreStack(
     **shared,
 )
 observability = ObservabilityStack(
-    app, config.stack("observability"), api=api, messaging=messaging, **shared
+    app,
+    config.stack("observability"),
+    foundation=foundation,
+    api=api,
+    messaging=messaging,
+    **shared,
 )
 
 for stack in (foundation, messaging, guardrails, api, agentcore, observability):

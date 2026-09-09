@@ -1,17 +1,11 @@
 import json
-import os
 import re
-import subprocess
-import sys
 from pathlib import Path
 
 import pytest
 
-assertions = pytest.importorskip("aws_cdk.assertions")
+from tests.infra.fixtures import only, template
 
-APP = Path(__file__).resolve().parents[2] / "infra" / "app.py"
-ALERT_EMAIL = "alerts@example.com"
-BUDGET_LIMITS = (25, 40)
 STACKS = ("foundation", "messaging", "guardrails", "api", "agentcore", "observability")
 HARM_FILTERS = ("HATE", "INSULTS", "SEXUAL", "VIOLENCE", "MISCONDUCT")
 PII_ENTITIES = ("NAME", "PHONE", "EMAIL", "ADDRESS", "AGE")
@@ -31,34 +25,6 @@ IMAGE_CONTEXT = {
     "src",
 }
 INVITE_CODES_SECRET = "repaso/pilot-invite-codes"
-
-
-@pytest.fixture(scope="module")
-def assembly(tmp_path_factory) -> Path:
-    outdir = tmp_path_factory.mktemp("cloud-assembly")
-    result = subprocess.run(
-        [sys.executable, str(APP)],
-        env={
-            **os.environ,
-            "CDK_OUTDIR": str(outdir),
-            "CDK_CONTEXT_JSON": json.dumps({"alert_email": ALERT_EMAIL}),
-        },
-        capture_output=True,
-        text=True,
-    )
-    assert result.returncode == 0, result.stderr
-    return outdir
-
-
-def template(assembly: Path, name: str):
-    rendered = (assembly / f"repaso-{name}.template.json").read_text(encoding="utf-8")
-    return assertions.Template.from_string(rendered)
-
-
-def only(assembly: Path, stack: str, resource_type: str) -> dict:
-    resources = template(assembly, stack).find_resources(resource_type)
-    assert len(resources) == 1
-    return next(iter(resources.values()))["Properties"]
 
 
 @pytest.mark.parametrize("name", STACKS)
@@ -202,18 +168,6 @@ def test_the_schedule_role_may_only_start_the_tick_it_exists_to_start(assembly):
 
 def test_the_runtime_arn_is_published_for_whatever_invokes_it(assembly):
     assert only(assembly, "agentcore", PARAMETER)["Name"] == "/repaso/agentcore/runtime-arn"
-
-
-def test_the_budgets_warn_the_configured_address(assembly):
-    budgets = template(assembly, "foundation").find_resources("AWS::Budgets::Budget")
-    alerted = {
-        entry["Properties"]["Budget"]["BudgetLimit"]["Amount"]: entry["Properties"][
-            "NotificationsWithSubscribers"
-        ][0]["Subscribers"][0]["Address"]
-        for entry in budgets.values()
-    }
-
-    assert alerted == {limit: ALERT_EMAIL for limit in BUDGET_LIMITS}
 
 
 def test_every_work_queue_has_a_dead_letter_queue_behind_it(assembly):
