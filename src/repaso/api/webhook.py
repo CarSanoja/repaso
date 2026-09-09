@@ -12,6 +12,7 @@ from repaso.schemas.events import DomainEvent, EventKind
 from repaso.schemas.operation import OperationRecord
 
 SECRET_HEADER = "X-Telegram-Bot-Api-Secret-Token"
+ADMISSION_OWNER = "telegram-webhook"
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -51,9 +52,13 @@ async def telegram_webhook(request: Request) -> dict[str, Any]:
             return {"ok": True, "ignored": True}
         scope = f"chat:{message.chat_ref}"
         key = f"published#{update_id_of(update) or message.message_ref}"
-        if container.store.get_record(scope, key):
+        if not container.store.claim(f"{scope}#{key}", ADMISSION_OWNER):
             return {"ok": True, "duplicate": True}
-        container.publisher.publish(_channel_event(message))
+        try:
+            container.publisher.publish(_channel_event(message))
+        except Exception:
+            container.store.release_claim(f"{scope}#{key}", ADMISSION_OWNER)
+            raise
         container.store.put_record(OperationRecord(scope=scope, key=key, payload={"ok": True}))
     except Exception:
         logger.exception("telegram webhook processing failed")

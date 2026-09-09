@@ -77,6 +77,34 @@ async def test_duplicate_update_publishes_nothing_new(client, container):
     assert len(container.publisher.published) == 1
 
 
+async def test_admission_does_not_depend_on_the_record_written_after_publishing(client, container):
+    update = make_update(update_id=77)
+    first = await client.post(WEBHOOK, json=update, headers=SECRET_HEADER)
+    container.store.delete_records("chat:12345")
+    second = await client.post(WEBHOOK, json=update, headers=SECRET_HEADER)
+
+    assert first.json() == {"ok": True}
+    assert second.json() == {"ok": True, "duplicate": True}
+    assert len(container.publisher.published) == 1
+
+
+async def test_an_update_whose_publish_failed_may_be_delivered_again(client, container):
+    update = make_update(update_id=88)
+    published = container.publisher.publish
+
+    def refuse(event):
+        raise RuntimeError("bus unavailable")
+
+    container.publisher.publish = refuse
+    failed = await client.post(WEBHOOK, json=update, headers=SECRET_HEADER)
+    container.publisher.publish = published
+    retried = await client.post(WEBHOOK, json=update, headers=SECRET_HEADER)
+
+    assert failed.status_code == 503
+    assert retried.json() == {"ok": True}
+    assert len(container.publisher.published) == 1
+
+
 async def test_malformed_body_is_logged_never_raised(client, container):
     response = await client.post(
         WEBHOOK,
