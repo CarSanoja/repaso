@@ -139,19 +139,22 @@ gates take about ninety seconds together; the clock takes about seven minutes.
 
 | Command | What it printed here **[run]** | Artifact |
 | --- | --- | --- |
-| `REPASO_LOCAL_MODE=true pytest -q` | `1190 passed, 58 skipped in 72.97s` | — |
+| `REPASO_LOCAL_MODE=true pytest -q` | `1287 passed, 83 skipped in 60.14s` | — |
 | `ruff check .` | `All checks passed!` | — |
-| `python scripts/check_repo_hygiene.py` | `repo hygiene: 428 tracked files, no findings` | — |
+| `python scripts/check_repo_hygiene.py` | `repo hygiene: 468 tracked files, 1857 historical blobs on this branch, no findings` | — |
 | `python scripts/run_demo_scenario.py --decision teacher_note` | 24 of 24 beats as expected | [journey](../evidence/journey-teacher-note.json) |
 | `python scripts/run_demo_scenario.py --decision reduce_load` | 23 of 23 beats as expected | [journey](../evidence/journey-reduce-load.json) |
 | `python scripts/run_demo_clock.py --days 14 --seed 20260901` | `420 student-days`, `responses graded: 1037`, nine gates as expected | [clock](../evidence/clock-14-days.json) |
 | `python scripts/run_answer_evaluation.py` | `"cases": 60, "predictions": 0, "quality_claim_allowed": false` | [validation](../evidence/answer-evaluation-validation.json) |
 
-The 58 skips are the live tier (`tests/live`, off unless you hand it AWS
-credentials and a budget) plus two infrastructure tests that need the CDK
-libraries: `pip install -e ".[deploy]"` collects them. The suite figure in
-`docs/evidence/verification-2026-09-06.json` is `1169` because it was recorded
-on September 6 against an earlier tree.
+The 83 skips are the live tier — 56 tests in `tests/live`, off unless you hand
+it AWS credentials and a budget — and 27 infrastructure tests that read
+synthesized CloudFormation and need the CDK libraries. `pip install -c
+requirements.lock -e ".[deploy]"` collects those, and the suite then reads
+`1411 passed, 56 skipped`. The hygiene gate also counts every blob reachable
+from this branch, which is why it reports a second number the September figures
+did not. The suite figure in `docs/evidence/verification-2026-09-06.json` is
+`1169` because it was recorded on September 6 against an earlier tree.
 
 `run_answer_evaluation.py` is the one worth reading the output of. It has a
 60-example answer set and zero independent labels, and it refuses to turn the
