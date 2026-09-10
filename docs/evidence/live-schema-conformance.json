@@ -1,0 +1,322 @@
+{
+  "measured_on": "2026-09-12",
+  "region": "us-east-1",
+  "what_ran": "Every schema in the live registry, filled by two models through the same structured-output path the agents use, with the returned tool input validated against the schema.",
+  "models": [
+    "us.anthropic.claude-sonnet-4-6",
+    "us.amazon.nova-lite-v1:0"
+  ],
+  "schemas": 9,
+  "samples_per_schema_and_model": {
+    "base_schemas": "8 or 9",
+    "revised_schemas": 4
+  },
+  "runs": {
+    "base_schemas": {
+      "calls": 153,
+      "parsed": 142,
+      "input_tokens": 139168,
+      "output_tokens": 24339,
+      "estimated_usd": 0.4948,
+      "by_model_and_schema": [
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "CriticFinding",
+          "calls": 8,
+          "parsed": 8,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "GeneratedBatch",
+          "calls": 8,
+          "parsed": 6,
+          "rejected_fields": {
+            "items.rationale (missing)": 2,
+            "items.stem (missing)": 3
+          }
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "IntakeDecision",
+          "calls": 8,
+          "parsed": 8,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "MappingDecision",
+          "calls": 8,
+          "parsed": 8,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "OpenGrade",
+          "calls": 8,
+          "parsed": 8,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "PolicyDecision",
+          "calls": 8,
+          "parsed": 8,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "ProbeAnswer",
+          "calls": 8,
+          "parsed": 8,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "Snippet",
+          "calls": 8,
+          "parsed": 8,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "TeacherNote",
+          "calls": 8,
+          "parsed": 8,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "CriticFinding",
+          "calls": 9,
+          "parsed": 9,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "GeneratedBatch",
+          "calls": 9,
+          "parsed": 0,
+          "rejected_fields": {
+            "items.options (list_type)": 18
+          }
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "IntakeDecision",
+          "calls": 9,
+          "parsed": 9,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "MappingDecision",
+          "calls": 9,
+          "parsed": 9,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "OpenGrade",
+          "calls": 9,
+          "parsed": 9,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "PolicyDecision",
+          "calls": 9,
+          "parsed": 9,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "ProbeAnswer",
+          "calls": 9,
+          "parsed": 9,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "Snippet",
+          "calls": 9,
+          "parsed": 9,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "TeacherNote",
+          "calls": 9,
+          "parsed": 9,
+          "rejected_fields": {}
+        }
+      ]
+    },
+    "revised_schemas": {
+      "calls": 72,
+      "parsed": 72,
+      "input_tokens": 69584,
+      "output_tokens": 12029,
+      "estimated_usd": 0.2435,
+      "by_model_and_schema": [
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "CriticFinding",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "GeneratedBatch",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "IntakeDecision",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "MappingDecision",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "OpenGrade",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "PolicyDecision",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "ProbeAnswer",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "Snippet",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "schema": "TeacherNote",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "CriticFinding",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "GeneratedBatch",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "IntakeDecision",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "MappingDecision",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "OpenGrade",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "PolicyDecision",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "ProbeAnswer",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "Snippet",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        },
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "TeacherNote",
+          "calls": 4,
+          "parsed": 4,
+          "rejected_fields": {}
+        }
+      ]
+    }
+  },
+  "token_usage_trace": {
+    "model_id": "us.amazon.nova-micro-v1:0",
+    "before": {
+      "call": "structured_output",
+      "usage_available": false
+    },
+    "after": {
+      "call": "structured_output",
+      "usage_available": true,
+      "input_tokens": 517,
+      "output_tokens": 15
+    },
+    "control": {
+      "call": "stream",
+      "usage_available": true,
+      "input_tokens": 78,
+      "output_tokens": 4
+    }
+  },
+  "findings": [
+    "Base schemas: 153 calls, 142 parsed. Every rejection was a GeneratedBatch.",
+    "us.anthropic.claude-sonnet-4-6 sent options: null on an open item in 9 of 9 sampled batches, 18 rejected fields, losing every batch.",
+    "us.amazon.nova-lite-v1:0 omitted a required stem or rationale in 2 of 8 sampled batches, 5 rejected fields; the schema is right to reject those and does.",
+    "Revised schemas: 72 calls, 72 parsed, no rejected field on either model."
+  ],
+  "not_established": [
+    "Nothing here measures whether an item is good, only whether the payload fits.",
+    "Four samples per schema and model is not a rate; the revised run did not re-observe the nova-lite omissions, which does not mean they stopped.",
+    "Two of the five model ids the fleet is configured to use were exercised.",
+    "Dollars are estimates from the dated table in config/pricing.py against provider-reported token counts, not a bill."
+  ]
+}
