@@ -40,7 +40,7 @@ class MetadataModel(Model):
 
     async def structured_output(self, output_model, prompt, system_prompt=None, **kwargs: Any):
         if self.usage is not None:
-            yield {"chunk": {"metadata": {"usage": self.usage}}}
+            yield {"event": {"metadata": {"usage": self.usage}}}
         yield {"output": output_model(text=self.text)}
 
 

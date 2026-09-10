@@ -81,7 +81,7 @@ class TokenModel(LocalPlaybackModel):
     evidence_origin = "live"
 
     async def structured_output(self, *args, **kwargs):
-        yield {"metadata": {"usage": {"inputTokens": 100, "outputTokens": 20}}}
+        yield {"event": {"metadata": {"usage": {"inputTokens": 100, "outputTokens": 20}}}}
         yield {"output": Verdict(ok=True)}
 
 

@@ -19,8 +19,12 @@ def user_message(text: str) -> dict:
     return {"role": "user", "content": [{"text": text}]}
 
 
-def structured(role: str, name: str, payload: dict) -> CassetteEntry:
-    return CassetteEntry(role=role, kind="structured_output", output_model=name, payload=payload)
+def structured(
+    role: str, name: str, payload: dict, usage: CallUsage | None = None
+) -> CassetteEntry:
+    return CassetteEntry(
+        role=role, kind="structured_output", output_model=name, payload=payload, usage=usage
+    )
 
 
 def streamed(role: str, text: str, usage: CallUsage | None = None) -> CassetteEntry:
@@ -125,6 +129,21 @@ async def test_recorded_usage_is_replayed_as_a_metadata_event():
     assert events[-1] == {
         "metadata": {"usage": {"inputTokens": 311, "outputTokens": 27, "totalTokens": 338}}
     }
+
+
+async def test_recorded_usage_is_replayed_for_a_structured_call_too():
+    usage = CallUsage(input_tokens=311, output_tokens=27)
+    entry = structured("judge", "Snippet", {"text": "uno"}, usage)
+    model = CassetteModel([entry], "judge")
+
+    events = await collect(model.structured_output(Snippet, [user_message("hola")]))
+
+    assert events[0] == {
+        "event": {
+            "metadata": {"usage": {"inputTokens": 311, "outputTokens": 27, "totalTokens": 338}}
+        }
+    }
+    assert events[-1]["output"].text == "uno"
 
 
 async def test_streams_and_structured_outputs_draw_from_separate_queues():
