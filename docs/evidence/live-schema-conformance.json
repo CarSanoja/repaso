@@ -1,16 +1,16 @@
 {
   "measured_on": "2026-09-12",
   "region": "us-east-1",
-  "what_ran": "Every schema in the live registry, filled by two models through the same structured-output path the agents use, with the returned tool input validated against the schema.",
-  "models": [
-    "us.anthropic.claude-sonnet-4-6",
-    "us.amazon.nova-lite-v1:0"
-  ],
+  "what_ran": "Every schema in the live registry, filled by a model through the same structured-output path the agents use, with the returned tool input validated against the schema. Two runs sweep both models over all nine schemas; the third is the repository's own live tier, which routes each schema to the model its role is bound to.",
   "schemas": 9,
-  "samples_per_schema_and_model": {
-    "base_schemas": "8 or 9",
-    "revised_schemas": 4
-  },
+  "model_ids_exercised": [
+    "us.anthropic.claude-sonnet-4-6",
+    "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "us.amazon.nova-lite-v1:0",
+    "us.amazon.nova-micro-v1:0"
+  ],
+  "calls": 271,
+  "estimated_usd": 1.1203,
   "runs": {
     "base_schemas": {
       "calls": 153,
@@ -153,11 +153,11 @@
       ]
     },
     "revised_schemas": {
-      "calls": 72,
-      "parsed": 72,
-      "input_tokens": 69584,
-      "output_tokens": 12029,
-      "estimated_usd": 0.2435,
+      "calls": 82,
+      "parsed": 82,
+      "input_tokens": 84854,
+      "output_tokens": 23369,
+      "estimated_usd": 0.4594,
       "by_model_and_schema": [
         {
           "model_id": "us.amazon.nova-lite-v1:0",
@@ -232,8 +232,8 @@
         {
           "model_id": "us.anthropic.claude-sonnet-4-6",
           "schema": "GeneratedBatch",
-          "calls": 4,
-          "parsed": 4,
+          "calls": 14,
+          "parsed": 14,
           "rejected_fields": {}
         },
         {
@@ -286,6 +286,61 @@
           "rejected_fields": {}
         }
       ]
+    },
+    "revised_schemas_through_the_repository_tier": {
+      "calls": 36,
+      "parsed": 35,
+      "input_tokens": 36469,
+      "output_tokens": 6591,
+      "estimated_usd": 0.1661,
+      "model_ids_by_role": {
+        "classify": "us.amazon.nova-lite-v1:0",
+        "generate": "us.anthropic.claude-sonnet-4-6",
+        "judge": "us.anthropic.claude-sonnet-4-6",
+        "probe": "us.amazon.nova-micro-v1:0",
+        "structured": "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+      },
+      "latency_ms_by_role": [
+        {
+          "role": "classify",
+          "calls": 4,
+          "p50_ms": 562.779,
+          "p95_ms": 864.73
+        },
+        {
+          "role": "generate",
+          "calls": 12,
+          "p50_ms": 3130.846,
+          "p95_ms": 13799.845
+        },
+        {
+          "role": "judge",
+          "calls": 8,
+          "p50_ms": 3206.3830000000003,
+          "p95_ms": 5040.728999999999
+        },
+        {
+          "role": "probe",
+          "calls": 4,
+          "p50_ms": 509.45799999999997,
+          "p95_ms": 815.509
+        },
+        {
+          "role": "structured",
+          "calls": 8,
+          "p50_ms": 1048.2549999999999,
+          "p95_ms": 1377.405
+        }
+      ],
+      "not_parsed": [
+        {
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "schema": "GeneratedBatch",
+          "sample": 2,
+          "outcome": "malformed",
+          "error": "ValidationError: 1 field(s) rejected"
+        }
+      ]
     }
   },
   "token_usage_trace": {
@@ -309,14 +364,16 @@
   },
   "findings": [
     "Base schemas: 153 calls, 142 parsed. Every rejection was a GeneratedBatch.",
-    "us.anthropic.claude-sonnet-4-6 sent options: null on an open item in 9 of 9 sampled batches, 18 rejected fields, losing every batch.",
+    "us.anthropic.claude-sonnet-4-6 sent options: null for an open item in 9 of 9 sampled batches, 18 rejected fields, losing every batch. The 36 drafts inside those lost batches all pass the generator's own validity rules.",
     "us.amazon.nova-lite-v1:0 omitted a required stem or rationale in 2 of 8 sampled batches, 5 rejected fields; the schema is right to reject those and does.",
-    "Revised schemas: 72 calls, 72 parsed, no rejected field on either model."
+    "Revised schemas, both models over every schema: 82 calls, 82 parsed.",
+    "Revised schemas through the repository tier: 36 calls, 35 parsed. The one rejection was a GeneratedBatch on us.anthropic.claude-sonnet-4-6 whose field the report did not name; ten further samples of that schema did not reproduce it.",
+    "One nova-lite batch repeated a stem within the batch and one carried an answer key absent from its own options; the validity rules drop the second and not the first."
   ],
   "not_established": [
     "Nothing here measures whether an item is good, only whether the payload fits.",
-    "Four samples per schema and model is not a rate; the revised run did not re-observe the nova-lite omissions, which does not mean they stopped.",
-    "Two of the five model ids the fleet is configured to use were exercised.",
+    "Four to ten samples a cell is not a rate; a shape that did not reappear has not been shown to be gone.",
+    "Four of the five configured model ids answered; every id in the default and fallback chains answered a short routing call in the same session.",
     "Dollars are estimates from the dated table in config/pricing.py against provider-reported token counts, not a bill."
   ]
 }
