@@ -1,14 +1,13 @@
-import math
 from collections.abc import Sequence
 from datetime import datetime
 
 from pydantic import Field
 
 from repaso.schemas.common import FrozenStrictModel
+from repaso.tools.cost_report import P50, P95, percentile
 from tests.live.calls import CallOutcome, ProbeCall
 
-P50 = 0.50
-P95 = 0.95
+__all__ = ["percentile"]
 
 
 class SampleRow(FrozenStrictModel):
@@ -56,12 +55,6 @@ class ConformanceReport(FrozenStrictModel):
 
 def row_for(call: ProbeCall, sample: int) -> SampleRow:
     return SampleRow(sample=sample, **call.model_dump())
-
-
-def percentile(values: Sequence[float], fraction: float) -> float:
-    ordered = sorted(values)
-    rank = max(1, math.ceil(fraction * len(ordered)))
-    return ordered[rank - 1]
 
 
 def _latency(rows: Sequence[SampleRow]) -> list[RoleLatency]:
