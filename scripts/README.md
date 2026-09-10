@@ -6,7 +6,8 @@
 | `run_demo_scenario.py` | Run either teacher-note or reduced-load choice across four labeled dates; `--report` exports seven checkpoints | 24 or 23 assertions; no live AI or Telegram |
 | `run_demo_clock.py` | `--days 14 --seed 20260901 --data-dir EMPTY_DIR` | September 6 run: 30 students, 420 sessions, 1,037 responses, all nine gates passed; local journaling took 281.4 seconds |
 | `check_installed_package.py` | Run from outside the checkout after installing the wheel | Imports, assets, HTTP routes, both complete scenarios |
-| `run_answer_evaluation.py` | Validate 60 synthetic cases; explicit `--live` collects bounded predictions; `--predictions` scores independent labels | No model quality score from authored labels; see evaluation/README.md |
+| `run_answer_evaluation.py` | Validate 60 synthetic cases; explicit `--live` collects a bounded slice from `--start`; `--predictions` scores a saved batch at `--threshold`, against teacher or `--label-source author-proposed` labels | No model quality score from authored labels; see evaluation/README.md |
+| `report_answer_evaluation.py` | Build the publication-safe artifact for a collected batch: denominators, agreement, threshold sweep, measured spend from the batch ledger and every disagreement verbatim | Agreement with whichever labels it was given; raw batches stay under `private/` |
 | `analyze_pilot.py` | Aggregate an observed CSV; missing values stay missing | No participants currently; see docs/pilot/README.md |
 | `run_cost_report.py` | Read a model call ledger and print spend per role, model and call kind, cache savings, latency percentiles and call counts | Reports only what the provider reported; a ledger without usage prints "not reported", and a replayed run is labelled as one |
 | `check_repo_hygiene.py` | Scan tracked files and selected patterns | Run additionally against the release archive; not a general secrets certification |
