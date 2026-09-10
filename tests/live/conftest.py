@@ -8,22 +8,28 @@ from repaso.config.models import ModelRole
 from repaso.config.settings import Settings
 from repaso.core.harness.clock import SystemClock
 from repaso.core.telemetry.sink import LocalTelemetrySink
+from repaso.tools.call_ledger import LocalCallLedger
+from repaso.tools.cost_report import build_cost_report
+from repaso.tools.cost_table import render_cost_report
 from repaso.tools.instrumented_model import instrument_models
 from repaso.tools.llm import build_model
 from tests.live.budget import BudgetEstimate, enforce_budget, estimate_budget
 from tests.live.environment import LiveEnvironment, read_environment, skip_reason
 from tests.live.registry import SchemaProbe, build_registry
-from tests.live.reporter import ConformanceReporter
+from tests.live.reporter import TIMESTAMP_FORMAT, ConformanceReporter
 from tests.live.routing import routing_model_ids
 
 LIVE_DIR = Path(__file__).parent
 REPORT_SUBDIR = "live"
 TELEMETRY_FILE = "telemetry.jsonl"
+LEDGER_PREFIX = "model-calls-"
+LEDGER_SUFFIX = ".jsonl"
 
 ENVIRONMENT: LiveEnvironment = read_environment(os.environ)
 SKIP_REASON = skip_reason(ENVIRONMENT)
 
 REPORTER_KEY = pytest.StashKey[ConformanceReporter]()
+LEDGER_KEY = pytest.StashKey[LocalCallLedger]()
 
 
 def live_settings_for(environment: LiveEnvironment) -> Settings:
@@ -35,9 +41,14 @@ def report_directory(settings: Settings) -> Path:
 
 
 def pytest_configure(config: pytest.Config) -> None:
+    clock = SystemClock()
     directory = report_directory(live_settings_for(ENVIRONMENT))
-    config.stash[REPORTER_KEY] = ConformanceReporter(
-        SystemClock(), ENVIRONMENT.samples, directory
+    config.stash[REPORTER_KEY] = ConformanceReporter(clock, ENVIRONMENT.samples, directory)
+    if SKIP_REASON is not None:
+        return
+    stamp = clock.now().strftime(TIMESTAMP_FORMAT)
+    config.stash[LEDGER_KEY] = LocalCallLedger(
+        directory / f"{LEDGER_PREFIX}{stamp}{LEDGER_SUFFIX}"
     )
 
 
@@ -60,6 +71,14 @@ def pytest_terminal_summary(terminalreporter: Any, config: pytest.Config) -> Non
     for line in reporter.table().splitlines():
         terminalreporter.write_line(line)
     terminalreporter.write_line(f"written to {path}")
+    ledger = config.stash.get(LEDGER_KEY, None)
+    records = ledger.records() if ledger is not None else []
+    if not records:
+        return
+    terminalreporter.write_line("")
+    for line in render_cost_report(build_cost_report(records)).splitlines():
+        terminalreporter.write_line(line)
+    terminalreporter.write_line(f"ledger at {ledger.path}")
 
 
 @pytest.fixture(scope="session")
@@ -97,11 +116,22 @@ def live_telemetry(live_settings: Settings) -> LocalTelemetrySink:
 
 
 @pytest.fixture(scope="session")
+def live_ledger(pytestconfig: pytest.Config) -> LocalCallLedger:
+    return pytestconfig.stash[LEDGER_KEY]
+
+
+@pytest.fixture(scope="session")
 def live_models(
-    live_settings: Settings, live_telemetry: LocalTelemetrySink
+    live_settings: Settings,
+    live_telemetry: LocalTelemetrySink,
+    live_ledger: LocalCallLedger,
 ) -> dict[ModelRole, Any]:
     return instrument_models(
-        {role: build_model(role, live_settings) for role in ModelRole}, live_telemetry
+        {role: build_model(role, live_settings) for role in ModelRole},
+        live_telemetry,
+        None,
+        live_ledger,
+        SystemClock(),
     )
 
 

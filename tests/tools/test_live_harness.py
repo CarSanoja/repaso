@@ -127,6 +127,17 @@ async def test_a_payload_the_schema_rejects_is_recorded_as_malformed():
     call = await run_probe(model, probe, model_for(probe.role), RampClock())
     assert call.outcome is CallOutcome.MALFORMED
     assert "field(s) rejected" in call.error
+    assert "rubric_points" in call.error and "feedback" in call.error
+
+
+async def test_a_rejected_payload_still_reports_the_tokens_it_burned():
+    probe = next(p for p in build_registry() if p.name == "OpenGrade")
+    model = NestedMetadataModel([{"correct": True, "rubric_points": 9.0}], 3100, 240)
+    call = await run_probe(model, probe, model_for(probe.role), RampClock())
+
+    assert call.outcome is CallOutcome.MALFORMED
+    assert (call.input_tokens, call.output_tokens) == (3100, 240)
+    assert call.estimated_usd > 0.0
 
 
 async def test_reporter_writes_a_timestamped_json_with_rows_and_percentiles(tmp_path):

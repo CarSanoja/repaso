@@ -5,9 +5,9 @@ from pydantic import Field, ValidationError
 from strands.models.model import Model
 
 from repaso.agents.base import user_message
-from repaso.config.pricing import estimate_cost_usd
 from repaso.core.harness.clock import Clock
 from repaso.schemas.common import FrozenStrictModel
+from repaso.tools.call_cost import cost_or_none
 from repaso.tools.model_usage import CallUsage, usage_from_event
 from tests.live.registry import SchemaProbe
 
@@ -38,19 +38,32 @@ class ProbeCall(FrozenStrictModel):
         return self.outcome is CallOutcome.PARSED
 
 
-async def _drain(model: Model, probe: SchemaProbe) -> CallUsage:
-    usage = CallUsage()
+class Spend:
+    def __init__(self) -> None:
+        self.usage = CallUsage()
+
+
+async def _drain(model: Model, probe: SchemaProbe, spend: Spend) -> None:
     output = None
     events = model.structured_output(
         probe.output_schema, [user_message(probe.prompt)], system_prompt=probe.system
     )
     async for event in events:
-        usage = usage_from_event(event) or usage
+        spend.usage = usage_from_event(event) or spend.usage
         if isinstance(event, dict) and "output" in event:
             output = event["output"]
     if not isinstance(output, probe.output_schema):
         raise ValueError(NO_OUTPUT)
-    return usage
+
+
+def _rejected(failure: ValidationError) -> str:
+    named = ", ".join(".".join(str(part) for part in error["loc"]) for error in failure.errors())
+    return f"{failure.error_count()} field(s) rejected: {named}"
+
+
+def _priced(model_id: str, usage: CallUsage) -> float:
+    cost = cost_or_none(model_id, usage)
+    return 0.0 if cost is None else cost.total_usd
 
 
 async def run_probe(
@@ -62,17 +75,17 @@ async def run_probe(
 ) -> ProbeCall:
     started = clock.now()
     outcome = CallOutcome.PARSED
-    usage = CallUsage()
+    spend = Spend()
     error = ""
     try:
         async with asyncio.timeout(timeout_seconds):
-            usage = await _drain(model, probe)
+            await _drain(model, probe, spend)
     except TimeoutError:
         outcome = CallOutcome.TIMED_OUT
         error = f"no structured output within {timeout_seconds:.0f}s"
     except ValidationError as failure:
         outcome = CallOutcome.MALFORMED
-        error = f"{type(failure).__name__}: {failure.error_count()} field(s) rejected"
+        error = f"{type(failure).__name__}: {_rejected(failure)}"
     except Exception as failure:
         outcome = CallOutcome.CALL_FAILED
         error = f"{type(failure).__name__}: {failure}"
@@ -83,8 +96,8 @@ async def run_probe(
         model_id=model_id,
         outcome=outcome,
         latency_ms=max(elapsed_ms, 0.0),
-        input_tokens=usage.input_tokens,
-        output_tokens=usage.output_tokens,
-        estimated_usd=estimate_cost_usd(model_id, usage.input_tokens, usage.output_tokens),
+        input_tokens=spend.usage.input_tokens,
+        output_tokens=spend.usage.output_tokens,
+        estimated_usd=_priced(model_id, spend.usage),
         error=error,
     )

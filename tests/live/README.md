@@ -102,7 +102,20 @@ The JSON holds one row per call — role, schema, model id, outcome, latency in
 milliseconds, input and output tokens, and estimated dollars — plus p50 and p95
 latency per role, per-schema totals, and the totals for the whole run. Rows are
 the raw material; everything else in the file is derived from them, so a later
-question the table does not answer can be answered from the rows.
+question the table does not answer can be answered from the rows. A call the
+schema rejected still reports the tokens it burned: the model was paid for the
+answer whether or not the answer parsed, and a conformance table that zeroes a
+failed call under-reports the run.
+
+Beside it the run writes `.local_data/live/model-calls-<UTC timestamp>.jsonl`,
+the same ledger the deployed fleet writes, one line per model call. The
+conformance report answers whether each schema was filled; the ledger answers
+what the run cost, with the usage split by direction and cache class, the stop
+reason, the model id and whether the call was live or replayed. After the table
+the run prints the cost report over that ledger — spend per role, per model and
+per call kind, cache savings, the reasoning share, latency percentiles and the
+outcome counts — and `scripts/run_cost_report.py --ledger <path>` prints the
+same report for any ledger later.
 
 ## Reading the table
 

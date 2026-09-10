@@ -1,0 +1,75 @@
+{
+  "measured_at": "2026-09-12T05:34:27Z",
+  "region": "us-east-1",
+  "what_this_is": "One live run of the schema conformance tier against Amazon Bedrock on-demand inference, five samples per schema, plus the model call ledger the same run wrote. Every number below is read from the provider's own usage metadata and priced from the dated table in src/repaso/config/pricing.py. No number here is an estimate.",
+  "what_this_is_not": "Not a measurement of tutoring quality, family outcome or deployed behaviour. Forty-five calls is not a rate. The conformance figure is a count of calls whose payload the schema accepted, on one run, on one day.",
+  "defect_before_and_after": {
+    "what_was_wrong": "Usage was read only from the flat metadata event that stream() emits. structured_output() emits the same metadata one level deeper, wrapped in an event key, so every structured call recorded zero tokens and zero dollars.",
+    "method": "One live Claude Haiku 4.5 structured_output call; the same 147 events fed to the two readers that existed before and to the single reader that replaces them.",
+    "before_live_harness_reader": {"input_tokens": 0, "output_tokens": 0, "estimated_usd": 0.0},
+    "before_recorder_reader": {"input_tokens": 0, "output_tokens": 0, "estimated_usd": 0.0},
+    "after_one_reader": {"input_tokens": 792, "output_tokens": 221, "estimated_usd": 0.001897}
+  },
+  "conformance": {
+    "samples_per_schema": 5,
+    "calls": 45,
+    "parsed": 40,
+    "failed": 5,
+    "failing_schema": "GeneratedBatch",
+    "failure": "Claude Sonnet 4.6 returned options: null for the non-multiple-choice items in the batch; the schema requires a list. Five samples of five rejected, at loc items.N.options. This is a schema robustness finding, not a harness finding: the harness measured and priced the five failed calls."
+  },
+  "ledger": {
+    "calls": 45,
+    "usage_reported": 45,
+    "priced": 45,
+    "origins": {"live": 45},
+    "outcomes": {"ok": 40, "failed": 5},
+    "input_tokens": 47495,
+    "output_tokens": 10077,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "reasoning_tokens": 0,
+    "input_usd": 0.099611775,
+    "output_usd": 0.141334500,
+    "total_usd": 0.240946275,
+    "cache_saving_usd": 0.0,
+    "reasoning_share": "not reported"
+  },
+  "by_role_usd": {
+    "classify": 0.0003003,
+    "generate": 0.157575,
+    "judge": 0.06852,
+    "probe": 0.000100975,
+    "structured": 0.01445
+  },
+  "by_model_usd": {
+    "us.amazon.nova-lite-v1:0": 0.0003003,
+    "us.amazon.nova-micro-v1:0": 0.000100975,
+    "us.anthropic.claude-haiku-4-5-20251001-v1:0": 0.01445,
+    "us.anthropic.claude-sonnet-4-6": 0.226095
+  },
+  "latency_ms": {
+    "classify": {"calls": 5, "p50": 565.7, "p95": 852.6},
+    "generate": {"calls": 15, "p50": 3685.6, "p95": 15664.9},
+    "judge": {"calls": 10, "p50": 3248.4, "p95": 4767.0},
+    "probe": {"calls": 5, "p50": 524.6, "p95": 816.0},
+    "structured": {"calls": 10, "p50": 1141.0, "p95": 1326.8}
+  },
+  "conformance_report_totals": {
+    "input_tokens": 39860,
+    "output_tokens": 4280,
+    "total_usd": 0.131086275,
+    "note": "Lower than the ledger because this run's conformance report predates the fix that keeps the tokens a rejected call already spent. The five failed GeneratedBatch calls consumed 7,635 input and 5,797 output tokens and were charged for; the ledger counted them and the conformance report of this run did not."
+  },
+  "prompt_cache": {
+    "method": "Two Claude Sonnet 4.6 Converse calls over the same 3,723-token cached system prefix, five minutes apart in the same session.",
+    "cold": {"inputTokens": 15, "outputTokens": 4, "cacheWriteInputTokens": 3723, "cacheReadInputTokens": 0, "totalTokens": 3742, "ttl": "5m"},
+    "warm": {"inputTokens": 15, "outputTokens": 4, "cacheWriteInputTokens": 0, "cacheReadInputTokens": 3723, "totalTokens": 3742},
+    "conclusion": "Input, output and the cache classes are billed apart from one another and sum to the reported total. The fleet itself uses no cache checkpoints, which is why the run above reads zero on both cache columns."
+  },
+  "extended_thinking": {
+    "streaming": "A Claude Sonnet 4.6 stream() call with thinking enabled returned reasoning as contentBlockDelta events carrying reasoningContent, and reported 52 input and 64 output tokens with no reasoning token count of any kind.",
+    "structured_output": "The same model, with thinking configured and a schema requested, returned the schema and no reasoning content. Strands 1.52.0 removes the thinking field whenever tool choice forces a tool, which structured_output always does.",
+    "consequence": "No agent in this repository can think today, and no reasoning token count is available from Amazon Bedrock to price. The cost report prints the reasoning share as not reported rather than as zero."
+  }
+}
