@@ -15,7 +15,7 @@ def _normalize(text: str) -> str:
     return text.strip().casefold()
 
 
-def _resolve(item: Item, value: str) -> str:
+def resolve_choice(item: Item, value: str) -> str:
     cleaned = value.strip().strip(NUMBER_NOISE)
     if cleaned.isdigit():
         number = int(cleaned)
@@ -42,7 +42,7 @@ async def probe_blind(item: Item, model) -> bool | None:
         return None
     if not reply.answer.strip():
         return False
-    return _resolve(item, reply.answer) == _resolve(item, item.answer_key)
+    return resolve_choice(item, reply.answer) == resolve_choice(item, item.answer_key)
 
 
 def combine(verdict: ItemVerdict, answered_blind: bool | None) -> ItemVerdict:
