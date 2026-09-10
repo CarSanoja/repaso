@@ -1,5 +1,6 @@
 from scripts.analyze_pilot import COUNTS, TIMES, analyze
-from scripts.run_answer_evaluation import read_cases, score
+from scripts.answer_evaluation_scoring import score
+from scripts.run_answer_evaluation import read_cases
 
 
 def test_proposed_or_incomplete_labels_cannot_be_reported_as_independent_quality():
