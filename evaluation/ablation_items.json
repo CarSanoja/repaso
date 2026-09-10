@@ -1,0 +1,757 @@
+{
+  "frozen_on": "2026-09-12",
+  "model_id": "us.anthropic.claude-sonnet-4-6",
+  "prompt_version": "v1",
+  "source_page": "demo/cuaderno-fracciones.png",
+  "label_source": "construction",
+  "items": [
+    {
+      "item_id": "045455e0ea6ae9a95f899da5e097eb75",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 2,
+      "stem": "El cuaderno dice que 6/8 y 9/12 son equivalentes a 3/4, pero una de estas tres opciones NO es equivalente a 3/4. ¿Cuál es?",
+      "options": [
+        "6/8",
+        "9/12",
+        "3/8"
+      ],
+      "answer_key": "6/8",
+      "rationale": "3/4 multiplicada por 2 arriba y abajo da 6/8 ✓. Multiplicada por 3 da 9/12 ✓. Pero 3/8 tiene el mismo numerador que 3/4 y el doble de denominador sin multiplicar arriba también, así que NO es equivalente a 3/4.",
+      "defect": "wrong_key",
+      "construction_valid": false,
+      "construction_option_clue": false,
+      "generated_options": [
+        "6/8",
+        "9/12",
+        "3/8"
+      ],
+      "generated_answer_key": "3/8"
+    },
+    {
+      "item_id": "04ae437d166540574062a665a1883aea",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 2,
+      "stem": "¿Es 3/9 equivalente a 1/3? Elige la respuesta que explica correctamente cómo saberlo usando la regla del cuaderno.",
+      "options": [
+        "Sí, porque 1×3=3 arriba y 3×3=9 abajo.",
+        "un elefante",
+        "el color azul",
+        "el día martes"
+      ],
+      "answer_key": "Sí, porque 1×3=3 arriba y 3×3=9 abajo.",
+      "rationale": "La regla dice multiplicar arriba y abajo por el mismo número. Si tomo 1/3 y multiplico ambos por 3, obtengo 3/9. Por eso sí son equivalentes. Las demás opciones usan sumas o comparan solo los numeradores, lo que no corresponde a la regla.",
+      "defect": "implausible_distractors",
+      "construction_valid": false,
+      "construction_option_clue": true,
+      "generated_options": [
+        "Sí, porque 1×3=3 arriba y 3×3=9 abajo.",
+        "No, porque 3 y 9 son números distintos.",
+        "Sí, porque 3+6=9 abajo y 1+2=3 arriba.",
+        "No, porque el numerador de 3/9 es mayor que el de 1/3."
+      ],
+      "generated_answer_key": "Sí, porque 1×3=3 arriba y 3×3=9 abajo."
+    },
+    {
+      "item_id": "104d8fabd8f455246d370c87561f62e6",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 2,
+      "stem": "Sofía comió 3/8 de una pizza y Pedro comió 1/2 de otra pizza igual. ¿Quién comió más? Convierte 1/2 a octavos para decidir.",
+      "options": [
+        "Sofía, porque 3 > 1",
+        "Pedro, porque 1/2 = 4/8 y 4/8 > 3/8",
+        "Comieron lo mismo, porque las dos fracciones tienen números distintos",
+        "Sofía, porque 8 > 2"
+      ],
+      "answer_key": "Pedro, porque 1/2 = 4/8 y 4/8 > 3/8",
+      "rationale": "Multiplicamos 1/2 arriba y abajo por 4: 1×4=4 y 2×4=8, entonces 1/2 = 4/8. Ahora comparamos 3/8 y 4/8: 4 > 3, entonces Pedro comió más.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "Sofía, porque 3 > 1",
+        "Pedro, porque 1/2 = 4/8 y 4/8 > 3/8",
+        "Comieron lo mismo, porque las dos fracciones tienen números distintos",
+        "Sofía, porque 8 > 2"
+      ],
+      "generated_answer_key": "Pedro, porque 1/2 = 4/8 y 4/8 > 3/8"
+    },
+    {
+      "item_id": "12085b8e6f3d8d5e905980ede9154f2c",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 1,
+      "stem": "Usa la regla del cuaderno. ¿Qué número va en el espacio? 2/5 = ?/10",
+      "options": [
+        "2",
+        "4",
+        "5",
+        "6"
+      ],
+      "answer_key": "4",
+      "rationale": "Multiplico 2 × 2 = 4 arriba, y 5 × 2 = 10 abajo. Por eso 2/5 = 4/10.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "2",
+        "4",
+        "5",
+        "6"
+      ],
+      "generated_answer_key": "4"
+    },
+    {
+      "item_id": "1d8ea2795ba2e811825a9aae2c7a7cf7",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 1,
+      "stem": "La regla del cuaderno dice: si multiplico arriba y abajo por el mismo número, la fracción sigue valiendo igual. ¿Cuál de estas opciones muestra esa regla aplicada a 1/2?",
+      "options": [
+        "1/2 = 2/4, porque multipliqué arriba y abajo por 2.",
+        "1/2 = 2/3, porque sumé 1 arriba y 1 abajo.",
+        "1/2 = 3/4, porque sumé 2 arriba y 2 abajo.",
+        "1/2 = 1/4, porque dividí abajo entre 2."
+      ],
+      "answer_key": "1/2 = 2/4, porque multipliqué arriba y abajo por 2.",
+      "rationale": "La regla dice multiplicar arriba Y abajo por el mismo número. 1×2=2 arriba y 2×2=4 abajo da 2/4, que vale igual que 1/2. Las otras opciones suman o dividen solo una parte, lo cual cambia el valor.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "1/2 = 2/4, porque multipliqué arriba y abajo por 2.",
+        "1/2 = 2/3, porque sumé 1 arriba y 1 abajo.",
+        "1/2 = 3/4, porque sumé 2 arriba y 2 abajo.",
+        "1/2 = 1/4, porque dividí abajo entre 2."
+      ],
+      "generated_answer_key": "1/2 = 2/4, porque multipliqué arriba y abajo por 2."
+    },
+    {
+      "item_id": "35f7b8c9be73c883b9a90db7f161a55c",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 2,
+      "stem": "¿Es 3/9 equivalente a 1/3?",
+      "options": [
+        "Sí, porque 1 × 3 = 3 y 3 × 3 = 9 — la fracción equivalente que se obtiene al multiplicar el numerador y el denominador por el mismo número, como muestra la regla del cuaderno",
+        "No, porque los números son distintos",
+        "Sí, porque sumo 2 arriba y 6 abajo",
+        "No, porque 3 es mayor que 1"
+      ],
+      "answer_key": "Sí, porque 1 × 3 = 3 y 3 × 3 = 9 — la fracción equivalente que se obtiene al multiplicar el numerador y el denominador por el mismo número, como muestra la regla del cuaderno",
+      "rationale": "Multiplico arriba y abajo por el mismo número, que es 3: 1 × 3 = 3 y 3 × 3 = 9. La regla dice que la fracción sigue valiendo igual, así que 1/3 = 3/9.",
+      "defect": "option_cue",
+      "construction_valid": false,
+      "construction_option_clue": true,
+      "generated_options": [
+        "Sí, porque 1 × 3 = 3 y 3 × 3 = 9",
+        "No, porque los números son distintos",
+        "Sí, porque sumo 2 arriba y 6 abajo",
+        "No, porque 3 es mayor que 1"
+      ],
+      "generated_answer_key": "Sí, porque 1 × 3 = 3 y 3 × 3 = 9"
+    },
+    {
+      "item_id": "3a2a4640b9716bdca3622de3aef77580",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 3,
+      "stem": "El cuaderno dice que 6/8, 9/12 y 3/8 son candidatas a ser equivalentes a 3/4. ¿Cuáles son realmente equivalentes a 3/4?",
+      "options": [
+        "6/8 y 9/12",
+        "Solo 6/8",
+        "Solo 9/12",
+        "6/8, 9/12 y 3/8"
+      ],
+      "answer_key": "Solo 6/8",
+      "rationale": "3/4 × 2/2 = 6/8 ✓ y 3/4 × 3/3 = 9/12 ✓. Pero 3/8 no se obtiene multiplicando 3/4 por el mismo número arriba y abajo — el numerador quedaría igual y el denominador se duplicaría, lo que cambia el valor. Por eso 3/8 no es equivalente.",
+      "defect": "wrong_key",
+      "construction_valid": false,
+      "construction_option_clue": false,
+      "generated_options": [
+        "6/8 y 9/12",
+        "Solo 6/8",
+        "Solo 9/12",
+        "6/8, 9/12 y 3/8"
+      ],
+      "generated_answer_key": "6/8 y 9/12"
+    },
+    {
+      "item_id": "3b2a5e3d44d8b431d575bcdef05075ea",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 2,
+      "stem": "¿Es 3/9 equivalente a 1/3? Usa la regla del cuaderno para elegir la respuesta correcta.",
+      "options": [
+        "Sí, porque si multiplico 1 y 3 por 3 obtengo 3/9.",
+        "No, porque los numeradores son distintos.",
+        "Sí, porque ambas fracciones terminan en número impar.",
+        "No, porque 9 es mayor que 3."
+      ],
+      "answer_key": "Sí, porque si multiplico 1 y 3 por 3 obtengo 3/9.",
+      "rationale": "1 × 3 = 3 y 3 × 3 = 9. Como multipliqué arriba y abajo por el mismo número (3), las fracciones valen igual: 3/9 = 1/3.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "Sí, porque si multiplico 1 y 3 por 3 obtengo 3/9.",
+        "No, porque los numeradores son distintos.",
+        "Sí, porque ambas fracciones terminan en número impar.",
+        "No, porque 9 es mayor que 3."
+      ],
+      "generated_answer_key": "Sí, porque si multiplico 1 y 3 por 3 obtengo 3/9."
+    },
+    {
+      "item_id": "441ea3cb1ac14ae483a00f23d3514839",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 4,
+      "stem": "De una torta, quedaron 6/8. Tu amigo dice que eso es lo mismo que 3/4. Luego compara: ¿es 6/8 mayor o menor que 4/8?",
+      "options": [
+        "6/8 > 4/8, porque 6 > 4 y tienen el mismo denominador",
+        "6/8 < 4/8, porque 6/8 se simplifica y queda más chico",
+        "6/8 = 4/8, porque las dos tienen 8 abajo",
+        "No se puede comparar porque los numeradores son distintos"
+      ],
+      "answer_key": "6/8 > 4/8, porque 6 > 4 y tienen el mismo denominador",
+      "rationale": "Cuando dos fracciones tienen el mismo denominador, se comparan solo los numeradores. 6 > 4, entonces 6/8 > 4/8. No hace falta convertir nada.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "6/8 > 4/8, porque 6 > 4 y tienen el mismo denominador",
+        "6/8 < 4/8, porque 6/8 se simplifica y queda más chico",
+        "6/8 = 4/8, porque las dos tienen 8 abajo",
+        "No se puede comparar porque los numeradores son distintos"
+      ],
+      "generated_answer_key": "6/8 > 4/8, porque 6 > 4 y tienen el mismo denominador"
+    },
+    {
+      "item_id": "4b50f19f9021e40b24b5e5d17ea8a8dd",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 1,
+      "stem": "¿Cuál fracción es equivalente a 2/5 con denominador 10?",
+      "options": [
+        "2/10",
+        "4/10",
+        "5/10",
+        "6/10"
+      ],
+      "answer_key": "4/10",
+      "rationale": "Multiplicamos arriba y abajo por 2: 2×2 = 4 y 5×2 = 10, entonces 2/5 = 4/10.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "2/10",
+        "4/10",
+        "5/10",
+        "6/10"
+      ],
+      "generated_answer_key": "4/10"
+    },
+    {
+      "item_id": "50de6cdf420ba0a10564ce3d68e1858d",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 2,
+      "stem": "¿Cuáles de estas fracciones son equivalentes a 3/4? Elige la opción que nombra SOLO las equivalentes.",
+      "options": [
+        "6/8 y 9/12",
+        "un elefante",
+        "el color azul",
+        "el día martes"
+      ],
+      "answer_key": "6/8 y 9/12",
+      "rationale": "3 × 2 = 6 y 4 × 2 = 8, entonces 6/8 = 3/4. 3 × 3 = 9 y 4 × 3 = 12, entonces 9/12 = 3/4. En cambio, 3/8 no se obtiene multiplicando 3/4 arriba y abajo por el mismo número, así que no es equivalente.",
+      "defect": "implausible_distractors",
+      "construction_valid": false,
+      "construction_option_clue": true,
+      "generated_options": [
+        "6/8 y 9/12",
+        "6/8 y 3/8",
+        "3/8 y 9/12",
+        "6/8, 9/12 y 3/8"
+      ],
+      "generated_answer_key": "6/8 y 9/12"
+    },
+    {
+      "item_id": "518f487c51f2f963d263546b103637a1",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 3,
+      "stem": "Una torta se partió en 8 partes iguales y se comieron 2 partes. ¿Qué fracción de la torta QUEDÓ sin comer? Escríbela también como cuartos.",
+      "options": [
+        "Quedó 6/8, que es igual a 3/4. — la fracción equivalente que se obtiene al multiplicar el numerador y el denominador por el mismo número, como muestra la regla del cuaderno",
+        "Quedó 2/8, que es igual a 1/4.",
+        "Quedó 6/8, que es igual a 2/4.",
+        "Quedó 6/8, que es igual a 6/4."
+      ],
+      "answer_key": "Quedó 6/8, que es igual a 3/4. — la fracción equivalente que se obtiene al multiplicar el numerador y el denominador por el mismo número, como muestra la regla del cuaderno",
+      "rationale": "Si se comieron 2 de las 8 partes, quedan 8−2=6 partes, o sea 6/8. Para escribirlo en cuartos divido arriba y abajo entre 2: 6÷2=3 y 8÷2=4, dando 3/4.",
+      "defect": "option_cue",
+      "construction_valid": false,
+      "construction_option_clue": true,
+      "generated_options": [
+        "Quedó 6/8, que es igual a 3/4.",
+        "Quedó 2/8, que es igual a 1/4.",
+        "Quedó 6/8, que es igual a 2/4.",
+        "Quedó 6/8, que es igual a 6/4."
+      ],
+      "generated_answer_key": "Quedó 6/8, que es igual a 3/4."
+    },
+    {
+      "item_id": "879c00bc7e2e1c6323181b1426fe3d89",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 3,
+      "stem": "El cuaderno muestra cómo simplificar 6/10. ¿Cuál es la fracción más simple de 6/10?",
+      "options": [
+        "3/5",
+        "2/4",
+        "1/2",
+        "3/10"
+      ],
+      "answer_key": "3/5",
+      "rationale": "Divido arriba y abajo por el mismo número: 6 ÷ 2 = 3 y 10 ÷ 2 = 5. La fracción más simple es 3/5, porque ya no puedo dividir más arriba y abajo por el mismo número.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "3/5",
+        "2/4",
+        "1/2",
+        "3/10"
+      ],
+      "generated_answer_key": "3/5"
+    },
+    {
+      "item_id": "89368b04ac703497f802065d99a1ae02",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 5,
+      "stem": "Luis corrió 5/8 de una vuelta al parque. María corrió 2/3 de la misma vuelta. ¿Quién corrió más? Elige la opción que muestre el razonamiento correcto.",
+      "options": [
+        "Luis corrió más porque 5 > 2.",
+        "María corrió más porque 2/3 = 16/24 y 5/8 = 15/24, y 16 > 15.",
+        "Luis corrió más porque 5/8 = 15/24 y 2/3 = 16/24, y 15 > 16.",
+        "Los dos corrieron lo mismo porque los denominadores son distintos."
+      ],
+      "answer_key": "María corrió más porque 2/3 = 16/24 y 5/8 = 15/24, y 16 > 15.",
+      "rationale": "Buscamos el denominador común 24. 5/8 = 15/24 (×3) y 2/3 = 16/24 (×8). Como 16 > 15, María corrió más. No se puede comparar mirando solo los numeradores de las fracciones originales.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "Luis corrió más porque 5 > 2.",
+        "María corrió más porque 2/3 = 16/24 y 5/8 = 15/24, y 16 > 15.",
+        "Luis corrió más porque 5/8 = 15/24 y 2/3 = 16/24, y 15 > 16.",
+        "Los dos corrieron lo mismo porque los denominadores son distintos."
+      ],
+      "generated_answer_key": "María corrió más porque 2/3 = 16/24 y 5/8 = 15/24, y 16 > 15."
+    },
+    {
+      "item_id": "9238233584218272b1979f1c50667d69",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 3,
+      "stem": "De estas tres fracciones, ¿cuáles son equivalentes a 3/4?\n• 6/8\n• 9/12\n• 3/8",
+      "options": [
+        "Solo 6/8.",
+        "Solo 9/12.",
+        "6/8 y 9/12.",
+        "6/8, 9/12 y 3/8."
+      ],
+      "answer_key": "6/8 y 9/12.",
+      "rationale": "3/4 × 2 = 6/8 ✓ y 3/4 × 3 = 9/12 ✓. Pero 3/8 no es equivalente: 3×2 = 6, no 3. Solo 6/8 y 9/12 son equivalentes a 3/4.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "Solo 6/8.",
+        "Solo 9/12.",
+        "6/8 y 9/12.",
+        "6/8, 9/12 y 3/8."
+      ],
+      "generated_answer_key": "6/8 y 9/12."
+    },
+    {
+      "item_id": "965cecb1a18904f8906e157b8f997c57",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 3,
+      "stem": "En la recta numérica, ¿en qué punto están 1/2 y 3/6 al mismo tiempo?",
+      "options": [
+        "En el mismo punto, a la mitad entre 0 y 1",
+        "En puntos distintos, porque los números son diferentes",
+        "1/2 está más cerca del 0 y 3/6 está más cerca del 1",
+        "En el mismo punto, pero solo si el denominador es igual"
+      ],
+      "answer_key": "En puntos distintos, porque los números son diferentes",
+      "rationale": "La regla del cuaderno dice que si multiplico 1 × 3 = 3 y 2 × 3 = 6, obtengo 3/6. Como usé el mismo número arriba y abajo, 1/2 y 3/6 valen lo mismo y caen en el mismo punto de la recta: justo a la mitad.",
+      "defect": "wrong_key",
+      "construction_valid": false,
+      "construction_option_clue": false,
+      "generated_options": [
+        "En el mismo punto, a la mitad entre 0 y 1",
+        "En puntos distintos, porque los números son diferentes",
+        "1/2 está más cerca del 0 y 3/6 está más cerca del 1",
+        "En el mismo punto, pero solo si el denominador es igual"
+      ],
+      "generated_answer_key": "En el mismo punto, a la mitad entre 0 y 1"
+    },
+    {
+      "item_id": "a9e059effc8b9354d599ba1148777e8c",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 3,
+      "stem": "Una botella tiene 2/3 de agua y otra tiene 3/6 de agua. ¿Cuál botella tiene más agua?",
+      "options": [
+        "La primera, porque 2/3 = 4/6 y 4/6 > 3/6",
+        "un elefante",
+        "el color azul",
+        "el día martes"
+      ],
+      "answer_key": "La primera, porque 2/3 = 4/6 y 4/6 > 3/6",
+      "rationale": "Multiplicamos 2/3 arriba y abajo por 2: 2×2=4 y 3×2=6, entonces 2/3 = 4/6. Comparamos 4/6 y 3/6: 4 > 3, entonces la primera botella tiene más agua.",
+      "defect": "implausible_distractors",
+      "construction_valid": false,
+      "construction_option_clue": true,
+      "generated_options": [
+        "La primera, porque 2/3 = 4/6 y 4/6 > 3/6",
+        "La segunda, porque 6 > 3",
+        "Tienen la misma cantidad, porque 2 y 3 son cercanos",
+        "La segunda, porque 3 > 2"
+      ],
+      "generated_answer_key": "La primera, porque 2/3 = 4/6 y 4/6 > 3/6"
+    },
+    {
+      "item_id": "b4590b83a7cdbf4da21803a093a19f0e",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 3,
+      "stem": "Sofía dice: «Para simplificar 6/10 divido arriba y abajo por 2 y obtengo 3/5.» ¿Tiene razón?",
+      "options": [
+        "Sí, porque 6 ÷ 2 = 3 y 10 ÷ 2 = 5, y dividir arriba y abajo por el mismo número es la misma regla al revés.",
+        "No, porque no se puede dividir cuando el numerador es menor que el denominador.",
+        "No, porque hay que multiplicar, no dividir.",
+        "Sí, pero la fracción más simple es 2/4, no 3/5."
+      ],
+      "answer_key": "Sí, porque 6 ÷ 2 = 3 y 10 ÷ 2 = 5, y dividir arriba y abajo por el mismo número es la misma regla al revés.",
+      "rationale": "La regla del cuaderno funciona en los dos sentidos: multiplicar o dividir arriba y abajo por el mismo número da una fracción equivalente. 6 ÷ 2 = 3 y 10 ÷ 2 = 5, entonces 6/10 = 3/5.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "Sí, porque 6 ÷ 2 = 3 y 10 ÷ 2 = 5, y dividir arriba y abajo por el mismo número es la misma regla al revés.",
+        "No, porque no se puede dividir cuando el numerador es menor que el denominador.",
+        "No, porque hay que multiplicar, no dividir.",
+        "Sí, pero la fracción más simple es 2/4, no 3/5."
+      ],
+      "generated_answer_key": "Sí, porque 6 ÷ 2 = 3 y 10 ÷ 2 = 5, y dividir arriba y abajo por el mismo número es la misma regla al revés."
+    },
+    {
+      "item_id": "b561313ef9779c874e890cbe7d7e0218",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 2,
+      "stem": "Ana tiene 1/2 de una pizza y Beto tiene 3/6 de una pizza del mismo tamaño. ¿Quién tiene más pizza?",
+      "options": [
+        "Ana tiene más.",
+        "Beto tiene más.",
+        "Los dos tienen la misma cantidad.",
+        "No se puede saber."
+      ],
+      "answer_key": "Los dos tienen la misma cantidad.",
+      "rationale": "Usando la regla del cuaderno, 1/2 = 3/6 porque 1×3 = 3 y 2×3 = 6. Son fracciones equivalentes, así que tienen la misma cantidad.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "Ana tiene más.",
+        "Beto tiene más.",
+        "Los dos tienen la misma cantidad.",
+        "No se puede saber."
+      ],
+      "generated_answer_key": "Los dos tienen la misma cantidad."
+    },
+    {
+      "item_id": "b5da82cc2b91d6f3d933fa09394bea9b",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 1,
+      "stem": "¿Cuál fracción es equivalente a 1/2 con denominador 4?",
+      "options": [
+        "1/4",
+        "2/4",
+        "3/4",
+        "4/4"
+      ],
+      "answer_key": "2/4",
+      "rationale": "Multiplicamos arriba y abajo por 2: 1×2 = 2 y 2×2 = 4, entonces 1/2 = 2/4.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "1/4",
+        "2/4",
+        "3/4",
+        "4/4"
+      ],
+      "generated_answer_key": "2/4"
+    },
+    {
+      "item_id": "ba12d9fa69185b0ad1061f54e0293690",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 3,
+      "stem": "Ordena estas fracciones de menor a mayor: 1/2, 3/4, 1/4. Usa fracciones equivalentes con denominador 4.",
+      "options": [
+        "1/4, 1/2, 3/4 — la fracción equivalente que se obtiene al multiplicar el numerador y el denominador por el mismo número, como muestra la regla del cuaderno",
+        "1/2, 1/4, 3/4",
+        "3/4, 1/2, 1/4",
+        "1/4, 3/4, 1/2"
+      ],
+      "answer_key": "1/4, 1/2, 3/4 — la fracción equivalente que se obtiene al multiplicar el numerador y el denominador por el mismo número, como muestra la regla del cuaderno",
+      "rationale": "Convertimos 1/2 = 2/4. Ahora ordenamos en cuartos: 1/4, 2/4, 3/4. De menor a mayor: 1/4, 1/2, 3/4.",
+      "defect": "option_cue",
+      "construction_valid": false,
+      "construction_option_clue": true,
+      "generated_options": [
+        "1/4, 1/2, 3/4",
+        "1/2, 1/4, 3/4",
+        "3/4, 1/2, 1/4",
+        "1/4, 3/4, 1/2"
+      ],
+      "generated_answer_key": "1/4, 1/2, 3/4"
+    },
+    {
+      "item_id": "c28c2f00a6a885fe39b4f2735d81f606",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 2,
+      "stem": "¿Cuál fracción es más grande: 1/2 o 3/4? Primero convierte 1/2 a cuartos, luego compara.",
+      "options": [
+        "1/2, porque el denominador es más pequeño",
+        "3/4, porque 3/4 > 2/4",
+        "Son iguales, porque las dos tienen 4 abajo",
+        "1/2, porque 1 < 3"
+      ],
+      "answer_key": "1/2, porque el denominador es más pequeño",
+      "rationale": "Convertimos 1/2 = 2/4. Ahora comparamos 2/4 y 3/4: tienen el mismo denominador, así que miramos los numeradores. 3 > 2, entonces 3/4 es más grande.",
+      "defect": "wrong_key",
+      "construction_valid": false,
+      "construction_option_clue": false,
+      "generated_options": [
+        "1/2, porque el denominador es más pequeño",
+        "3/4, porque 3/4 > 2/4",
+        "Son iguales, porque las dos tienen 4 abajo",
+        "1/2, porque 1 < 3"
+      ],
+      "generated_answer_key": "3/4, porque 3/4 > 2/4"
+    },
+    {
+      "item_id": "c46678d3078fa7e30f897bec3a9df419",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 1,
+      "stem": "Mira estas dos fracciones: 1/2 y 3/4. Para compararlas, puedes convertir 1/2 a cuartos. ¿Cuánto vale 1/2 escrita en cuartos?",
+      "options": [
+        "1/4",
+        "2/4",
+        "3/4",
+        "4/4"
+      ],
+      "answer_key": "2/4",
+      "rationale": "Multiplicamos arriba y abajo por 2: 1×2=2 y 2×2=4, entonces 1/2 = 2/4. Esa es la regla del cuaderno: multiplico arriba y abajo por el mismo número y la fracción sigue valiendo igual.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "1/4",
+        "2/4",
+        "3/4",
+        "4/4"
+      ],
+      "generated_answer_key": "2/4"
+    },
+    {
+      "item_id": "c86dfb29c904724c6999cd1194ae5252",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 3,
+      "stem": "¿Cuál de estas fracciones es mayor: 2/3 o 3/4?\nPista: busca un denominador común.",
+      "options": [
+        "2/3 es mayor porque su numerador es más pequeño.",
+        "3/4 es mayor porque 9/12 > 8/12.",
+        "2/3 es mayor porque 2+3 < 3+4.",
+        "Las dos fracciones son iguales."
+      ],
+      "answer_key": "3/4 es mayor porque 9/12 > 8/12.",
+      "rationale": "Buscamos el denominador común 12. 2/3 = 8/12 (multiplicamos por 4) y 3/4 = 9/12 (multiplicamos por 3). Como 9 > 8, entonces 3/4 es mayor.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "2/3 es mayor porque su numerador es más pequeño.",
+        "3/4 es mayor porque 9/12 > 8/12.",
+        "2/3 es mayor porque 2+3 < 3+4.",
+        "Las dos fracciones son iguales."
+      ],
+      "generated_answer_key": "3/4 es mayor porque 9/12 > 8/12."
+    },
+    {
+      "item_id": "d4dacc23f1cf66b8f40476e0f69ea6cd",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 1,
+      "stem": "La regla del cuaderno dice: si multiplico arriba y abajo por el mismo número, la fracción sigue valiendo igual. Según esa regla, ¿cuál fracción es equivalente a 1/2?",
+      "options": [
+        "2/4",
+        "1/4",
+        "2/3",
+        "3/4"
+      ],
+      "answer_key": "2/4",
+      "rationale": "Si multiplico el numerador 1 y el denominador 2 por el mismo número — en este caso 2 — obtengo 2/4. Como multipliqué arriba y abajo por el mismo número, la fracción vale igual.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "2/4",
+        "1/4",
+        "2/3",
+        "3/4"
+      ],
+      "generated_answer_key": "2/4"
+    },
+    {
+      "item_id": "e015b831752d398242c6567fd4454350",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 1,
+      "stem": "La regla del cuaderno dice: si multiplico arriba y abajo por el mismo número, la fracción sigue valiendo igual. Usa esa regla. ¿Qué número va en el espacio? 1/2 = ?/4",
+      "options": [
+        "un elefante",
+        "2",
+        "el color azul",
+        "el día martes"
+      ],
+      "answer_key": "2",
+      "rationale": "Multiplico 1 × 2 = 2 arriba, y 2 × 2 = 4 abajo. Por eso 1/2 = 2/4. Los dos nombres dicen la misma cantidad.",
+      "defect": "implausible_distractors",
+      "construction_valid": false,
+      "construction_option_clue": true,
+      "generated_options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "generated_answer_key": "2"
+    },
+    {
+      "item_id": "e902a5238185e70743a54ba58142c4d4",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 5,
+      "stem": "Pedro quiere escribir una fracción equivalente a 2/3 que tenga 18 en el denominador. ¿Cuál es esa fracción?",
+      "options": [
+        "12/18 — la fracción equivalente que se obtiene al multiplicar el numerador y el denominador por el mismo número, como muestra la regla del cuaderno",
+        "6/18",
+        "8/18",
+        "2/18"
+      ],
+      "answer_key": "12/18 — la fracción equivalente que se obtiene al multiplicar el numerador y el denominador por el mismo número, como muestra la regla del cuaderno",
+      "rationale": "Para llegar a 18 en el denominador hay que multiplicar 3 por 6 (3×6=18). La regla obliga a hacer lo mismo arriba: 2×6=12. Por eso la fracción equivalente es 12/18. Las otras opciones usan multiplicadores distintos arriba y abajo, lo que cambia el valor de la fracción.",
+      "defect": "option_cue",
+      "construction_valid": false,
+      "construction_option_clue": true,
+      "generated_options": [
+        "12/18",
+        "6/18",
+        "8/18",
+        "2/18"
+      ],
+      "generated_answer_key": "12/18"
+    },
+    {
+      "item_id": "f0e8a3af1bcd69c05c508d1d2da5514b",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 4,
+      "stem": "En una recta numérica, 1/2 y 3/6 se marcan en el mismo punto. ¿Por qué están en el mismo punto?",
+      "options": [
+        "Porque 1 × 3 = 3 y 2 × 3 = 6, así que 3/6 se obtiene aplicando la regla del cuaderno a 1/2.",
+        "Porque 1 + 2 = 3 y 2 + 4 = 6, así que son iguales.",
+        "Porque los dos numeradores son números impares.",
+        "Porque 3/6 es mayor que 1/2 y por eso se pasan al mismo lugar."
+      ],
+      "answer_key": "Porque 1 × 3 = 3 y 2 × 3 = 6, así que 3/6 se obtiene aplicando la regla del cuaderno a 1/2.",
+      "rationale": "Si multiplico el numerador 1 y el denominador 2 de la fracción 1/2 por 3, obtengo 3/6. Como usé la regla del cuaderno, ambas fracciones nombran la misma cantidad y ocupan el mismo punto en la recta.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "Porque 1 × 3 = 3 y 2 × 3 = 6, así que 3/6 se obtiene aplicando la regla del cuaderno a 1/2.",
+        "Porque 1 + 2 = 3 y 2 + 4 = 6, así que son iguales.",
+        "Porque los dos numeradores son números impares.",
+        "Porque 3/6 es mayor que 1/2 y por eso se pasan al mismo lugar."
+      ],
+      "generated_answer_key": "Porque 1 × 3 = 3 y 2 × 3 = 6, así que 3/6 se obtiene aplicando la regla del cuaderno a 1/2."
+    },
+    {
+      "item_id": "f862834717912e527b35a5701a8435db",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.equivalence",
+      "difficulty": 5,
+      "stem": "Pedro tiene 3/4 de una cinta. María tiene una cinta del mismo largo total. ¿Qué fracción necesita María para que su parte sea equivalente a la de Pedro, si su cinta está dividida en 12 partes iguales?",
+      "options": [
+        "6/12",
+        "8/12",
+        "9/12",
+        "10/12"
+      ],
+      "answer_key": "9/12",
+      "rationale": "Uso la regla del cuaderno: multiplico 3 × 3 = 9 arriba y 4 × 3 = 12 abajo. Entonces 3/4 = 9/12. María necesita 9 de sus 12 partes para tener la misma cantidad que Pedro.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "6/12",
+        "8/12",
+        "9/12",
+        "10/12"
+      ],
+      "generated_answer_key": "9/12"
+    },
+    {
+      "item_id": "f8ce93b565e5dbcf6ae0549503c2dfc3",
+      "source_page": "demo/cuaderno-fracciones.png",
+      "competency_id": "math.g4.fractions.comparison",
+      "difficulty": 2,
+      "stem": "¿Cuál es la fracción más simple de 6/10?",
+      "options": [
+        "3/5",
+        "2/5",
+        "6/5",
+        "1/2"
+      ],
+      "answer_key": "3/5",
+      "rationale": "Dividimos arriba y abajo entre 2: 6÷2 = 3 y 10÷2 = 5, entonces 6/10 = 3/5. Esa es la fracción más simple.",
+      "defect": "none",
+      "construction_valid": true,
+      "construction_option_clue": false,
+      "generated_options": [
+        "3/5",
+        "2/5",
+        "6/5",
+        "1/2"
+      ],
+      "generated_answer_key": "3/5"
+    }
+  ]
+}
