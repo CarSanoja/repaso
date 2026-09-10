@@ -8,7 +8,6 @@ from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.item_generator import PROMPT_VERSION, SYSTEM
 from repaso.schemas.common import CompetencyId, ItemId, Lang
 from repaso.schemas.competency import Competency
-from repaso.schemas.encoded import JSON_TEXT_IS_LIST
 from repaso.schemas.item import Item, ItemKind, ItemStatus
 from repaso.schemas.nullable import NULL_IS_EMPTY
 from repaso.schemas.provenance import Provenance, Source
@@ -26,14 +25,14 @@ class ItemDraft(BaseModel):
     kind: ItemKind
     difficulty: int
     stem: str
-    options: Annotated[list[str], NULL_IS_EMPTY, JSON_TEXT_IS_LIST] = []
+    options: Annotated[list[str], NULL_IS_EMPTY] = []
     answer_key: str
     rationale: str
     rubric: str | None = None
 
 
 class GeneratedBatch(BaseModel):
-    items: Annotated[list[ItemDraft], NULL_IS_EMPTY, JSON_TEXT_IS_LIST] = []
+    items: Annotated[list[ItemDraft], NULL_IS_EMPTY] = []
 
 
 def _filled(text: str | None) -> bool:
@@ -134,3 +133,24 @@ async def generate_items(
         if is_valid_draft(draft)
     ]
     return kept[: count * MAX_OVERPRODUCTION]
+
+
+async def items_for_material(
+    parsed_text: str,
+    competency: Competency,
+    count: int,
+    grade: int,
+    model,
+    now: datetime,
+    retries: int = 0,
+    lang: Lang = Lang.ES,
+) -> list[Item]:
+    if retries < 0:
+        raise ValueError("retries cannot be negative")
+    for _ in range(retries + 1):
+        items = await generate_items(
+            parsed_text, competency, count, grade, model, now, lang=lang
+        )
+        if items:
+            return items
+    return []

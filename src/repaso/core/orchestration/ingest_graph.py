@@ -6,7 +6,7 @@ from repaso.agents.answerability_probe import combine, probe_blind
 from repaso.agents.competency_mapper import map_material
 from repaso.agents.intake_screener import screen_text
 from repaso.agents.item_critic import critique
-from repaso.agents.item_generator import generate_items
+from repaso.agents.item_generator import items_for_material
 from repaso.agents.material_parser import parse_material
 from repaso.config.models import ModelRole
 from repaso.core.harness.legibility import DEFAULT_MIN_CONFIDENCE
@@ -130,13 +130,14 @@ def build_ingest_graph(services: Services, run: IngestRun):
 
     async def generate() -> None:
         if "generated" not in memo:
-            drafts = await generate_items(
+            drafts = await items_for_material(
                 run.material.parsed_text or "",
                 run.competency,
                 ITEMS_PER_MATERIAL,
                 run.student.grade,
                 services.model(ModelRole.GENERATE),
                 services.clock.now(),
+                settings.item_regen_max_rounds,
                 lang=run.family.lang,
             )
             items = [

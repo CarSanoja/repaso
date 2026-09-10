@@ -5,7 +5,6 @@ from pydantic import BaseModel
 from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.competency_mapper import PROMPT_VERSION, SYSTEM
 from repaso.schemas.competency import CompetencyMatch
-from repaso.schemas.encoded import JSON_TEXT_IS_LIST
 from repaso.schemas.nullable import NULL_IS_EMPTY
 from repaso.tools.knowledge import KnowledgeRetriever
 
@@ -14,7 +13,7 @@ CANDIDATE_LIMIT = 8
 
 
 class MappingDecision(BaseModel):
-    competency_ids: Annotated[list[str], NULL_IS_EMPTY, JSON_TEXT_IS_LIST] = []
+    competency_ids: Annotated[list[str], NULL_IS_EMPTY] = []
 
 
 def _describe(match: CompetencyMatch, retriever: KnowledgeRetriever) -> str:

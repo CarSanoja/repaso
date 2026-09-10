@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.item_critic import PROMPT_VERSION, SYSTEM
-from repaso.schemas.encoded import JSON_TEXT_IS_LIST
 from repaso.schemas.item import Item, ItemFlaw, ItemVerdict
 from repaso.schemas.nullable import NULL_IS_BLANK, NULL_IS_EMPTY
 
@@ -22,7 +21,7 @@ FLAW_VOCABULARY = ", ".join(FLAW_CODES)
 
 class CriticFinding(BaseModel):
     accepted: bool
-    flaws: Annotated[list[str], NULL_IS_EMPTY, JSON_TEXT_IS_LIST] = []
+    flaws: Annotated[list[str], NULL_IS_EMPTY] = []
     notes: Annotated[str, NULL_IS_BLANK] = ""
 
 

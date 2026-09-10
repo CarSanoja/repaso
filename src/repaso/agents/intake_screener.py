@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.intake_screener import PROMPT_VERSION, SYSTEM
-from repaso.schemas.encoded import JSON_TEXT_IS_LIST
 from repaso.schemas.nullable import NULL_IS_EMPTY
 from repaso.tools.guardrails import SCREENER_ERROR_REASON, Screener, ScreenVerdict
 
@@ -18,7 +17,7 @@ UNTRUSTED_FRAME = (
 
 class IntakeDecision(BaseModel):
     safe: bool
-    reasons: Annotated[list[str], NULL_IS_EMPTY, JSON_TEXT_IS_LIST] = []
+    reasons: Annotated[list[str], NULL_IS_EMPTY] = []
 
 
 def frame_untrusted(text: str) -> str:
