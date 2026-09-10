@@ -2,7 +2,7 @@ import time
 from typing import Any
 
 from repaso.core.harness.clock import Clock, SystemClock
-from repaso.tools.call_cost import cost_or_none
+from repaso.tools.call_cost import CallCost, cost_or_none
 from repaso.tools.call_ledger import (
     CallOrigin,
     CallOutcome,
@@ -91,7 +91,7 @@ class CallWatch:
             fields["estimated_usd"] = str(cost.total_usd)
         return fields
 
-    def cost(self):
+    def cost(self) -> CallCost | None:
         return None if self.usage is None else cost_or_none(self.model_id, self.usage)
 
     def record(self, outcome: CallOutcome, error: str = "") -> CallRecord:

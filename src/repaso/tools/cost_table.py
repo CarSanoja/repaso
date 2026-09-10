@@ -6,7 +6,7 @@ LATENCY_HEADER = f"{'role':<44}{'calls':>6}{'p50 ms':>10}{'p95 ms':>10}"
 
 def _group_line(totals: GroupTotals) -> str:
     if not totals.reported:
-        return f"{totals.name[:43]:<44}{totals.calls:>6}{NOT_REPORTED:>37}"
+        return f"{totals.name[:43]:<44}{totals.calls:>6}{NOT_REPORTED:>45}"
     usage = totals.usage
     return (
         f"{totals.name[:43]:<44}{totals.calls:>6}{usage.input_tokens:>9}"
@@ -36,7 +36,7 @@ def _spend_line(report: CostReport) -> str:
     unreported = report.calls - report.reported
     tail = f", {unreported} of {report.calls} without reported usage" if unreported else ""
     unpriced = report.reported - report.priced
-    tail += f", {unpriced} priced by no rate in the table" if unpriced else ""
+    tail += f", {unpriced} with no rate in the price table" if unpriced else ""
     return f"spend: ${report.total_usd:.4f} over {report.calls} calls{tail}"
 
 

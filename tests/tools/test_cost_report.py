@@ -103,6 +103,13 @@ def test_a_ledger_with_no_usage_says_so_rather_than_reporting_zero():
     assert f"spend: {NOT_REPORTED}" in table
     assert f"reasoning tokens: {NOT_REPORTED}" in table
 
+    unreported = next(line for line in table.splitlines() if line.startswith("judge"))
+    priced = render_cost_report(
+        build_cost_report([call(1, usage=CallUsage(input_tokens=10))])
+    ).splitlines()
+    assert unreported.endswith(NOT_REPORTED)
+    assert len(unreported) == len(next(line for line in priced if line.startswith("judge")))
+
 
 def test_a_run_that_reports_no_reasoning_does_not_claim_a_zero_share():
     report = build_cost_report([call(1, usage=CallUsage(input_tokens=10, output_tokens=5))])
@@ -162,7 +169,7 @@ def test_a_call_no_rate_covers_is_counted_apart_from_one_that_reported_nothing()
     assert (report.calls, report.reported, report.priced) == (2, 1, 0)
     table = render_cost_report(report)
     assert "1 of 2 without reported usage" in table
-    assert "1 priced by no rate in the table" in table
+    assert "1 with no rate in the price table" in table
 
 
 def test_an_empty_ledger_reports_nothing_and_divides_by_nothing():
