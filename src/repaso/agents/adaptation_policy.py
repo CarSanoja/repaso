@@ -1,5 +1,5 @@
 from repaso.agents.base import StructuredCallFailed, structured
-from repaso.agents.prompts.adaptation_policy import SYSTEM
+from repaso.agents.prompts.adaptation_policy import PROMPT_VERSION, SYSTEM
 from repaso.core.harness.escalation_triggers import (
     DEFAULT_MIN_ACTIVE_DAYS,
     DEFAULT_SILENT_DAYS,
@@ -119,7 +119,9 @@ def signals_prompt(signals: PolicySignals) -> str:
 async def decide(signals: PolicySignals, model) -> PolicyDecision:
     decision = fallback_decision(signals)
     try:
-        reply = await structured(model, PolicyDecision, SYSTEM, signals_prompt(signals))
+        reply = await structured(
+            model, PolicyDecision, SYSTEM, signals_prompt(signals), PROMPT_VERSION
+        )
     except StructuredCallFailed:
         return decision
     if signals.struggle or signals.disengaged:

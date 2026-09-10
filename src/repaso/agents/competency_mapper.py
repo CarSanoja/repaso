@@ -3,7 +3,7 @@ from typing import Annotated
 from pydantic import BaseModel
 
 from repaso.agents.base import StructuredCallFailed, structured
-from repaso.agents.prompts.competency_mapper import SYSTEM
+from repaso.agents.prompts.competency_mapper import PROMPT_VERSION, SYSTEM
 from repaso.schemas.competency import CompetencyMatch
 from repaso.schemas.encoded import JSON_TEXT_IS_LIST
 from repaso.schemas.nullable import NULL_IS_EMPTY
@@ -76,7 +76,11 @@ async def map_material(
     system = SYSTEM.format(grade=grade, subject=subject, limit=limit)
     try:
         decision = await structured(
-            model, MappingDecision, system, _request_text(parsed_text, candidates, retriever, limit)
+            model,
+            MappingDecision,
+            system,
+            _request_text(parsed_text, candidates, retriever, limit),
+            PROMPT_VERSION,
         )
     except StructuredCallFailed:
         return _by_confidence(candidates, limit)

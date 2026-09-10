@@ -3,7 +3,7 @@ from hashlib import sha256
 from pydantic import BaseModel
 
 from repaso.agents.base import StructuredCallFailed, structured
-from repaso.agents.prompts.capsule_composer import SYSTEM
+from repaso.agents.prompts.capsule_composer import PROMPT_VERSION, SYSTEM
 from repaso.i18n import msg
 from repaso.i18n.competencies import competency_label
 from repaso.schemas.channel import Button, ChannelKind, OutboundMessage
@@ -78,7 +78,7 @@ async def _snippet(competency: Competency, lang: Lang, model) -> str:
         f"Write the reminder in {lang.value}."
     )
     try:
-        result = await structured(model, Snippet, SYSTEM, text)
+        result = await structured(model, Snippet, SYSTEM, text, PROMPT_VERSION)
     except StructuredCallFailed:
         return fallback
     return result.text.strip() or fallback
