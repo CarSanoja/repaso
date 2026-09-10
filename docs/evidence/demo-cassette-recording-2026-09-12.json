@@ -1,0 +1,75 @@
+{
+  "recorded_at": "2026-09-12T08:09:20Z",
+  "region": "us-east-1",
+  "what_this_is": "One recording of the demonstration journey against Amazon Bedrock on-demand inference: thirty-one calls, one per entry in src/repaso/simulator/cassettes/demo_fracciones.jsonl, in the order the journey made them, each routed to the model its role is bound to. Every token count is the one the provider reported and every dollar is priced from the dated table in src/repaso/config/pricing.py. The cassette that ships is this recording; the demonstration replays it.",
+  "what_this_is_not": "A replay is not a live run. Replaying the cassette reaches no network, spends nothing, and is not evidence that the models would answer this way again: this is one recording, on one day, of one journey. Nothing here measures tutoring quality, learning or a family outcome. The continuation after day one still plays authored payloads and is labelled as a simulated time jump in the transcript.",
+  "run": {
+    "calls": 31,
+    "outcomes": {"ok": 31},
+    "origins": {"live": 31},
+    "usage_reported": 31,
+    "priced": 31,
+    "input_tokens": 36044,
+    "output_tokens": 6119,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "input_usd": 0.081697565,
+    "output_usd": 0.085944300,
+    "total_usd": 0.167641865,
+    "reasoning_share": "not reported"
+  },
+  "by_role_usd": {
+    "classify": 0.0001191,
+    "generate": 0.0571950,
+    "judge": 0.1032300,
+    "probe": 0.0001428,
+    "structured": 0.0069550
+  },
+  "by_model_usd": {
+    "us.amazon.nova-lite-v1:0": 0.0001191,
+    "us.amazon.nova-micro-v1:0": 0.0001428,
+    "us.anthropic.claude-haiku-4-5-20251001-v1:0": 0.0069550,
+    "us.anthropic.claude-sonnet-4-6": 0.1604250
+  },
+  "latency_ms": {
+    "classify": {"calls": 2, "p50": 573.6, "p95": 864.2},
+    "generate": {"calls": 3, "p50": 14709.5, "p95": 17011.7},
+    "judge": {"calls": 14, "p50": 3367.9, "p95": 4652.2},
+    "probe": {"calls": 7, "p50": 488.3, "p95": 745.4},
+    "structured": {"calls": 5, "p50": 1218.7, "p95": 1347.3}
+  },
+  "what_the_recording_decided": {
+    "questions_written_from_the_notebook": 6,
+    "questions_kept_after_review": 5,
+    "questions_written_from_the_photocopied_guide": 6,
+    "questions_kept_from_the_guide": 0,
+    "why_the_guide_was_refused": "The critic rejected all six, naming the guide's own worked example, 2/3 = 4/9, as the reason in its notes. The error was planted in the synthetic page; a model reading the page found it.",
+    "held_back_grade": {"confidence": 0.72, "threshold": 0.85},
+    "parent_decision": "rejected",
+    "day_one_mastery": "3 attempts / 1 correct",
+    "options_only_probe": "7 of 7 multiple-choice items answered UNKNOWN with the question withheld; the probe is advisory and vetoes nothing."
+  },
+  "assertions": {
+    "teacher_note": "24/24",
+    "reduce_load": "23/23",
+    "note": "The same twenty-four checks the authored cassette ran. Six of them assert different numbers now, because the recording said different numbers."
+  },
+  "recording_attempts": {
+    "attempts": 4,
+    "complete": 2,
+    "shipped": "the fourth, the first complete recording made at the final code state",
+    "why_incomplete_runs_are_discarded": "The recorder writes an entry only for a call that was answered, so a recording containing a failed call cannot replay: the replay reaches a call with no entry left and stops. Two attempts lost the guide page's generated batch and were discarded for that reason, not for what they said."
+  },
+  "findings": {
+    "generated_batch_rejected_as_text": {
+      "observed": "6 of 19 GeneratedBatch calls on the photocopied-guide page returned the items field as a text blob instead of an array and were rejected at items (list_type). 0 of 4 calls on the notebook page did.",
+      "captured": "3 of the 6 payloads were captured in full. None is valid JSON under a strict or a permissive reader: each puts a character's speech in a stem between unescaped double quotes.",
+      "consequence_before": "A rejected batch produced no items and the page was declared too thin to practise from: the child gets nothing that morning.",
+      "repair": "The ingest graph now asks again, bounded by item_regen_max_rounds, and calls the page thin only after every attempt comes back empty. A tolerance that decoded a JSON-encoded array was tried first and removed: none of the captured payloads parses, so it repaired nothing the fleet produces."
+    },
+    "grader_confidence_sits_on_the_threshold": {
+      "observed": "12 grades sampled from Claude Sonnet 4.6 over three open questions from an earlier recording, two samples of each of the two authored student answers, returned confidences from 0.62 to 0.95, with 7 of 12 below the 0.85 threshold that holds an answer back for the adult.",
+      "consequence": "Whether the demonstration shows a held-back grade depends on which question survives review and which answer it receives. It is not a property of the harness and it is not authored: 12 samples is not a rate, and no calibration is claimed."
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 Repaso turns a fourth-grade math sheet into a daily practice routine in a parent's Telegram chat. It prepares practice, follows responses, changes the next session and asks the adult for a decision when an answer is uncertain or difficulty persists.
 
-**Current evidence:** the complete journey is reproducible with synthetic data. Its model outputs are authored simulations. A separate, actual Amazon Textract call recognized a new printed Spanish fractions page on September 6, 2026, and on September 12 every configured Bedrock model answered and filled its schema in 27 of 27 bounded probe calls. No measured learning benefit, family pilot or deployed cloud journey is claimed. See the [evidence register](docs/evidence/README.md).
+**Current evidence:** the complete journey is reproducible with synthetic data. Its model outputs are replayed from a recording of the model fleet made against Amazon Bedrock on September 12, 2026, and priced from what the provider reported. A separate, actual Amazon Textract call recognized a new printed Spanish fractions page on September 6, 2026, and on September 12 every configured Bedrock model answered and filled its schema in 27 of 27 bounded probe calls. A replay is not a live run. No measured learning benefit, family pilot or deployed cloud journey is claimed. See the [evidence register](docs/evidence/README.md).
 
 **Evaluating this?** [docs/submission/judging.md](docs/submission/judging.md) is a five-minute path that needs no account, no keys and no deployment.
 
@@ -26,7 +26,7 @@ python scripts/run_demo_scenario.py --data-dir .local_data/demo-note --decision 
 python scripts/run_demo_scenario.py --data-dir .local_data/demo-light --decision reduce_load --report .local_data/demo-light.json
 ```
 
-These are executions of the actual orchestration with authored model outputs, local storage and local delivery. Advancing four labeled school days takes seconds. The base cassette's declared tokens are synthetic and do not price the additional days or actual infrastructure.
+These are executions of the actual orchestration against a recorded cassette, with local storage and local delivery. Advancing four labeled school days takes seconds. The tokens and dollars the run prints are what that one recording measured; they do not price the authored days that follow it, or any infrastructure.
 
 ## What the family can do
 

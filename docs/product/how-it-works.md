@@ -31,4 +31,4 @@ Every runtime model call reserves a durable family/global daily call budget befo
 
 ## Verification boundary
 
-Ten complete adapter simulations exercise the transport chain with emulated AWS, authored model outputs and injected failures. Separate local state tests cover concurrent outcomes, budgets and interrupted deletion. Packaging smoke checks load installed assets and execute both judge branches. Live inference and deployed acceptance remain separate gates in the [evidence register](../evidence/README.md).
+Ten complete adapter simulations exercise the transport chain with emulated AWS, recorded model outputs and injected failures. Separate local state tests cover concurrent outcomes, budgets and interrupted deletion. Packaging smoke checks load installed assets and execute both judge branches. Live inference and deployed acceptance remain separate gates in the [evidence register](../evidence/README.md).

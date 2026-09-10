@@ -16,7 +16,7 @@ One student per family; fourth-grade math; clear printed Spanish PNG/JPEG or an 
 
 ## Experience for judges
 
-The browser opens a prepared, isolated case. Seven stages show material, delivery, uncertainty, human review, difficulty, choice and consequence. The two choices can be compared without typing IDs. This mode runs real orchestration with authored model responses and local transport; its accelerated dates are labeled. It does not expose pilot families. Live-data endpoints additionally require an explicit family allowlist, empty by default.
+The browser opens a prepared, isolated case. Seven stages show material, delivery, uncertainty, human review, difficulty, choice and consequence. The two choices can be compared without typing IDs. This mode runs real orchestration against a recorded cassette of model responses, with local transport; its accelerated dates are labeled. It does not expose pilot families. Live-data endpoints additionally require an explicit family allowlist, empty by default.
 
 ## Privacy and evidence
 

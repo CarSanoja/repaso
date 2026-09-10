@@ -12,7 +12,7 @@ The family uses an alias and chooses a daily time. Enrollment creates a timezone
 
 ## 00:00:40–00:01:00 · A reviewed practice bank
 
-In this authored case, seven questions survive review. They belong to this family. A correct guess by the options-only probe cannot veto a valid exercise.
+In this recorded case, five questions survive review. They belong to this family. A correct guess by the options-only probe cannot veto a valid exercise.
 
 ## 00:01:00–00:01:20 · Practice arrives
 
@@ -56,4 +56,4 @@ Ten full adapter simulations passed with injected failures. A real Textract call
 
 ## 00:04:20–00:04:40 · Try the whole story. Inspect the evidence.
 
-The candidate covers fourth-grade math and printed material. Deployed acceptance, teacher review and a family pilot remain open. This preview reconstructs authored simulation data.
+The candidate covers fourth-grade math and printed material. Deployed acceptance, teacher review and a family pilot remain open. This preview reconstructs a recorded journey and the authored days that follow it.

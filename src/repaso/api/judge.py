@@ -123,7 +123,7 @@ async def demo(
     with TemporaryDirectory(prefix="repaso-judge-") as root:
         result = await run_demo_scenario(scenario_settings(Path(root)), decision=payload.decision)
     return {
-        "origin": "authored simulation",
+        "origin": "recorded replay",
         "live_inference": False,
         "decision": payload.decision,
         "passed": not result.failures,

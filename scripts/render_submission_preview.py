@@ -28,7 +28,7 @@ SCENES = [
         "A reviewed practice bank",
         "Material to usable questions",
         0,
-        "In this authored case, seven questions survive review. They belong to this "
+        "In this recorded case, five questions survive review. They belong to this "
         "family. A correct guess by the options-only probe cannot veto a valid "
         "exercise.",
     ),
@@ -113,9 +113,9 @@ SCENES = [
         "Try the whole story. Inspect the evidence.",
         "Local judge experience / both decisions",
         6,
-        "The candidate covers fourth-grade math and printed material. Bedrock quota, "
-        "deployed acceptance, teacher review and a family pilot remain open. This "
-        "preview reconstructs authored simulation data.",
+        "The candidate covers fourth-grade math and printed material. Deployed "
+        "acceptance, teacher review and a family pilot remain open. This preview "
+        "reconstructs a recorded journey and the authored days that follow it.",
     ),
 ]
 
@@ -293,7 +293,7 @@ def main():
             messages = [
                 (
                     "What remains",
-                    "Restore authorized Bedrock quota.\nComplete deployed journeys.\nCollect "
+                    "Complete deployed journeys.\nCollect "
                     "independent teacher labels.\nObserve families with consent.\nPublish reviewed "
                     "submission links.",
                 )
