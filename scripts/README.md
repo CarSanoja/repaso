@@ -4,6 +4,7 @@
 | --- | --- | --- |
 | `run_judge_demo.py` | Start the isolated browser experience on localhost:8766; code REPASO-DEMO | Authored models, local data and delivery |
 | `run_demo_scenario.py` | Run either teacher-note or reduced-load choice across four labeled dates; `--report` exports seven checkpoints | 24 or 23 assertions; no live AI or Telegram |
+| `record_demo_cassette.py` | Record the demonstration journey against Amazon Bedrock into a cassette and its provenance; needs credentials and spends money | One recording, one day: the cassette replays those answers and is not evidence the models would answer so again |
 | `run_demo_clock.py` | `--days 14 --seed 20260901 --data-dir EMPTY_DIR` | September 6 run: 30 students, 420 sessions, 1,037 responses, all nine gates passed; local journaling took 281.4 seconds |
 | `check_installed_package.py` | Run from outside the checkout after installing the wheel | Imports, assets, HTTP routes, both complete scenarios |
 | `run_answer_evaluation.py` | Validate 60 synthetic cases; explicit `--live` collects a bounded slice from `--start`; `--predictions` scores a saved batch at `--threshold`, against teacher or `--label-source author-proposed` labels | No model quality score from authored labels; see evaluation/README.md |
