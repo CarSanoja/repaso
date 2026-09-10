@@ -126,8 +126,21 @@ async def test_a_payload_the_schema_rejects_is_recorded_as_malformed():
     model = LocalPlaybackModel([{"correct": True, "rubric_points": 9.0, "confidence": 0.9}])
     call = await run_probe(model, probe, model_for(probe.role), RampClock())
     assert call.outcome is CallOutcome.MALFORMED
-    assert "field(s) rejected" in call.error
-    assert "rubric_points" in call.error and "feedback" in call.error
+    assert "2 field(s) rejected" in call.error
+    assert "rubric_points (less_than_equal)" in call.error
+    assert "feedback (missing)" in call.error
+
+
+async def test_a_rejection_names_the_first_fields_and_counts_the_rest():
+    probe = next(p for p in build_registry() if p.name == "GeneratedBatch")
+    drafts = [{"kind": "mcq", "difficulty": 2, "stem": "s", "options": 1} for _ in range(4)]
+    model = LocalPlaybackModel([{"items": drafts}])
+
+    call = await run_probe(model, probe, model_for(probe.role), RampClock())
+
+    assert "12 field(s) rejected" in call.error
+    assert "items.0.options (list_type)" in call.error
+    assert "and 9 more" in call.error
 
 
 async def test_a_rejected_payload_still_reports_the_tokens_it_burned():

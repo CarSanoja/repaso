@@ -13,6 +13,7 @@ from tests.live.registry import SchemaProbe
 
 DEFAULT_TIMEOUT_SECONDS = 120.0
 NO_OUTPUT = "the model returned no structured output"
+NAMED_FIELDS = 3
 
 
 class CallOutcome(StrEnum):
@@ -57,8 +58,17 @@ async def _drain(model: Model, probe: SchemaProbe, spend: Spend) -> None:
 
 
 def _rejected(failure: ValidationError) -> str:
-    named = ", ".join(".".join(str(part) for part in error["loc"]) for error in failure.errors())
-    return f"{failure.error_count()} field(s) rejected: {named}"
+    named: list[str] = []
+    for error in failure.errors():
+        location = ".".join(str(part) for part in error["loc"])
+        entry = f"{location} ({error['type']})"
+        if entry not in named:
+            named.append(entry)
+    hidden = len(named) - NAMED_FIELDS
+    listed = ", ".join(named[:NAMED_FIELDS])
+    if hidden > 0:
+        listed = f"{listed} and {hidden} more"
+    return f"{failure.error_count()} field(s) rejected: {listed}"
 
 
 def _priced(model_id: str, usage: CallUsage) -> float:
