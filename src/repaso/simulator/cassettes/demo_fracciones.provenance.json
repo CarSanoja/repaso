@@ -1,7 +1,7 @@
 {
   "cassette": "demo_fracciones.jsonl",
   "recorded_at": "2026-09-12T08:09:20.287207Z",
-  "commit": "70f1d1e959ea11171dd62664d877bd698f959e9b",
+  "commit": "ba761e685243f2c2ba6bdad63be6950861d350f7",
   "working_tree_modified": true,
   "region": "us-east-1",
   "what_this_is": "One recording of the demonstration journey against Amazon Bedrock on-demand inference: one entry per call, in the order the journey made them, each routed to the model its role is bound to in src/repaso/config/models.py. Token counts are the ones the provider reported and dollars are priced from the dated table in src/repaso/config/pricing.py.",
