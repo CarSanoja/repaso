@@ -1,10 +1,12 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
+import pytest
+
 from repaso.agents.prompts.grader import PROMPT_VERSION
 from repaso.config.models import DEFAULT_MODELS, ModelRole
 from repaso.tools.llm import LocalPlaybackModel
-from scripts.answer_evaluation_collect import grade_case, provenance_of, sidecars
+from scripts.answer_evaluation_collect import grade_case, provenance_of, sidecars, slice_of
 from scripts.run_answer_evaluation import read_cases
 
 BATCH = Path("private/reports/evaluation-batch-1.jsonl")
@@ -21,10 +23,22 @@ def case_named(name: str) -> dict:
     return next(case for case in cases if case["id"] == name)
 
 
+def test_a_later_batch_covers_the_cases_the_last_one_did_not():
+    cases = [{"id": str(number)} for number in range(30)]
+    first = slice_of(cases, 0, 15)
+    second = slice_of(cases, 15, 15)
+    assert [case["id"] for case in first] == [str(number) for number in range(15)]
+    assert not {case["id"] for case in first} & {case["id"] for case in second}
+    assert slice_of(cases, 29, 15) == [{"id": "29"}]
+    with pytest.raises(ValueError):
+        slice_of(cases, 30, 15)
+
+
 def test_a_batch_records_the_model_prompt_and_commit_that_produced_it():
     record = provenance_of(
-        [{"id": "eval-01-partial"}], "evaluation/answer_review_set.jsonl", "development"
+        [{"id": "eval-01-partial"}], "evaluation/answer_review_set.jsonl", "development", 2
     )
+    assert record["start"] == 2
     assert record["model_id"] == DEFAULT_MODELS[ModelRole.JUDGE]
     assert record["prompt_version"] == PROMPT_VERSION
     assert record["case_ids"] == ["eval-01-partial"]

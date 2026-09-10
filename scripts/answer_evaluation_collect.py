@@ -86,10 +86,17 @@ def candidate_commit() -> str:
     return done.stdout.strip() if done.returncode == 0 else "unknown"
 
 
-def provenance_of(cases: list[dict], dataset: str, split: str) -> dict:
+def slice_of(cases: list[dict], start: int, max_calls: int) -> list[dict]:
+    if start < 0 or start >= len(cases):
+        raise ValueError(f"start {start} is outside the {len(cases)} cases in this split")
+    return cases[start : start + max_calls]
+
+
+def provenance_of(cases: list[dict], dataset: str, split: str, start: int) -> dict:
     return {
         "dataset": dataset,
         "split": split,
+        "start": start,
         "case_ids": [case["id"] for case in cases],
         "role": ModelRole.JUDGE.value,
         "model_id": model_for(ModelRole.JUDGE),
@@ -130,12 +137,12 @@ def assert_authorized_account() -> None:
 
 
 async def collect(
-    cases: list[dict], output: Path, max_calls: int, dataset: str, split: str
+    cases: list[dict], output: Path, max_calls: int, start: int, dataset: str, split: str
 ) -> list[dict]:
+    chosen = slice_of(cases, start, max_calls)
     assert_authorized_account()
-    chosen = cases[:max_calls]
     sidecars(output)["provenance"].write_text(
-        json.dumps(provenance_of(chosen, dataset, split), indent=2)
+        json.dumps(provenance_of(chosen, dataset, split, start), indent=2)
     )
     model = judge_model(output)
     predictions = []

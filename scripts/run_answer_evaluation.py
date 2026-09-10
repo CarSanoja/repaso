@@ -37,6 +37,7 @@ def main():
     parser.add_argument("--predictions", help="Score a saved JSONL batch without model calls")
     parser.add_argument("--split", choices=("all", "development", "held_out"), default="all")
     parser.add_argument("--max-calls", type=int, default=15)
+    parser.add_argument("--start", type=int, default=0, help="First case of the split to collect")
     parser.add_argument("--threshold", type=float, default=DEFAULT_THRESHOLD)
     args = parser.parse_args()
     if not 1 <= args.max_calls <= 60:
@@ -54,7 +55,9 @@ def main():
     if args.live and output.exists():
         parser.error("choose a new output to preserve previous evidence")
     predictions = (
-        asyncio.run(collect(cases, output, args.max_calls, args.dataset, args.split))
+        asyncio.run(
+            collect(cases, output, args.max_calls, args.start, args.dataset, args.split)
+        )
         if args.live
         else (read_rows(args.predictions) if args.predictions else [])
     )
