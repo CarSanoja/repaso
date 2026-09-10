@@ -1,11 +1,15 @@
 from datetime import datetime
 from hashlib import sha256
+from typing import Annotated
 
-from repaso.agents.base import ModelOutput, StructuredCallFailed, structured
+from pydantic import BaseModel
+
+from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.item_generator import PROMPT_VERSION, SYSTEM
 from repaso.schemas.common import CompetencyId, ItemId, Lang
 from repaso.schemas.competency import Competency
 from repaso.schemas.item import Item, ItemKind, ItemStatus
+from repaso.schemas.nullable import NULL_IS_EMPTY
 from repaso.schemas.provenance import Provenance, Source
 
 ITEM_ID_LENGTH = 32
@@ -17,18 +21,18 @@ MAX_OVERPRODUCTION = 2
 LANGUAGE_NAMES: dict[Lang, str] = {Lang.ES: "Spanish", Lang.EN: "English"}
 
 
-class ItemDraft(ModelOutput):
+class ItemDraft(BaseModel):
     kind: ItemKind
     difficulty: int
     stem: str
-    options: list[str] = []
+    options: Annotated[list[str], NULL_IS_EMPTY] = []
     answer_key: str
     rationale: str
     rubric: str | None = None
 
 
-class GeneratedBatch(ModelOutput):
-    items: list[ItemDraft] = []
+class GeneratedBatch(BaseModel):
+    items: Annotated[list[ItemDraft], NULL_IS_EMPTY] = []
 
 
 def _filled(text: str | None) -> bool:

@@ -1,15 +1,19 @@
+from typing import Annotated
 
-from repaso.agents.base import ModelOutput, StructuredCallFailed, structured
+from pydantic import BaseModel
+
+from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.competency_mapper import SYSTEM
 from repaso.schemas.competency import CompetencyMatch
+from repaso.schemas.nullable import NULL_IS_EMPTY
 from repaso.tools.knowledge import KnowledgeRetriever
 
 MIN_RETRIEVAL_SCORE = 0.15
 CANDIDATE_LIMIT = 8
 
 
-class MappingDecision(ModelOutput):
-    competency_ids: list[str] = []
+class MappingDecision(BaseModel):
+    competency_ids: Annotated[list[str], NULL_IS_EMPTY] = []
 
 
 def _describe(match: CompetencyMatch, retriever: KnowledgeRetriever) -> str:

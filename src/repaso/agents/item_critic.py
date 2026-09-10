@@ -1,7 +1,11 @@
+from typing import Annotated
 
-from repaso.agents.base import ModelOutput, StructuredCallFailed, structured
+from pydantic import BaseModel
+
+from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.item_critic import PROMPT_VERSION, SYSTEM
 from repaso.schemas.item import Item, ItemFlaw, ItemVerdict
+from repaso.schemas.nullable import NULL_IS_BLANK, NULL_IS_EMPTY
 
 CRITIC_ERROR_NOTE = "critic_error"
 SOURCE_EXCERPT_LIMIT = 4000
@@ -15,10 +19,10 @@ FLAW_CODES: dict[str, ItemFlaw] = {flaw.value: flaw for flaw in ItemFlaw}
 FLAW_VOCABULARY = ", ".join(FLAW_CODES)
 
 
-class CriticFinding(ModelOutput):
+class CriticFinding(BaseModel):
     accepted: bool
-    flaws: list[str] = []
-    notes: str = ""
+    flaws: Annotated[list[str], NULL_IS_EMPTY] = []
+    notes: Annotated[str, NULL_IS_BLANK] = ""
 
 
 def _render_options(item: Item) -> str:

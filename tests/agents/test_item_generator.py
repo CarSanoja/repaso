@@ -15,6 +15,7 @@ from repaso.schemas.item import ItemKind, ItemStatus
 from repaso.schemas.provenance import Source
 from repaso.tools.knowledge import LocalTaxonomyRetriever
 from repaso.tools.llm import LocalPlaybackModel
+from tests.agents.recorded_payloads import GENERATED_BATCH
 
 EQUIVALENCE = "math.g4.fractions.equivalence"
 NOW = datetime(2026, 3, 2, 19, 0, tzinfo=UTC)
@@ -133,14 +134,13 @@ async def test_invalid_drafts_are_dropped_and_counted(competency):
     assert draft_report(drafts, items) == {"generated": 7, "kept": 1, "dropped": 6}
 
 
-async def test_an_open_draft_whose_options_came_back_null_is_still_a_draft(competency):
-    payload = open_draft().model_dump(mode="json") | {"options": None}
-    batch = GeneratedBatch.model_validate({"items": [mcq_draft().model_dump(mode="json"), payload]})
-
-    items = await generate_items(MATERIAL, competency, 2, 4, LocalPlaybackModel([batch]), NOW)
+async def test_an_open_item_whose_options_arrive_null_reaches_the_child(competency):
+    model = LocalPlaybackModel([GENERATED_BATCH])
+    items = await generate_items(MATERIAL, competency, 2, 4, model, NOW)
 
     assert [item.kind for item in items] == [ItemKind.MCQ, ItemKind.OPEN]
-    assert batch.items[1].options == []
+    assert items[1].options == []
+    assert items[1].rubric
 
 
 async def test_generator_returns_nothing_when_the_model_fails(competency):

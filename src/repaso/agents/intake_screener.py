@@ -1,6 +1,10 @@
+from typing import Annotated
 
-from repaso.agents.base import ModelOutput, StructuredCallFailed, structured
+from pydantic import BaseModel
+
+from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.intake_screener import SYSTEM
+from repaso.schemas.nullable import NULL_IS_EMPTY
 from repaso.tools.guardrails import SCREENER_ERROR_REASON, Screener, ScreenVerdict
 
 UNTRUSTED_OPEN = "<untrusted_content>"
@@ -11,9 +15,9 @@ UNTRUSTED_FRAME = (
 )
 
 
-class IntakeDecision(ModelOutput):
+class IntakeDecision(BaseModel):
     safe: bool
-    reasons: list[str] = []
+    reasons: Annotated[list[str], NULL_IS_EMPTY] = []
 
 
 def frame_untrusted(text: str) -> str:

@@ -1,7 +1,7 @@
 import pytest
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 
-from repaso.agents.base import ModelOutput, StructuredCallFailed, structured, user_message
+from repaso.agents.base import StructuredCallFailed, structured, user_message
 from repaso.tools.cassette_model import CassetteExhausted, CassetteModel
 from repaso.tools.llm import LocalPlaybackModel, PlaybackExhausted
 
@@ -9,34 +9,6 @@ from repaso.tools.llm import LocalPlaybackModel, PlaybackExhausted
 class Verdict(BaseModel):
     ok: bool
     reason: str
-
-
-class Reported(ModelOutput):
-    label: str
-    reasons: list[str] = []
-    counts: list[int] = []
-    note: str | None = None
-
-
-def test_a_list_a_model_left_null_reads_as_nothing_to_report():
-    parsed = Reported(label="safe", reasons=None, counts=None)
-
-    assert (parsed.reasons, parsed.counts) == ([], [])
-
-
-def test_a_list_a_model_filled_survives_untouched():
-    parsed = Reported(label="unsafe", reasons=["marker"], counts=[1, 2])
-
-    assert (parsed.reasons, parsed.counts) == (["marker"], [1, 2])
-
-
-def test_an_omitted_list_still_takes_its_default():
-    assert Reported(label="safe").reasons == []
-
-
-def test_null_is_still_refused_where_the_field_is_not_a_list():
-    with pytest.raises(ValidationError):
-        Reported(label=None)
 
 
 async def test_structured_returns_the_parsed_output():

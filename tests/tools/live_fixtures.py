@@ -23,7 +23,16 @@ PAYLOADS: dict[str, dict] = {
                 "options": ["6/8", "3/8", "4/3"],
                 "answer_key": "6/8",
                 "rationale": "Multiplicamos ambos términos por 2.",
-            }
+            },
+            {
+                "kind": "open",
+                "difficulty": 3,
+                "stem": "Escribe dos fracciones equivalentes a 1/5 y explica cómo las obtuviste.",
+                "options": None,
+                "answer_key": "2/10 y 3/15, multiplicando ambos términos por el mismo número.",
+                "rationale": "El cuaderno multiplica numerador y denominador por el mismo número.",
+                "rubric": "2 puntos con explicación, 1 punto sin ella, 0 si las fracciones fallan.",
+            },
         ]
     },
     "Snippet": {"text": "Dos fracciones son equivalentes cuando nombran la misma cantidad."},
