@@ -30,6 +30,7 @@ class CassetteProvenance(FrozenStrictModel):
     cassette: str
     recorded_at: datetime
     commit: str
+    working_tree_modified: bool
     region: str
     what_this_is: str
     what_this_is_not: str
@@ -89,6 +90,7 @@ def build_provenance(
     records: list[CallRecord],
     recorded_at: datetime,
     commit: str,
+    working_tree_modified: bool,
     region: str,
     what_this_is: str,
     what_this_is_not: str,
@@ -97,6 +99,7 @@ def build_provenance(
         cassette=cassette.name,
         recorded_at=recorded_at,
         commit=commit,
+        working_tree_modified=working_tree_modified,
         region=region,
         what_this_is=what_this_is,
         what_this_is_not=what_this_is_not,

@@ -25,11 +25,19 @@ from repaso.tools.cost_report import build_cost_report
 from repaso.tools.cost_table import render_cost_report
 
 
-def head_commit(root: Path) -> str:
+def _git(root: Path, *arguments: str) -> str:
     result = subprocess.run(
-        ["git", "rev-parse", "HEAD"], cwd=root, capture_output=True, text=True, check=True
+        ["git", *arguments], cwd=root, capture_output=True, text=True, check=True
     )
     return result.stdout.strip()
+
+
+def head_commit(root: Path) -> str:
+    return _git(root, "rev-parse", "HEAD")
+
+
+def working_tree_modified(root: Path) -> bool:
+    return bool(_git(root, "status", "--porcelain"))
 
 
 def main() -> int:
@@ -68,6 +76,7 @@ def main() -> int:
         records=records,
         recorded_at=started,
         commit=head_commit(root),
+        working_tree_modified=working_tree_modified(root),
         region=args.region,
         what_this_is=WHAT_THIS_IS,
         what_this_is_not=WHAT_THIS_IS_NOT,

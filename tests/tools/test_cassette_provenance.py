@@ -65,6 +65,7 @@ def provenance(entries=None, records=None):
         records=records if records is not None else [record(1), record(2, "probe")],
         recorded_at=AT,
         commit="89338b1",
+        working_tree_modified=False,
         region="us-east-1",
         what_this_is=IS,
         what_this_is_not=IS_NOT,

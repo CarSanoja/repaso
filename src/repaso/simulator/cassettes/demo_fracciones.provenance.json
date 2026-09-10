@@ -1,0 +1,72 @@
+{
+  "cassette": "demo_fracciones.jsonl",
+  "recorded_at": "2026-09-12T08:09:20.287207Z",
+  "commit": "70f1d1e959ea11171dd62664d877bd698f959e9b",
+  "working_tree_modified": true,
+  "region": "us-east-1",
+  "what_this_is": "One recording of the demonstration journey against Amazon Bedrock on-demand inference: one entry per call, in the order the journey made them, each routed to the model its role is bound to in src/repaso/config/models.py. Token counts are the ones the provider reported and dollars are priced from the dated table in src/repaso/config/pricing.py.",
+  "what_this_is_not": "Not a live run. Replaying this cassette calls nothing and spends nothing, and a replay is not evidence that the models would answer this way again. One recording is not a rate, and nothing here measures tutoring quality or a family outcome.",
+  "entries": 31,
+  "model_ids": [
+    "us.amazon.nova-lite-v1:0",
+    "us.amazon.nova-micro-v1:0",
+    "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "us.anthropic.claude-sonnet-4-6"
+  ],
+  "roles": {
+    "classify": {
+      "model_ids": [
+        "us.amazon.nova-lite-v1:0"
+      ],
+      "calls": 2
+    },
+    "generate": {
+      "model_ids": [
+        "us.anthropic.claude-sonnet-4-6"
+      ],
+      "calls": 3
+    },
+    "judge": {
+      "model_ids": [
+        "us.anthropic.claude-sonnet-4-6"
+      ],
+      "calls": 14
+    },
+    "probe": {
+      "model_ids": [
+        "us.amazon.nova-micro-v1:0"
+      ],
+      "calls": 7
+    },
+    "structured": {
+      "model_ids": [
+        "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+      ],
+      "calls": 5
+    }
+  },
+  "prompt_versions": {
+    "CriticFinding": "v1",
+    "GeneratedBatch": "v1",
+    "IntakeDecision": "v1",
+    "MappingDecision": "v1",
+    "OpenGrade": "v1",
+    "PolicyDecision": "v1",
+    "ProbeAnswer": "v2-advisory",
+    "Snippet": "v1"
+  },
+  "replayed": {
+    "calls": 31,
+    "input_tokens": 36044,
+    "output_tokens": 6119,
+    "usd": 0.167641865
+  },
+  "recorded": {
+    "calls": 31,
+    "input_tokens": 36044,
+    "output_tokens": 6119,
+    "usd": 0.16764186500000006
+  },
+  "live_calls": 31,
+  "failed_calls": 0
+}

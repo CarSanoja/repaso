@@ -8,7 +8,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from repaso.simulator.demo_cost import cost_line, token_totals
+from repaso.simulator.demo_cost import cost_line
+from repaso.simulator.demo_provenance import replay_note
 from repaso.simulator.demo_scenario import (
     CASSETTE_PATH,
     run_demo_scenario,
@@ -16,6 +17,8 @@ from repaso.simulator.demo_scenario import (
 )
 from repaso.simulator.demo_transcript import render
 from repaso.tools.cassette import load_cassette
+from repaso.tools.cassette_cost import cassette_spend
+from repaso.tools.cassette_provenance import load_provenance, provenance_path
 
 LEGEND = (
     "Everything below happens in one Telegram chat, Carla's. Sofi has no account of "
@@ -23,10 +26,6 @@ LEGEND = (
     "is why the child's\nanswers are typed from the same phone. Buttons are drawn in "
     "brackets, and the lines that\nstart with an arrow are the harness reading itself "
     "after each answer."
-)
-PROVENANCE = (
-    "The model outputs come from an authored cassette, not from a live recording: the "
-    "token\ncounts are the ones the cassette declares, and nothing left this machine."
 )
 
 
@@ -56,8 +55,8 @@ def main() -> int:
         for line in render(entry):
             print(line)
     print()
-    print(cost_line(token_totals(load_cassette(cassette))))
-    print(PROVENANCE)
+    print(cost_line(cassette_spend(load_cassette(cassette))))
+    print(replay_note(load_provenance(provenance_path(cassette))))
     print(f"one family, four labeled school days, simulated in {elapsed:.1f}s into {data_dir}")
     if args.report:
         report = Path(args.report)

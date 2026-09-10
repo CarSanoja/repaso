@@ -10,7 +10,7 @@ COMPETENCY = "math.g4.fractions.equivalence"
 NOT_YET = "—"
 HELD = "held"
 ANSWERS_EXPECTED = 3
-DROPPED_EXPECTED = 5
+DROPPED_EXPECTED = 7
 
 
 def _queue_counters(services: Services) -> list[Any]:
@@ -60,8 +60,8 @@ def close_ledger(stage: Stage, family: Any, student: Any) -> None:
     stage.beat("questions the review dropped", DROPPED_EXPECTED, len(rejected))
     stage.beat("answers graded", ANSWERS_EXPECTED, len(graded))
     stage.beat(
-        "the day ends two right, one wrong",
-        "3 attempts / 2 correct",
+        "the day ends one right, two wrong",
+        "3 attempts / 1 correct",
         f"{mastery.attempts} attempts / {mastery.correct} correct" if mastery else "no mastery",
     )
     stage.beat("nobody was paged", 0, len(services.store.list_escalations(family.id)))

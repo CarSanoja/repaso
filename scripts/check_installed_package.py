@@ -16,7 +16,10 @@ from repaso.simulator.demo_scenario import run_demo_scenario, scenario_settings
 async def check():
     for package, names in {
         "repaso.api": ["static/judge.html", "static/judge.css", "static/judge.js"],
-        "repaso.simulator": ["cassettes/demo_fracciones.jsonl"],
+        "repaso.simulator": [
+            "cassettes/demo_fracciones.jsonl",
+            "cassettes/demo_fracciones.provenance.json",
+        ],
         "repaso.tools": ["fixtures/curriculum_math_primary.json"],
     }.items():
         for name in names:

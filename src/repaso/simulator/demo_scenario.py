@@ -34,7 +34,7 @@ INVITE_CODE = "REPASO-PILOTO-4B"
 TELEGRAM = "telegram"
 ANSWERS_EXPECTED = 3
 QUARANTINE_PREFIX = "quar:"
-APPROVE_SUFFIX = ":yes"
+REJECT_SUFFIX = ":no"
 WRONG_ANSWER = "porque le sumé el mismo número arriba y abajo, así que valen igual"
 HEDGED_ANSWER = "creo que sí porque los dos se parecen"
 NOTEBOOK_CAPTION = "[foto: página del cuaderno de fracciones]"
@@ -118,8 +118,8 @@ async def _notebook(stage: Stage) -> None:
     summary = await stage.says(PARENT, NOTEBOOK_CAPTION, media_ref=NOTEBOOK_REF)
     ingest = summary.get("ingest") or {}
     stage.beat("the notebook photo becomes practice", "material", summary.get("route"))
-    stage.beat("questions written from the page", 8, ingest.get("generated"))
-    stage.beat("questions that survived review", 7, len(ingest.get("kept_item_ids", [])))
+    stage.beat("questions written from the page", 6, ingest.get("generated"))
+    stage.beat("questions that survived review", 5, len(ingest.get("kept_item_ids", [])))
 
 
 async def _open_session(stage: Stage, family: Any, student: Any) -> None:
@@ -157,20 +157,21 @@ async def _practice(stage: Stage, family: Any, student: Any) -> None:
 
 
 async def _review(stage: Stage, family: Any, student: Any) -> None:
-    offered = stage.offered_button(QUARANTINE_PREFIX, APPROVE_SUFFIX)
+    offered = stage.offered_button(QUARANTINE_PREFIX, REJECT_SUFFIX)
     stage.beat(
         "the answer the grader would not sign reaches the parent",
         "one tap",
         _yes_no(offered is not None, "one tap"),
     )
     if offered is None:
+        stage.beat("the parent's tap settles it as wrong", "rejected", "never happened")
         return
     label, callback = offered
     stage.clock.advance(minutes=2)
     await stage.says(PARENT, label, callback=callback)
     quarantine_id = callback[len(QUARANTINE_PREFIX) :].partition(":")[0]
     record = stage.services.store.get_quarantine(family.id, quarantine_id)
-    stage.beat("the parent's tap releases it as correct", "approved", record.status.value)
+    stage.beat("the parent's tap settles it as wrong", "rejected", record.status.value)
     released = str(record.payload.get("item_id", ""))
     stage.note(
         "after the parent's review",

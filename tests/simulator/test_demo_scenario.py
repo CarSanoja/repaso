@@ -10,7 +10,8 @@ from repaso.agents.grader import OpenGrade
 from repaso.agents.intake_screener import IntakeDecision
 from repaso.agents.item_critic import CriticFinding
 from repaso.agents.item_generator import GeneratedBatch, is_valid_draft
-from repaso.config.models import ModelRole
+from repaso.config.models import DEFAULT_MODELS, ModelRole
+from repaso.schemas.item import ItemFlaw
 from repaso.simulator.demo_scenario import (
     CASSETTE_PATH,
     HEDGED_ANSWER,
@@ -42,13 +43,13 @@ EXPECTED_BEATS = [
     "questions that survived review",
     "the capsule carries the day's three questions",
     "the answer the grader would not sign reaches the parent",
-    "the parent's tap releases it as correct",
+    "the parent's tap settles it as wrong",
     "the guide's worked example is caught",
     "nothing from the guide reaches the child",
     "what the child was asked",
     "questions the review dropped",
     "answers graded",
-    "the day ends two right, one wrong",
+    "the day ends one right, two wrong",
     "nobody was paged",
     "every runtime invocation was accepted",
     "roles played from the cassette",
@@ -61,8 +62,11 @@ EXPECTED_BEATS = [
     "followup scripts were fully consumed",
 ]
 CRITIC_FINDINGS = 12
-CRITIC_REJECTIONS = 5
+CRITIC_REJECTIONS = 7
+NOTEBOOK_REJECTIONS = 1
 GENERATED_BATCHES = 2
+DRAFTS_PER_BATCH = [6, 6]
+FLAW_NAMES = {flaw.value for flaw in ItemFlaw}
 
 
 @pytest.fixture
@@ -95,7 +99,7 @@ async def test_the_transcript_is_the_chat_the_family_would_have_had(demo_setting
     assert spoken[0] == Speech(speaker=PARENT, text=INVITE_CODE)
     assert any(entry.speaker is BOT and "Acepto" in entry.buttons for entry in spoken)
     assert [entry.text for entry in spoken if entry.speaker == CHILD][:3] == [
-        "2/4",
+        "2",
         WRONG_ANSWER,
         HEDGED_ANSWER,
     ]
@@ -114,7 +118,7 @@ async def test_the_parent_is_asked_to_settle_the_answer_the_grader_would_not(dem
 
     assert len(prompts) == 1
     assert prompts[0].buttons == ("Está bien", "Está mal", "No sé todavía")
-    assert HEDGED_ANSWER in prompts[0].text
+    assert WRONG_ANSWER in prompts[0].text
 
 
 async def test_a_harness_reading_follows_every_answer_and_the_review(demo_settings):
@@ -137,20 +141,29 @@ async def test_a_harness_reading_follows_every_answer_and_the_review(demo_settin
         "decision",
         "escalations open",
     ]
-    assert dict(taken[2].values)["next review"] == "held"
+    assert dict(taken[1].values)["next review"] == "held"
     assert dict(taken[3].values)["attempts"] == "3"
 
 
 async def test_the_cassette_is_played_to_its_last_entry(demo_settings):
     services = build_scenario_services(demo_settings)
 
-    await run_demo_scenario(demo_settings, services)
+    result = await run_demo_scenario(demo_settings, services)
 
     entries = load_cassette(CASSETTE_PATH)
+    counted = 0
     for role in ModelRole:
         played = [entry for entry in entries if entry.role == role.value]
         assert played, role
         assert services.models[role].remaining_total() == 0, role
+        counted += len(played)
+    assert counted == len(entries)
+    assert result.failures == []
+
+
+def test_each_entry_was_recorded_from_the_model_its_role_is_bound_to():
+    for number, entry in enumerate(load_cassette(CASSETTE_PATH), start=1):
+        assert entry.model_id == DEFAULT_MODELS[ModelRole(entry.role)], number
 
 
 async def test_a_short_cassette_stops_the_run_instead_of_inventing_an_answer(
@@ -176,7 +189,7 @@ def test_every_cassette_entry_validates_against_the_schema_it_names():
         assert entry.usage is not None, number
 
 
-def test_every_authored_draft_is_one_the_generator_would_keep():
+def test_every_recorded_draft_is_one_the_generator_would_keep():
     batches = [
         GeneratedBatch.model_validate(entry.payload)
         for entry in load_cassette(CASSETTE_PATH)
@@ -184,22 +197,22 @@ def test_every_authored_draft_is_one_the_generator_would_keep():
     ]
 
     assert len(batches) == GENERATED_BATCHES
-    assert [len(batch.items) for batch in batches] == [8, 4]
+    assert [len(batch.items) for batch in batches] == DRAFTS_PER_BATCH
     assert all(is_valid_draft(draft) for batch in batches for draft in batch.items)
 
 
-def test_the_review_rejects_the_flawed_item_and_the_whole_wrong_guide():
+def test_the_review_drops_a_weak_item_and_the_whole_wrong_guide():
     findings = [
         CriticFinding.model_validate(entry.payload)
         for entry in load_cassette(CASSETTE_PATH)
         if entry.output_model == "CriticFinding"
     ]
+    notebook, guide = findings[: DRAFTS_PER_BATCH[0]], findings[DRAFTS_PER_BATCH[0] :]
     rejected = [finding for finding in findings if not finding.accepted]
 
     assert len(findings) == CRITIC_FINDINGS
     assert len(rejected) == CRITIC_REJECTIONS
-    assert [finding.flaws for finding in rejected] == [
-        ["ambiguous"],
-        *[["ungradable"]] * 4,
-    ]
-    assert all(finding.notes for finding in rejected)
+    assert [finding.accepted for finding in guide] == [False] * DRAFTS_PER_BATCH[1]
+    assert sum(1 for finding in notebook if not finding.accepted) == NOTEBOOK_REJECTIONS
+    assert all(finding.flaws and finding.notes for finding in rejected)
+    assert {flaw for finding in rejected for flaw in finding.flaws} <= FLAW_NAMES

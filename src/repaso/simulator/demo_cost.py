@@ -1,37 +1,22 @@
-from dataclasses import dataclass
+from repaso.tools.cassette_cost import CassetteSpend
 
-from repaso.tools.cassette import CassetteEntry
-
-NOT_RECORDED = "not recorded"
-
-
-@dataclass(frozen=True)
-class TokenTotals:
-    calls: int
-    priced: int
-    input_tokens: int
-    output_tokens: int
-
-    @property
-    def unpriced(self) -> int:
-        return self.calls - self.priced
+NO_USAGE = "no usage"
+NO_RATE = "no rate"
 
 
-def token_totals(entries: list[CassetteEntry]) -> TokenTotals:
-    priced = [entry.usage for entry in entries if entry.usage is not None]
-    return TokenTotals(
-        calls=len(entries),
-        priced=len(priced),
-        input_tokens=sum(usage.input_tokens for usage in priced),
-        output_tokens=sum(usage.output_tokens for usage in priced),
-    )
+def _tail(spend: CassetteSpend) -> str:
+    missing = []
+    if spend.unreported:
+        missing.append(f"{spend.unreported} with {NO_USAGE} reported")
+    if spend.unpriced:
+        missing.append(f"{spend.unpriced} with {NO_RATE} in the price table")
+    return f" ({', '.join(missing)})" if missing else ""
 
 
-def cost_line(totals: TokenTotals) -> str:
-    if not totals.priced:
-        return f"cost: {NOT_RECORDED} — none of the {totals.calls} cassette entries carry usage"
-    tail = f" ({totals.unpriced} {NOT_RECORDED})" if totals.unpriced else ""
+def cost_line(spend: CassetteSpend) -> str:
+    if not spend.reported:
+        return f"cost: {NO_USAGE} reported by any of the {spend.calls} recorded model calls"
     return (
-        f"cost: {totals.input_tokens:,} input + {totals.output_tokens:,} output tokens "
-        f"over {totals.priced} of {totals.calls} model calls{tail}"
+        f"cost: {spend.usage.input_tokens:,} input + {spend.usage.output_tokens:,} output "
+        f"tokens and ${spend.usd:.4f} over {spend.calls} recorded model calls{_tail(spend)}"
     )

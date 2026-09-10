@@ -48,7 +48,7 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-"repaso.simulator" = ["cassettes/*.jsonl"]
+"repaso.simulator" = ["cassettes/*.jsonl", "cassettes/*.provenance.json"]
 "repaso.tools" = ["fixtures/*.json"]
 "repaso.api" = ["static/*.html", "static/*.css", "static/*.js"]
 
