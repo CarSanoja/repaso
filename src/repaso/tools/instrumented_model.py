@@ -9,7 +9,7 @@ from repaso.config.models import ModelRole
 from repaso.tools.call_ledger import CallLedger, CallOutcome, NullCallLedger
 from repaso.tools.call_watch import CallWatch
 from repaso.tools.cassette import STREAM_KIND, STRUCTURED_KIND
-from repaso.tools.model_limits import ModelLimitReached
+from repaso.tools.model_limits import ModelLimitReached, transient
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -127,13 +127,5 @@ def instrument_models(
 
 
 def _raise_unavailable(error):
-    code = getattr(error, "response", {}).get("Error", {}).get("Code", "")
-    if isinstance(error, (TimeoutError, ConnectionError)) or code in {
-        "ThrottlingException",
-        "ServiceUnavailableException",
-        "ModelTimeoutException",
-        "InternalServerException",
-        "ModelNotReadyException",
-        "TooManyRequestsException",
-    }:
+    if transient(error):
         raise ModelLimitReached("model unavailable; pending work is preserved") from error

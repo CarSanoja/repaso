@@ -8,6 +8,16 @@ BREAKER_RECOVERY_SECONDS = 60
 MESSAGE_SCOPE_KEY = "message_scope"
 MESSAGE_QUOTA_TTL_SECONDS = 172800
 SYSTEM_SCOPE = "system"
+TRANSIENT_CODES = frozenset(
+    {
+        "ThrottlingException",
+        "ServiceUnavailableException",
+        "ModelTimeoutException",
+        "InternalServerException",
+        "ModelNotReadyException",
+        "TooManyRequestsException",
+    }
+)
 
 
 class LimitReason(StrEnum):
@@ -23,6 +33,12 @@ class ModelLimitReached(RuntimeError):
     ) -> None:
         super().__init__(message)
         self.reason = reason
+
+
+def transient(error: BaseException) -> bool:
+    response = getattr(error, "response", None)
+    code = response.get("Error", {}).get("Code", "") if isinstance(response, dict) else ""
+    return isinstance(error, TimeoutError | ConnectionError) or code in TRANSIENT_CODES
 
 
 class ModelLimits:
