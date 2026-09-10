@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from scripts.answer_evaluation_collect import collect
-from scripts.answer_evaluation_scoring import score
+from scripts.answer_evaluation_scoring import DEFAULT_THRESHOLD, score
 
 
 def read_cases(path):
@@ -37,9 +37,12 @@ def main():
     parser.add_argument("--predictions", help="Score a saved JSONL batch without model calls")
     parser.add_argument("--split", choices=("all", "development", "held_out"), default="all")
     parser.add_argument("--max-calls", type=int, default=15)
+    parser.add_argument("--threshold", type=float, default=DEFAULT_THRESHOLD)
     args = parser.parse_args()
     if not 1 <= args.max_calls <= 60:
         parser.error("max-calls must be between 1 and 60")
+    if not 0.0 <= args.threshold <= 1.0:
+        parser.error("threshold must be between 0 and 1")
     cases = read_cases(args.dataset)
     if args.split != "all":
         cases = [c for c in cases if c.get("split") == args.split]
@@ -55,7 +58,7 @@ def main():
         if args.live
         else (read_rows(args.predictions) if args.predictions else [])
     )
-    report = score(cases, predictions, labels) | {
+    report = score(cases, predictions, labels, args.threshold) | {
         "mode": "live"
         if args.live
         else ("saved scoring" if args.predictions else "schema validation"),

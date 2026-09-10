@@ -25,7 +25,50 @@ ACCOUNT_ENV = "REPASO_EVALUATION_ACCOUNT_ID"
 REGION = "us-east-1"
 FAMILY = "evaluation-synthetic"
 COMPETENCY = "math.g4.fractions.equivalence"
-CONFIDENCE_THRESHOLD = 0.85
+UNGATED = 0.0
+SCREENED = "screened"
+GRADED = "graded"
+CALL_FAILED = "call_failed"
+
+
+def item_for(case: dict, now: datetime) -> Item:
+    return Item(
+        id=case["id"],
+        family_id=FAMILY,
+        kind=ItemKind.OPEN,
+        competency_id=COMPETENCY,
+        difficulty=2,
+        stem=case["question"],
+        answer_key=case["answer_key"],
+        rubric=case["rubric"],
+        rationale=case["answer_key"],
+        provenance=Provenance(source=Source.SIMULATED, created_at=now),
+    )
+
+
+def response_for(case: dict, now: datetime) -> StudentResponse:
+    return StudentResponse(
+        student_id=FAMILY,
+        item_id=case["id"],
+        text=case["answer"],
+        latency_seconds=45,
+        received_at=now,
+    )
+
+
+async def grade_case(case: dict, model, now: datetime) -> dict:
+    row = {"id": case["id"], "origin": "live", "at": now.isoformat()}
+    if not LocalScreener().screen(case["answer"]).safe:
+        return row | {"route": SCREENED, "correct": None, "confidence": None}
+    grade, _ = await grade_open(
+        item_for(case, now), response_for(case, now), Lang.ES, model, UNGATED, now, FAMILY
+    )
+    return row | {
+        "route": CALL_FAILED if grade.quarantined else GRADED,
+        "correct": grade.correct,
+        "confidence": grade.confidence,
+        "rubric_points": grade.rubric_points,
+    }
 
 
 def sidecars(output: Path) -> dict[str, Path]:
@@ -51,7 +94,7 @@ def provenance_of(cases: list[dict], dataset: str, split: str) -> dict:
         "role": ModelRole.JUDGE.value,
         "model_id": model_for(ModelRole.JUDGE),
         "prompt_version": PROMPT_VERSION,
-        "confidence_threshold": CONFIDENCE_THRESHOLD,
+        "gated_at_collection": False,
         "candidate_commit": candidate_commit(),
         "region": REGION,
         "collected_at": datetime.now(UTC).isoformat(),
@@ -100,37 +143,7 @@ async def collect(
         now = datetime.now(UTC)
         row = {"id": case["id"], "origin": "live", "at": now.isoformat()}
         try:
-            if not LocalScreener().screen(case["answer"]).safe:
-                row.update(correct=None, quarantined=True, confidence=None, route="screened")
-            else:
-                item = Item(
-                    id=case["id"],
-                    family_id=FAMILY,
-                    kind=ItemKind.OPEN,
-                    competency_id=COMPETENCY,
-                    difficulty=2,
-                    stem=case["question"],
-                    answer_key=case["answer_key"],
-                    rubric=case["rubric"],
-                    rationale=case["answer_key"],
-                    provenance=Provenance(source=Source.SIMULATED, created_at=now),
-                )
-                response = StudentResponse(
-                    student_id=FAMILY,
-                    item_id=item.id,
-                    text=case["answer"],
-                    latency_seconds=45,
-                    received_at=now,
-                )
-                grade, _ = await grade_open(
-                    item, response, Lang.ES, model, CONFIDENCE_THRESHOLD, now, FAMILY
-                )
-                row.update(
-                    correct=grade.correct,
-                    quarantined=grade.quarantined,
-                    confidence=grade.confidence,
-                    rubric_points=grade.rubric_points,
-                )
+            row = await grade_case(case, model, now)
         except Exception as error:
             row["error"] = type(error).__name__
         predictions.append(row)

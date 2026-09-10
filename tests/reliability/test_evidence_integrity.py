@@ -5,7 +5,7 @@ from scripts.run_answer_evaluation import read_cases
 
 def test_proposed_or_incomplete_labels_cannot_be_reported_as_independent_quality():
     cases = read_cases("evaluation/answer_review_set.jsonl")
-    prediction = {"id": cases[0]["id"], "correct": True, "quarantined": False, "confidence": 0.99}
+    prediction = {"id": cases[0]["id"], "correct": True, "route": "graded", "confidence": 0.99}
     label = {
         "id": cases[0]["id"],
         "reviewer": "teacher",
