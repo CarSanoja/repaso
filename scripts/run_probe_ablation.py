@@ -116,8 +116,9 @@ def analyze(frozen: FrozenSet, transcript: Path, rows_path: Path, report_path: P
     return report
 
 
-def ledger_total(path: Path) -> float:
-    return build_cost_report(load_ledger(path)).total_usd
+def ledger_total(paths: list[Path]) -> float:
+    records = [record for path in paths for record in load_ledger(path)]
+    return build_cost_report(records).total_usd
 
 
 def main() -> None:
@@ -137,7 +138,7 @@ def main() -> None:
     parser.add_argument("--report", type=Path, default=Path("docs/evidence/probe-ablation.json"))
     parser.add_argument("--data-dir", type=Path, default=Path(".local_data/ablation"))
     parser.add_argument("--max-usd", type=float, default=4.0)
-    parser.add_argument("--ledger", type=Path)
+    parser.add_argument("--ledger", type=Path, nargs="+", default=[])
     args = parser.parse_args()
 
     if args.freeze:

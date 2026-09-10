@@ -1,0 +1,366 @@
+{
+  "labels": {
+    "items": 30,
+    "unplanted": 18,
+    "planted": 12,
+    "planted_option_clue": 8,
+    "by_defect": {
+      "implausible_distractors": 4,
+      "none": 18,
+      "option_cue": 4,
+      "wrong_key": 4
+    }
+  },
+  "permutation_seeds": [
+    1,
+    2,
+    3
+  ],
+  "arms": {
+    "critic_only": {
+      "decisions": 90,
+      "unplanted_retention": {
+        "count": 20,
+        "of": 54,
+        "rate": 0.3704,
+        "wilson_95": [
+          0.2542,
+          0.5037
+        ]
+      },
+      "planted_rejection": {
+        "count": 34,
+        "of": 36,
+        "rate": 0.9444,
+        "wilson_95": [
+          0.8186,
+          0.9846
+        ]
+      },
+      "finalized_key_correctness": {
+        "count": 22,
+        "of": 22,
+        "rate": 1.0,
+        "wilson_95": [
+          0.8513,
+          1.0
+        ]
+      },
+      "accepted": 22,
+      "errors": 0,
+      "calls": 90,
+      "input_tokens": 149817,
+      "output_tokens": 15670,
+      "usd": 0.684501,
+      "latency_ms_total": 301713.6,
+      "calls_per_decision": 1.0,
+      "usd_per_decision": 0.007606,
+      "latency_ms_per_decision": 3352.4,
+      "extra_calls_vs_critic_only": 0,
+      "extra_usd_vs_critic_only": 0.0,
+      "rejection_by_planted_defect": {
+        "implausible_distractors": {
+          "count": 12,
+          "of": 12,
+          "rate": 1.0,
+          "wilson_95": [
+            0.7575,
+            1.0
+          ]
+        },
+        "none": {
+          "count": 34,
+          "of": 54,
+          "rate": 0.6296,
+          "wilson_95": [
+            0.4963,
+            0.7458
+          ]
+        },
+        "option_cue": {
+          "count": 10,
+          "of": 12,
+          "rate": 0.8333,
+          "wilson_95": [
+            0.552,
+            0.953
+          ]
+        },
+        "wrong_key": {
+          "count": 12,
+          "of": 12,
+          "rate": 1.0,
+          "wilson_95": [
+            0.7575,
+            1.0
+          ]
+        }
+      }
+    },
+    "critic_plus_forced_choice_veto": {
+      "decisions": 90,
+      "unplanted_retention": {
+        "count": 7,
+        "of": 54,
+        "rate": 0.1296,
+        "wilson_95": [
+          0.0642,
+          0.2442
+        ]
+      },
+      "planted_rejection": {
+        "count": 36,
+        "of": 36,
+        "rate": 1.0,
+        "wilson_95": [
+          0.9036,
+          1.0
+        ]
+      },
+      "finalized_key_correctness": {
+        "count": 7,
+        "of": 7,
+        "rate": 1.0,
+        "wilson_95": [
+          0.6457,
+          1.0
+        ]
+      },
+      "accepted": 7,
+      "errors": 0,
+      "calls": 180,
+      "input_tokens": 207041,
+      "output_tokens": 17208,
+      "usd": 0.686719,
+      "latency_ms_total": 346216.5,
+      "calls_per_decision": 2.0,
+      "usd_per_decision": 0.00763,
+      "latency_ms_per_decision": 3846.8,
+      "extra_calls_vs_critic_only": 90,
+      "extra_usd_vs_critic_only": 0.002218,
+      "rejection_by_planted_defect": {
+        "implausible_distractors": {
+          "count": 12,
+          "of": 12,
+          "rate": 1.0,
+          "wilson_95": [
+            0.7575,
+            1.0
+          ]
+        },
+        "none": {
+          "count": 47,
+          "of": 54,
+          "rate": 0.8704,
+          "wilson_95": [
+            0.7558,
+            0.9358
+          ]
+        },
+        "option_cue": {
+          "count": 12,
+          "of": 12,
+          "rate": 1.0,
+          "wilson_95": [
+            0.7575,
+            1.0
+          ]
+        },
+        "wrong_key": {
+          "count": 12,
+          "of": 12,
+          "rate": 1.0,
+          "wilson_95": [
+            0.7575,
+            1.0
+          ]
+        }
+      }
+    },
+    "critic_plus_advisory_probe": {
+      "decisions": 90,
+      "unplanted_retention": {
+        "count": 20,
+        "of": 54,
+        "rate": 0.3704,
+        "wilson_95": [
+          0.2542,
+          0.5037
+        ]
+      },
+      "planted_rejection": {
+        "count": 34,
+        "of": 36,
+        "rate": 0.9444,
+        "wilson_95": [
+          0.8186,
+          0.9846
+        ]
+      },
+      "finalized_key_correctness": {
+        "count": 22,
+        "of": 22,
+        "rate": 1.0,
+        "wilson_95": [
+          0.8513,
+          1.0
+        ]
+      },
+      "accepted": 22,
+      "errors": 0,
+      "calls": 180,
+      "input_tokens": 198878,
+      "output_tokens": 17034,
+      "usd": 0.686409,
+      "latency_ms_total": 346436.8,
+      "calls_per_decision": 2.0,
+      "usd_per_decision": 0.007627,
+      "latency_ms_per_decision": 3849.3,
+      "extra_calls_vs_critic_only": 90,
+      "extra_usd_vs_critic_only": 0.001908,
+      "rejection_by_planted_defect": {
+        "implausible_distractors": {
+          "count": 12,
+          "of": 12,
+          "rate": 1.0,
+          "wilson_95": [
+            0.7575,
+            1.0
+          ]
+        },
+        "none": {
+          "count": 34,
+          "of": 54,
+          "rate": 0.6296,
+          "wilson_95": [
+            0.4963,
+            0.7458
+          ]
+        },
+        "option_cue": {
+          "count": 10,
+          "of": 12,
+          "rate": 0.8333,
+          "wilson_95": [
+            0.552,
+            0.953
+          ]
+        },
+        "wrong_key": {
+          "count": 12,
+          "of": 12,
+          "rate": 1.0,
+          "wilson_95": [
+            0.7575,
+            1.0
+          ]
+        }
+      }
+    }
+  },
+  "probe_signal": {
+    "forced_choice": {
+      "replies": 90,
+      "failed": 0,
+      "hit_rate_overall": {
+        "count": 57,
+        "of": 90,
+        "rate": 0.6333,
+        "wilson_95": [
+          0.5302,
+          0.7255
+        ]
+      },
+      "hit_rate_on_planted_clue": {
+        "count": 16,
+        "of": 24,
+        "rate": 0.6667,
+        "wilson_95": [
+          0.4671,
+          0.8203
+        ]
+      },
+      "hit_rate_without_planted_clue": {
+        "count": 41,
+        "of": 66,
+        "rate": 0.6212,
+        "wilson_95": [
+          0.5006,
+          0.7285
+        ]
+      },
+      "share_of_hits_that_were_clued": {
+        "count": 16,
+        "of": 57,
+        "rate": 0.2807,
+        "wilson_95": [
+          0.1808,
+          0.4083
+        ]
+      }
+    },
+    "advisory": {
+      "replies": 90,
+      "failed": 0,
+      "hit_rate_overall": {
+        "count": 9,
+        "of": 90,
+        "rate": 0.1,
+        "wilson_95": [
+          0.0535,
+          0.1792
+        ]
+      },
+      "hit_rate_on_planted_clue": {
+        "count": 1,
+        "of": 24,
+        "rate": 0.0417,
+        "wilson_95": [
+          0.0074,
+          0.2024
+        ]
+      },
+      "hit_rate_without_planted_clue": {
+        "count": 8,
+        "of": 66,
+        "rate": 0.1212,
+        "wilson_95": [
+          0.0627,
+          0.2214
+        ]
+      },
+      "share_of_hits_that_were_clued": {
+        "count": 1,
+        "of": 9,
+        "rate": 0.1111,
+        "wilson_95": [
+          0.0199,
+          0.435
+        ]
+      }
+    }
+  },
+  "critic_repeat": {
+    "repeated_items": 30,
+    "same_decision": {
+      "count": 29,
+      "of": 30,
+      "rate": 0.9667,
+      "wilson_95": [
+        0.8333,
+        0.9941
+      ]
+    },
+    "calls": 30,
+    "input_tokens": 49939,
+    "output_tokens": 5379,
+    "usd": 0.230502,
+    "latency_ms_total": 100832.5
+  },
+  "model_ids": {
+    "critic": "us.anthropic.claude-sonnet-4-6",
+    "probe": "us.amazon.nova-micro-v1:0",
+    "item_generation": "us.anthropic.claude-sonnet-4-6"
+  },
+  "ledger_usd": 1.271299
+}
