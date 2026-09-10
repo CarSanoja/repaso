@@ -154,7 +154,43 @@ exceeds it is a failed call, not an error thrown out of the harness.
 
 Token counts come from the usage metadata on the Converse stream, so the
 dollars in the report are computed from what the call actually consumed rather
-than from the estimate. The models are wrapped in the same telemetry
+than from the estimate. `structured_output` reports that metadata one level
+deeper than `stream` does, wrapped in an `event` key, because it runs the same
+stream through the SDK's `process_stream`; one reader,
+`src/repaso/tools/model_usage.py`, handles both and every other module asks it.
+
+## Extended thinking
+
+Claude Sonnet 4.6 and Claude Haiku 4.5 both support reasoning, and a
+`stream()` call with `additionalModelRequestFields={"thinking": ...}` returns
+the reasoning as `contentBlockDelta` events carrying `reasoningContent`. The
+recorder captures that text into the cassette and the replay emits it back, so
+a recorded thinking call replays with its reasoning rather than only its
+answer. The cryptographic signature that accompanies a reasoning block is not
+kept: it exists to return the block to the provider in a later turn, which a
+cassette never does.
+
+Two limits are worth stating plainly, because both bound what this repository
+can claim about thinking.
+
+The Converse usage block reports no reasoning token count. A measured Sonnet
+call that produced a visible reasoning block reported only `inputTokens`,
+`outputTokens` and `totalTokens`; the `Usage` type in the installed Strands
+version (1.52.0) carries `inputTokens`, `outputTokens`, `totalTokens`,
+`cacheReadInputTokens` and `cacheWriteInputTokens` and nothing else, and no
+model provider in that version populates a reasoning count. The usage reader
+reads a reasoning count if one ever appears and prices it at the output rate;
+until one does, the cost report says the reasoning share is not reported
+rather than printing zero.
+
+Thinking cannot be combined with `structured_output` through this SDK version.
+`BedrockModel.structured_output` forces a tool with `tool_choice={"any": {}}`,
+and `_get_additional_request_fields` deliberately strips the `thinking` key
+whenever tool use is forced, because Bedrock rejects the combination. A
+measured Sonnet call with thinking configured and a schema requested returned
+the schema and no reasoning content at all -- silently, with no error. Every
+call the agent fleet makes is a `structured_output` call, so no agent in this
+repository can think today, whatever the model supports. The models are wrapped in the same telemetry
 instrumentation the production graphs use, and the traces land beside the report
 in `.local_data/live/telemetry.jsonl`.
 

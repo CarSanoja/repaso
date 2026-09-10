@@ -25,6 +25,9 @@ class CassetteEntry(BaseModel):
     output_model: str | None = None
     payload: dict[str, Any] | None = None
     text: str | None = None
+    reasoning: str | None = None
+    model_id: str | None = None
+    stop_reason: str | None = None
     usage: CallUsage | None = None
     latency_ms: float | None = Field(default=None, ge=0.0)
 

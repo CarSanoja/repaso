@@ -12,7 +12,7 @@ from repaso.tools.cassette import (
     CassetteEntry,
     CassetteWriter,
 )
-from repaso.tools.model_usage import CallUsage, usage_from_event
+from repaso.tools.model_usage import CallUsage, stop_reason_from_event, usage_from_event
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -22,8 +22,17 @@ def _mapping(value: Any, key: str) -> dict[str, Any]:
     return inner if isinstance(inner, dict) else {}
 
 
+def _delta(event: Any) -> dict[str, Any]:
+    return _mapping(_mapping(event, "contentBlockDelta"), "delta")
+
+
 def _streamed_text(event: Any) -> str | None:
-    text = _mapping(_mapping(event, "contentBlockDelta"), "delta").get("text")
+    text = _delta(event).get("text")
+    return text if isinstance(text, str) else None
+
+
+def _streamed_reasoning(event: Any) -> str | None:
+    text = _mapping(_delta(event), "reasoningContent").get("text")
     return text if isinstance(text, str) else None
 
 
@@ -48,21 +57,35 @@ class RecordingModel(Model):
     def _elapsed_ms(self, started: float) -> float:
         return (time.perf_counter() - started) * 1000
 
+    def _model_id(self) -> str | None:
+        config = self.inner.get_config()
+        model_id = config.get("model_id") if isinstance(config, dict) else None
+        return model_id if isinstance(model_id, str) and model_id else None
+
     async def stream(self, messages: Messages, *args: Any, **kwargs: Any):
         started = time.perf_counter()
         chunks: list[str] = []
+        thoughts: list[str] = []
         usage: CallUsage | None = None
+        stop_reason: str | None = None
         async for event in self.inner.stream(messages, *args, **kwargs):
             text = _streamed_text(event)
             if text is not None:
                 chunks.append(text)
+            reasoning = _streamed_reasoning(event)
+            if reasoning is not None:
+                thoughts.append(reasoning)
             usage = usage_from_event(event) or usage
+            stop_reason = stop_reason_from_event(event) or stop_reason
             yield event
         self._writer.append(
             CassetteEntry(
                 role=self._role,
                 kind=STREAM_KIND,
                 text="".join(chunks),
+                reasoning="".join(thoughts) or None,
+                model_id=self._model_id(),
+                stop_reason=stop_reason,
                 usage=usage,
                 latency_ms=self._elapsed_ms(started),
             )
@@ -78,6 +101,7 @@ class RecordingModel(Model):
         started = time.perf_counter()
         payload: dict[str, Any] | None = None
         usage: CallUsage | None = None
+        stop_reason: str | None = None
         async for event in self.inner.structured_output(
             output_model, prompt, system_prompt=system_prompt, **kwargs
         ):
@@ -85,6 +109,7 @@ class RecordingModel(Model):
             if isinstance(output, BaseModel):
                 payload = output.model_dump(mode="json")
             usage = usage_from_event(event) or usage
+            stop_reason = stop_reason_from_event(event) or stop_reason
             yield event
         if payload is None:
             return
@@ -94,6 +119,8 @@ class RecordingModel(Model):
                 kind=STRUCTURED_KIND,
                 output_model=output_model.__name__,
                 payload=payload,
+                model_id=self._model_id(),
+                stop_reason=stop_reason,
                 usage=usage,
                 latency_ms=self._elapsed_ms(started),
             )

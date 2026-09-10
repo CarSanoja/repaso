@@ -24,11 +24,14 @@ class CassetteModel(Model):
     def __init__(self, entries: Iterable[CassetteEntry], role: str) -> None:
         self.role = role
         self._queues: dict[CassetteKey, deque[CassetteEntry]] = {}
-        for entry in entries:
-            if entry.role == role:
-                self._queues.setdefault((entry.kind, entry.output_model), deque()).append(entry)
-        self._calls: dict[CassetteKey, int] = defaultdict(int)
         self._config: dict[str, Any] = {}
+        for entry in entries:
+            if entry.role != role:
+                continue
+            self._queues.setdefault((entry.kind, entry.output_model), deque()).append(entry)
+            if entry.model_id and "model_id" not in self._config:
+                self._config["model_id"] = entry.model_id
+        self._calls: dict[CassetteKey, int] = defaultdict(int)
 
     def update_config(self, **model_config: Any) -> None:
         self._config.update(model_config)
@@ -66,10 +69,14 @@ class CassetteModel(Model):
     ) -> AsyncIterable[StreamEvent]:
         entry = self._take(STREAM_KIND, None)
         yield {"messageStart": {"role": "assistant"}}
+        if entry.reasoning is not None:
+            yield {"contentBlockStart": {"start": {}}}
+            yield {"contentBlockDelta": {"delta": {"reasoningContent": {"text": entry.reasoning}}}}
+            yield {"contentBlockStop": {}}
         yield {"contentBlockStart": {"start": {}}}
         yield {"contentBlockDelta": {"delta": {"text": entry.text}}}
         yield {"contentBlockStop": {}}
-        yield {"messageStop": {"stopReason": "end_turn"}}
+        yield {"messageStop": {"stopReason": entry.stop_reason or "end_turn"}}
         if entry.usage is not None:
             yield usage_metadata(entry.usage)
 
@@ -81,6 +88,8 @@ class CassetteModel(Model):
         **kwargs: Any,
     ) -> AsyncGenerator[dict[str, T | Any], None]:
         entry = self._take(STRUCTURED_KIND, output_model.__name__)
+        if entry.stop_reason is not None:
+            yield {"event": {"messageStop": {"stopReason": entry.stop_reason}}}
         if entry.usage is not None:
             yield {"event": usage_metadata(entry.usage)}
         yield {"output": output_model.model_validate(entry.payload)}
