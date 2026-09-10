@@ -51,7 +51,7 @@ def main():
     if args.live and output.exists():
         parser.error("choose a new output to preserve previous evidence")
     predictions = (
-        asyncio.run(collect(cases, output, args.max_calls))
+        asyncio.run(collect(cases, output, args.max_calls, args.dataset, args.split))
         if args.live
         else (read_rows(args.predictions) if args.predictions else [])
     )
