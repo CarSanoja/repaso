@@ -1,11 +1,11 @@
-from threading import Lock
+from threading import RLock
 from typing import Any
 
 
-class OneRequestAtATime:
+class OneCallAtATime:
     def __init__(self, client: Any) -> None:
         self._client = client
-        self._lock = Lock()
+        self._lock = RLock()
 
     def __getattr__(self, name: str) -> Any:
         attribute = getattr(self._client, name)

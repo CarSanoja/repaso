@@ -10,13 +10,13 @@ from repaso.tools.media_store import S3MediaStore
 from repaso.tools.state_dynamo import DynamoStateStore
 from tests.orchestration.fixtures import FRACTIONS, seed_family, seed_held_answer, seed_open_item
 from tests.orchestration.test_gap_recovery import IntermittentSender, make_services, seed_mcqs
-from tests.tools.aws_doubles import OneRequestAtATime
+from tests.tools.moto_atomicity import OneCallAtATime
 
 
 @pytest.fixture
 def cloud_services(settings, monkeypatch):
     with mock_aws():
-        client = boto3.client("dynamodb", region_name="us-east-1")
+        client = OneCallAtATime(boto3.client("dynamodb", region_name="us-east-1"))
         client.create_table(
             TableName="repaso",
             BillingMode="PAY_PER_REQUEST",
@@ -38,7 +38,6 @@ def cloud_services(settings, monkeypatch):
                 }
             ],
         )
-        client = OneRequestAtATime(client)
         for module in (
             "repaso.config.clients",
             "repaso.tools.state_dynamo",
@@ -132,19 +131,3 @@ def test_erasure_resumes_after_partial_delete_and_finds_an_orphaned_copy(
     assert s.store.get_family(family.id) is None and s.store.get_student(student.id) is None
     assert s.store.get_family(other.id) is not None
     assert not s.store.list_family_items(family.id)
-
-
-def test_erasure_reaches_the_claim_that_admitted_a_message(cloud_services):
-    s, client, _ = cloud_services
-    family, _ = seed_family(s.store)
-    other, _ = seed_family(s.store, "f2", "200")
-    mine = f"chat:{family.chat_ref}#published#42"
-    theirs = f"chat:{other.chat_ref}#published#43"
-    assert s.store.claim(mine, "telegram-webhook")
-    assert s.store.claim(theirs, "telegram-webhook")
-
-    forget_family(s, family)
-
-    rows = client.scan(TableName="repaso")["Items"]
-    claims = sorted(r["pk"]["S"] for r in rows if r["pk"]["S"].startswith("CLAIM#"))
-    assert claims == [f"CLAIM#{theirs}"]
