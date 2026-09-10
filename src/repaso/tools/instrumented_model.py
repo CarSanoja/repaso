@@ -1,4 +1,3 @@
-import time
 from collections.abc import AsyncGenerator
 from typing import Any, TypeVar
 
@@ -7,19 +6,32 @@ from strands.models.model import Model
 from strands.types.content import Messages
 
 from repaso.config.models import ModelRole
+from repaso.tools.call_ledger import CallLedger, CallOutcome, NullCallLedger
+from repaso.tools.call_watch import CallWatch
 from repaso.tools.cassette import STREAM_KIND, STRUCTURED_KIND
 from repaso.tools.model_limits import ModelLimitReached
-from repaso.tools.model_usage import usage_from_event
 
 T = TypeVar("T", bound=BaseModel)
 
+DENIED_CALL = "denied"
+
 
 class InstrumentedModel(Model):
-    def __init__(self, inner: Model, role: str, telemetry: Any, limits=None) -> None:
+    def __init__(
+        self,
+        inner: Model,
+        role: str,
+        telemetry: Any,
+        limits=None,
+        ledger: CallLedger | None = None,
+        clock=None,
+    ) -> None:
         self.inner = inner
         self._role = role
         self._telemetry = telemetry
         self._limits = limits
+        self._ledger = ledger or NullCallLedger()
+        self._clock = clock
 
     def update_config(self, **model_config: Any) -> None:
         self.inner.update_config(**model_config)
@@ -30,64 +42,50 @@ class InstrumentedModel(Model):
     def __getattr__(self, name: str) -> Any:
         return getattr(self.inner, name)
 
-    def _trace(self, call: str, status: str, started: float, **extra: str) -> None:
-        duration = (time.perf_counter() - started) * 1000
+    def _watch(self, kind: str, output_model: str | None = None) -> CallWatch:
+        return CallWatch(self.inner, self._role, kind, output_model, self._clock)
+
+    def _admit(self, watch: CallWatch) -> None:
+        if not self._limits:
+            return
+        try:
+            self._limits.before(self._role)
+        except ModelLimitReached as denial:
+            self._close(watch, CallOutcome.DENIED, type(denial).__name__, DENIED_CALL)
+            raise
+
+    def _close(
+        self, watch: CallWatch, outcome: CallOutcome, error: str = "", call: str | None = None
+    ) -> None:
+        watch.close()
+        extra = watch.trace_fields() if call is None else {}
+        if error:
+            extra["error"] = error
         self._telemetry.trace(
-            "llm", f"{self._role}.{call}", status=status, duration_ms=duration, **extra
+            "llm",
+            f"{self._role}.{call or watch.kind}",
+            status="ok" if outcome is CallOutcome.OK else "failed",
+            duration_ms=watch.latency_ms,
+            **extra,
         )
+        self._ledger.append(watch.record(outcome, error))
 
     async def stream(self, messages: Messages, *args: Any, **kwargs: Any):
-        started = time.perf_counter()
-        usage = None
-        if self._limits:
-            try:
-                self._limits.before(self._role)
-            except ModelLimitReached:
-                self._trace("denied", "failed", started)
-                raise
+        watch = self._watch(STREAM_KIND)
+        self._admit(watch)
         try:
             async for event in self.inner.stream(messages, *args, **kwargs):
-                usage = usage_from_event(event) or usage
+                watch.observe(event)
                 yield event
         except Exception as error:
             if self._limits:
                 self._limits.after(self._role, False)
-            self._trace(
-                STREAM_KIND,
-                "failed",
-                started,
-                error=type(error).__name__,
-                **self._usage_fields(usage),
-            )
+            self._close(watch, CallOutcome.FAILED, type(error).__name__)
             _raise_unavailable(error)
             raise
         if self._limits:
             self._limits.after(self._role, True)
-        self._trace(STREAM_KIND, "ok", started, **self._usage_fields(usage))
-
-    def _usage_fields(self, usage):
-        model_id = self.inner.get_config().get("model_id", "unknown")
-        origin = getattr(self.inner, "evidence_origin", None)
-        if origin is None:
-            origin = "live" if type(self.inner).__name__ == "BedrockModel" else "simulation"
-        fields = {
-            "model_id": model_id,
-            "usage_available": str(usage is not None),
-            "evidence_origin": str(origin),
-        }
-        if usage is not None:
-            fields.update(
-                input_tokens=str(usage.input_tokens), output_tokens=str(usage.output_tokens)
-            )
-            from repaso.config.pricing import UnpricedModel, estimate_cost_usd
-
-            try:
-                fields["estimated_usd"] = str(
-                    estimate_cost_usd(model_id, usage.input_tokens, usage.output_tokens)
-                )
-            except UnpricedModel:
-                fields["cost_status"] = "unpriced"
-        return fields
+        self._close(watch, CallOutcome.OK)
 
     async def structured_output(
         self,
@@ -96,49 +94,34 @@ class InstrumentedModel(Model):
         system_prompt: str | None = None,
         **kwargs: Any,
     ) -> AsyncGenerator[dict[str, T | Any], None]:
-        started = time.perf_counter()
-        usage = None
-        if self._limits:
-            try:
-                self._limits.before(self._role)
-            except ModelLimitReached:
-                self._trace("denied", "failed", started)
-                raise
+        watch = self._watch(STRUCTURED_KIND, output_model.__name__)
+        self._admit(watch)
         try:
             async for event in self.inner.structured_output(
                 output_model, prompt, system_prompt=system_prompt, **kwargs
             ):
-                usage = usage_from_event(event) or usage
+                watch.observe(event)
                 yield event
         except Exception as error:
             if self._limits:
                 self._limits.after(self._role, False)
-            self._trace(
-                STRUCTURED_KIND,
-                "failed",
-                started,
-                error=type(error).__name__,
-                output=output_model.__name__,
-                **self._usage_fields(usage),
-            )
+            self._close(watch, CallOutcome.FAILED, type(error).__name__)
             _raise_unavailable(error)
             raise
         if self._limits:
             self._limits.after(self._role, True)
-        self._trace(
-            STRUCTURED_KIND,
-            "ok",
-            started,
-            output=output_model.__name__,
-            **self._usage_fields(usage),
-        )
+        self._close(watch, CallOutcome.OK)
 
 
 def instrument_models(
-    models: dict[ModelRole, Model], telemetry: Any, limits=None
+    models: dict[ModelRole, Model],
+    telemetry: Any,
+    limits=None,
+    ledger: CallLedger | None = None,
+    clock=None,
 ) -> dict[ModelRole, Model]:
     return {
-        role: InstrumentedModel(model, role.value, telemetry, limits)
+        role: InstrumentedModel(model, role.value, telemetry, limits, ledger, clock)
         for role, model in models.items()
     }
 

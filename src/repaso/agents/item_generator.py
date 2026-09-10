@@ -119,6 +119,7 @@ async def generate_items(
             GeneratedBatch,
             SYSTEM.format(grade=grade),
             _request_text(parsed_text, competency, count, lang),
+            prompt_version,
         )
     except StructuredCallFailed:
         return []

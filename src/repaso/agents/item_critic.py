@@ -1,6 +1,6 @@
 
 from repaso.agents.base import ModelOutput, StructuredCallFailed, structured
-from repaso.agents.prompts.item_critic import SYSTEM
+from repaso.agents.prompts.item_critic import PROMPT_VERSION, SYSTEM
 from repaso.schemas.item import Item, ItemFlaw, ItemVerdict
 
 CRITIC_ERROR_NOTE = "critic_error"
@@ -68,7 +68,11 @@ async def critique(item: Item, source_text: str, grade: int, model) -> ItemVerdi
     system = SYSTEM.format(grade=grade, flaws=FLAW_VOCABULARY)
     try:
         finding = await structured(
-            model, CriticFinding, system, render_review(item, source_text, grade)
+            model,
+            CriticFinding,
+            system,
+            render_review(item, source_text, grade),
+            PROMPT_VERSION,
         )
     except StructuredCallFailed:
         return ItemVerdict(

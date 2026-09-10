@@ -2,6 +2,7 @@ from typing import Any, get_origin
 
 from pydantic import BaseModel, model_validator
 
+from repaso.tools.call_ledger import declaring_prompt_version
 from repaso.tools.cassette_model import CassetteExhausted
 from repaso.tools.llm import PlaybackExhausted
 from repaso.tools.model_limits import ModelLimitReached
@@ -29,17 +30,24 @@ class StructuredCallFailed(RuntimeError):
     pass
 
 
-async def structured[T: BaseModel](model, output_model: type[T], system: str, text: str) -> T:
-    events = model.structured_output(output_model, [user_message(text)], system_prompt=system)
+async def structured[T: BaseModel](
+    model,
+    output_model: type[T],
+    system: str,
+    text: str,
+    prompt_version: str | None = None,
+) -> T:
     output: T | None = None
-    try:
-        async for event in events:
-            if "output" in event:
-                output = event["output"]
-    except (CassetteExhausted, PlaybackExhausted, ModelLimitReached):
-        raise
-    except Exception as error:
-        raise StructuredCallFailed(str(error)) from error
+    with declaring_prompt_version(prompt_version):
+        events = model.structured_output(output_model, [user_message(text)], system_prompt=system)
+        try:
+            async for event in events:
+                if "output" in event:
+                    output = event["output"]
+        except (CassetteExhausted, PlaybackExhausted, ModelLimitReached):
+            raise
+        except Exception as error:
+            raise StructuredCallFailed(str(error)) from error
     if output is None:
         raise StructuredCallFailed(f"model returned no output for {output_model.__name__}")
     return output

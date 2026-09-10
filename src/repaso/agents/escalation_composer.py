@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.escalation_composer import (
     COHORT_REQUEST,
+    PROMPT_VERSION,
     STRUGGLE_REQUEST,
     SYSTEM,
 )
@@ -46,7 +47,7 @@ def evidence_digest(evidence: list[EvidenceSpan]) -> str:
 
 async def draft_note(model, text: str) -> str | None:
     try:
-        note = await structured(model, TeacherNote, SYSTEM, text)
+        note = await structured(model, TeacherNote, SYSTEM, text, PROMPT_VERSION)
     except StructuredCallFailed:
         return None
     return note.text

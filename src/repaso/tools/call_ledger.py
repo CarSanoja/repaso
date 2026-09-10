@@ -29,7 +29,7 @@ class LedgerFormatError(ValueError):
 class CallOrigin(StrEnum):
     LIVE = "live"
     REPLAYED = "replayed"
-    SIMULATED = "simulated"
+    SIMULATED = "simulation"
 
 
 class CallOutcome(StrEnum):

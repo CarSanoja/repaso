@@ -5,6 +5,7 @@ from repaso.config.settings import Settings
 from repaso.core.harness.clock import Clock
 from repaso.core.orchestration.context import Services
 from repaso.core.telemetry.sink import build_telemetry_sink
+from repaso.tools.call_ledger import build_call_ledger
 from repaso.tools.event_bus import build_event_publisher
 from repaso.tools.grade_log import build_grade_log
 from repaso.tools.guardrails import build_screener
@@ -35,6 +36,8 @@ def assemble_services(
         publisher=build_event_publisher(settings),
         sender=build_channel_sender(settings),
         invites=build_invite_codes(settings),
-        models=instrument_models(models, telemetry),
+        models=instrument_models(
+            models, telemetry, None, build_call_ledger(settings), clock
+        ),
         telemetry=telemetry,
     )

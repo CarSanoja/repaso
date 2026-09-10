@@ -6,6 +6,7 @@ from repaso.config.settings import Settings, get_settings
 from repaso.core.harness.clock import SystemClock
 from repaso.core.orchestration.context import Services
 from repaso.core.telemetry.sink import build_telemetry_sink
+from repaso.tools.call_ledger import build_call_ledger
 from repaso.tools.call_quota import build_call_quota
 from repaso.tools.event_bus import build_event_publisher
 from repaso.tools.grade_log import build_grade_log
@@ -47,6 +48,8 @@ def build_runtime_services(settings: Settings) -> Services:
         {role: build_model(role, settings) for role in ModelRole},
         telemetry,
         ModelLimits(settings, store, clock, build_call_quota(settings)),
+        build_call_ledger(settings),
+        clock,
     )
     return Services(
         settings=settings,

@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from repaso.agents.base import StructuredCallFailed, structured
-from repaso.agents.prompts.answerability_probe import SYSTEM
+from repaso.agents.prompts.answerability_probe import PROMPT_VERSION, SYSTEM
 from repaso.schemas.item import Item, ItemKind, ItemVerdict
 
 NUMBER_NOISE = "().:-# "
@@ -35,7 +35,9 @@ async def probe_blind(item: Item, model) -> bool | None:
     if item.kind is not ItemKind.MCQ:
         return None
     try:
-        reply = await structured(model, ProbeAnswer, SYSTEM, render_blind(item))
+        reply = await structured(
+            model, ProbeAnswer, SYSTEM, render_blind(item), PROMPT_VERSION
+        )
     except StructuredCallFailed:
         return None
     if not reply.answer.strip():

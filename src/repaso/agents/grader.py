@@ -4,7 +4,7 @@ from uuid import uuid4
 from pydantic import Field
 
 from repaso.agents.base import StructuredCallFailed, structured
-from repaso.agents.prompts.grader import SYSTEM
+from repaso.agents.prompts.grader import PROMPT_VERSION, SYSTEM
 from repaso.schemas.common import FamilyId, Lang, StrictBaseModel
 from repaso.schemas.grading import EvidenceSpan, GradedBy, GradeResult, StudentResponse
 from repaso.schemas.item import Item
@@ -126,6 +126,7 @@ async def grade_open(
             OpenGrade,
             SYSTEM.format(lang=lang.value),
             open_prompt(item, response.text if llm_text is None else llm_text, lang),
+            PROMPT_VERSION,
         )
     except StructuredCallFailed:
         return held_back(response, family_id, 0.0, graded_at)
