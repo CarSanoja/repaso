@@ -1,8 +1,18 @@
-from scripts.answer_evaluation_scoring import is_automatic, score
+from scripts.answer_evaluation_scoring import AUTHOR_LABELS, is_automatic, score
 
 CASES = [
-    {"id": "a", "category": "clear_correct"},
-    {"id": "b", "category": "injection"},
+    {
+        "id": "a",
+        "category": "clear_correct",
+        "reference_correct": True,
+        "reference_needs_review": False,
+    },
+    {
+        "id": "b",
+        "category": "ambiguous",
+        "reference_correct": None,
+        "reference_needs_review": True,
+    },
 ]
 
 
@@ -47,3 +57,28 @@ def test_the_band_below_the_threshold_reports_the_verdicts_it_holds():
     high = next(band for band in bands if band["low"] == 0.95)
     assert low["reviewed"] == 1 and low["grade_agreement"] == 0.0
     assert high["reviewed"] == 1 and high["grade_agreement"] == 1.0
+
+
+def test_author_labels_never_authorize_a_quality_claim():
+    predictions = [
+        {"id": "a", "route": "graded", "correct": True, "confidence": 0.99},
+        {"id": "b", "route": "graded", "correct": False, "confidence": 0.99},
+    ]
+    report = score(CASES, predictions, [], 0.85, AUTHOR_LABELS)
+    assert report["label_source"] == AUTHOR_LABELS
+    assert report["scored"] == 2 and not report["quality_claim_allowed"]
+    assert report["grade_scored"] == 1 and report["grade_agreement"] == 1.0
+    assert report["review_agreement"] == 0.5
+
+
+def test_the_sweep_trades_coverage_against_automatic_decisions():
+    predictions = [
+        {"id": "a", "route": "graded", "correct": True, "confidence": 0.9},
+        {"id": "b", "route": "graded", "correct": True, "confidence": 0.8},
+    ]
+    sweep = score(CASES, predictions, [], 0.85, AUTHOR_LABELS)["threshold_sweep"]
+    coverage = {row["threshold"]: row["coverage"] for row in sweep}
+    assert coverage[0.7] == 1.0 and coverage[0.85] == 0.5 and coverage[0.95] == 0.0
+    assert [row["coverage"] for row in sweep] == sorted(
+        (row["coverage"] for row in sweep), reverse=True
+    )

@@ -11,7 +11,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from scripts.answer_evaluation_collect import collect
-from scripts.answer_evaluation_scoring import DEFAULT_THRESHOLD, score
+from scripts.answer_evaluation_scoring import (
+    AUTHOR_LABELS,
+    DEFAULT_THRESHOLD,
+    TEACHER_LABELS,
+    score,
+)
 
 
 def read_cases(path):
@@ -39,6 +44,9 @@ def main():
     parser.add_argument("--max-calls", type=int, default=15)
     parser.add_argument("--start", type=int, default=0, help="First case of the split to collect")
     parser.add_argument("--threshold", type=float, default=DEFAULT_THRESHOLD)
+    parser.add_argument(
+        "--label-source", choices=(TEACHER_LABELS, AUTHOR_LABELS), default=TEACHER_LABELS
+    )
     args = parser.parse_args()
     if not 1 <= args.max_calls <= 60:
         parser.error("max-calls must be between 1 and 60")
@@ -61,7 +69,7 @@ def main():
         if args.live
         else (read_rows(args.predictions) if args.predictions else [])
     )
-    report = score(cases, predictions, labels, args.threshold) | {
+    report = score(cases, predictions, labels, args.threshold, args.label_source) | {
         "mode": "live"
         if args.live
         else ("saved scoring" if args.predictions else "schema validation"),
