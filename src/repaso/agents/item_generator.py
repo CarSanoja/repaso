@@ -8,6 +8,7 @@ from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.item_generator import PROMPT_VERSION, SYSTEM
 from repaso.schemas.common import CompetencyId, ItemId, Lang
 from repaso.schemas.competency import Competency
+from repaso.schemas.encoded import JSON_TEXT_IS_LIST
 from repaso.schemas.item import Item, ItemKind, ItemStatus
 from repaso.schemas.nullable import NULL_IS_EMPTY
 from repaso.schemas.provenance import Provenance, Source
@@ -25,14 +26,14 @@ class ItemDraft(BaseModel):
     kind: ItemKind
     difficulty: int
     stem: str
-    options: Annotated[list[str], NULL_IS_EMPTY] = []
+    options: Annotated[list[str], NULL_IS_EMPTY, JSON_TEXT_IS_LIST] = []
     answer_key: str
     rationale: str
     rubric: str | None = None
 
 
 class GeneratedBatch(BaseModel):
-    items: Annotated[list[ItemDraft], NULL_IS_EMPTY] = []
+    items: Annotated[list[ItemDraft], NULL_IS_EMPTY, JSON_TEXT_IS_LIST] = []
 
 
 def _filled(text: str | None) -> bool:
