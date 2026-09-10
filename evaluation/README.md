@@ -26,7 +26,18 @@ python scripts/run_answer_evaluation.py --predictions private/reports/evaluation
 
 The scorer ignores author labels, unfinished reviews, duplicate predictions and IDs outside the dataset. It reports sample sizes, grade agreement, human-review agreement, automatic coverage, false automatic-correct decisions with a Wilson interval, per-category results and confidence bands. Analyze development groups first. Any confidence-threshold or prompt change must be chosen there and frozen before opening held-out results. Report held-out results separately and include all provider/schema failures in coverage denominators.
 
-A threshold of 0.85 is currently a product rule, not a calibrated probability. A teacher should also review generated questions, keys and rubrics before a family pilot. Publish examples of errors, denominators and limitations; zero observed mistakes in a small sample is not zero risk.
+A threshold of 0.85 is currently a product rule, not a calibrated probability.
+
+## Frozen threshold
+
+On September 12, 2026 the confidence threshold was swept from 0.70 to 1.00 on the thirty
+development cases and **frozen at 0.85** for prompt `v1` and `us.anthropic.claude-sonnet-4-6`,
+before any held-out case was collected. The criterion was to move it only for a measured
+reduction in false automatic-correct decisions; that error was zero at every threshold, so no
+candidate was measurably better, and every candidate above 0.85 only shrank the denominator.
+The sweep, its denominators and the six disagreements are in
+[the development run](../docs/evidence/answer-evaluation-development-2026-09-12.md). Nothing
+else was tuned afterwards. Sweep again when the prompt version or the model id changes. A teacher should also review generated questions, keys and rubrics before a family pilot. Publish examples of errors, denominators and limitations; zero observed mistakes in a small sample is not zero risk.
 
 ## Probe ablation
 

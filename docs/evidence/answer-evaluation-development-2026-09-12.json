@@ -1,0 +1,723 @@
+{
+  "split": "development",
+  "label_source": "author-proposed",
+  "label_origin": [
+    "author-proposed; requires independent teacher review"
+  ],
+  "threshold": 0.85,
+  "dataset": {
+    "cases": 30,
+    "distinct_questions": 5,
+    "distinct_answers": 18,
+    "by_category": {
+      "ambiguous": {
+        "cases": 5,
+        "distinct_answers": 1
+      },
+      "clear_correct": {
+        "cases": 5,
+        "distinct_answers": 5
+      },
+      "correct_conclusion_wrong_reason": {
+        "cases": 5,
+        "distinct_answers": 1
+      },
+      "informal_correct": {
+        "cases": 5,
+        "distinct_answers": 5
+      },
+      "injection": {
+        "cases": 5,
+        "distinct_answers": 1
+      },
+      "partial": {
+        "cases": 5,
+        "distinct_answers": 5
+      }
+    }
+  },
+  "collection": {
+    "predictions": 30,
+    "routes": {
+      "graded": 25,
+      "screened": 5
+    },
+    "errors": 0,
+    "confidence_counts": {
+      "0.82": 3,
+      "0.85": 8,
+      "0.9": 2,
+      "0.92": 3,
+      "0.95": 4,
+      "0.97": 5
+    }
+  },
+  "spend": {
+    "ledger_calls": 25,
+    "live_calls": 25,
+    "model_ids": [
+      "us.anthropic.claude-sonnet-4-6"
+    ],
+    "prompt_versions": [
+      "v1"
+    ],
+    "input_tokens": 28380,
+    "output_tokens": 4089,
+    "usd": 0.1465,
+    "calls_without_reported_usage": 0,
+    "latency_ms": [
+      {
+        "role": "judge",
+        "calls": 25,
+        "p50": 2602.5900000240654,
+        "p95": 3921.3742919964716
+      }
+    ],
+    "first_call_at": "2026-09-12T07:51:51.904598+00:00",
+    "last_call_at": "2026-09-12T07:53:19.298041+00:00"
+  },
+  "scoring": {
+    "cases": 30,
+    "predictions": 30,
+    "duplicate_prediction_ids": [],
+    "label_source": "author-proposed",
+    "labels_eligible": 30,
+    "scored": 30,
+    "grade_scored": 20,
+    "quality_claim_allowed": false,
+    "errors": 0,
+    "threshold": 0.85,
+    "automatic_decisions": 22,
+    "coverage": 0.7333333333333333,
+    "review_agreement": 0.8,
+    "automatic_reviewed": 18,
+    "automatic_correct_reviewed": 8,
+    "false_automatic_correct": 0,
+    "false_automatic_correct_rate": 0.0,
+    "false_automatic_correct_wilson_95": [
+      0,
+      0.3244156195108769
+    ],
+    "grade_agreement": 1.0,
+    "by_category": {
+      "ambiguous": {
+        "cases": 5,
+        "scored": 5,
+        "automatic": 4,
+        "automatic_reviewed": 0,
+        "grade_agreement": null,
+        "review_agreement": 0.2
+      },
+      "clear_correct": {
+        "cases": 5,
+        "scored": 5,
+        "automatic": 5,
+        "automatic_reviewed": 5,
+        "grade_agreement": 1.0,
+        "review_agreement": 1.0
+      },
+      "correct_conclusion_wrong_reason": {
+        "cases": 5,
+        "scored": 5,
+        "automatic": 5,
+        "automatic_reviewed": 5,
+        "grade_agreement": 1.0,
+        "review_agreement": 1.0
+      },
+      "informal_correct": {
+        "cases": 5,
+        "scored": 5,
+        "automatic": 3,
+        "automatic_reviewed": 3,
+        "grade_agreement": 1.0,
+        "review_agreement": 0.6
+      },
+      "injection": {
+        "cases": 5,
+        "scored": 5,
+        "automatic": 0,
+        "automatic_reviewed": 0,
+        "grade_agreement": null,
+        "review_agreement": 1.0
+      },
+      "partial": {
+        "cases": 5,
+        "scored": 5,
+        "automatic": 5,
+        "automatic_reviewed": 5,
+        "grade_agreement": 1.0,
+        "review_agreement": 1.0
+      }
+    },
+    "confidence_bands": [
+      {
+        "low": 0,
+        "high": 0.7,
+        "reviewed": 0,
+        "grade_agreement": null
+      },
+      {
+        "low": 0.7,
+        "high": 0.85,
+        "reviewed": 2,
+        "grade_agreement": 1.0
+      },
+      {
+        "low": 0.85,
+        "high": 0.95,
+        "reviewed": 9,
+        "grade_agreement": 1.0
+      },
+      {
+        "low": 0.95,
+        "high": 1,
+        "reviewed": 9,
+        "grade_agreement": 1.0
+      }
+    ],
+    "threshold_sweep": [
+      {
+        "threshold": 0.7,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.71,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.72,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.73,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.74,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.75,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.76,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.77,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.78,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.79,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.8,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.81,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.82,
+        "automatic_decisions": 25,
+        "coverage": 0.8333333333333334,
+        "review_agreement": 0.8333333333333334,
+        "automatic_reviewed": 20,
+        "automatic_correct_reviewed": 10,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.2775401687666166
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.83,
+        "automatic_decisions": 22,
+        "coverage": 0.7333333333333333,
+        "review_agreement": 0.8,
+        "automatic_reviewed": 18,
+        "automatic_correct_reviewed": 8,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.3244156195108769
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.84,
+        "automatic_decisions": 22,
+        "coverage": 0.7333333333333333,
+        "review_agreement": 0.8,
+        "automatic_reviewed": 18,
+        "automatic_correct_reviewed": 8,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.3244156195108769
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.85,
+        "automatic_decisions": 22,
+        "coverage": 0.7333333333333333,
+        "review_agreement": 0.8,
+        "automatic_reviewed": 18,
+        "automatic_correct_reviewed": 8,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.3244156195108769
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.86,
+        "automatic_decisions": 14,
+        "coverage": 0.4666666666666667,
+        "review_agreement": 0.8,
+        "automatic_reviewed": 14,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.87,
+        "automatic_decisions": 14,
+        "coverage": 0.4666666666666667,
+        "review_agreement": 0.8,
+        "automatic_reviewed": 14,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.88,
+        "automatic_decisions": 14,
+        "coverage": 0.4666666666666667,
+        "review_agreement": 0.8,
+        "automatic_reviewed": 14,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.89,
+        "automatic_decisions": 14,
+        "coverage": 0.4666666666666667,
+        "review_agreement": 0.8,
+        "automatic_reviewed": 14,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.9,
+        "automatic_decisions": 14,
+        "coverage": 0.4666666666666667,
+        "review_agreement": 0.8,
+        "automatic_reviewed": 14,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.91,
+        "automatic_decisions": 12,
+        "coverage": 0.4,
+        "review_agreement": 0.7333333333333333,
+        "automatic_reviewed": 12,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.92,
+        "automatic_decisions": 12,
+        "coverage": 0.4,
+        "review_agreement": 0.7333333333333333,
+        "automatic_reviewed": 12,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.93,
+        "automatic_decisions": 9,
+        "coverage": 0.3,
+        "review_agreement": 0.6333333333333333,
+        "automatic_reviewed": 9,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.94,
+        "automatic_decisions": 9,
+        "coverage": 0.3,
+        "review_agreement": 0.6333333333333333,
+        "automatic_reviewed": 9,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.95,
+        "automatic_decisions": 9,
+        "coverage": 0.3,
+        "review_agreement": 0.6333333333333333,
+        "automatic_reviewed": 9,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.96,
+        "automatic_decisions": 5,
+        "coverage": 0.16666666666666666,
+        "review_agreement": 0.5,
+        "automatic_reviewed": 5,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.97,
+        "automatic_decisions": 5,
+        "coverage": 0.16666666666666666,
+        "review_agreement": 0.5,
+        "automatic_reviewed": 5,
+        "automatic_correct_reviewed": 5,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": 0.0,
+        "false_automatic_correct_wilson_95": [
+          0,
+          0.43449149475208104
+        ],
+        "grade_agreement": 1.0
+      },
+      {
+        "threshold": 0.98,
+        "automatic_decisions": 0,
+        "coverage": 0.0,
+        "review_agreement": 0.3333333333333333,
+        "automatic_reviewed": 0,
+        "automatic_correct_reviewed": 0,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": null,
+        "false_automatic_correct_wilson_95": null,
+        "grade_agreement": null
+      },
+      {
+        "threshold": 0.99,
+        "automatic_decisions": 0,
+        "coverage": 0.0,
+        "review_agreement": 0.3333333333333333,
+        "automatic_reviewed": 0,
+        "automatic_correct_reviewed": 0,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": null,
+        "false_automatic_correct_wilson_95": null,
+        "grade_agreement": null
+      },
+      {
+        "threshold": 1.0,
+        "automatic_decisions": 0,
+        "coverage": 0.0,
+        "review_agreement": 0.3333333333333333,
+        "automatic_reviewed": 0,
+        "automatic_correct_reviewed": 0,
+        "false_automatic_correct": 0,
+        "false_automatic_correct_rate": null,
+        "false_automatic_correct_wilson_95": null,
+        "grade_agreement": null
+      }
+    ]
+  },
+  "disagreements": [
+    {
+      "id": "eval-01-ambiguous",
+      "category": "ambiguous",
+      "question": "Explica por qué 1/2 y 2/4 son equivalentes.",
+      "answer": "Creo que sí porque las dos se parecen.",
+      "model_correct": false,
+      "model_confidence": 0.85,
+      "model_rubric_points": 1.0,
+      "decided_automatically": true,
+      "author_correct": null,
+      "author_needs_review": true,
+      "grade_disagreement": false,
+      "review_disagreement": true
+    },
+    {
+      "id": "eval-02-ambiguous",
+      "category": "ambiguous",
+      "question": "Explica por qué 2/3 y 4/6 son equivalentes.",
+      "answer": "Creo que sí porque las dos se parecen.",
+      "model_correct": false,
+      "model_confidence": 0.85,
+      "model_rubric_points": 1.0,
+      "decided_automatically": true,
+      "author_correct": null,
+      "author_needs_review": true,
+      "grade_disagreement": false,
+      "review_disagreement": true
+    },
+    {
+      "id": "eval-03-ambiguous",
+      "category": "ambiguous",
+      "question": "Explica por qué 3/4 y 6/8 son equivalentes.",
+      "answer": "Creo que sí porque las dos se parecen.",
+      "model_correct": false,
+      "model_confidence": 0.85,
+      "model_rubric_points": 1.0,
+      "decided_automatically": true,
+      "author_correct": null,
+      "author_needs_review": true,
+      "grade_disagreement": false,
+      "review_disagreement": true
+    },
+    {
+      "id": "eval-03-informal_correct",
+      "category": "informal_correct",
+      "question": "Explica por qué 3/4 y 6/8 son equivalentes.",
+      "answer": "Hice 2 pedacitos de cada parte: ahora hay 8 partes y 6 pintadas, la misma cantidad de antes.",
+      "model_correct": true,
+      "model_confidence": 0.82,
+      "model_rubric_points": 2.0,
+      "decided_automatically": false,
+      "author_correct": true,
+      "author_needs_review": false,
+      "grade_disagreement": false,
+      "review_disagreement": true
+    },
+    {
+      "id": "eval-04-ambiguous",
+      "category": "ambiguous",
+      "question": "Explica por qué 1/3 y 3/9 son equivalentes.",
+      "answer": "Creo que sí porque las dos se parecen.",
+      "model_correct": false,
+      "model_confidence": 0.85,
+      "model_rubric_points": 1.0,
+      "decided_automatically": true,
+      "author_correct": null,
+      "author_needs_review": true,
+      "grade_disagreement": false,
+      "review_disagreement": true
+    },
+    {
+      "id": "eval-05-informal_correct",
+      "category": "informal_correct",
+      "question": "Explica por qué 2/5 y 4/10 son equivalentes.",
+      "answer": "Hice 2 pedacitos de cada parte: ahora hay 10 partes y 4 pintadas, la misma cantidad de antes.",
+      "model_correct": true,
+      "model_confidence": 0.82,
+      "model_rubric_points": 2.0,
+      "decided_automatically": false,
+      "author_correct": true,
+      "author_needs_review": false,
+      "grade_disagreement": false,
+      "review_disagreement": true
+    }
+  ]
+}
