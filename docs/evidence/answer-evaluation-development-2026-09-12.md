@@ -65,8 +65,8 @@ judgement is complete, and left out of grade agreement, which is reported over i
 denominator of twenty.
 
 Zero false automatic-correct decisions out of eight is not a low rate. The interval it supports
-reaches 32.4%. About seventy-four automatic correct decisions with no false one would be needed
-to put that bound under 5%.
+reaches 32.4%. Seventy-three automatic correct decisions with no false one is the first count
+whose upper bound falls under 5%, at 0.0500; seventy-two leaves it at 0.0507.
 
 ### By category, at 0.85
 

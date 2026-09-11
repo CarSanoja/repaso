@@ -56,7 +56,7 @@ Nothing here is marked complete because a local file exists. Each row says what 
 | Independent teacher labels | Not started. `evaluation/teacher_labels.jsonl` is empty and `independent_reviewer` is `none` on all 270 ablation rows | A teacher completing the blind file. Until then the development run reports agreement and not accuracy, and the ablation reports planted defects and not question quality |
 | Held-out half of the evaluation set | Deliberately not collected or scored | A run at the frozen 0.85 on the 30 held-out cases, reported separately from the development figures |
 | Calibration of the grader's confidence | Not attempted | Enough labelled decisions to separate the band where a person should look. The grader reports six distinct confidences here, and the answers it should have held sit in the same 0.82–0.85 band as the ones it graded correctly |
-| A false-automatic-correct rate | Not established | About 74 clean automatic correct decisions would put the upper bound under 5%. Eight bound it at 32.4% |
+| A false-automatic-correct rate | Not established | 73 automatic correct decisions with no false one is the first count whose upper bound falls under 5%, at 0.0500. Eight leave it at 0.324 |
 | Observed families | None. No participant has used the product | A pilot. The [kit](../pilot/README.md) has an empty observation template and an analyzer that preserves missing observations; no participants and no savings are reported |
 | Teacher feedback on generated questions | None | A teacher reading the items, keys and rubrics before a family pilot |
 | Cloud deployment and scheduled delivery | Not done | A deployed stack delivering on a real schedule. The [deployment checklist](../../deploy/README.md) records what remains |
