@@ -121,6 +121,10 @@ probe is advisory and vetoes nothing. A shared section signal is experimental an
 establish formal anonymity.
 
 DynamoDB transaction tests and local WAL tests cover duplicate/conflicting learning effects.
-Telegram delivery remains at least once when acknowledgment is lost. Family deletion covers
-active records and S3 versions; retention of logs, backups and Telegram history is described in
-the consent.
+The threaded ones run against Moto, whose `transact_write_items` has no lock, so the test
+fixture serialises the fake table to give it the per-call atomicity the real service has. That
+makes those tests a check on whether this code leans on the database for atomicity rather than
+doing a read-modify-write in Python; it is not a measurement of Amazon DynamoDB. Telegram
+delivery remains at least once when acknowledgment is lost. Family deletion covers active
+records and S3 versions; retention of logs, backups and Telegram history is described in the
+consent.
