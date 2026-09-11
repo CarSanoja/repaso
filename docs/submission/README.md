@@ -15,6 +15,6 @@ Start at [`judging.md`](judging.md). It is the only file here written for someon
 | `provenance.md` | Rights, prior work and eligibility inputs | Owner facts needed |
 | `release-checklist.md` | What is finished here and what only the owner can finish | Second list open |
 
-The local preview is a captioned reconstruction of current simulation checkpoints, not a screen recording of Telegram or a deployed Bedrock execution. It is suitable for reviewing narrative and timing. Keep its simulation disclosure in any use. A competitive final recording should show the actual bot and a deployed trace, which requires a deployment that has not happened.
+The local preview is a captioned reconstruction of current simulation checkpoints, not a screen recording of Telegram or a deployed Bedrock execution. It is suitable for reviewing narrative and timing. Keep its simulation disclosure in any use. A final recording should show the actual bot and a deployed trace; model access is no longer what stands in the way of that, deployment is.
 
 Do not submit placeholder URLs or represent these drafts as published articles. The original review recorded three Builder Center posts, each with literal “Agents for Humans” in its title, as the bonus opportunity. Check current [official rules](https://agentsforhumans.devpost.com/rules) before publication.
