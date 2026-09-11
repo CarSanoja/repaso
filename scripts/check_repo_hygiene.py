@@ -94,6 +94,25 @@ def check_secrets(files: list[str], root: Path) -> list[str]:
     return problems
 
 
+def readable_blobs(candidates: dict[str, str]) -> dict[str, str]:
+    if not candidates:
+        return {}
+    request = "\n".join(candidates) + "\n"
+    result = subprocess.run(
+        ["git", "cat-file", "--batch-check"],
+        input=request.encode(),
+        capture_output=True,
+        check=True,
+    )
+    kept: dict[str, str] = {}
+    for line in result.stdout.decode().splitlines():
+        fields = line.split()
+        if len(fields) != 3 or fields[1] != "blob" or int(fields[2]) > MAX_BLOB_BYTES:
+            continue
+        kept[fields[0]] = candidates[fields[0]]
+    return kept
+
+
 def history_blobs(every_ref: bool = False) -> list[tuple[str, str]]:
     scope = "--all" if every_ref else "HEAD"
     seen: dict[str, str] = {}
@@ -101,7 +120,7 @@ def history_blobs(every_ref: bool = False) -> list[tuple[str, str]]:
         sha, _, path = line.partition(" ")
         if path and scannable(path) and sha not in seen:
             seen[sha] = path
-    return sorted(seen.items())
+    return sorted(readable_blobs(seen).items())
 
 
 def read_blobs(blobs: list[tuple[str, str]]) -> dict[str, str]:
