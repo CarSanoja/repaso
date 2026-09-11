@@ -51,7 +51,11 @@ MESSAGES = {
     "feedback_correct": "Correct! {feedback}",
     "feedback_incorrect": "Not yet. {feedback}",
     "session_complete": (
-        "Today's practice complete! {streak} correct-answer streak. See you tomorrow."
+        "Today's practice complete! Correct answers in a row: {streak}. See you tomorrow."
+    ),
+    "session_complete_fresh": (
+        "Today's practice complete! What was hard today is exactly what we go over next. "
+        "See you tomorrow."
     ),
     "material_received": "Received ✅ Preparing the material.",
     "material_ready": "Material ready: I prepared {item_count} exercises on {competencies}.",

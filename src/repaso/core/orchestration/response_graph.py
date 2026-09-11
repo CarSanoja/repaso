@@ -161,7 +161,8 @@ def build_response_graph(services: Services, run: TutorRun):
             )
             mastery = services.store.get_mastery(run.student.id, item.competency_id)
             streak = max(mastery.streak, 0) if mastery else 0
-            _say(run, msg("session_complete", run.family.lang, streak=streak))
+            closing = "session_complete" if streak else "session_complete_fresh"
+            _say(run, msg(closing, run.family.lang, streak=streak))
         services.store.put_session(run.session)
 
     async def adapt() -> None:

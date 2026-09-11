@@ -134,6 +134,29 @@ async def test_last_item_completes_the_session_with_streak(settings):
     assert "racha" in run.outbound[-1].text.lower() or "1" in run.outbound[-1].text
 
 
+async def test_a_day_that_ends_wrong_closes_without_reciting_a_zero(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    item = seed_item(services.store, "i1")
+    session = seed_session(services, student.id, ["i1"])
+    services.models[ModelRole.STRUCTURED].enqueue({"action": "continue", "reason": "ok"})
+
+    run = TutorRun(
+        family=family,
+        student=student,
+        session=session,
+        items=[item],
+        response=make_response(student.id, "i1", "3/4"),
+    )
+    await build_response_graph(services, run).invoke_async("response")
+
+    closing = run.outbound[-1].text
+    assert run.session.status is SessionStatus.COMPLETED
+    assert services.store.get_mastery(student.id, FRACTIONS).streak < 1
+    assert "0" not in closing
+    assert "repasar" in closing
+
+
 async def test_open_low_confidence_quarantines_and_never_guesses(settings):
     services = make_services(settings)
     family, student = seed_family(services.store)

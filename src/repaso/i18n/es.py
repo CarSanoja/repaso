@@ -52,7 +52,11 @@ MESSAGES = {
     "feedback_correct": "¡Correcto! {feedback}",
     "feedback_incorrect": "Todavía no. {feedback}",
     "session_complete": (
-        "¡Práctica de hoy completa! Racha de {streak} respuestas correctas. Hasta mañana."
+        "¡Práctica de hoy completa! Racha de aciertos seguidos: {streak}. Hasta mañana."
+    ),
+    "session_complete_fresh": (
+        "¡Práctica de hoy completa! Lo que costó hoy es justo lo que vamos a repasar. "
+        "Hasta mañana."
     ),
     "material_received": "Recibido ✅ Estoy preparando el material.",
     "material_ready": "Material listo: preparé {item_count} ejercicios sobre {competencies}.",
