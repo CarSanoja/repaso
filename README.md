@@ -8,10 +8,10 @@ Repaso turns a fourth-grade math sheet into a daily practice routine in a parent
 
 ## Try the complete journey
 
-Python 3.12 or newer; no AWS account or Telegram token required for this demo.
+Python 3.12 or newer; no AWS account or Telegram token required for this demo. Name the interpreter rather than trusting `python3`: on macOS that is still 3.9, and the install then fails with a message about a missing `setup.py` that says nothing about the version.
 
 ```bash
-python3 -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -c requirements.lock -e ".[dev]"
 python scripts/run_judge_demo.py

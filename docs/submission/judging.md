@@ -67,7 +67,10 @@ run prints it above the table.
 
 ## The local path
 
-No AWS account, no Telegram token, no keys, no Docker. Python 3.12 or newer.
+No AWS account, no Telegram token, no keys, no Docker. Python 3.12 or newer, named
+on the command line: a bare `python3` is 3.9 on macOS, and the install under it
+fails with a message about a missing `setup.py` that never mentions the version.
+Any `python3.12`, `python3.13` or newer works in its place.
 
 ```bash
 git clone <repository url> repaso && cd repaso
