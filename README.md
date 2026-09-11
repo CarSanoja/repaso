@@ -2,7 +2,7 @@
 
 Repaso turns a fourth-grade math sheet into a daily practice routine in a parent's Telegram chat. It prepares practice, follows responses, changes the next session and asks the adult for a decision when an answer is uncertain or difficulty persists.
 
-**Current evidence:** the complete journey is reproducible with synthetic data. Its model outputs are replayed from a recording of the model fleet made against Amazon Bedrock on September 12, 2026, and priced from what the provider reported. A separate, actual Amazon Textract call recognized a new printed Spanish fractions page on September 6, 2026, and on September 12 every configured Bedrock model answered and filled its schema in 27 of 27 bounded probe calls. A replay is not a live run. No measured learning benefit, family pilot or deployed cloud journey is claimed. See the [evidence register](docs/evidence/README.md).
+**Current evidence:** the complete journey is reproducible with synthetic data. Its day-one model outputs are replayed from a recording of the model fleet made against Amazon Bedrock on September 12, 2026, and priced from what the provider reported; the days after it are still authored. A separate, actual Amazon Textract call recognized a new printed Spanish fractions page on September 6, 2026, and on September 12 every configured Bedrock model answered and filled its schema in 27 of 27 bounded probe calls. A replay is not a live run. No measured learning benefit, family pilot or deployed cloud journey is claimed. See the [evidence register](docs/evidence/README.md).
 
 **Evaluating this?** [docs/submission/judging.md](docs/submission/judging.md) is a five-minute path that needs no account, no keys and no deployment.
 
@@ -27,6 +27,12 @@ python scripts/run_demo_scenario.py --data-dir .local_data/demo-light --decision
 ```
 
 These are executions of the actual orchestration against a recorded cassette, with local storage and local delivery. Advancing four labeled school days takes seconds. The tokens and dollars the run prints are what that one recording measured; they do not price the authored days that follow it, or any infrastructure.
+
+## What it costs
+
+One student's day of practice cost **$0.1629** in model calls: 29 live Amazon Bedrock calls on September 12, 2026, in `us-east-1`, every token read from the provider's own usage metadata. The journey behind that number ran end to end against live inference — enrolment, two photographed pages ingested, an item bank generated and reviewed, one capsule of three questions delivered, three answers graded, one answer quarantined and released by the parent. Building the item bank from the two pages was $0.1516 of it; the day's practice itself was $0.0111.
+
+Twenty school days for one student comes to between $0.37 and $3.26, and thirty families to between $11.21 and $97.73 a month, depending entirely on how often a new page is photographed. Those two figures are **arithmetic on that one measured journey, not an observed cost**: no family has run a second day and no invoice has been read. Both exclude infrastructure, storage, delivery, text extraction and human time. The full profile — every schema against every model, the latency percentiles, what each role does when a call fails, and the routing decisions that followed — is in [the model profile](docs/evidence/model-profile-2026-09-12.md).
 
 ## What the family can do
 

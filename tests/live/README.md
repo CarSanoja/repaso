@@ -207,6 +207,20 @@ repository can think today, whatever the model supports. The models are wrapped 
 instrumentation the production graphs use, and the traces land beside the report
 in `.local_data/live/telemetry.jsonl`.
 
+## Sweeping wider than the routing
+
+The tier above asks each schema of the one model its role is bound to. Two scripts
+ask wider questions and write their own artifacts rather than passing or failing.
+`scripts/run_model_matrix.py` drives every schema against every model id the fleet
+is configured to reach, so a routing choice can be compared against the alternatives
+instead of asserted; `--schemas` narrows it and `--timeout` turns it into a
+deliberate deadline miss. `scripts/run_decision_probe.py` goes further than shape:
+for the roles whose output is a closed choice it asks a question whose answer the
+fixture defines and counts how often each model gives it. Both report a Wilson 95%
+interval beside every count, because a cell of eight samples is a cell of eight
+samples. What they measured on September 12, 2026 is in
+`docs/evidence/model-profile-2026-09-12.md`.
+
 The harness itself — the registry of schemas, the reporter, and the budget
 guard — is covered by ordinary offline tests under `tests/tools/`, which run
 against playback models on every commit. One of them parses the agent modules

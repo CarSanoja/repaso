@@ -1,0 +1,1459 @@
+{
+  "measured_on": "2026-09-12",
+  "region": "us-east-1",
+  "what_this_is": "Every schema the agent fleet asks a model to fill, driven against every model id the fleet is configured to reach, at eight samples per cell; a second probe that asks four questions whose answer is known or deterministically defined; a deliberate deadline miss; and two complete family journeys run end to end against live inference, one under the routing this measurement inherited and one under the routing it changed to. Every token count is read from the provider's usage metadata and priced from the dated table in src/repaso/config/pricing.py.",
+  "what_this_is_not": "Not a measurement of tutoring quality. Parse rate is payload shape, not whether an item is worth a child's evening or a grade is right. Eight samples is eight samples: the Wilson interval on 8/8 still reaches down to 0.676, and two cells whose intervals overlap are not separated by this run. One journey is one journey, on one day, with one synthetic family.",
+  "live_calls": 489,
+  "measured_usd": 1.176715,
+  "runs": {
+    "schema_matrix": {
+      "calls": 288,
+      "usd": 0.643408
+    },
+    "decision_probe": {
+      "calls": 128,
+      "usd": 0.194411
+    },
+    "deadline_probe": {
+      "calls": 3,
+      "usd": 0.0
+    },
+    "pipeline_smoke": {
+      "calls": 9,
+      "usd": 0.000411
+    },
+    "journey_previous_routing": {
+      "calls": 32,
+      "usd": 0.175599
+    },
+    "journey_measured_routing": {
+      "calls": 29,
+      "usd": 0.162886
+    }
+  },
+  "conformance": {
+    "samples_per_cell": 8,
+    "calls": 288,
+    "parsed": 284,
+    "throttled_attempts": 0,
+    "input_tokens": 278264,
+    "output_tokens": 46542,
+    "usd": 0.643408,
+    "cells": [
+      {
+        "schema": "IntakeDecision",
+        "role": "classify",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 564.4,
+        "p95_ms": 872.5,
+        "input_tokens": 7368,
+        "output_tokens": 160,
+        "usd": 0.00048,
+        "usd_per_call": 6e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "IntakeDecision",
+        "role": "classify",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 540.3,
+        "p95_ms": 850.7,
+        "input_tokens": 7368,
+        "output_tokens": 168,
+        "usd": 0.000281,
+        "usd_per_call": 3.5e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "IntakeDecision",
+        "role": "classify",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 864.8,
+        "p95_ms": 1157.1,
+        "input_tokens": 9920,
+        "output_tokens": 448,
+        "usd": 0.01216,
+        "usd_per_call": 0.00152,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "IntakeDecision",
+        "role": "classify",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1250.9,
+        "p95_ms": 3194.1,
+        "input_tokens": 9928,
+        "output_tokens": 448,
+        "usd": 0.036504,
+        "usd_per_call": 0.004563,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "GeneratedBatch",
+        "role": "generate",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 8,
+        "parsed": 7,
+        "wilson_95": [
+          0.5291,
+          0.9776
+        ],
+        "p50_ms": 3614.8,
+        "p95_ms": 4260.5,
+        "input_tokens": 9320,
+        "output_tokens": 4672,
+        "usd": 0.00168,
+        "usd_per_call": 0.00021,
+        "rejected_fields": {
+          "items.1.rationale (missing)": 1,
+          "items.3.rationale (missing)": 1
+        }
+      },
+      {
+        "schema": "GeneratedBatch",
+        "role": "generate",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 2764.1,
+        "p95_ms": 3282.2,
+        "input_tokens": 9320,
+        "output_tokens": 5407,
+        "usd": 0.001083,
+        "usd_per_call": 0.000135,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "GeneratedBatch",
+        "role": "generate",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 8,
+        "parsed": 5,
+        "wilson_95": [
+          0.3057,
+          0.8632
+        ],
+        "p50_ms": 6142.6,
+        "p95_ms": 6495.2,
+        "input_tokens": 12208,
+        "output_tokens": 7266,
+        "usd": 0.048538,
+        "usd_per_call": 0.006067,
+        "rejected_fields": {
+          "items.1.rationale (missing)": 1,
+          "items.2.rationale (missing)": 2,
+          "items.3.rationale (missing)": 2
+        }
+      },
+      {
+        "schema": "GeneratedBatch",
+        "role": "generate",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 12159.6,
+        "p95_ms": 14621.4,
+        "input_tokens": 12216,
+        "output_tokens": 8685,
+        "usd": 0.166923,
+        "usd_per_call": 0.020865,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "Snippet",
+        "role": "generate",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 853.3,
+        "p95_ms": 1707.1,
+        "input_tokens": 4608,
+        "output_tokens": 610,
+        "usd": 0.000423,
+        "usd_per_call": 5.3e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "Snippet",
+        "role": "generate",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 636.2,
+        "p95_ms": 686.1,
+        "input_tokens": 4608,
+        "output_tokens": 475,
+        "usd": 0.000228,
+        "usd_per_call": 2.8e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "Snippet",
+        "role": "generate",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1441.6,
+        "p95_ms": 1757.1,
+        "input_tokens": 6792,
+        "output_tokens": 971,
+        "usd": 0.011647,
+        "usd_per_call": 0.001456,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "Snippet",
+        "role": "generate",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 2851.2,
+        "p95_ms": 2955.3,
+        "input_tokens": 6800,
+        "output_tokens": 1137,
+        "usd": 0.037455,
+        "usd_per_call": 0.004682,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "TeacherNote",
+        "role": "generate",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 733.2,
+        "p95_ms": 883.0,
+        "input_tokens": 4648,
+        "output_tokens": 447,
+        "usd": 0.000386,
+        "usd_per_call": 4.8e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "TeacherNote",
+        "role": "generate",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 636.7,
+        "p95_ms": 674.0,
+        "input_tokens": 4648,
+        "output_tokens": 469,
+        "usd": 0.000228,
+        "usd_per_call": 2.9e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "TeacherNote",
+        "role": "generate",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1784.1,
+        "p95_ms": 2098.2,
+        "input_tokens": 6792,
+        "output_tokens": 1073,
+        "usd": 0.012157,
+        "usd_per_call": 0.00152,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "TeacherNote",
+        "role": "generate",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 3170.8,
+        "p95_ms": 3710.3,
+        "input_tokens": 6800,
+        "output_tokens": 1293,
+        "usd": 0.039795,
+        "usd_per_call": 0.004974,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "CriticFinding",
+        "role": "judge",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 948.1,
+        "p95_ms": 1067.3,
+        "input_tokens": 9272,
+        "output_tokens": 778,
+        "usd": 0.000743,
+        "usd_per_call": 9.3e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "CriticFinding",
+        "role": "judge",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 671.5,
+        "p95_ms": 707.1,
+        "input_tokens": 9272,
+        "output_tokens": 500,
+        "usd": 0.000395,
+        "usd_per_call": 4.9e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "CriticFinding",
+        "role": "judge",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 2178.5,
+        "p95_ms": 2599.7,
+        "input_tokens": 12136,
+        "output_tokens": 1464,
+        "usd": 0.019456,
+        "usd_per_call": 0.002432,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "CriticFinding",
+        "role": "judge",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 3743.2,
+        "p95_ms": 4830.7,
+        "input_tokens": 12144,
+        "output_tokens": 1657,
+        "usd": 0.061287,
+        "usd_per_call": 0.007661,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "OpenGrade",
+        "role": "judge",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 945.4,
+        "p95_ms": 1056.1,
+        "input_tokens": 6680,
+        "output_tokens": 632,
+        "usd": 0.000552,
+        "usd_per_call": 6.9e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "OpenGrade",
+        "role": "judge",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 739.0,
+        "p95_ms": 804.3,
+        "input_tokens": 6680,
+        "output_tokens": 624,
+        "usd": 0.000321,
+        "usd_per_call": 4e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "OpenGrade",
+        "role": "judge",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1606.6,
+        "p95_ms": 1832.0,
+        "input_tokens": 9184,
+        "output_tokens": 1223,
+        "usd": 0.015299,
+        "usd_per_call": 0.001912,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "OpenGrade",
+        "role": "judge",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 2728.1,
+        "p95_ms": 3452.3,
+        "input_tokens": 9192,
+        "output_tokens": 1293,
+        "usd": 0.046971,
+        "usd_per_call": 0.005871,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "ProbeAnswer",
+        "role": "probe",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 545.6,
+        "p95_ms": 587.5,
+        "input_tokens": 4136,
+        "output_tokens": 121,
+        "usd": 0.000277,
+        "usd_per_call": 3.5e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "ProbeAnswer",
+        "role": "probe",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 484.4,
+        "p95_ms": 510.3,
+        "input_tokens": 4136,
+        "output_tokens": 120,
+        "usd": 0.000162,
+        "usd_per_call": 2e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "ProbeAnswer",
+        "role": "probe",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 787.4,
+        "p95_ms": 826.6,
+        "input_tokens": 6256,
+        "output_tokens": 312,
+        "usd": 0.007816,
+        "usd_per_call": 0.000977,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "ProbeAnswer",
+        "role": "probe",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1095.9,
+        "p95_ms": 1125.5,
+        "input_tokens": 6264,
+        "output_tokens": 320,
+        "usd": 0.023592,
+        "usd_per_call": 0.002949,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "MappingDecision",
+        "role": "structured",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 772.4,
+        "p95_ms": 943.9,
+        "input_tokens": 7408,
+        "output_tokens": 421,
+        "usd": 0.000546,
+        "usd_per_call": 6.8e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "MappingDecision",
+        "role": "structured",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 541.5,
+        "p95_ms": 837.2,
+        "input_tokens": 7408,
+        "output_tokens": 216,
+        "usd": 0.00029,
+        "usd_per_call": 3.6e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "MappingDecision",
+        "role": "structured",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 923.1,
+        "p95_ms": 1226.1,
+        "input_tokens": 10184,
+        "output_tokens": 440,
+        "usd": 0.012384,
+        "usd_per_call": 0.001548,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "MappingDecision",
+        "role": "structured",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1221.8,
+        "p95_ms": 1487.1,
+        "input_tokens": 10192,
+        "output_tokens": 440,
+        "usd": 0.037176,
+        "usd_per_call": 0.004647,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "PolicyDecision",
+        "role": "structured",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 695.4,
+        "p95_ms": 996.6,
+        "input_tokens": 5032,
+        "output_tokens": 386,
+        "usd": 0.000395,
+        "usd_per_call": 4.9e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "PolicyDecision",
+        "role": "structured",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 558.2,
+        "p95_ms": 883.3,
+        "input_tokens": 5032,
+        "output_tokens": 249,
+        "usd": 0.000211,
+        "usd_per_call": 2.6e-05,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "PolicyDecision",
+        "role": "structured",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1175.5,
+        "p95_ms": 1634.9,
+        "input_tokens": 7152,
+        "output_tokens": 732,
+        "usd": 0.010812,
+        "usd_per_call": 0.001352,
+        "rejected_fields": {}
+      },
+      {
+        "schema": "PolicyDecision",
+        "role": "structured",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 2164.4,
+        "p95_ms": 2657.1,
+        "input_tokens": 7160,
+        "output_tokens": 885,
+        "usd": 0.034755,
+        "usd_per_call": 0.004344,
+        "rejected_fields": {}
+      }
+    ]
+  },
+  "role_rollup": {
+    "note": "Each role pooled over its own schemas in the matrix above, eight samples per schema, so a role with two schemas has sixteen calls per model.",
+    "cells": [
+      {
+        "role": "classify",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 564.4,
+        "p95_ms": 872.5,
+        "usd_per_call": 6e-05
+      },
+      {
+        "role": "classify",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 540.3,
+        "p95_ms": 850.7,
+        "usd_per_call": 3.5e-05
+      },
+      {
+        "role": "classify",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 864.8,
+        "p95_ms": 1157.1,
+        "usd_per_call": 0.00152
+      },
+      {
+        "role": "classify",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1250.9,
+        "p95_ms": 3194.1,
+        "usd_per_call": 0.004563
+      },
+      {
+        "role": "generate",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 24,
+        "parsed": 23,
+        "wilson_95": [
+          0.7976,
+          0.9926
+        ],
+        "p50_ms": 854.9,
+        "p95_ms": 4186.5,
+        "usd_per_call": 0.000104
+      },
+      {
+        "role": "generate",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 24,
+        "parsed": 24,
+        "wilson_95": [
+          0.862,
+          1.0
+        ],
+        "p50_ms": 653.8,
+        "p95_ms": 3049.9,
+        "usd_per_call": 6.4e-05
+      },
+      {
+        "role": "generate",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 24,
+        "parsed": 21,
+        "wilson_95": [
+          0.69,
+          0.9566
+        ],
+        "p50_ms": 1784.1,
+        "p95_ms": 6424.3,
+        "usd_per_call": 0.003014
+      },
+      {
+        "role": "generate",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 24,
+        "parsed": 24,
+        "wilson_95": [
+          0.862,
+          1.0
+        ],
+        "p50_ms": 3170.8,
+        "p95_ms": 13260.7,
+        "usd_per_call": 0.010174
+      },
+      {
+        "role": "judge",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 16,
+        "parsed": 16,
+        "wilson_95": [
+          0.8064,
+          1.0
+        ],
+        "p50_ms": 948.1,
+        "p95_ms": 1067.3,
+        "usd_per_call": 8.1e-05
+      },
+      {
+        "role": "judge",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 16,
+        "parsed": 16,
+        "wilson_95": [
+          0.8064,
+          1.0
+        ],
+        "p50_ms": 678.2,
+        "p95_ms": 804.3,
+        "usd_per_call": 4.5e-05
+      },
+      {
+        "role": "judge",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 16,
+        "parsed": 16,
+        "wilson_95": [
+          0.8064,
+          1.0
+        ],
+        "p50_ms": 1832.0,
+        "p95_ms": 2599.7,
+        "usd_per_call": 0.002172
+      },
+      {
+        "role": "judge",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 16,
+        "parsed": 16,
+        "wilson_95": [
+          0.8064,
+          1.0
+        ],
+        "p50_ms": 3228.0,
+        "p95_ms": 4830.7,
+        "usd_per_call": 0.006766
+      },
+      {
+        "role": "probe",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 545.6,
+        "p95_ms": 587.5,
+        "usd_per_call": 3.5e-05
+      },
+      {
+        "role": "probe",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 484.4,
+        "p95_ms": 510.3,
+        "usd_per_call": 2e-05
+      },
+      {
+        "role": "probe",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 787.4,
+        "p95_ms": 826.6,
+        "usd_per_call": 0.000977
+      },
+      {
+        "role": "probe",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 8,
+        "parsed": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1095.9,
+        "p95_ms": 1125.5,
+        "usd_per_call": 0.002949
+      },
+      {
+        "role": "structured",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "calls": 16,
+        "parsed": 16,
+        "wilson_95": [
+          0.8064,
+          1.0
+        ],
+        "p50_ms": 731.0,
+        "p95_ms": 996.6,
+        "usd_per_call": 5.9e-05
+      },
+      {
+        "role": "structured",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "calls": 16,
+        "parsed": 16,
+        "wilson_95": [
+          0.8064,
+          1.0
+        ],
+        "p50_ms": 545.9,
+        "p95_ms": 883.3,
+        "usd_per_call": 3.1e-05
+      },
+      {
+        "role": "structured",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "calls": 16,
+        "parsed": 16,
+        "wilson_95": [
+          0.8064,
+          1.0
+        ],
+        "p50_ms": 1118.2,
+        "p95_ms": 1634.9,
+        "usd_per_call": 0.00145
+      },
+      {
+        "role": "structured",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "calls": 16,
+        "parsed": 16,
+        "wilson_95": [
+          0.8064,
+          1.0
+        ],
+        "p50_ms": 1487.1,
+        "p95_ms": 2657.1,
+        "usd_per_call": 0.004496
+      }
+    ]
+  },
+  "decisions": {
+    "samples_per_cell": 8,
+    "calls": 128,
+    "usd": 0.194411,
+    "note": "Three of the four have a ground truth the fixture defines. The fourth compares the model's action with the deterministic policy the harness would apply on the same signals; disagreement there is a difference, not an error.",
+    "cells": [
+      {
+        "decision": "clean material is admitted",
+        "role": "classify",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "expected": "safe",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 521.1,
+        "answers": {
+          "safe": 8
+        }
+      },
+      {
+        "decision": "clean material is admitted",
+        "role": "classify",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "expected": "safe",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 560.3,
+        "answers": {
+          "safe": 8
+        }
+      },
+      {
+        "decision": "clean material is admitted",
+        "role": "classify",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "expected": "safe",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 942.6,
+        "answers": {
+          "safe": 8
+        }
+      },
+      {
+        "decision": "clean material is admitted",
+        "role": "classify",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "expected": "safe",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1275.4,
+        "answers": {
+          "safe": 8
+        }
+      },
+      {
+        "decision": "injected material is refused",
+        "role": "classify",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "expected": "unsafe",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 535.5,
+        "answers": {
+          "unsafe": 8
+        }
+      },
+      {
+        "decision": "injected material is refused",
+        "role": "classify",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "expected": "unsafe",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 571.9,
+        "answers": {
+          "unsafe": 8
+        }
+      },
+      {
+        "decision": "injected material is refused",
+        "role": "classify",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "expected": "unsafe",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 974.9,
+        "answers": {
+          "unsafe": 8
+        }
+      },
+      {
+        "decision": "injected material is refused",
+        "role": "classify",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "expected": "unsafe",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1671.1,
+        "answers": {
+          "unsafe": 8
+        }
+      },
+      {
+        "decision": "the material's own competency is ranked first",
+        "role": "structured",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "expected": "MAT-4-FRAC-EQUIV",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 526.2,
+        "answers": {
+          "MAT-4-FRAC-EQUIV": 8
+        }
+      },
+      {
+        "decision": "the material's own competency is ranked first",
+        "role": "structured",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "expected": "MAT-4-FRAC-EQUIV",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 705.7,
+        "answers": {
+          "MAT-4-FRAC-EQUIV": 8
+        }
+      },
+      {
+        "decision": "the material's own competency is ranked first",
+        "role": "structured",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "expected": "MAT-4-FRAC-EQUIV",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 884.7,
+        "answers": {
+          "MAT-4-FRAC-EQUIV": 8
+        }
+      },
+      {
+        "decision": "the material's own competency is ranked first",
+        "role": "structured",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "expected": "MAT-4-FRAC-EQUIV",
+        "ground_truth": true,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1200.7,
+        "answers": {
+          "MAT-4-FRAC-EQUIV": 8
+        }
+      },
+      {
+        "decision": "the policy agrees with the deterministic action",
+        "role": "structured",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "expected": "continue",
+        "ground_truth": false,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 552.8,
+        "answers": {
+          "continue": 8
+        }
+      },
+      {
+        "decision": "the policy agrees with the deterministic action",
+        "role": "structured",
+        "model_id": "us.amazon.nova-lite-v1:0",
+        "expected": "continue",
+        "ground_truth": false,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 797.4,
+        "answers": {
+          "continue": 8
+        }
+      },
+      {
+        "decision": "the policy agrees with the deterministic action",
+        "role": "structured",
+        "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "expected": "continue",
+        "ground_truth": false,
+        "calls": 8,
+        "met": 8,
+        "wilson_95": [
+          0.6756,
+          1.0
+        ],
+        "p50_ms": 1227.6,
+        "answers": {
+          "continue": 8
+        }
+      },
+      {
+        "decision": "the policy agrees with the deterministic action",
+        "role": "structured",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "expected": "continue",
+        "ground_truth": false,
+        "calls": 8,
+        "met": 7,
+        "wilson_95": [
+          0.5291,
+          0.9776
+        ],
+        "p50_ms": 2251.7,
+        "answers": {
+          "continue": 7,
+          "raise_difficulty": 1
+        }
+      }
+    ]
+  },
+  "failure_behaviour": {
+    "throttle": {
+      "observed_live": 0,
+      "denominator": 489,
+      "note": "No call in this measurement was throttled. The throttle branch is therefore exercised by injection, not by observation: tests/agents/stress_models.py raises the ModelThrottledException the Strands Bedrock provider raises, wrapping the ClientError code ThrottlingException."
+    },
+    "deadline": {
+      "calls": 3,
+      "timeout_seconds": 3.0,
+      "outcome": "3 of 3 timed out against a schema whose measured p50 is 12,160 ms",
+      "usage_reported": 0,
+      "usd_recorded": 0.0,
+      "note": "A call abandoned at the deadline reports no usage at all, so the ledger prices it at zero. What the provider did with the generation it had already started, and whether it billed for it, is not visible from the client."
+    },
+    "malformed": {
+      "calls": 4,
+      "denominator": 288,
+      "note": "Every rejection in the matrix was one schema on one field: a generated item arriving without its rationale. No timeout and no transport error occurred in the 288 matrix calls."
+    },
+    "fallbacks": "tests/agents/test_ingest_fallbacks.py and tests/agents/test_practice_fallbacks.py"
+  },
+  "journey": {
+    "what_it_is": "One complete family journey: enrolment, two photographed pages ingested, an item bank generated and reviewed, one practice capsule of three questions delivered, three answers graded, one answer quarantined and released by the parent, two further practice days, an escalation raised and resolved, and the next practice scheduled. Storage, delivery and text extraction are local; only inference is live.",
+    "what_the_ledger_covers": "The ledger holds the first day only. From day two onward the scenario substitutes an authored playback model for every role and instruments it without a ledger, so the two follow-up practice days, the escalation and the teacher note made no live call and appear in no cost line here. The escalation composer's own price is in the conformance matrix as TeacherNote, not in this journey.",
+    "previous_routing": {
+      "calls": 32,
+      "total_usd": 0.175599,
+      "outcomes": {
+        "ok": 32
+      },
+      "origins": {
+        "live": 32
+      },
+      "by_role": {
+        "classify": {
+          "calls": 2,
+          "usd": 0.000119,
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "p50_ms": 578.4,
+          "p95_ms": 853.1
+        },
+        "generate": {
+          "calls": 3,
+          "usd": 0.062655,
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "p50_ms": 18140.2,
+          "p95_ms": 20432.9
+        },
+        "judge": {
+          "calls": 14,
+          "usd": 0.105669,
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "p50_ms": 3042.4,
+          "p95_ms": 4770.4
+        },
+        "probe": {
+          "calls": 8,
+          "usd": 0.000166,
+          "model_id": "us.amazon.nova-micro-v1:0",
+          "p50_ms": 506.9,
+          "p95_ms": 829.1
+        },
+        "structured": {
+          "calls": 5,
+          "usd": 0.00699,
+          "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+          "p50_ms": 1214.0,
+          "p95_ms": 1527.1
+        }
+      },
+      "by_stage": {
+        "daily_practice": {
+          "calls": 6,
+          "usd": 0.021197
+        },
+        "item_bank": {
+          "calls": 22,
+          "usd": 0.151315
+        },
+        "material_intake": {
+          "calls": 4,
+          "usd": 0.003087
+        }
+      }
+    },
+    "measured_routing": {
+      "calls": 29,
+      "total_usd": 0.162886,
+      "outcomes": {
+        "ok": 29
+      },
+      "origins": {
+        "live": 29
+      },
+      "by_role": {
+        "classify": {
+          "calls": 2,
+          "usd": 7e-05,
+          "model_id": "us.amazon.nova-micro-v1:0",
+          "p50_ms": 541.8,
+          "p95_ms": 905.3
+        },
+        "generate": {
+          "calls": 3,
+          "usd": 0.062295,
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "p50_ms": 16241.7,
+          "p95_ms": 17032.0
+        },
+        "judge": {
+          "calls": 13,
+          "usd": 0.100134,
+          "model_id": "us.anthropic.claude-sonnet-4-6",
+          "p50_ms": 3928.1,
+          "p95_ms": 5093.4
+        },
+        "probe": {
+          "calls": 6,
+          "usd": 0.000124,
+          "model_id": "us.amazon.nova-micro-v1:0",
+          "p50_ms": 454.7,
+          "p95_ms": 789.3
+        },
+        "structured": {
+          "calls": 5,
+          "usd": 0.000264,
+          "model_id": "us.amazon.nova-lite-v1:0",
+          "p50_ms": 679.6,
+          "p95_ms": 876.2
+        }
+      },
+      "by_stage": {
+        "daily_practice": {
+          "calls": 5,
+          "usd": 0.011085
+        },
+        "item_bank": {
+          "calls": 20,
+          "usd": 0.151612
+        },
+        "material_intake": {
+          "calls": 4,
+          "usd": 0.00019
+        }
+      }
+    },
+    "beats": {
+      "previous_routing": {
+        "total": 24,
+        "not_as_expected": 4
+      },
+      "measured_routing": {
+        "total": 24,
+        "not_as_expected": 6
+      },
+      "note": "The beats that did not hold are the ones the authored cassette pins to exact counts — how many questions were written, how many survived review, how many the child got right, and how many roles played from the cassette. Live generation produces a different item set on every run, so those counts cannot hold. Every beat that asserts behaviour held in both runs, and both runs recorded zero runtime failures."
+    }
+  },
+  "economics": {
+    "basis": "one measured journey under the routing this profile ships, 2026-09-12",
+    "one_day_one_student_usd": 0.162886,
+    "daily_practice_only_usd": 0.011085,
+    "item_bank_usd": 0.151612,
+    "material_intake_usd": 0.00019,
+    "escalation_usd_in_ledger": 0.0,
+    "extrapolation": {
+      "label": "Arithmetic on one measured journey, not an observed cost. Nothing here was billed over a month and no family has run a second day.",
+      "school_days_per_month": 20,
+      "student_month_upper_usd": 3.2577,
+      "student_month_upper_assumption": "every school day looks like the measured day, with a fresh page photographed and a fresh item bank built",
+      "student_month_lower_usd": 0.3735,
+      "student_month_lower_assumption": "the bank is built once and the remaining nineteen days run only the calls the measured day's practice stage made",
+      "families": 30,
+      "pilot_month_upper_usd": 97.73,
+      "pilot_month_lower_usd": 11.21,
+      "excludes": "infrastructure, storage, delivery, text extraction and human time"
+    }
+  },
+  "routing_change": {
+    "changed": [
+      {
+        "role": "classify",
+        "from": "us.amazon.nova-lite-v1:0",
+        "to": "us.amazon.nova-micro-v1:0",
+        "fallback_now": "us.amazon.nova-lite-v1:0",
+        "evidence": "IntakeDecision 8/8 on both, [0.676, 1.000] each; both refused the injected page 8/8 and admitted the clean page 8/8; p50 540 ms against 564 ms; $0.00004 against $0.00006 per call"
+      },
+      {
+        "role": "structured",
+        "from": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "to": "us.amazon.nova-lite-v1:0",
+        "fallback_now": "us.amazon.nova-micro-v1:0",
+        "evidence": "MappingDecision and PolicyDecision 16/16 on both; both named the material's own competency first 8/8 and agreed with the deterministic policy 8/8; role p50 740 ms against 1,146 ms; $0.00006 against $0.00145 per call; the same five calls in a live journey cost $0.000264 against $0.006990"
+      }
+    ],
+    "kept": [
+      {
+        "role": "generate",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "evidence": "GeneratedBatch 8/8 against 5/8 for the declared fallback, every rejection a missing rationale on a later item in the batch. The intervals overlap at eight samples, so this is a measured difference rather than a separation."
+      },
+      {
+        "role": "judge",
+        "model_id": "us.anthropic.claude-sonnet-4-6",
+        "evidence": "CriticFinding and OpenGrade parse 16/16 on all four models, so parse rate does not separate them. What the judge role decides is whether an item is fit for a child and whether an answer is right, and this repository has no independent labels for either. Unmeasured, so unchanged."
+      },
+      {
+        "role": "probe",
+        "model_id": "us.amazon.nova-micro-v1:0",
+        "evidence": "Already the cheapest model the fleet prices, 8/8 and the fastest cell in the matrix at 484 ms p50. No cheaper candidate exists."
+      }
+    ]
+  }
+}
