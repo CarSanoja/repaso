@@ -111,13 +111,13 @@ def test_the_default_sample_count_fits_inside_the_default_budget():
         build_registry(), ROUTING_MODELS, DEFAULT_SAMPLES, DEFAULT_BUDGET_USD
     )
     assert estimate.within_budget
-    assert round(estimate.estimated_usd, 2) == 0.60
+    assert round(estimate.estimated_usd, 2) == 0.53
 
 
-def test_the_documented_ceiling_falls_between_sixteen_and_seventeen_samples():
+def test_the_documented_ceiling_falls_between_eighteen_and_nineteen_samples():
     probes = build_registry()
-    fits = estimate_budget(probes, ROUTING_MODELS, 16, DEFAULT_BUDGET_USD)
-    over = estimate_budget(probes, ROUTING_MODELS, 17, DEFAULT_BUDGET_USD)
+    fits = estimate_budget(probes, ROUTING_MODELS, 18, DEFAULT_BUDGET_USD)
+    over = estimate_budget(probes, ROUTING_MODELS, 19, DEFAULT_BUDGET_USD)
     assert fits.within_budget
     assert not over.within_budget
 

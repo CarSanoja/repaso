@@ -62,8 +62,8 @@ EXPECTED_BEATS = [
     "followup scripts were fully consumed",
 ]
 CRITIC_FINDINGS = 12
-CRITIC_REJECTIONS = 7
-NOTEBOOK_REJECTIONS = 1
+CRITIC_REJECTIONS = 6
+NOTEBOOK_REJECTIONS = 0
 GENERATED_BATCHES = 2
 DRAFTS_PER_BATCH = [6, 6]
 FLAW_NAMES = {flaw.value for flaw in ItemFlaw}
@@ -201,7 +201,7 @@ def test_every_recorded_draft_is_one_the_generator_would_keep():
     assert all(is_valid_draft(draft) for batch in batches for draft in batch.items)
 
 
-def test_the_review_drops_a_weak_item_and_the_whole_wrong_guide():
+def test_the_review_keeps_the_notebook_and_drops_the_whole_wrong_guide():
     findings = [
         CriticFinding.model_validate(entry.payload)
         for entry in load_cassette(CASSETTE_PATH)

@@ -1,7 +1,7 @@
 {
   "cassette": "demo_fracciones.jsonl",
-  "recorded_at": "2026-09-12T08:09:20.287207Z",
-  "commit": "ba761e685243f2c2ba6bdad63be6950861d350f7",
+  "recorded_at": "2026-09-12T09:35:27.298140Z",
+  "commit": "a3e382f835a7c447fa687641422138d4890b9715",
   "working_tree_modified": true,
   "region": "us-east-1",
   "what_this_is": "One recording of the demonstration journey against Amazon Bedrock on-demand inference: one entry per call, in the order the journey made them, each routed to the model its role is bound to in src/repaso/config/models.py. Token counts are the ones the provider reported and dollars are priced from the dated table in src/repaso/config/pricing.py.",
@@ -10,13 +10,12 @@
   "model_ids": [
     "us.amazon.nova-lite-v1:0",
     "us.amazon.nova-micro-v1:0",
-    "us.anthropic.claude-haiku-4-5-20251001-v1:0",
     "us.anthropic.claude-sonnet-4-6"
   ],
   "roles": {
     "classify": {
       "model_ids": [
-        "us.amazon.nova-lite-v1:0"
+        "us.amazon.nova-micro-v1:0"
       ],
       "calls": 2
     },
@@ -40,7 +39,7 @@
     },
     "structured": {
       "model_ids": [
-        "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+        "us.amazon.nova-lite-v1:0"
       ],
       "calls": 5
     }
@@ -57,15 +56,15 @@
   },
   "replayed": {
     "calls": 31,
-    "input_tokens": 36044,
-    "output_tokens": 6119,
-    "usd": 0.167641865
+    "input_tokens": 34697,
+    "output_tokens": 6204,
+    "usd": 0.16490844999999998
   },
   "recorded": {
     "calls": 31,
-    "input_tokens": 36044,
-    "output_tokens": 6119,
-    "usd": 0.16764186500000006
+    "input_tokens": 34697,
+    "output_tokens": 6204,
+    "usd": 0.16490844999999998
   },
   "live_calls": 31,
   "failed_calls": 0

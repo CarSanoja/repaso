@@ -1,50 +1,88 @@
 {
-  "recorded_at": "2026-09-12T08:09:20Z",
+  "recorded_at": "2026-09-12T09:35:27Z",
   "region": "us-east-1",
   "what_this_is": "One recording of the demonstration journey against Amazon Bedrock on-demand inference: thirty-one calls, one per entry in src/repaso/simulator/cassettes/demo_fracciones.jsonl, in the order the journey made them, each routed to the model its role is bound to. Every token count is the one the provider reported and every dollar is priced from the dated table in src/repaso/config/pricing.py. The cassette that ships is this recording; the demonstration replays it.",
   "what_this_is_not": "A replay is not a live run. Replaying the cassette reaches no network, spends nothing, and is not evidence that the models would answer this way again: this is one recording, on one day, of one journey. Nothing here measures tutoring quality, learning or a family outcome. The continuation after day one still plays authored payloads and is labelled as a simulated time jump in the transcript.",
+  "routing": {
+    "recorded_against": "The routing in src/repaso/config/models.py after two roles moved on the September 12 model profile: structured on Amazon Nova Lite and classify on Amazon Nova Micro.",
+    "supersedes": "An earlier recording of the same journey, made the same day against the routing before that change, when structured ran on Claude Haiku 4.5 and classify on Nova Lite. It is not shipped and is not reported here: a demonstration that replays a model the fleet no longer calls demonstrates something the product does not do."
+  },
   "run": {
     "calls": 31,
-    "outcomes": {"ok": 31},
-    "origins": {"live": 31},
+    "outcomes": {
+      "ok": 31
+    },
+    "origins": {
+      "live": 31
+    },
     "usage_reported": 31,
     "priced": 31,
-    "input_tokens": 36044,
-    "output_tokens": 6119,
+    "input_tokens": 34697,
+    "output_tokens": 6204,
     "cache_read_tokens": 0,
     "cache_write_tokens": 0,
-    "input_usd": 0.081697565,
-    "output_usd": 0.085944300,
-    "total_usd": 0.167641865,
+    "input_usd": 0.07707343,
+    "output_usd": 0.08783502,
+    "total_usd": 0.16490845,
     "reasoning_share": "not reported"
   },
   "by_role_usd": {
-    "classify": 0.0001191,
-    "generate": 0.0571950,
-    "judge": 0.1032300,
-    "probe": 0.0001428,
-    "structured": 0.0069550
+    "classify": 0.000069755,
+    "generate": 0.05886,
+    "judge": 0.105567,
+    "probe": 0.000142835,
+    "structured": 0.00026886
   },
   "by_model_usd": {
-    "us.amazon.nova-lite-v1:0": 0.0001191,
-    "us.amazon.nova-micro-v1:0": 0.0001428,
-    "us.anthropic.claude-haiku-4-5-20251001-v1:0": 0.0069550,
-    "us.anthropic.claude-sonnet-4-6": 0.1604250
+    "us.amazon.nova-lite-v1:0": 0.00026886,
+    "us.amazon.nova-micro-v1:0": 0.00021259,
+    "us.anthropic.claude-sonnet-4-6": 0.164427
   },
   "latency_ms": {
-    "classify": {"calls": 2, "p50": 573.6, "p95": 864.2},
-    "generate": {"calls": 3, "p50": 14709.5, "p95": 17011.7},
-    "judge": {"calls": 14, "p50": 3367.9, "p95": 4652.2},
-    "probe": {"calls": 7, "p50": 488.3, "p95": 745.4},
-    "structured": {"calls": 5, "p50": 1218.7, "p95": 1347.3}
+    "classify": {
+      "calls": 2,
+      "p50": 459.5,
+      "p95": 810.0
+    },
+    "generate": {
+      "calls": 3,
+      "p50": 15513.3,
+      "p95": 17956.0
+    },
+    "judge": {
+      "calls": 14,
+      "p50": 3258.5,
+      "p95": 4927.1
+    },
+    "probe": {
+      "calls": 7,
+      "p50": 504.1,
+      "p95": 780.6
+    },
+    "structured": {
+      "calls": 5,
+      "p50": 682.2,
+      "p95": 917.0
+    }
   },
   "what_the_recording_decided": {
     "questions_written_from_the_notebook": 6,
-    "questions_kept_after_review": 5,
+    "questions_kept_after_review": 6,
     "questions_written_from_the_photocopied_guide": 6,
     "questions_kept_from_the_guide": 0,
-    "why_the_guide_was_refused": "The critic rejected all six, naming the guide's own worked example, 2/3 = 4/9, as the reason in its notes. The error was planted in the synthetic page; a model reading the page found it.",
-    "held_back_grade": {"confidence": 0.72, "threshold": 0.85},
+    "why_the_guide_was_refused": "The critic rejected all six, and all six of its notes name the guide's own worked example, 2/3 = 4/9, as the reason. The error was planted in the synthetic page; a model reading the page found it.",
+    "open_grades": [
+      {
+        "confidence": 0.72,
+        "threshold": 0.85,
+        "route": "held for the adult"
+      },
+      {
+        "confidence": 0.85,
+        "threshold": 0.85,
+        "route": "decided automatically, on the threshold itself"
+      }
+    ],
     "parent_decision": "rejected",
     "day_one_mastery": "3 attempts / 1 correct",
     "options_only_probe": "7 of 7 multiple-choice items answered UNKNOWN with the question withheld; the probe is advisory and vetoes nothing."
@@ -52,24 +90,27 @@
   "assertions": {
     "teacher_note": "24/24",
     "reduce_load": "23/23",
-    "note": "The same twenty-four checks the authored cassette ran. Six of them assert different numbers now, because the recording said different numbers."
+    "note": "The same twenty-four checks. Two of them assert different numbers than the previous recording did — how many notebook questions survived review, and how many the review dropped — because this recording said different numbers."
   },
   "recording_attempts": {
-    "attempts": 4,
+    "attempts_on_this_routing": 2,
     "complete": 2,
-    "shipped": "the fourth, the first complete recording made at the final code state",
-    "why_incomplete_runs_are_discarded": "The recorder writes an entry only for a call that was answered, so a recording containing a failed call cannot replay: the replay reaches a call with no entry left and stops. Two attempts lost the guide page's generated batch and were discarded for that reason, not for what they said."
+    "shipped": "the second",
+    "why_the_first_is_not_shipped": "Both of its open grades came back under the threshold, at 0.62 and 0.82. The scenario script holds one answer and taps once, so the second held answer was never resolved: the day recorded two attempts instead of three and persistent difficulty never fired, leaving two of the journey's stages unexercised. That is selection on what the run did, and it is selection against a scripted scenario rather than against a number this repository publishes. The discarded recording is reported here and its grades are counted in the finding below.",
+    "earlier_routing": "Four further attempts were made the same day against the previous routing, of which two were discarded for a different reason: the recorder writes an entry only for a call that was answered, so a recording containing a failed call cannot replay — the replay reaches a call with no entry left and stops."
   },
   "findings": {
     "generated_batch_rejected_as_text": {
-      "observed": "6 of 19 GeneratedBatch calls on the photocopied-guide page returned the items field as a text blob instead of an array and were rejected at items (list_type). 0 of 4 calls on the notebook page did.",
+      "observed": "6 of 19 GeneratedBatch calls on the photocopied-guide page returned the items field as a text blob instead of an array and were rejected at items (list_type). 0 of 4 calls on the notebook page did. Those 23 calls were made against the earlier routing, which used the same model for this role.",
       "captured": "3 of the 6 payloads were captured in full. None is valid JSON under a strict or a permissive reader: each puts a character's speech in a stem between unescaped double quotes.",
       "consequence_before": "A rejected batch produced no items and the page was declared too thin to practise from: the child gets nothing that morning.",
-      "repair": "The ingest graph now asks again, bounded by item_regen_max_rounds, and calls the page thin only after every attempt comes back empty. A tolerance that decoded a JSON-encoded array was tried first and removed: none of the captured payloads parses, so it repaired nothing the fleet produces."
+      "repair": "The ingest graph now asks again, bounded by item_regen_max_rounds, and calls the page thin only after every attempt comes back empty. A tolerance that decoded a JSON-encoded array was tried first and removed: none of the captured payloads parses, so it repaired nothing the fleet produces.",
+      "still_open": "One of the two recordings made on this routing spent a regeneration round on that page, so the repair was exercised and worked; one call in 32 was still lost to it. A rejected call is not written to the cassette, so a replay cannot reproduce the rejection."
     },
     "grader_confidence_sits_on_the_threshold": {
-      "observed": "12 grades sampled from Claude Sonnet 4.6 over three open questions from an earlier recording, two samples of each of the two authored student answers, returned confidences from 0.62 to 0.95, with 7 of 12 below the 0.85 threshold that holds an answer back for the adult.",
-      "consequence": "Whether the demonstration shows a held-back grade depends on which question survives review and which answer it receives. It is not a property of the harness and it is not authored: 12 samples is not a rate, and no calibration is claimed."
+      "observed": "Across the two recordings made on this routing, four open answers were graded by Claude Sonnet 4.6 at confidences 0.62, 0.72, 0.82 and 0.85 — three of the four below the 0.85 threshold that holds an answer back for the adult, and the fourth exactly on it. An earlier 12-sample probe over three open questions and two authored student answers returned 0.62 to 0.95, 7 of 12 below the threshold.",
+      "consequence": "Whether the demonstration shows a held-back grade, and how many it holds, depends on which question survives review and which answer it receives. It is not a property of the harness and it is not authored.",
+      "denominator": "4 grades over 2 recordings, plus 12 earlier samples over 3 questions and 2 answers. Sixteen observations of one prompt version on one day are not a rate and no calibration is claimed."
     }
   }
 }

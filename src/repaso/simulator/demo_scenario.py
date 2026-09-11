@@ -119,7 +119,7 @@ async def _notebook(stage: Stage) -> None:
     ingest = summary.get("ingest") or {}
     stage.beat("the notebook photo becomes practice", "material", summary.get("route"))
     stage.beat("questions written from the page", 6, ingest.get("generated"))
-    stage.beat("questions that survived review", 5, len(ingest.get("kept_item_ids", [])))
+    stage.beat("questions that survived review", 6, len(ingest.get("kept_item_ids", [])))
 
 
 async def _open_session(stage: Stage, family: Any, student: Any) -> None:

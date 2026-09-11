@@ -41,11 +41,11 @@ for every model in the default and fallback chains. The estimate is printed
 whether or not it passes, and a run priced above `REPASO_LIVE_BUDGET_USD` is
 refused before a single call is made.
 
-At the default five samples that is 55 calls and an estimate of $0.60. Real
+At the default five samples that is 55 calls and an estimate of $0.53. Real
 spend comes in well under the estimate, because the allowance assumes far longer
 prompts and answers than these probes produce; the report tells you the measured
-figure. Raising the sample count raises the estimate proportionally: 16 samples
-still fits under the default ceiling and 17 does not.
+figure. Raising the sample count raises the estimate proportionally: 18 samples
+still fits under the default ceiling and 19 does not.
 
 The prices behind all of this live in `src/repaso/config/pricing.py`, four
 rates per model id the fleet can reach: input, output, prompt-cache read and

@@ -10,7 +10,7 @@ COMPETENCY = "math.g4.fractions.equivalence"
 NOT_YET = "—"
 HELD = "held"
 ANSWERS_EXPECTED = 3
-DROPPED_EXPECTED = 7
+DROPPED_EXPECTED = 6
 
 
 def _queue_counters(services: Services) -> list[Any]:
