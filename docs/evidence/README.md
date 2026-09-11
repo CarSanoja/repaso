@@ -2,10 +2,10 @@
 
 Two dates. September 6, 2026 is the pre-commit verification after the gap remediation: the
 system runs, recovers and packages, entirely on authored model outputs. September 12, 2026 is
-the day the model fleet was actually called — 930 live Amazon Bedrock calls counted in
-committed ledgers, and one further recording campaign whose ledger stays out of the repository,
-every token read from the provider's own usage metadata and priced from the dated table in
-`src/repaso/config/pricing.py`.
+the day the model fleet was actually called — 930 live Amazon Bedrock calls whose count and
+price an artifact below states, plus one recording campaign that stated its dollars and not its
+call count. Every token was read from the provider's own usage metadata and priced from the
+dated table in `src/repaso/config/pricing.py`.
 
 What changed on September 12 is the kind of claim this repository can make about the models.
 Before it, every statement about them was either about shape or about intent. After it, the
@@ -69,7 +69,12 @@ Nothing here is marked complete because a local file exists. Each row says what 
 
 ## What the live campaigns cost
 
-Read from the per-call ledgers each campaign wrote, priced from the dated table.
+Read from the per-call ledger each campaign wrote, priced from the dated table. **No ledger is
+committed**: they are written under `.local_data/` or `private/` and each campaign's artifact
+carries the totals read from its own. One figure here can be recomputed from the repository
+alone — the shipped cassette is in `src/repaso/simulator/cassettes/`, and `cassette_cost.py`
+prices it from the usage the provider reported for each of its entries. For any other ledger,
+`scripts/run_cost_report.py --ledger <path>` prints the same report from the file itself.
 
 | Campaign | Live calls | Measured |
 | --- | --- | --- |
@@ -84,12 +89,12 @@ Read from the per-call ledgers each campaign wrote, priced from the dated table.
 Four boundaries on that total. The profile's figure is a **floor**: three calls abandoned at a
 deliberate deadline reported no usage at all, so the ledger prices them at zero, and what the
 provider billed for the generations it had already started is not visible from the client. The
-earlier cassette campaign's ledgers are written to `private/` and are not committed, so its
-dollars are a reading from a ledger this repository does not carry and its call count is not
-recoverable here; the two recordings made on the shipped routing are 32 and 31 calls, and the
-shipped one's own $0.164908 is in its artifact. The whole column is quoted to four places
-because that coarsest line is. And the 271-call schema conformance run is excluded entirely,
-because its $1.1203 is an estimate rather than a ledger reading.
+earlier cassette campaign reported its dollars but never its call count, so it contributes to
+the money column and not to the calls column; the two recordings made on the shipped routing
+are 32 and 31 calls, and the shipped one's own $0.164908 is in its artifact and recomputable
+from the cassette. The whole money column is quoted to four places because that coarsest line
+is. And the 271-call schema conformance run is excluded entirely, because its $1.1203 is an
+estimate rather than a ledger reading.
 
 ## Claim boundaries
 

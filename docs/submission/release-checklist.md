@@ -42,7 +42,7 @@ judging work; the register says which of its rows were re-measured after them.
 | Construction, provenance and individual eligibility | [`provenance.md`](provenance.md); owner verification pending |
 | Three Builder Center URLs | Drafts prepared; not published |
 | Availability operator through October 8 | Unassigned |
-| Successful real scheduled journey and ten cloud runs | Not performed. Live inference answered 930 ledgered calls on September 12; nothing is deployed |
+| Successful real scheduled journey and ten cloud runs | Not performed. Live inference answered 930 counted calls on September 12; nothing is deployed |
 | Family pilot and independent teacher review | Not performed; both kits prepared and empty |
 
 Before freezing: verify the official deadline and rules, run the candidate
