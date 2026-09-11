@@ -151,10 +151,13 @@ gates take about ninety seconds together; the clock takes about seven minutes.
 | `python scripts/run_answer_evaluation.py` | `"cases": 60, "predictions": 0, "quality_claim_allowed": false` | [validation](../evidence/answer-evaluation-validation.json) |
 
 The 83 skips are the live tier — 56 tests in `tests/live`, off unless you hand
-it AWS credentials and a budget — and 27 infrastructure tests that read
-synthesized CloudFormation and need the CDK libraries. `pip install -c
-requirements.lock -e ".[deploy]"` collects those, and the suite then reads
-`1411 passed, 56 skipped`. The hygiene gate also counts every blob reachable
+it AWS credentials and a budget — and 27 skips standing in for the
+infrastructure tests that read synthesized CloudFormation and need the CDK
+libraries. Those 27 are not 27 tests: most of `tests/infra` is never collected
+without `aws_cdk`, so `pip install -c requirements.lock -e ".[deploy]"` turns
+them into the 124 tests that directory really holds, and the suite then reads
+`1411 passed, 56 skipped` — 1287 plus 124, and 83 minus the 27 that stopped
+being skips. The hygiene gate also counts every blob reachable
 from this branch, which is why it reports a second number the September figures
 did not. The suite figure in `docs/evidence/verification-2026-09-06.json` is
 `1169` because it was recorded on September 6 against an earlier tree.
