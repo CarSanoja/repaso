@@ -1398,7 +1398,7 @@
         "total": 24,
         "not_as_expected": 6
       },
-      "note": "The beats that did not hold are the ones the authored cassette pins to exact counts — how many questions were written, how many survived review, how many the child got right, and how many roles played from the cassette. Live generation produces a different item set on every run, so those counts cannot hold. Every beat that asserts behaviour held in both runs, and both runs recorded zero runtime failures."
+      "note": "The beats that did not hold are the ones the shipped cassette pins to exact counts — how many questions were written, how many survived review, how many the child got right, and how many roles played from the cassette. Live generation produces a different item set on every run, so those counts cannot hold. Every beat that asserts behaviour held in both runs, and both runs recorded zero runtime failures."
     }
   },
   "economics": {

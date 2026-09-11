@@ -210,10 +210,12 @@ batch is a child with no questions that evening.
 models, so parse rate does not distinguish them at all, and the cost gap is large: Nova
 Micro would cost $0.00004 per call against $0.00677. What the judge role decides is whether
 a generated item is fit for a child and whether a child's answer is right. This repository
-has no independent labels for either — the 60-answer protocol in `evaluation/README.md` has
-zero model predictions and zero independent reviews collected. Changing the judge on parse
-rate alone would be the same reputation-shaped reasoning this run exists to replace, with
-the sign flipped. It stays until that protocol runs.
+has no independent labels for either. The 60-answer protocol in `evaluation/README.md` has
+since collected thirty development predictions from this same model, but every figure there
+is agreement with the labels the author proposed for their own answers; no teacher has
+reviewed a case, so nothing in it says whether this role is right. Changing the judge on
+parse rate alone would be the same reputation-shaped reasoning this run exists to replace,
+with the sign flipped. It stays until a teacher labels that set.
 
 **probe: Amazon Nova Micro kept.** Already the cheapest model the fleet prices, 8/8, and the
 fastest cell in the matrix at 484 ms p50. There is no cheaper candidate to measure.

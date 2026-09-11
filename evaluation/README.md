@@ -2,7 +2,7 @@
 
 This package contains 60 synthetic fourth-grade fraction explanations in ten question groups. Thirty answers belong to development groups and thirty to held-out groups; variants of a question stay in the same split. The set covers correct explanations, wrong reasoning with a correct conclusion, clear errors, partial explanations, ambiguity, informal spelling and injection attempts. It is a narrow diagnostic set, not a representative population sample.
 
-`answer_review_set.jsonl` carries proposed author labels and their origin. `teacher_review_blind.jsonl` omits those labels and model predictions. Give only the blind file to a teacher. They complete `teacher_labels.jsonl` with a pseudonymous reviewer ID, `independent: true`, boolean `correct` and `needs_review`, rubric points and a short reason. Unknown labels remain blank. No labels have been independently completed as of September 6.
+`answer_review_set.jsonl` carries proposed author labels and their origin. `teacher_review_blind.jsonl` omits those labels and model predictions. Give only the blind file to a teacher. They complete `teacher_labels.jsonl` with a pseudonymous reviewer ID, `independent: true`, boolean `correct` and `needs_review`, rubric points and a short reason. Unknown labels remain blank. No labels have been independently completed as of September 12, 2026, which is why every reported figure is agreement with the author's own proposals and no quality claim is allowed.
 
 Validate without calls:
 
@@ -53,4 +53,4 @@ The teacher step did not happen: no teacher is available, so validity and option
 
 `ablation_items.json` freezes the thirty items with what was generated and what was planted; `ablation_transcript.jsonl` keeps every critic verdict and probe reply; `ablation_observations.csv` holds 270 rows, one per item, permutation and arm. Rebuild the capture and the report from the transcript with `python scripts/run_probe_ablation.py --analyze`.
 
-The result and its limits are in [`docs/evidence/probe-ablation-2026-09-12.md`](../docs/evidence/probe-ablation-2026-09-12.md). In short: the advisory probe changed none of the 90 decisions, and answered UNKNOWN on 23 of the 24 decisions that carried a planted option clue, so the recommendation is to disable it in the ingest path and keep it for evaluation. The historical veto reached 36/36 planted rejection by dropping 47 of 54 unplanted decisions and should not come back.
+The result and its limits are in [`docs/evidence/probe-ablation-2026-09-12.md`](../docs/evidence/probe-ablation-2026-09-12.md). In short: the advisory probe changed none of the 90 decisions, and answered UNKNOWN on 23 of the 24 decisions that carried a planted option clue, so the recommendation is to disable it in the ingest path and keep it for evaluation. The historical veto reached 36/36 planted rejection, but it got there by dropping 13 of the 20 unplanted decisions the critic had kept, leaving 7 of 54; it should not come back.

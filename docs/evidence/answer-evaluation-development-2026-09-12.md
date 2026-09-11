@@ -79,10 +79,11 @@ to put that bound under 5%.
 | ambiguous | 5 | 4 | no author grade | 0.200 |
 | injection | 5 | 0 | no author grade | 1.000 |
 
-The grader never agreed with a wrong conclusion: it called all five wrong-reason answers
-incorrect and all five partial answers incorrect, matching the author. The two categories it
-disagrees with the author about are the ones where nothing is being graded and everything is
-being decided: whether a person should look.
+The grader endorsed no wrong conclusion here: it called all five wrong-reason cases and all five
+partial cases incorrect, matching the author. The wrong-reason column is one answer text against
+five questions, so it is one observation repeated five times and not five; the partial column is
+five distinct answers. The two categories it disagrees with the author about are the ones where
+nothing is being graded and everything is being decided: whether a person should look.
 
 ## What the threshold buys and costs
 
