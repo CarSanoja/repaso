@@ -1,26 +1,18 @@
 """Per-arm retention, rejection, key correctness and cost, over construction denominators."""
 
-from math import sqrt
-
 from ablation_arms import ARMS, CRITIC_ONLY
 from ablation_items import FrozenItem
 from ablation_rows import ARM_STAGES, Observation
 from ablation_run import STAGE_CRITIC_REPEAT, CallLog, Review
 
-CONFIDENCE_Z = 1.96
+from repaso.tools.proportion import wilson_interval
 
 
 def wilson(successes: int, count: int) -> list[float] | None:
     if not count:
         return None
-    share = successes / count
-    denominator = 1 + CONFIDENCE_Z**2 / count
-    center = (share + CONFIDENCE_Z**2 / (2 * count)) / denominator
-    spread = CONFIDENCE_Z * sqrt(
-        share * (1 - share) / count + CONFIDENCE_Z**2 / (4 * count * count)
-    )
-    half = spread / denominator
-    return [round(max(0.0, center - half), 4), round(min(1.0, center + half), 4)]
+    interval = wilson_interval(successes, count)
+    return [round(interval.low, 4), round(interval.high, 4)]
 
 
 def rate(successes: int, count: int) -> dict:

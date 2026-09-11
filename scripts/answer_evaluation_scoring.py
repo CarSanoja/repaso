@@ -1,6 +1,6 @@
 """Score saved predictions against labels, saying whose labels they are."""
 
-from math import sqrt
+from repaso.tools.proportion import wilson_interval
 
 CONFIDENCE_BANDS = ((0, 0.7), (0.7, 0.85), (0.85, 0.95), (0.95, 1.01))
 DEFAULT_THRESHOLD = 0.85
@@ -13,12 +13,8 @@ TEACHER_LABELS = "independent-teacher"
 def wilson(successes: int, count: int) -> list[float] | None:
     if not count:
         return None
-    z = 1.96
-    p = successes / count
-    denominator = 1 + z * z / count
-    center = (p + z * z / (2 * count)) / denominator
-    half = z * sqrt(p * (1 - p) / count + z * z / (4 * count * count)) / denominator
-    return [max(0, center - half), min(1, center + half)]
+    interval = wilson_interval(successes, count)
+    return [interval.low, interval.high]
 
 
 def is_automatic(prediction: dict, threshold: float) -> bool:

@@ -10,6 +10,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
+from repaso.tools.proportion import wilson_interval
+
 
 def _cohort_signals(store, members) -> list[str]:
     from repaso.schemas.escalation import EscalationKind
@@ -69,12 +71,8 @@ def run_one(args: tuple[int, str]) -> dict:
 def wilson(successes: int, total: int) -> tuple[float, float, float]:
     if total == 0:
         return (0.0, 0.0, 0.0)
-    z = 1.96
-    p = successes / total
-    denom = 1 + z * z / total
-    centre = (p + z * z / (2 * total)) / denom
-    margin = z * math.sqrt(p * (1 - p) / total + z * z / (4 * total * total)) / denom
-    return (p, max(0.0, centre - margin), min(1.0, centre + margin))
+    interval = wilson_interval(successes, total)
+    return (interval.point, interval.low, interval.high)
 
 
 def main() -> int:
