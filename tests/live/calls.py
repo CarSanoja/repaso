@@ -32,6 +32,7 @@ class ProbeCall(FrozenStrictModel):
     input_tokens: int = Field(default=0, ge=0)
     output_tokens: int = Field(default=0, ge=0)
     estimated_usd: float = Field(default=0.0, ge=0.0)
+    rejected_fields: list[str] = []
     error: str = ""
 
     @property
@@ -57,13 +58,18 @@ async def _drain(model: Model, probe: SchemaProbe, spend: Spend) -> None:
         raise ValueError(NO_OUTPUT)
 
 
-def _rejected(failure: ValidationError) -> str:
+def rejected_fields(failure: ValidationError) -> list[str]:
     named: list[str] = []
     for error in failure.errors():
         location = ".".join(str(part) for part in error["loc"])
         entry = f"{location} ({error['type']})"
         if entry not in named:
             named.append(entry)
+    return named
+
+
+def _rejected(failure: ValidationError) -> str:
+    named = rejected_fields(failure)
     hidden = len(named) - NAMED_FIELDS
     listed = ", ".join(named[:NAMED_FIELDS])
     if hidden > 0:
@@ -87,6 +93,7 @@ async def run_probe(
     outcome = CallOutcome.PARSED
     spend = Spend()
     error = ""
+    rejected: list[str] = []
     try:
         async with asyncio.timeout(timeout_seconds):
             await _drain(model, probe, spend)
@@ -96,6 +103,7 @@ async def run_probe(
     except ValidationError as failure:
         outcome = CallOutcome.MALFORMED
         error = f"{type(failure).__name__}: {_rejected(failure)}"
+        rejected = rejected_fields(failure)
     except Exception as failure:
         outcome = CallOutcome.CALL_FAILED
         error = f"{type(failure).__name__}: {failure}"
@@ -109,5 +117,6 @@ async def run_probe(
         input_tokens=spend.usage.input_tokens,
         output_tokens=spend.usage.output_tokens,
         estimated_usd=_priced(model_id, spend.usage),
+        rejected_fields=rejected,
         error=error,
     )

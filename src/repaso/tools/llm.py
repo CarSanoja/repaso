@@ -38,6 +38,10 @@ class PlaybackExhausted(RuntimeError):
     pass
 
 
+class LocalModeHasNoProvider(RuntimeError):
+    pass
+
+
 class LocalPlaybackModel(Model):
     def __init__(self, script: list[ScriptEntry] | None = None) -> None:
         self._script: deque[ScriptEntry] = deque(script or [])
@@ -135,6 +139,21 @@ def guardrail_config(settings: Settings) -> dict[str, Any]:
     }
 
 
+def build_bedrock_model(model_id: str, settings: Settings) -> Model:
+    if settings.local_mode:
+        raise LocalModeHasNoProvider(f"{model_id} needs a region-backed Settings, not local mode")
+    from botocore.config import Config
+    from strands.models.bedrock import BedrockModel
+
+    return BedrockModel(
+        model_id=model_id,
+        region_name=settings.aws_region,
+        boto_client_config=Config(read_timeout=90, connect_timeout=10, retries={"max_attempts": 0}),
+        max_tokens=4096,
+        **guardrail_config(settings),
+    )
+
+
 def build_model(
     role: ModelRole, settings: Settings, playback: LocalPlaybackModel | None = None
 ) -> Model:
@@ -144,16 +163,7 @@ def build_model(
         if settings.cassette_path is not None:
             return CassetteModel(_cassette_entries(settings.cassette_path), role.value)
         return LocalPlaybackModel()
-    from botocore.config import Config
-    from strands.models.bedrock import BedrockModel
-
-    model = BedrockModel(
-        model_id=model_for(role),
-        region_name=settings.aws_region,
-        boto_client_config=Config(read_timeout=90, connect_timeout=10, retries={"max_attempts": 0}),
-        max_tokens=4096,
-        **guardrail_config(settings),
-    )
+    model = build_bedrock_model(model_for(role), settings)
     if settings.record_cassette_path is None:
         return model
     return RecordingModel(model, _cassette_writer(settings.record_cassette_path), role.value)

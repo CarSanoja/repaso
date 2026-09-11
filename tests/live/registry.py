@@ -40,7 +40,7 @@ class SchemaProbe(FrozenStrictModel):
         return self.output_schema.__name__
 
 
-def _mapping_prompt() -> str:
+def mapping_prompt() -> str:
     candidates = "\n".join(samples.CANDIDATES)
     return (
         f"Candidate competencies:\n{candidates}\n\n"
@@ -87,7 +87,7 @@ def build_registry() -> tuple[SchemaProbe, ...]:
             system=mapper_prompt.SYSTEM.format(
                 grade=samples.GRADE, subject=samples.SUBJECT, limit=MAPPING_LIMIT
             ),
-            prompt=_mapping_prompt(),
+            prompt=mapping_prompt(),
         ),
         SchemaProbe(
             role=ModelRole.STRUCTURED,

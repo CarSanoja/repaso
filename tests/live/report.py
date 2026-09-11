@@ -20,6 +20,7 @@ class SampleRow(FrozenStrictModel):
     input_tokens: int = Field(ge=0)
     output_tokens: int = Field(ge=0)
     estimated_usd: float = Field(ge=0.0)
+    rejected_fields: list[str] = []
     error: str = ""
 
 
