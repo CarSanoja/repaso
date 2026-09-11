@@ -96,7 +96,7 @@
     "attempts_on_this_routing": 2,
     "complete": 2,
     "shipped": "the second",
-    "why_the_first_is_not_shipped": "Both of its open grades came back under the threshold, at 0.62 and 0.82. The scenario script holds one answer and taps once, so the second held answer was never resolved: the day recorded two attempts instead of three and persistent difficulty never fired, leaving two of the journey's stages unexercised. That is selection on what the run did, and it is selection against a scripted scenario rather than against a number this repository publishes. The discarded recording is reported here and its grades are counted in the finding below.",
+    "why_the_first_is_not_shipped": "Both of its open grades came back under the threshold, at 0.62 and 0.82. The scenario script holds one answer and taps once, so the second held answer was never resolved: the day recorded two attempts instead of three, persistent difficulty never fired, and the run ended after 19 of the 24 beats. The three stages that follow the escalation -- persistent difficulty, the adult's choice and the next practice -- went unexercised. That is selection on what the run did, and it is selection against a scripted scenario rather than against a number this repository publishes. The discarded recording is reported here and its grades are counted in the finding below.",
     "earlier_routing": "Four further attempts were made the same day against the previous routing, of which two were discarded for a different reason: the recorder writes an entry only for a call that was answered, so a recording containing a failed call cannot replay — the replay reaches a call with no entry left and stops."
   },
   "findings": {
