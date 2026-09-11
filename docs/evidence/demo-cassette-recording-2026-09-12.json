@@ -5,7 +5,7 @@
   "what_this_is_not": "A replay is not a live run. Replaying the cassette reaches no network, spends nothing, and is not evidence that the models would answer this way again: this is one recording, on one day, of one journey. Nothing here measures tutoring quality, learning or a family outcome. The continuation after day one still plays authored payloads and is labelled as a simulated time jump in the transcript.",
   "routing": {
     "recorded_against": "The routing in src/repaso/config/models.py after two roles moved on the September 12 model profile: structured on Amazon Nova Lite and classify on Amazon Nova Micro.",
-    "supersedes": "An earlier recording of the same journey, made the same day against the routing before that change, when structured ran on Claude Haiku 4.5 and classify on Nova Lite. It is not shipped and is not reported here: a demonstration that replays a model the fleet no longer calls demonstrates something the product does not do."
+    "supersedes": "An earlier recording of the same journey, made the same day against the routing before that change, when structured ran on Claude Haiku 4.5 and classify on Nova Lite. It is not shipped, because a demonstration that replays a model the fleet no longer calls demonstrates something the product does not do. None of the run figures on this page come from it; where its calls inform a finding below, the finding says so."
   },
   "run": {
     "calls": 31,
