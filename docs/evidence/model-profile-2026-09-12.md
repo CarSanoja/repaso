@@ -107,8 +107,8 @@ Four of the 288 payloads were rejected. All four were the same schema and the sa
 a generated item arriving without its `rationale`, which is the explanation a family reads
 after answering. Claude Haiku 4.5 omitted it on three batches of eight, at
 `items.1.rationale`, `items.2.rationale` (twice) and `items.3.rationale` (twice); Amazon
-Nova Lite omitted it on one, at `items.1` and `items.3`. It is never the first item in a
-batch, which points at the prompt as much as at the model. That is the next thing to
+Nova Lite omitted it on one, at `items.1.rationale` and `items.3.rationale`. It is never
+the first item in a batch, which points at the prompt as much as at the model. That is the next thing to
 measure and it is not measured here.
 
 ## Four questions whose answer is known
@@ -152,8 +152,11 @@ What the provider did with the generation it had already started, and whether it
 it, is not visible from the client, so the $1.176715 total above is a floor rather than a
 statement about the invoice.
 
-**A provider that throttles.** Zero of 489 live calls were throttled today. The throttle
-branch is therefore exercised by injection rather than by observation:
+**A provider that throttles.** None of the 489 live calls was throttled. The sweep counts
+throttled attempts directly and recorded zero; every other run would have surfaced one as a
+failed call or an unanswered probe, and apart from the three deliberate deadline misses
+there were none. The throttle branch is therefore exercised by injection rather than by
+observation:
 `tests/agents/stress_models.py` raises the `ModelThrottledException` the Bedrock provider
 raises, carrying the `ThrottlingException` client error.
 
