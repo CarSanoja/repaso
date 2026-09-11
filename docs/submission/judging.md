@@ -59,11 +59,13 @@ minutes.
    boundaries* section. It is the shortest honest summary of what this project
    has and has not shown.
 
-Everything in steps 2 to 4 is an authored simulation: real orchestration code,
-real storage, real scheduling and grading rules, model answers played back from
-a hand-written cassette. The judge endpoint says so in its own response body
-(`"origin": "authored simulation"`, `"live_inference": false`), and the terminal
-run prints it above the table.
+Everything in steps 2 to 4 is a replay: real orchestration code, real storage,
+real scheduling and grading rules, and the first day's model answers played back
+from a recording made against Amazon Bedrock on September 12, 2026. The days
+after it are authored. The judge endpoint says so in its own response body
+(`"origin": "recorded replay"`, `"live_inference": false`), and the terminal run
+prints what that recording measured above the table. A replay reaches no network
+and spends nothing.
 
 ## The local path
 
@@ -114,20 +116,22 @@ python scripts/run_demo_scenario.py --data-dir .local_data/demo-light --decision
 ```
 
 ```
-cost: 22,026 input + 5,966 output tokens over 32 of 32 model calls
-The model outputs come from an authored cassette, not from a live recording: the token
-counts are the ones the cassette declares, and nothing left this machine.
-one family, four labeled school days, simulated in 1.2s into .local_data/demo-note
+cost: 34,697 input + 6,204 output tokens and $0.1649 over 31 recorded model calls
+The model outputs are replayed from a recording made on 2026-09-12 in us-east-1, against 3 model ids,
+on top of commit a3e382f835a7: the tokens and dollars above are what that one recording measured.
+This replay reached no network and spent nothing, and it is not evidence that the models
+would answer this way again.
+one family, four labeled school days, simulated in 0.5s into .local_data/demo-note
 
 beat                                                                     expected                   actual  verdict
 enrolment ends with the family enrolled                                  enrolled                 enrolled  as expected
 a name that looks real is refused as an alias                             refused                  refused  as expected
 the notebook photo becomes practice                                      material                 material  as expected
-questions written from the page                                                 8                        8  as expected
-questions that survived review                                                  7                        7  as expected
+questions written from the page                                                 6                        6  as expected
+questions that survived review                                                  6                        6  as expected
 the capsule carries the day's three questions                                   3                        3  as expected
 the answer the grader would not sign reaches the parent                   one tap                  one tap  as expected
-the parent's tap releases it as correct                                  approved                 approved  as expected
+the parent's tap settles it as wrong                                     rejected                 rejected  as expected
 the guide's worked example is caught                                 all_rejected             all_rejected  as expected
 nothing from the guide reaches the child                                        0                        0  as expected
 ```

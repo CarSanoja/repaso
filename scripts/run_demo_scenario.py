@@ -29,6 +29,17 @@ LEGEND = (
 )
 
 
+def record(result, decision: str) -> dict:
+    return {
+        **asdict(result),
+        "origin": "recorded replay",
+        "live_inference": False,
+        "decision": decision,
+        "passed": not result.failures,
+        "checks": len(result.beats),
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(prog="run_demo_scenario")
     parser.add_argument("--data-dir", default=".local_data/demo_scenario")
@@ -61,7 +72,8 @@ def main() -> int:
     if args.report:
         report = Path(args.report)
         report.parent.mkdir(parents=True, exist_ok=True)
-        report.write_text(json.dumps(asdict(result), ensure_ascii=False, indent=2, default=str))
+        payload = record(result, args.decision)
+        report.write_text(json.dumps(payload, ensure_ascii=False, indent=2, default=str))
     print()
     print(f"{'beat':56} {'expected':>24} {'actual':>24}  verdict")
     for beat in result.beats:
