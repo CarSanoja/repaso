@@ -105,9 +105,9 @@ SCENES = [
         "Evidence has different meanings",
         "Simulation / actual OCR / unmeasured outcomes",
         6,
-        "Ten full adapter simulations passed with injected failures. A separate "
-        "actual Textract call read a new printed page. Neither proves live model "
-        "quality or family benefit.",
+        "Ten full adapter simulations passed with injected failures. A real "
+        "Textract call read a new printed page, and every configured model answered "
+        "its schema. None of it proves model quality or family benefit.",
     ),
     (
         "Try the whole story. Inspect the evidence.",
@@ -293,9 +293,8 @@ def main():
             messages = [
                 (
                     "What remains",
-                    "Complete deployed journeys.\nCollect "
-                    "independent teacher labels.\nObserve families with consent.\nPublish reviewed "
-                    "submission links.",
+                    "Complete deployed journeys.\nCollect independent teacher labels.\n"
+                    "Observe families with consent.\nPublish reviewed submission links.",
                 )
             ]
         else:
