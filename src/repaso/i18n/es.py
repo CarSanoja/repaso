@@ -44,7 +44,7 @@ MESSAGES = {
         "primera práctica de {alias}."
     ),
     "enrollment_done": (
-        "{alias} queda inscrito. Cada día a las {time} llega una práctica de 5 a 10 "
+        "Todo listo para {alias}. Cada día a las {time} llega una práctica de 5 a 10 "
         "minutos a este chat. Solo te interrumpo aparte cuando haya una decisión que "
         "tomar. /help muestra los comandos."
     ),

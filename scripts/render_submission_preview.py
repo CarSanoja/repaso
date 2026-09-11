@@ -243,7 +243,7 @@ def main():
             ]
         elif i == 1:
             messages = [
-                ("Repaso", next(e["text"] for e in entries if "queda inscrito" in e["text"]))
+                ("Repaso", next(e["text"] for e in entries if "práctica de 5 a 10" in e["text"]))
             ]
         elif i in (3, 10):
             messages = [(entries[-1]["speaker"], entries[-1]["text"])]
