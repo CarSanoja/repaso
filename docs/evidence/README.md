@@ -3,9 +3,9 @@
 Two dates. September 6, 2026 is the pre-commit verification after the gap remediation: the
 system runs, recovers and packages, entirely on authored model outputs. September 12, 2026 is
 the day the model fleet was actually called — 930 live Amazon Bedrock calls whose count and
-price an artifact below states, plus one recording campaign that stated its dollars and not its
-call count. Every token was read from the provider's own usage metadata and priced from the
-dated table in `src/repaso/config/pricing.py`.
+price this page and its artifacts state, plus one recording campaign that reported its dollars
+and not its call count. Every token was read from the provider's own usage metadata and priced
+from the dated table in `src/repaso/config/pricing.py`.
 
 What changed on September 12 is the kind of claim this repository can make about the models.
 Before it, every statement about them was either about shape or about intent. After it, the
@@ -13,8 +13,9 @@ routing is measured, the demonstration replays a recording rather than an author
 day of practice has a price, and the grader has been compared against a written label on half
 the evaluation set. What did **not** change is the ceiling on all of it: no teacher has
 labelled a single case, and no family has used the product. Every quality-shaped number below
-is agreement with the person who wrote the answers, or a count of defects the harness itself
-planted.
+rests on one of three things — agreement with the person who wrote the answers, a count of
+defects the harness itself planted, or a fixture whose answer was defined before the call.
+Never on a teacher, and never on a child.
 
 The implementation is committed locally as `08826b26f8df5dbd3a125539666cbf7058f3f9cd` and the
 evaluation kit as `42d7096fe349a741ac174f6ec5e00513ec98ae03`. The release manifest records the
