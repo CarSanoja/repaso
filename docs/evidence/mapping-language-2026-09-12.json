@@ -1,0 +1,342 @@
+{
+  "date": "2026-09-12",
+  "what_it_is": "One run of the competency mapper in this repository against Amazon Bedrock, over the seven pages in tests/material_corpus.py. Three pages are printed school mathematics in Spanish, Portuguese and English; four are off-subject pages in Spanish and English. The curriculum shown to the model is the bundled grade 4 slice of curriculum_math_primary.json, written in English.",
+  "what_it_is_not": "Not a deployment, not a family journey, and not a calibrated accuracy figure: seven pages at three samples each is a conformance run, not an evaluation set.",
+  "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+  "grade": 4,
+  "subject": "math",
+  "slate_size": 14,
+  "samples_per_page": 3,
+  "on_subject": {
+    "printed_page_es": [
+      {
+        "outcome": "mapped",
+        "competency_ids": [
+          "math.g4.numeration.roman_numerals",
+          "math.g4.numeration.number_sets"
+        ]
+      },
+      {
+        "outcome": "mapped",
+        "competency_ids": [
+          "math.g4.numeration.roman_numerals",
+          "math.g4.numeration.number_sets"
+        ]
+      },
+      {
+        "outcome": "mapped",
+        "competency_ids": [
+          "math.g4.numeration.roman_numerals",
+          "math.g4.numeration.number_sets"
+        ]
+      }
+    ],
+    "worksheet_en": [
+      {
+        "outcome": "mapped",
+        "competency_ids": [
+          "math.g4.fractions.equivalence",
+          "math.g4.fractions.comparison",
+          "math.g4.decimals.tenths_hundredths"
+        ]
+      },
+      {
+        "outcome": "mapped",
+        "competency_ids": [
+          "math.g4.fractions.equivalence",
+          "math.g4.fractions.comparison",
+          "math.g4.decimals.tenths_hundredths"
+        ]
+      },
+      {
+        "outcome": "mapped",
+        "competency_ids": [
+          "math.g4.fractions.equivalence",
+          "math.g4.fractions.comparison",
+          "math.g4.decimals.tenths_hundredths"
+        ]
+      }
+    ],
+    "worksheet_pt": [
+      {
+        "outcome": "mapped",
+        "competency_ids": [
+          "math.g4.fractions.equivalence",
+          "math.g4.fractions.comparison",
+          "math.g4.decimals.tenths_hundredths"
+        ]
+      },
+      {
+        "outcome": "mapped",
+        "competency_ids": [
+          "math.g4.fractions.equivalence",
+          "math.g4.fractions.comparison",
+          "math.g4.decimals.tenths_hundredths"
+        ]
+      },
+      {
+        "outcome": "mapped",
+        "competency_ids": [
+          "math.g4.fractions.equivalence",
+          "math.g4.fractions.comparison",
+          "math.g4.decimals.tenths_hundredths"
+        ]
+      }
+    ]
+  },
+  "off_subject": {
+    "history_en": [
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      },
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      },
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      }
+    ],
+    "history_es": [
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      },
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      },
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      }
+    ],
+    "invitation_es": [
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      },
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      },
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      }
+    ],
+    "menu_en": [
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      },
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      },
+      {
+        "outcome": "unmatched",
+        "competency_ids": []
+      }
+    ]
+  },
+  "calls": 21,
+  "input_tokens": 35175,
+  "output_tokens": 1209,
+  "cost_usd": 0.045348,
+  "latency_ms_p50": 930,
+  "latency_ms_max": 1543,
+  "ledger": [
+    {
+      "label": "printed_page_es/0",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1780,
+      "output_tokens": 69,
+      "ms": 1367,
+      "error": null,
+      "usd": 0.002338
+    },
+    {
+      "label": "printed_page_es/1",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1780,
+      "output_tokens": 69,
+      "ms": 1057,
+      "error": null,
+      "usd": 0.002338
+    },
+    {
+      "label": "printed_page_es/2",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1780,
+      "output_tokens": 69,
+      "ms": 992,
+      "error": null,
+      "usd": 0.002338
+    },
+    {
+      "label": "worksheet_en/0",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1666,
+      "output_tokens": 81,
+      "ms": 1117,
+      "error": null,
+      "usd": 0.002278
+    },
+    {
+      "label": "worksheet_en/1",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1666,
+      "output_tokens": 81,
+      "ms": 1009,
+      "error": null,
+      "usd": 0.002278
+    },
+    {
+      "label": "worksheet_en/2",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1666,
+      "output_tokens": 81,
+      "ms": 1127,
+      "error": null,
+      "usd": 0.002278
+    },
+    {
+      "label": "worksheet_pt/0",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1683,
+      "output_tokens": 81,
+      "ms": 1065,
+      "error": null,
+      "usd": 0.002297
+    },
+    {
+      "label": "worksheet_pt/1",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1683,
+      "output_tokens": 81,
+      "ms": 1085,
+      "error": null,
+      "usd": 0.002297
+    },
+    {
+      "label": "worksheet_pt/2",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1683,
+      "output_tokens": 81,
+      "ms": 1543,
+      "error": null,
+      "usd": 0.002297
+    },
+    {
+      "label": "history_en/0",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1643,
+      "output_tokens": 43,
+      "ms": 875,
+      "error": null,
+      "usd": 0.002044
+    },
+    {
+      "label": "history_en/1",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1643,
+      "output_tokens": 43,
+      "ms": 847,
+      "error": null,
+      "usd": 0.002044
+    },
+    {
+      "label": "history_en/2",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1643,
+      "output_tokens": 43,
+      "ms": 915,
+      "error": null,
+      "usd": 0.002044
+    },
+    {
+      "label": "history_es/0",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1682,
+      "output_tokens": 43,
+      "ms": 880,
+      "error": null,
+      "usd": 0.002087
+    },
+    {
+      "label": "history_es/1",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1682,
+      "output_tokens": 43,
+      "ms": 922,
+      "error": null,
+      "usd": 0.002087
+    },
+    {
+      "label": "history_es/2",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1682,
+      "output_tokens": 43,
+      "ms": 876,
+      "error": null,
+      "usd": 0.002087
+    },
+    {
+      "label": "invitation_es/0",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1640,
+      "output_tokens": 43,
+      "ms": 922,
+      "error": null,
+      "usd": 0.002041
+    },
+    {
+      "label": "invitation_es/1",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1640,
+      "output_tokens": 43,
+      "ms": 1007,
+      "error": null,
+      "usd": 0.002041
+    },
+    {
+      "label": "invitation_es/2",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1640,
+      "output_tokens": 43,
+      "ms": 930,
+      "error": null,
+      "usd": 0.002041
+    },
+    {
+      "label": "menu_en/0",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1631,
+      "output_tokens": 43,
+      "ms": 880,
+      "error": null,
+      "usd": 0.002031
+    },
+    {
+      "label": "menu_en/1",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1631,
+      "output_tokens": 43,
+      "ms": 928,
+      "error": null,
+      "usd": 0.002031
+    },
+    {
+      "label": "menu_en/2",
+      "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "input_tokens": 1631,
+      "output_tokens": 43,
+      "ms": 847,
+      "error": null,
+      "usd": 0.002031
+    }
+  ]
+}
