@@ -1,8 +1,11 @@
 # Security posture — September 12, 2026
 
-This is a review of the code and the synthesized infrastructure as they stand at the head of
-`wf/security`. It records what was tested and how, what changed as a result, what risk remains,
-and which assurances cannot exist until the system is deployed.
+This is a review of the code and the synthesized infrastructure as they stand on the branch
+being published. It was written against the security work alone and re-measured after that
+work was merged with the deployment, judging and isolation branches, so the counts and the
+IAM reading below describe this tree and not the one they were first taken from. It records
+what was tested and how, what changed as a result, what risk remains, and which assurances
+cannot exist until the system is deployed.
 
 The same claim discipline as [the evidence register](../evidence/README.md) applies here. A
 synthesized template is not a deployed stack. A local test is not a production observation. A
@@ -25,7 +28,7 @@ uploaded pages, and every answer the child has given.
 
 | Area | How it was checked |
 | --- | --- |
-| Secrets and identifiers | Every blob reachable from this branch read and pattern-matched — 1,566 objects over 156 commits — not only the working tree, and a wider sweep over every ref in the clone |
+| Secrets and identifiers | Every blob reachable from this branch read and pattern-matched — 966 blobs over 207 commits — not only the working tree, and a wider sweep over every ref in the clone |
 | Data protection | Schemas and storage adapters read; erasure exercised against DynamoDB and S3 with Moto, including object versions |
 | IAM | CloudFormation synthesized and the rendered policy statements parsed; every inline statement of every role enumerated |
 | Encryption | Read from the synthesized templates, not from intent in the source |
@@ -52,7 +55,7 @@ real account id where the IAM templates carry a placeholder — the shape a care
 `deploy/agentcore/iam` would take. Each rule reports up to three hits per file instead of one, so
 one fix cannot hide the next.
 
-**Result: the history is clean.** All 1,566 blobs reachable from this branch match no rule, and so
+**Result: the history is clean.** All 966 blobs reachable from this branch match no rule, and so
 does every blob in the wider sweep over every ref, including branches not yet merged. The only
 hits the strengthened gate produced anywhere were the gate's own
 test fixtures, which carry synthetic secret shapes on purpose — among them AWS's published
