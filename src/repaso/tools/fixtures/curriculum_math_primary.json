@@ -140,6 +140,20 @@
     "description": "Make and read a line plot that displays measurement data in halves and quarters."
   },
   {
+    "id": "math.g4.numeration.number_sets",
+    "subject": "math",
+    "grade": 4,
+    "name": "Naming and ordering natural numbers, decimals and fractions",
+    "description": "Use natural numbers, decimals and fractions to name, count, order and measure, and say which of those sets a written number belongs to."
+  },
+  {
+    "id": "math.g4.numeration.roman_numerals",
+    "subject": "math",
+    "grade": 4,
+    "name": "Roman numerals",
+    "description": "Read, write and compare numbers written with Roman numerals, and relate each letter to the value it stands for."
+  },
+  {
     "id": "math.g5.fractions.addition_unlike_denominators",
     "subject": "math",
     "grade": 5,

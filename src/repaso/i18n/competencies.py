@@ -13,6 +13,8 @@ NAMES_ES = {
     "math.g4.word_problems.two_step": "problemas de dos pasos",
     "math.g4.geometry.angle_types": "tipos de ángulos",
     "math.g4.data.line_plots": "gráficos de puntos con fracciones",
+    "math.g4.numeration.number_sets": "naturales, decimales y fracciones",
+    "math.g4.numeration.roman_numerals": "números romanos",
 }
 
 
