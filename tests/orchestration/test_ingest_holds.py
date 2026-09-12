@@ -15,6 +15,10 @@ from tests.orchestration.fixtures import make_material, make_services, seed_fami
 MARKER = ScreenVerdict(safe=False, reasons=[f"{MARKER_REASON_PREFIX}ignore your"])
 GUARDRAIL = ScreenVerdict(safe=False, reasons=["contentPolicy"])
 MODEL_CALLED_IT_UNSAFE = ScreenVerdict(safe=False, reasons=["graphic_violence"])
+MODEL_NAMED_INJECTION = ScreenVerdict(
+    safe=False, reasons=["prompt_injection", "grade_manipulation"]
+)
+MODEL_NAMED_IT_WITH_A_DASH = ScreenVerdict(safe=False, reasons=["prompt-injection"])
 
 
 def make_run(services, text: str = WORKSHEET_EN) -> IngestRun:
@@ -25,8 +29,13 @@ def make_run(services, text: str = WORKSHEET_EN) -> IngestRun:
     )
 
 
-def test_only_a_marker_hit_is_recorded_as_an_injection_attempt():
+def test_a_named_injection_is_recorded_as_one_whoever_named_it():
     assert held_kind(MARKER) is QuarantineKind.INJECTION_ATTEMPT
+    assert held_kind(MODEL_NAMED_INJECTION) is QuarantineKind.INJECTION_ATTEMPT
+    assert held_kind(MODEL_NAMED_IT_WITH_A_DASH) is QuarantineKind.INJECTION_ATTEMPT
+
+
+def test_a_refusal_that_names_no_injection_is_recorded_as_unsafe_content():
     assert held_kind(GUARDRAIL) is QuarantineKind.UNSAFE_CONTENT
     assert held_kind(MODEL_CALLED_IT_UNSAFE) is QuarantineKind.UNSAFE_CONTENT
 
@@ -54,3 +63,16 @@ def test_the_held_message_never_claims_the_page_addressed_the_system(lang):
     assert "instrucciones dirigidas" not in text
     assert "instructions aimed at" not in text
     assert "revisión de seguridad" in text or "safety check" in text
+
+
+async def test_an_injection_the_marker_list_cannot_read_is_still_filed_as_one(settings):
+    services = make_services(settings)
+    run = make_run(services)
+    services.models[ModelRole.CLASSIFY].enqueue(
+        {"safe": False, "reasons": ["prompt_injection", "grade_manipulation"]}
+    )
+
+    await build_ingest_graph(services, run).invoke_async("ingest")
+
+    held = services.store.list_pending_quarantine(run.family.id)
+    assert held and held[0].kind is QuarantineKind.INJECTION_ATTEMPT

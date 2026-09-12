@@ -4,13 +4,14 @@ from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.grading import EvidenceSpan
 from repaso.schemas.material import MaterialStatus
 from repaso.schemas.review import QuarantineItem, QuarantineKind
-from repaso.tools.guardrails import MARKER_REASON_PREFIX, ScreenVerdict
+from repaso.tools.guardrails import ScreenVerdict
 
 QUOTE_LENGTH = 200
 SCREEN_UNAVAILABLE = "screen_unavailable"
 QUARANTINED = "quarantined"
 SCREENED_UNSAFE = "screened_unsafe"
 UNREADABLE_REPLY = "material_unreadable"
+INJECTION_REASON = "injection"
 PARSE_REPLIES = {"blurry_photo": "rephoto_request"}
 
 
@@ -19,8 +20,8 @@ def parse_reply(reason: str) -> str:
 
 
 def held_kind(verdict: ScreenVerdict) -> QuarantineKind:
-    matched = any(reason.startswith(MARKER_REASON_PREFIX) for reason in verdict.reasons)
-    return QuarantineKind.INJECTION_ATTEMPT if matched else QuarantineKind.UNSAFE_CONTENT
+    named = any(INJECTION_REASON in reason.casefold() for reason in verdict.reasons)
+    return QuarantineKind.INJECTION_ATTEMPT if named else QuarantineKind.UNSAFE_CONTENT
 
 
 def say(run: IngestRun, key: str, **kwargs) -> None:
