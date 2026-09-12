@@ -183,7 +183,10 @@ doesn't look like matemática", and when the generator call fails the family is 
 page "tells me the topic but not how the class works it" and is asked to send another
 photo. Both messages blame the photograph for a provider failure, and both ask a parent to
 re-photograph a page that was fine. That is a defect in what the family is told, not in
-what the family is protected from, and it is not fixed here.
+what the family is protected from, and this profile does not repair it. Both messages
+were replaced after this run: the wording that took their place, and the two cases that
+reach it, are in `tests/orchestration/test_ingest_outcomes.py`. What is quoted above is
+what the two calls said on the day this profile was measured.
 
 ## Why two roles moved and three did not
 
