@@ -28,32 +28,39 @@ class MalformedThenWhole:
 async def test_a_rejected_batch_is_asked_for_again_before_the_page_is_given_up(competency):
     model = MalformedThenWhole(2, GeneratedBatch(items=[mcq_draft(), open_draft()]))
 
-    items = await items_for_material(MATERIAL, competency, 2, 4, model, NOW, 2)
+    generation = await items_for_material(MATERIAL, competency, 2, 4, model, NOW, 2)
 
-    assert len(items) == 2
+    assert len(generation.items) == 2
+    assert generation.answered is True
     assert model.calls == 3
 
 
 async def test_the_page_is_given_up_once_every_attempt_is_rejected(competency):
     model = MalformedThenWhole(9, GeneratedBatch(items=[mcq_draft()]))
 
-    assert await items_for_material(MATERIAL, competency, 2, 4, model, NOW, 2) == []
+    generation = await items_for_material(MATERIAL, competency, 2, 4, model, NOW, 2)
+
+    assert generation.items == []
+    assert generation.answered is False
     assert model.calls == 3
 
 
 async def test_a_batch_that_arrives_whole_is_asked_for_once(competency):
     model = MalformedThenWhole(0, GeneratedBatch(items=[mcq_draft()]))
 
-    items = await items_for_material(MATERIAL, competency, 1, 4, model, NOW, 2)
+    generation = await items_for_material(MATERIAL, competency, 1, 4, model, NOW, 2)
 
-    assert len(items) == 1
+    assert len(generation.items) == 1
     assert model.calls == 1
 
 
 async def test_a_run_that_allows_no_second_attempt_makes_one_call(competency):
     model = MalformedThenWhole(1, GeneratedBatch(items=[mcq_draft()]))
 
-    assert await items_for_material(MATERIAL, competency, 1, 4, model, NOW) == []
+    generation = await items_for_material(MATERIAL, competency, 1, 4, model, NOW)
+
+    assert generation.items == []
+    assert generation.answered is False
     assert model.calls == 1
 
 

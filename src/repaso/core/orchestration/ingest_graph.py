@@ -11,27 +11,17 @@ from repaso.agents.material_parser import parse_material
 from repaso.config.models import ModelRole
 from repaso.core.harness.legibility import DEFAULT_MIN_CONFIDENCE
 from repaso.core.orchestration.context import IngestRun, Services
+from repaso.core.orchestration.ingest_outcomes import quarantine, say, unavailable
 from repaso.core.orchestration.nodes import StepNode
-from repaso.i18n.catalog import msg
 from repaso.i18n.competencies import competency_label
-from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.competency import CompetencyMatch
-from repaso.schemas.grading import EvidenceSpan
 from repaso.schemas.item import Item, ItemStatus, ItemVerdict
 from repaso.schemas.material import Material, MaterialStatus
 from repaso.schemas.operation import OperationRecord
-from repaso.schemas.review import QuarantineItem, QuarantineKind
-from repaso.tools.guardrails import ScreenVerdict
+from repaso.tools.guardrails import SCREENER_ERROR_REASON, ScreenVerdict
 
 ITEMS_PER_MATERIAL = 6
 STAGE_OWNER = "ingest-graph"
-
-
-def _say(run: IngestRun, key: str, **kwargs) -> None:
-    text = msg(key, run.family.lang, **kwargs)
-    run.outbound.append(
-        OutboundMessage(channel=run.family.channel, chat_ref=run.family.chat_ref, text=text)
-    )
 
 
 def build_ingest_graph(services: Services, run: IngestRun):
@@ -67,13 +57,13 @@ def build_ingest_graph(services: Services, run: IngestRun):
                 }
             )
             services.store.put_material(run.material)
-            _say(run, "supported_material")
+            say(run, "supported_material")
             return
         services.store.put_material(run.material)
         if run.material.status is not MaterialStatus.PARSED:
             run.terminal = run.material.rejection_reason or "unparsed"
             key = "rephoto_request" if run.terminal == "blurry_photo" else "material_thin"
-            _say(run, key)
+            say(run, key)
 
     async def screen() -> None:
         if "screen" in memo:
@@ -84,29 +74,17 @@ def build_ingest_graph(services: Services, run: IngestRun):
                 services.screener,
                 services.model(ModelRole.CLASSIFY),
             )
-            save("screen", verdict.model_dump(mode="json"))
+            if SCREENER_ERROR_REASON not in verdict.reasons:
+                save("screen", verdict.model_dump(mode="json"))
         run.screen = verdict
         if verdict.safe:
             run.material = run.material.model_copy(update={"status": MaterialStatus.SCREENED})
             services.store.put_material(run.material)
             return
-        run.terminal = "quarantined"
-        run.material = run.material.model_copy(
-            update={"status": MaterialStatus.QUARANTINED, "rejection_reason": "screened_unsafe"}
-        )
-        services.store.put_material(run.material)
-        quote = (run.material.parsed_text or "")[:200]
-        services.store.put_quarantine(
-            QuarantineItem(
-                id=f"quar-{run.material.id}",
-                kind=QuarantineKind.INJECTION_ATTEMPT,
-                family_id=run.family.id,
-                evidence=EvidenceSpan(quote=quote, source_ref=f"material:{run.material.id}"),
-                payload={"reasons": verdict.reasons},
-                created_at=services.clock.now(),
-            )
-        )
-        _say(run, "material_rejected", subject="matemática")
+        if SCREENER_ERROR_REASON in verdict.reasons:
+            unavailable(run, "screener_unavailable", "material_screen_unavailable")
+            return
+        quarantine(services, run, verdict.reasons)
 
     async def map_() -> None:
         if "matches" in memo:
@@ -122,15 +100,16 @@ def build_ingest_graph(services: Services, run: IngestRun):
             save("matches", [m.model_dump(mode="json") for m in run.matches])
         if not run.matches:
             run.terminal = "no_match"
-            _say(run, "material_rejected", subject="matemática")
+            say(run, "material_rejected", subject="matemática")
             return
         run.competency = services.retriever.get_competency(run.matches[0].competency_id)
         run.material = run.material.model_copy(update={"status": MaterialStatus.MAPPED})
         services.store.put_material(run.material)
 
     async def generate() -> None:
+        answered = True
         if "generated" not in memo:
-            drafts = await items_for_material(
+            generation = await items_for_material(
                 run.material.parsed_text or "",
                 run.competency,
                 ITEMS_PER_MATERIAL,
@@ -140,6 +119,7 @@ def build_ingest_graph(services: Services, run: IngestRun):
                 settings.item_regen_max_rounds,
                 lang=run.family.lang,
             )
+            answered = generation.answered
             items = [
                 item.model_copy(
                     update={
@@ -150,16 +130,21 @@ def build_ingest_graph(services: Services, run: IngestRun):
                         "material_id": run.material.id,
                     }
                 )
-                for item in drafts
+                for item in generation.items
             ]
-            save("generated", [i.model_dump(mode="json") for i in items])
-        run.generated = [Item.model_validate(i) for i in memo["generated"]]
+            if answered:
+                save("generated", [i.model_dump(mode="json") for i in items])
+        run.generated = [Item.model_validate(i) for i in memo.get("generated", [])]
         for item in run.generated:
             if services.store.get_item(item.id) is None:
                 services.store.put_item(item)
-        if not run.generated:
-            run.terminal = "thin_material"
-            _say(run, "material_thin")
+        if run.generated:
+            return
+        if not answered:
+            unavailable(run, "generator_unavailable", "material_generation_unavailable")
+            return
+        run.terminal = "thin_material"
+        say(run, "material_thin")
 
     async def validate() -> None:
         judge = services.model(ModelRole.JUDGE)
@@ -184,9 +169,9 @@ def build_ingest_graph(services: Services, run: IngestRun):
             run.material.status = MaterialStatus.REJECTED
             run.material.rejection_reason = "No generated item passed review."
             services.store.put_material(run.material)
-            _say(run, "material_unusable")
+            say(run, "material_unusable")
             return
-        _say(
+        say(
             run,
             "material_ready",
             item_count=len(run.kept),

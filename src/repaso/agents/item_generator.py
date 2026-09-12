@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 from hashlib import sha256
 from typing import Annotated
@@ -33,6 +34,12 @@ class ItemDraft(BaseModel):
 
 class GeneratedBatch(BaseModel):
     items: Annotated[list[ItemDraft], NULL_IS_EMPTY] = []
+
+
+@dataclass(frozen=True)
+class Generation:
+    items: list[Item]
+    answered: bool
 
 
 def _filled(text: str | None) -> bool:
@@ -104,6 +111,42 @@ def draft_report(drafts: list[ItemDraft], kept: list[Item]) -> dict:
     return {"generated": len(drafts), "kept": len(kept), "dropped": len(drafts) - len(kept)}
 
 
+async def _ask(
+    parsed_text: str,
+    competency: Competency,
+    count: int,
+    grade: int,
+    model,
+    lang: Lang,
+    prompt_version: str = PROMPT_VERSION,
+) -> GeneratedBatch:
+    if count < 1:
+        raise ValueError("count must be positive")
+    return await structured(
+        model,
+        GeneratedBatch,
+        SYSTEM.format(grade=grade),
+        _request_text(parsed_text, competency, count, lang),
+        prompt_version,
+    )
+
+
+def _kept(
+    batch: GeneratedBatch,
+    competency: Competency,
+    count: int,
+    now: datetime,
+    model_id: str = "",
+    prompt_version: str = PROMPT_VERSION,
+) -> list[Item]:
+    kept = [
+        _to_item(draft, competency, now, model_id, prompt_version)
+        for draft in batch.items
+        if is_valid_draft(draft)
+    ]
+    return kept[: count * MAX_OVERPRODUCTION]
+
+
 async def generate_items(
     parsed_text: str,
     competency: Competency,
@@ -115,24 +158,11 @@ async def generate_items(
     prompt_version: str = PROMPT_VERSION,
     lang: Lang = Lang.ES,
 ) -> list[Item]:
-    if count < 1:
-        raise ValueError("count must be positive")
     try:
-        batch = await structured(
-            model,
-            GeneratedBatch,
-            SYSTEM.format(grade=grade),
-            _request_text(parsed_text, competency, count, lang),
-            prompt_version,
-        )
+        batch = await _ask(parsed_text, competency, count, grade, model, lang, prompt_version)
     except StructuredCallFailed:
         return []
-    kept = [
-        _to_item(draft, competency, now, model_id, prompt_version)
-        for draft in batch.items
-        if is_valid_draft(draft)
-    ]
-    return kept[: count * MAX_OVERPRODUCTION]
+    return _kept(batch, competency, count, now, model_id, prompt_version)
 
 
 async def items_for_material(
@@ -144,13 +174,17 @@ async def items_for_material(
     now: datetime,
     retries: int = 0,
     lang: Lang = Lang.ES,
-) -> list[Item]:
+) -> Generation:
     if retries < 0:
         raise ValueError("retries cannot be negative")
+    answered = False
     for _ in range(retries + 1):
-        items = await generate_items(
-            parsed_text, competency, count, grade, model, now, lang=lang
-        )
+        try:
+            batch = await _ask(parsed_text, competency, count, grade, model, lang)
+        except StructuredCallFailed:
+            continue
+        answered = True
+        items = _kept(batch, competency, count, now)
         if items:
-            return items
-    return []
+            return Generation(items=items, answered=True)
+    return Generation(items=[], answered=answered)

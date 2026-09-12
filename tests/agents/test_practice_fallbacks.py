@@ -9,8 +9,8 @@ from repaso.agents.grader import grade_open
 from repaso.schemas.common import Lang
 from repaso.schemas.grading import EvidenceSpan, GradedBy, StudentResponse
 from repaso.schemas.session import PracticeSession
-from tests.agents.stress_models import MalformedModel, throttled_model, timed_out_model
-from tests.agents.test_ingest_fallbacks import COMPETENCY, ITEM, NOW, STRESSES
+from tests.agents.stress_models import STRESSES, stressed
+from tests.agents.test_ingest_fallbacks import COMPETENCY, ITEM, NOW
 
 ALIAS = "Sofi"
 THRESHOLD = 0.6
@@ -28,14 +28,6 @@ SESSION = PracticeSession(
     id="ses-1", student_id="s1", session_date=date(2026, 9, 12), planned_item_ids=[ITEM.id]
 )
 EVIDENCE = [EvidenceSpan(quote="5 de 10", source_ref=f"response:{ITEM.id}")]
-
-
-def stressed(kind: str, payload: dict):
-    if kind == "throttled":
-        return throttled_model()
-    if kind == "timed_out":
-        return timed_out_model()
-    return MalformedModel(payload)
 
 
 @pytest.mark.parametrize("kind", STRESSES)

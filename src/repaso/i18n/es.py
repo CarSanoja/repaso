@@ -64,6 +64,15 @@ MESSAGES = {
         "Ese material no parece de {subject}. Si crees que me equivoqué, reenvíalo con "
         "una nota corta del tema."
     ),
+    "material_screen_unavailable": (
+        "No pude revisar esa página ahora mismo: falló algo de mi lado, no tu foto. No "
+        "hace falta tomar otra: reenvía la misma en unos minutos y lo intento de nuevo."
+    ),
+    "material_generation_unavailable": (
+        "Leí bien la página, pero no pude escribir los ejercicios ahora mismo: falló algo "
+        "de mi lado, no tu foto. No hace falta tomar otra: reenvía la misma en unos "
+        "minutos y lo intento de nuevo."
+    ),
     "material_thin": (
         "Con esto solo conozco el tema, pero no cómo lo trabajan en clase. ¿Me mandas "
         "una foto de un ejercicio resuelto del cuaderno?"

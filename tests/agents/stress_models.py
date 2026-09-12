@@ -65,3 +65,14 @@ def throttled_model() -> FailingModel:
 
 def timed_out_model() -> FailingModel:
     return FailingModel(read_timeout_error)
+
+
+STRESSES = ("throttled", "timed_out", "malformed")
+
+
+def stressed(kind: str, payload: dict[str, Any]):
+    if kind == "throttled":
+        return throttled_model()
+    if kind == "timed_out":
+        return timed_out_model()
+    return MalformedModel(payload)

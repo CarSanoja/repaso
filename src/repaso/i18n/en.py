@@ -63,6 +63,16 @@ MESSAGES = {
         "That material doesn't look like {subject}. If I got it wrong, resend it with "
         "a short note about the topic."
     ),
+    "material_screen_unavailable": (
+        "I couldn't review that page right now: something on my side failed, not your "
+        "photo. No need to take another: send the same one again in a few minutes and "
+        "I'll try again."
+    ),
+    "material_generation_unavailable": (
+        "I read the page fine, but I couldn't write the exercises right now: something on "
+        "my side failed, not your photo. No need to take another: send the same one again "
+        "in a few minutes and I'll try again."
+    ),
     "material_thin": (
         "This tells me the topic but not how the class works it. Could you send a "
         "photo of a solved exercise from the notebook?"

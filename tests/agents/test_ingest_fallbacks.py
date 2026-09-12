@@ -13,7 +13,7 @@ from repaso.schemas.item import Item, ItemFlaw, ItemKind
 from repaso.schemas.provenance import Provenance, Source
 from repaso.tools.guardrails import SCREENER_ERROR_REASON, LocalScreener
 from repaso.tools.knowledge import LocalTaxonomyRetriever
-from tests.agents.stress_models import MalformedModel, throttled_model, timed_out_model
+from tests.agents.stress_models import STRESSES, stressed
 
 NOW = datetime(2026, 9, 12, 19, 0, tzinfo=UTC)
 MATERIAL = (
@@ -38,17 +38,6 @@ ITEM = Item(
     rationale="Multiplicar numerador y denominador por dos.",
     provenance=Provenance(source=Source.GENERATED, created_at=NOW),
 )
-
-
-def stressed(kind: str, payload: dict):
-    if kind == "throttled":
-        return throttled_model()
-    if kind == "timed_out":
-        return timed_out_model()
-    return MalformedModel(payload)
-
-
-STRESSES = ("throttled", "timed_out", "malformed")
 
 
 @pytest.mark.parametrize("kind", STRESSES)
