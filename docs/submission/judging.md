@@ -99,7 +99,7 @@ It prints its own address and stays in the foreground **[run]**:
 
 ```
 Judge experience: http://127.0.0.1:8766/judge/ · code: REPASO-DEMO
-INFO:     Started server process [15734]
+INFO:     Started server process [21992]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8766 (Press CTRL+C to quit)
@@ -148,9 +148,9 @@ gates take about ninety seconds together; the clock takes about seven minutes.
 
 | Command | What it printed here **[run]** | Artifact |
 | --- | --- | --- |
-| `REPASO_LOCAL_MODE=true pytest -q` | `1637 passed, 56 skipped in 75.37s` | — |
+| `REPASO_LOCAL_MODE=true pytest -q` | `1642 passed, 56 skipped in 77.74s` | — |
 | `ruff check .` | `All checks passed!` | — |
-| `python scripts/check_repo_hygiene.py` | `repo hygiene: 547 tracked files, 1256 historical blobs on this branch, no findings` | — |
+| `python scripts/check_repo_hygiene.py` | `repo hygiene: 549 tracked files, 1264 historical blobs on this branch, no findings` | — |
 | `python scripts/run_demo_scenario.py --decision teacher_note` | 24 of 24 beats as expected | [journey](../evidence/journey-teacher-note.json) |
 | `python scripts/run_demo_scenario.py --decision reduce_load` | 23 of 23 beats as expected | [journey](../evidence/journey-reduce-load.json) |
 | `python scripts/run_demo_clock.py --days 14 --seed 20260901` | `420 student-days`, `responses graded: 1037`, nine gates as expected | [clock](../evidence/clock-14-days.json) |
@@ -162,7 +162,7 @@ infrastructure tests that read synthesized CloudFormation and need the CDK
 libraries. Those 27 are not 27 tests: most of `tests/infra` is never collected
 without `aws_cdk`, so `pip install -c requirements.lock -e ".[deploy]"` turns
 them into the 124 tests that directory really holds, and the suite then reads
-`1637 passed, 56 skipped` — 1513 plus 124, and 83 minus the 27 that stopped
+`1642 passed, 56 skipped` — 1518 plus 124, and 83 minus the 27 that stopped
 being skips. The hygiene gate also counts every blob reachable
 from this branch, which is why it reports a second number the September figures
 did not. The suite figure in `docs/evidence/verification-2026-09-06.json` is
