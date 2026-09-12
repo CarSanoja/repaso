@@ -1,23 +1,16 @@
 import json
-import re
 from pathlib import Path
 from typing import Any, Protocol, runtime_checkable
 
 from repaso.config.settings import Settings
 from repaso.schemas.common import CompetencyId
 from repaso.schemas.competency import Competency, CompetencyMatch
+from repaso.tools.lexical_ranking import rank
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 DEFAULT_TAXONOMY_PATH = FIXTURES_DIR / "curriculum_math_primary.json"
 DEFAULT_LIMIT = 5
 MAX_LIST_RESULTS = 100
-TOKEN_PATTERN = re.compile(r"[a-z0-9]+")
-STOPWORDS = frozenset(
-    (
-        "a an and are as at be by can for from how in into is it of on or "
-        "that the them this to what which with"
-    ).split()
-)
 
 
 @runtime_checkable
@@ -31,18 +24,8 @@ class KnowledgeRetriever(Protocol):
     def list_competencies(self, grade: int, subject: str) -> list[Competency]: ...
 
 
-def tokenize(text: str) -> set[str]:
-    return {token for token in TOKEN_PATTERN.findall(text.lower()) if token not in STOPWORDS}
-
-
-def overlap_score(query_tokens: set[str], competency: Competency) -> float:
-    if not query_tokens:
-        return 0.0
-    target = tokenize(f"{competency.name} {competency.description}")
-    shared = len(query_tokens & target)
-    if not shared:
-        return 0.0
-    return max(shared / len(query_tokens), shared / len(target))
+def wording(competency: Competency) -> str:
+    return f"{competency.name} {competency.description}"
 
 
 class LocalTaxonomyRetriever:
@@ -62,18 +45,14 @@ class LocalTaxonomyRetriever:
     ) -> list[CompetencyMatch]:
         if limit < 1:
             raise ValueError("limit must be positive")
-        tokens = tokenize(query)
-        scored = [
-            (overlap_score(tokens, competency), str(competency.id))
+        slate = {
+            str(competency.id): wording(competency)
             for competency in self.list_competencies(grade, subject)
-        ]
-        ranked = sorted(
-            ((score, key) for score, key in scored if score > 0.0),
-            key=lambda pair: (-pair[0], pair[1]),
-        )
+        }
+        ranked = [(key, score) for key, score in rank(query, slate) if score > 0.0]
         return [
             CompetencyMatch(competency_id=CompetencyId(key), confidence=round(score, 6))
-            for score, key in ranked[:limit]
+            for key, score in ranked[:limit]
         ]
 
     def get_competency(self, competency_id: CompetencyId) -> Competency | None:

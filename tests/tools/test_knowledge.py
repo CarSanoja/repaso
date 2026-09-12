@@ -2,7 +2,6 @@ import json
 
 import pytest
 
-from repaso.agents.competency_mapper import MIN_RETRIEVAL_SCORE
 from repaso.config.settings import Settings
 from repaso.schemas.competency import Competency
 from repaso.tools.knowledge import (
@@ -11,9 +10,9 @@ from repaso.tools.knowledge import (
     LocalTaxonomyRetriever,
     build_knowledge_retriever,
     local_taxonomy_path,
-    overlap_score,
-    tokenize,
+    wording,
 )
+from tests.material_corpus import HISTORY_EN, PRINTED_PAGE_ES
 
 EQUIVALENCE = "math.g4.fractions.equivalence"
 
@@ -27,7 +26,6 @@ def test_equivalent_fraction_query_ranks_equivalence_first(retriever):
     matches = retriever.retrieve("equivalent fractions 2/4 = 1/2", grade=4, subject="math")
     assert matches
     assert matches[0].competency_id == EQUIVALENCE
-    assert matches[0].confidence == pytest.approx(1.0)
     assert matches[0].confidence > matches[1].confidence
 
 
@@ -73,7 +71,7 @@ def test_unrelated_query_returns_no_matches(retriever):
     assert retriever.retrieve("photosynthesis chloroplast", grade=4, subject="math") == []
 
 
-def test_a_long_page_still_clears_the_floor_its_short_form_cleared(retriever):
+def test_a_long_page_scores_the_same_as_the_short_form_inside_it(retriever):
     short = "equivalent fractions 2/4"
     padded = short + " " + " ".join(f"ejercicio{number}" for number in range(30))
 
@@ -81,12 +79,24 @@ def test_a_long_page_still_clears_the_floor_its_short_form_cleared(retriever):
     second = retriever.retrieve(padded, grade=4, subject="math")
 
     assert first[0].competency_id == second[0].competency_id == EQUIVALENCE
-    assert second[0].confidence >= MIN_RETRIEVAL_SCORE
+    assert second[0].confidence == first[0].confidence
 
 
 def test_a_query_touching_nothing_scores_zero(retriever):
     competency = retriever.get_competency(EQUIVALENCE)
-    assert overlap_score(tokenize("volcanoes and tectonic plates"), competency) == 0.0
+    assert wording(competency) == f"{competency.name} {competency.description}"
+    assert retriever.retrieve("volcanoes tectonic", grade=4, subject="math") == []
+
+
+def test_the_hint_ranks_an_english_off_subject_page_above_a_spanish_maths_page(retriever):
+    page = retriever.retrieve(PRINTED_PAGE_ES, grade=4, subject="math", limit=24)
+    history = retriever.retrieve(HISTORY_EN, grade=4, subject="math", limit=24)
+
+    assert history[0].confidence > page[0].confidence
+
+    practised = {"math.g4.numeration.number_sets", "math.g4.numeration.roman_numerals"}
+    surfaced = [str(match.competency_id) for match in page[:3]]
+    assert not practised & set(surfaced)
 
 
 def test_get_competency_returns_full_record(retriever):
@@ -119,8 +129,12 @@ def test_fixture_covers_primary_grades_and_is_unique():
     assert all(entry["subject"] == "math" for entry in entries)
 
 
-def test_tokenize_drops_punctuation_and_stopwords():
-    assert tokenize("The area of a Rectangle!") == {"area", "rectangle"}
+def test_the_hint_answers_only_the_language_the_taxonomy_is_written_in(retriever):
+    english = retriever.retrieve("of the and that for with an", grade=4, subject="math")
+    spanish = retriever.retrieve("de la el los las que para con una", grade=4, subject="math")
+
+    assert english
+    assert spanish == []
 
 
 def test_custom_taxonomy_path_is_used(tmp_path):
