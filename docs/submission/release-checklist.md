@@ -11,11 +11,11 @@ list is ticked because a local file exists.
 | --- | --- |
 | Both adult decisions run end to end and change the next session | `scripts/run_demo_scenario.py`; 24 of 24 and 23 of 23 beats as expected |
 | A judge can see the product with no account and no keys | [`judging.md`](judging.md); `scripts/run_judge_demo.py` |
-| Offline gate | `1504 passed, 83 skipped` on the `[dev]` extra, `1628 passed, 56 skipped` with `[deploy]`; `ruff check .` clean; `check_repo_hygiene.py` clean |
+| Offline gate | `1513 passed, 83 skipped` on the `[dev]` extra, `1637 passed, 56 skipped` with `[deploy]`; `ruff check .` clean; `check_repo_hygiene.py` clean |
 | Evidence register with an explicit claim-boundaries section | [`../evidence/README.md`](../evidence/README.md) |
 | Fourteen-day continuity under nine scenario gates | [`clock-14-days.json`](../evidence/clock-14-days.json); 420 sessions, 1,037 responses |
 | Real Amazon Textract on a new printed Spanish page | [`live-ocr.json`](../evidence/live-ocr.json); confidence 0.9957 |
-| Every configured model answers and fills its schema | [`live-conformance-2026-09-12.json`](../evidence/live-conformance-2026-09-12.json); 27 of 27 |
+| Every configured model answers and fills its schema | [`live-conformance-2026-09-12.json`](../evidence/live-conformance-2026-09-12.json); 27 of 27 across all four model ids, and [`live-conformance-routing-2026-09-12.json`](../evidence/live-conformance-routing-2026-09-12.json); 45 of 45 on the routing that ships |
 | Six stacks synthesize; both ARM64 images build and serve their routes | `infra/`; [`container-smoke.json`](../evidence/container-smoke.json) |
 | Deployment runbook, every command marked `[run]` or `[unverified]` | [`../../deploy/README.md`](../../deploy/README.md) |
 | Independent evaluation kit, labels deliberately blank | [`../../evaluation/README.md`](../../evaluation/README.md) |
