@@ -309,17 +309,17 @@ list. Check with `getWebhookInfo`: `pending_update_count` should fall to zero an
 
 ## Monthly cost at pilot scale
 
-Rates read from the AWS Price List API for `us-east-1` on 2026-09-12. Call
-volumes come from `scripts/run_demo_clock.py --days 3 --seed 20260901`, which
-put thirty students through ninety student-days and made 457 model calls — 5.1
-per student-day, 93 generate, 118 judge and 246 structured. Token sizes come
-from the live conformance run above. Two columns: one family and thirty
-families, twenty-two school days each.
+Rates read from the AWS Price List API for `us-east-1` on 2026-09-12. Volumes
+for the infrastructure lines come from `scripts/run_demo_clock.py --days 3
+--seed 20260901`, which put thirty students through ninety student-days and made
+457 model calls, 5.1 per student-day. Inference is not estimated here at all: it
+is the figure the live journey measured, and it is the one line whose month is a
+range rather than a number. Two columns: one family and thirty families,
+twenty-two school days each for the infrastructure lines and the profile's own
+twenty for the inference line.
 
 | Line | Basis | 1 family | 30 families |
 | --- | --- | --- | --- |
-| Bedrock, Anthropic | 2.3 Sonnet 4.6 calls per student-day at $3.30/$16.50 per M tokens and 2.7 Haiku 4.5 at $1.10/$5.50 | $0.58 | $17.30 |
-| Bedrock, Nova | one classify and one probe per student-day at $0.06/$0.24 and $0.035/$0.14 per M | $0.00 | $0.05 |
 | CloudWatch custom metrics | $0.30 per metric-month; the simulation alone mints 41 distinct names and production paths raise it to roughly 80-150 | $24.00 | $45.00 |
 | CloudWatch alarms | eleven alarms, of which three are metric-math over two metrics each, so fourteen alarm-metrics at $0.10 | $1.40 | $1.40 |
 | Secrets Manager | three secrets at $0.40, plus API requests at $0.05 per 10,000 | $1.25 | $1.30 |
@@ -331,12 +331,14 @@ families, twenty-two school days each.
 | CloudWatch Logs | seven-day retention, about 400 bytes per trace event at $0.50 per GB ingested | $0.01 | $0.10 |
 | Textract | $1.50 per 1,000 pages, one page per material upload | $0.01 | $0.18 |
 | API Gateway, SQS, EventBridge, Scheduler, SNS, X-Ray, S3 | $1.00/M HTTP requests, $0.40/M queue requests, $1.00/M custom events, first 14M scheduled invocations free, first 100,000 traces free, $0.023 per GB-month | $0.02 | $0.05 |
-| **Total** | | **$29** | **$69** |
+| **Infrastructure, summing the rows above** | | **$27.98** | **$51.04** |
+| Bedrock inference | Measured, not estimated: one student-day cost $0.162886 over 29 live calls on the routing that ships. A month is bounded and not known — $0.37 a student if the item bank is built once, $3.26 if every day rebuilds it from a fresh page — because nobody has observed how often a family photographs a page. [The model profile](../docs/evidence/model-profile-2026-09-12.md) carries both bounds and the calls behind them | $0.37–$3.26 | $11.21–$97.73 |
+| **Total** | infrastructure plus the inference range | **$28–$31** | **$62–$149** |
 
 Three things about that table are worth more than the total.
 
-**CloudWatch custom metrics are the largest line, and they do not shrink with
-the pilot.** `CloudWatchTelemetrySink` publishes one metric per
+**CloudWatch custom metrics are the largest fixed line, and they do not shrink
+with the pilot.** `CloudWatchTelemetrySink` publishes one metric per
 `{kind}.{name}.{status}` triple plus a latency metric per name plus three token
 metrics, and CloudWatch charges $0.30 per distinct metric name per month whether
 it receives one datapoint or a million. At one family that is most of the bill.
@@ -347,18 +349,21 @@ estimated cost, delivery outcome, decision counts — and answer everything else
 with a Logs Insights query over the lines that are already there. That is a
 design decision about observability, so it is named here and not made here.
 
-**The `us.` inference profiles cost ten percent more than the `global.` ones.**
-`global.anthropic.claude-sonnet-4-6` and
+**The `us.` and `global.` profiles are priced the same; the tier is what
+differs.** `global.anthropic.claude-sonnet-4-6` and
 `global.anthropic.claude-haiku-4-5-20251001-v1:0` are both `ACTIVE` in this
-account at $3.00/$15.00 and $1.00/$5.00 per million. The difference is data
-residency: a geographic profile keeps inference inside the US, a global profile
-routes to any commercial Region worldwide. For schoolwork belonging to children
-that is a policy question, not a saving.
+account, at the same $3.00/$15.00 and $1.00/$5.00 per million that the `us.`
+profiles charge on the standard tier. What separates them is data residency: a
+geographic profile keeps inference inside the US, a global profile routes to any
+commercial Region worldwide. For schoolwork belonging to children that is a
+policy question, and there is no saving on the other side of it. The ten percent
+premium on the same page belongs to the Priority tier, which buys throughput and
+which these calls do not ask for.
 
 **The daily call budget, not the table, is what bounds the bill.**
 `REPASO_GLOBAL_DAILY_LLM_BUDGET_CALLS` is 400 and `REPASO_DAILY_LLM_BUDGET_CALLS`
 is 40 per family. Four hundred Sonnet calls a day at the largest measured shape
-is about $139 a month. That is the ceiling the reservation enforces. The family,
+is about $126 a month. That is the ceiling the reservation enforces. The family,
 fleet and per-message ceilings are hard reservations taken before each model
 call; the monthly AWS budgets and every alarm are notifications, not cutoffs.
 The budgets filter on the project cost allocation tag and read zero until that
