@@ -7,6 +7,11 @@ from repaso.i18n import msg
 from repaso.schemas.channel import MediaKind
 from repaso.schemas.material import MaterialStatus
 from tests.material_corpus import OFF_SUBJECT, PRINTED_PAGE_ES, WORKSHEET_PT
+from tests.material_corpus_languages import (
+    LANGUAGE_OF,
+    OFF_SUBJECT_LANGUAGES,
+    ON_SUBJECT_LANGUAGES,
+)
 from tests.orchestration.fixtures import (
     accepted_verdict,
     make_material,
@@ -114,3 +119,37 @@ async def test_a_refusal_never_claims_the_page_is_not_maths(settings, name):
     refusal = run.outbound[-1].text.lower()
     assert "no parece de" not in refusal
     assert "ubicar esta página" in refusal
+
+
+@pytest.mark.parametrize("name", sorted(ON_SUBJECT_LANGUAGES))
+async def test_a_maths_page_in_a_fifth_language_maps_against_an_english_taxonomy(settings, name):
+    services = make_services(settings)
+    run = make_run(services, ON_SUBJECT_LANGUAGES[name])
+    enqueue_mapping(services, [COMPARISON, DECIMALS])
+    enqueue_generation(services, 2)
+
+    await build_ingest_graph(services, run).invoke_async("ingest")
+
+    assert run.terminal is None
+    assert [str(key) for key in run.matches] == [COMPARISON, DECIMALS]
+    assert run.kept
+
+
+@pytest.mark.parametrize("name", sorted(OFF_SUBJECT_LANGUAGES))
+async def test_an_off_subject_page_is_refused_in_every_added_language(settings, name):
+    services = make_services(settings)
+    run = make_run(services, OFF_SUBJECT_LANGUAGES[name])
+    enqueue_mapping(services, [])
+
+    await build_ingest_graph(services, run).invoke_async("ingest")
+
+    assert run.terminal == "no_match"
+    assert services.models[ModelRole.GENERATE].calls == []
+
+
+def test_every_added_language_is_carried_on_and_off_subject():
+    on = {LANGUAGE_OF[name] for name in ON_SUBJECT_LANGUAGES}
+    off = {LANGUAGE_OF[name] for name in OFF_SUBJECT_LANGUAGES}
+
+    assert len(on) >= 4
+    assert on <= off

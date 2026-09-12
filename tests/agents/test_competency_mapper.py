@@ -11,6 +11,7 @@ from repaso.schemas.competency import CompetencyMatch, MappingOutcome
 from repaso.tools.knowledge import LocalTaxonomyRetriever
 from repaso.tools.llm import LocalPlaybackModel
 from tests.material_corpus import HISTORY_EN, INVITATION_ES, PRINTED_PAGE_ES
+from tests.material_corpus_languages import ON_SUBJECT_LANGUAGES
 
 EQUIVALENCE = "math.g4.fractions.equivalence"
 COMPARISON = "math.g4.fractions.comparison"
@@ -67,6 +68,17 @@ async def test_a_page_the_hint_scores_at_zero_still_reaches_the_model(retriever)
     model = RecordingModel(MappingDecision(competency_ids=[]))
 
     await map_material(PRINTED_PAGE_ES, 4, "math", retriever, model)
+
+    offered = model.texts[0]
+    for competency in retriever.list_competencies(4, "math"):
+        assert str(competency.id) in offered
+
+
+@pytest.mark.parametrize("name", sorted(ON_SUBJECT_LANGUAGES))
+async def test_a_page_in_any_script_is_shown_the_whole_slate(retriever, name):
+    model = RecordingModel(MappingDecision(competency_ids=[]))
+
+    await map_material(ON_SUBJECT_LANGUAGES[name], 4, "math", retriever, model)
 
     offered = model.texts[0]
     for competency in retriever.list_competencies(4, "math"):
