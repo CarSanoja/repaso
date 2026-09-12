@@ -11,7 +11,7 @@ list is ticked because a local file exists.
 | --- | --- |
 | Both adult decisions run end to end and change the next session | `scripts/run_demo_scenario.py`; 24 of 24 and 23 of 23 beats as expected |
 | A judge can see the product with no account and no keys | [`judging.md`](judging.md); `scripts/run_judge_demo.py` |
-| Offline gate | `1288 passed, 83 skipped` on the `[dev]` extra, `1412 passed, 56 skipped` with `[deploy]`; `ruff check .` clean; `check_repo_hygiene.py` clean |
+| Offline gate | `1504 passed, 83 skipped` on the `[dev]` extra, `1628 passed, 56 skipped` with `[deploy]`; `ruff check .` clean; `check_repo_hygiene.py` clean |
 | Evidence register with an explicit claim-boundaries section | [`../evidence/README.md`](../evidence/README.md) |
 | Fourteen-day continuity under nine scenario gates | [`clock-14-days.json`](../evidence/clock-14-days.json); 420 sessions, 1,037 responses |
 | Real Amazon Textract on a new printed Spanish page | [`live-ocr.json`](../evidence/live-ocr.json); confidence 0.9957 |
