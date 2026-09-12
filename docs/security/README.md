@@ -28,7 +28,7 @@ uploaded pages, and every answer the child has given.
 
 | Area | How it was checked |
 | --- | --- |
-| Secrets and identifiers | Every blob reachable from this branch read and pattern-matched — 969 blobs over 208 commits — not only the working tree, and a wider sweep over every ref in the clone |
+| Secrets and identifiers | Every blob reachable from this branch read and pattern-matched — 1233 blobs over 263 commits — not only the working tree, and a wider sweep over every ref in the clone |
 | Data protection | Schemas and storage adapters read; erasure exercised against DynamoDB and S3 with Moto, including object versions |
 | IAM | CloudFormation synthesized and the rendered policy statements parsed; every inline statement of every role enumerated |
 | Encryption | Read from the synthesized templates, not from intent in the source |
@@ -55,7 +55,7 @@ real account id where the IAM templates carry a placeholder — the shape a care
 `deploy/agentcore/iam` would take. Each rule reports up to three hits per file instead of one, so
 one fix cannot hide the next.
 
-**Result: the history is clean.** All 969 blobs reachable from this branch match no rule, and so
+**Result: the history is clean.** All 1233 blobs reachable from this branch match no rule, and so
 does every blob in the wider sweep over every ref, including branches not yet merged. The only
 hits the strengthened gate produced anywhere were the gate's own
 test fixtures, which carry synthetic secret shapes on purpose — among them AWS's published
@@ -122,11 +122,12 @@ mismatch was closed by correcting the description, not the behaviour, which is t
 direction for a reviewer to close it in. `CONSENT_VERSION` moved to v2, because a family that
 enrolled under v1 agreed to the shorter list and their stored record must say so.
 
-Three fields the record holds are still not in that paragraph, and the review does not close
-them. The family row carries a `timezone`, which no question asks and no command changes: it is
-the fixed default `America/Caracas` that the scheduler reads, so nothing about the family is
-learned from it. The family row and the consent record both carry the Telegram `chat_ref`, which
-is how the service reaches the parent at all and what `/forget` erases. And the section is not
+Two fields the record holds are still not in that paragraph, and one thing the service does with
+a field that is. The review closes none of the three. The family row carries a `timezone`, which
+no question asks and no command changes: it is the fixed default `America/Caracas` that the
+scheduler reads, so nothing about the family is learned from it. The family row and the consent
+record both carry the Telegram `chat_ref`, which is how the service reaches the parent at all and
+what `/forget` erases. And the section is not
 only stored: once `cohort_min_families` families in one section struggle with the same
 competency, each of them is told how many, so one family's difficulty becomes an aggregate
 another family reads. The chat reference and the cohort signal are decisions for whoever runs the

@@ -7,6 +7,10 @@ price this page and its artifacts state, plus one recording campaign that report
 and not its call count. Every token was read from the provider's own usage metadata and priced
 from the dated table in `src/repaso/config/pricing.py`.
 
+Two artifacts are newer than the day they record. The journey files were re-recorded when the
+enrolment reply and the end-of-session line changed, so they show the wording the code sends;
+the verdicts they carry, 24 of 24 and 23 of 23, are the September 6 verdicts.
+
 What changed on September 12 is the kind of claim this repository can make about the models.
 Before it, every statement about them was either about shape or about intent. After it, the
 routing is measured, the demonstration replays a recording rather than an authored script, one
