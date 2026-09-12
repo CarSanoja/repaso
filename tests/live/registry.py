@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from repaso.agents.adaptation_policy import PolicyDecision, signals_prompt
 from repaso.agents.answerability_probe import ProbeAnswer, render_blind
 from repaso.agents.capsule_composer import Snippet
-from repaso.agents.competency_mapper import MappingDecision
+from repaso.agents.competency_mapper import MappingDecision, request_text
 from repaso.agents.escalation_composer import TeacherNote
 from repaso.agents.grader import OpenGrade, open_prompt
 from repaso.agents.intake_screener import IntakeDecision, frame_untrusted
@@ -41,12 +41,7 @@ class SchemaProbe(FrozenStrictModel):
 
 
 def mapping_prompt() -> str:
-    candidates = "\n".join(samples.CANDIDATES)
-    return (
-        f"Candidate competencies:\n{candidates}\n\n"
-        f"Pick at most {MAPPING_LIMIT} ids from that list, most relevant first.\n\n"
-        f"Material:\n{samples.MATERIAL_TEXT}"
-    )
+    return request_text(samples.MATERIAL_TEXT, list(samples.CANDIDATES), MAPPING_LIMIT)
 
 
 def _generation_prompt() -> str:

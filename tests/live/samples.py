@@ -34,22 +34,26 @@ MATERIAL_TEXT = (
     "4) Explica con tus palabras por qué 5/10 y 1/2 nombran la misma cantidad."
 )
 
+def _candidate(key: str, name: str, description: str) -> Competency:
+    return Competency(id=key, subject=SUBJECT, grade=GRADE, name=name, description=description)
+
+
 CANDIDATES = (
-    (
-        "MAT-4-FRAC-EQUIV: Fracciones equivalentes — "
-        "genera y reconoce fracciones que nombran la misma cantidad."
+    COMPETENCY,
+    _candidate(
+        "MAT-4-FRAC-COMPARA",
+        "Comparación de fracciones",
+        "Ordena fracciones de igual y distinto denominador.",
     ),
-    (
-        "MAT-4-FRAC-COMPARA: Comparación de fracciones — "
-        "ordena fracciones de igual y distinto denominador."
+    _candidate(
+        "MAT-4-DECIM-INTRO",
+        "Décimos y centésimos",
+        "Lee y escribe números decimales hasta el centésimo.",
     ),
-    (
-        "MAT-4-DECIM-INTRO: Décimos y centésimos — "
-        "lee y escribe números decimales hasta el centésimo."
-    ),
-    (
-        "MAT-4-MULT-2CIF: Multiplicación por dos cifras — "
-        "resuelve multiplicaciones con reagrupación."
+    _candidate(
+        "MAT-4-MULT-2CIF",
+        "Multiplicación por dos cifras",
+        "Resuelve multiplicaciones con reagrupación.",
     ),
 )
 

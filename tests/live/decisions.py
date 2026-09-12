@@ -16,7 +16,7 @@ SAFE = "safe"
 UNSAFE = "unsafe"
 UNLISTED = "unlisted"
 NOTHING = "nothing"
-KNOWN_IDS = tuple(candidate.split(":", 1)[0] for candidate in samples.CANDIDATES)
+KNOWN_IDS = tuple(str(candidate.id) for candidate in samples.CANDIDATES)
 MATERIAL_COMPETENCY = KNOWN_IDS[0]
 DETERMINISTIC_ACTION = "continue"
 

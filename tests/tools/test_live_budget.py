@@ -1,5 +1,6 @@
 import pytest
 
+from repaso.agents.competency_mapper import MappingDecision, request_text
 from repaso.config.models import ModelRole, model_for
 from tests.live.budget import (
     CONSERVATIVE_INPUT_TOKENS,
@@ -19,6 +20,7 @@ from tests.live.environment import (
 )
 from tests.live.registry import build_registry
 from tests.live.routing import routing_model_ids
+from tests.live.samples import CANDIDATES, MATERIAL_TEXT
 
 ROUTING_MODELS = routing_model_ids()
 
@@ -136,3 +138,11 @@ def test_an_unaffordable_run_is_announced_and_refused():
     with pytest.raises(LiveBudgetExceeded, match="OVER"):
         enforce_budget(estimate, said.append)
     assert said and "OVER" in said[0]
+
+
+def test_the_mapping_probe_sends_the_request_the_mapper_sends():
+    probe = next(p for p in build_registry() if p.output_schema is MappingDecision)
+
+    assert probe.prompt.startswith("Curriculum:\n")
+    assert "\nPage:\n" in probe.prompt
+    assert probe.prompt == request_text(MATERIAL_TEXT, list(CANDIDATES), 3)

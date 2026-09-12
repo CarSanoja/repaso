@@ -40,7 +40,7 @@ def ordered_candidates(
     return ordered[:CANDIDATE_LIMIT]
 
 
-def _request_text(parsed_text: str, candidates: list[Competency], limit: int) -> str:
+def request_text(parsed_text: str, candidates: list[Competency], limit: int) -> str:
     lines = "\n".join(_describe(competency) for competency in candidates)
     return (
         f"Curriculum:\n{lines}\n\n"
@@ -85,7 +85,7 @@ async def map_material(
             model,
             MappingDecision,
             system,
-            _request_text(parsed_text, candidates, limit),
+            request_text(parsed_text, candidates, limit),
             PROMPT_VERSION,
         )
     except StructuredCallFailed:
