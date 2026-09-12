@@ -66,9 +66,9 @@ MESSAGES = {
         "the topic."
     ),
     "material_held": (
-        "I set this page aside instead of practising from it: the text carries "
-        "instructions aimed at me and I will not follow them. If it is a school "
-        "worksheet, send me another photo of the same page."
+        "I set this page aside instead of practising from it: something in the text "
+        "did not pass my safety check, so I won't build exercises from it. If it is a "
+        "school worksheet, send me another photo of the same page."
     ),
     "material_interrupted": (
         "I stopped part way through this page: a step on my side did not finish. It is "
@@ -79,18 +79,24 @@ MESSAGES = {
         "This tells me the topic but not how the class works it. Could you send a "
         "photo of a solved exercise from the notebook?"
     ),
+    "material_unreadable": (
+        "I couldn't read the text on this page. The image may be dark or shaken, or "
+        "the sheet may be blank. Could you send it again, straight on and with good "
+        "light?"
+    ),
     "material_unusable": (
         "I went through it and the questions it produced are not ones I would stand "
         "behind, so I'd rather send nothing than send something wrong. Could you send "
         "another photo, or the notebook page where the topic is worked out?"
     ),
     "rephoto_request": (
-        "The photo came out blurry and I won't guess what I can't read. Can you retake "
-        "it with more light? If possible, send it as a file to keep the quality."
+        "I didn't read this photo confidently enough to avoid guessing. It may be "
+        "shaken or short of light. Can you retake it? If possible, send it as a file "
+        "to keep the quality."
     ),
     "media_unreadable": (
-        "That file didn't reach me whole and I won't guess what I can't read. Can you "
-        "send it again?"
+        "That file didn't reach me, and I won't guess what I can't read. Can you send "
+        "it again?"
     ),
     "quarantine_prompt": (
         'I need your eyes: {alias} answered "{answer}" and I\'m not sure how to grade '

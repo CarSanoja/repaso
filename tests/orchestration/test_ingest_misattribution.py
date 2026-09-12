@@ -153,3 +153,39 @@ def test_the_interrupted_message_blames_no_photograph(lang):
     assert "no parece" not in text
     assert "doesn't look like" not in text
     assert "foto" in text or "photo" in text
+
+
+async def test_a_page_with_no_readable_text_is_not_called_thin(settings):
+    services = make_services(settings)
+    run = make_run(services)
+    run.data = b"\x00\xff\xfe binary that decodes to nothing\x80"
+
+    await build_ingest_graph(services, run).invoke_async("ingest")
+
+    assert run.terminal == "empty_text"
+    assert run.outbound[-1].text == msg("material_unreadable", run.family.lang)
+    assert run.outbound[-1].text != msg("material_thin", run.family.lang)
+    assert services.models[ModelRole.CLASSIFY].calls == []
+
+
+async def test_a_photograph_that_will_not_open_is_not_called_thin(settings):
+    services = make_services(settings)
+    run = make_run(services)
+    run.material = run.material.model_copy(update={"kind": MediaKind.PHOTO})
+    run.data = b"this is not an image file"
+
+    await build_ingest_graph(services, run).invoke_async("ingest")
+
+    assert run.terminal == "unreadable_image"
+    assert run.outbound[-1].text == msg("material_unreadable", run.family.lang)
+    assert run.outbound[-1].text != msg("material_thin", run.family.lang)
+
+
+@pytest.mark.parametrize("lang", [Lang.ES, Lang.EN])
+def test_the_unreadable_message_claims_no_topic_and_blames_no_child(lang):
+    text = msg("material_unreadable", lang).lower()
+    assert "tema" not in text
+    assert "topic" not in text
+    assert "puede" in text or "may" in text
+    for blame in ("tu hijo", "your child", "el niño", "la niña"):
+        assert blame not in text

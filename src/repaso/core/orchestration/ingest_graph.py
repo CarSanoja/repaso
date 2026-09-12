@@ -11,7 +11,12 @@ from repaso.agents.material_parser import parse_material
 from repaso.config.models import ModelRole
 from repaso.core.harness.legibility import DEFAULT_MIN_CONFIDENCE
 from repaso.core.orchestration.context import IngestRun, Services
-from repaso.core.orchestration.ingest_holds import hold_screened, hold_unscreened, say
+from repaso.core.orchestration.ingest_holds import (
+    hold_screened,
+    hold_unscreened,
+    parse_reply,
+    say,
+)
 from repaso.core.orchestration.nodes import StepNode
 from repaso.i18n.competencies import competency_label
 from repaso.schemas.competency import MappingOutcome, MaterialMapping
@@ -63,8 +68,7 @@ def build_ingest_graph(services: Services, run: IngestRun):
         services.store.put_material(run.material)
         if run.material.status is not MaterialStatus.PARSED:
             run.terminal = run.material.rejection_reason or "unparsed"
-            key = "rephoto_request" if run.terminal == "blurry_photo" else "material_thin"
-            say(run, key)
+            say(run, parse_reply(run.terminal))
 
     async def screen() -> None:
         if "screen" in memo:

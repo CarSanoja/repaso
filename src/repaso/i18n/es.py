@@ -67,9 +67,9 @@ MESSAGES = {
         "reenvíala con una nota corta del tema."
     ),
     "material_held": (
-        "Aparté esta página en lugar de practicar con ella: el texto trae instrucciones "
-        "dirigidas a mí y no las voy a seguir. Si es una hoja del colegio, mándame otra "
-        "foto de la misma página."
+        "Aparté esta página en vez de practicar con ella: algo del texto no pasó mi "
+        "revisión de seguridad, así que no voy a armar ejercicios a partir de ahí. Si "
+        "es una hoja del colegio, mándame otra foto de la misma página."
     ),
     "material_interrupted": (
         "Me quedé a medias con esta página: un paso de mi proceso no llegó a terminar. "
@@ -80,18 +80,24 @@ MESSAGES = {
         "Con esto solo conozco el tema, pero no cómo lo trabajan en clase. ¿Me mandas "
         "una foto de un ejercicio resuelto del cuaderno?"
     ),
+    "material_unreadable": (
+        "No logré leer el texto de esta página. Puede que la imagen esté oscura o "
+        "movida, o que la hoja venga en blanco. ¿Me la mandas otra vez, de frente y "
+        "con buena luz?"
+    ),
     "material_unusable": (
         "Lo revisé y los ejercicios que salieron de ahí no los puedo dar por buenos, "
         "así que prefiero no mandar nada antes que mandar algo mal. ¿Me envías otra "
         "foto, o la página del cuaderno donde el tema esté resuelto?"
     ),
     "rephoto_request": (
-        "La foto salió borrosa y no quiero inventar lo que no leo. ¿Puedes tomarla de "
-        "nuevo con más luz? Si puedes, envíala como archivo para que no pierda calidad."
+        "No leí esta foto con la seguridad que necesito para no inventar nada. Puede "
+        "estar movida o con poca luz. ¿Puedes tomarla de nuevo? Si puedes, envíala "
+        "como archivo para que no pierda calidad."
     ),
     "media_unreadable": (
-        "Ese archivo no me llegó completo y no quiero inventar lo que no leo. ¿Me lo "
-        "envías de nuevo?"
+        "Ese archivo no me llegó y no quiero inventar lo que no leo. ¿Me lo envías de "
+        "nuevo?"
     ),
     "quarantine_prompt": (
         'Necesito tu ojo: {alias} respondió "{answer}" y no estoy seguro de cómo '

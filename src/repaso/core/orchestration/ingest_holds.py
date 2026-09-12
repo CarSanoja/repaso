@@ -10,6 +10,12 @@ QUOTE_LENGTH = 200
 SCREEN_UNAVAILABLE = "screen_unavailable"
 QUARANTINED = "quarantined"
 SCREENED_UNSAFE = "screened_unsafe"
+UNREADABLE_REPLY = "material_unreadable"
+PARSE_REPLIES = {"blurry_photo": "rephoto_request"}
+
+
+def parse_reply(reason: str) -> str:
+    return PARSE_REPLIES.get(reason, UNREADABLE_REPLY)
 
 
 def say(run: IngestRun, key: str, **kwargs) -> None:
