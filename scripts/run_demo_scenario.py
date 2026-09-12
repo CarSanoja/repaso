@@ -16,6 +16,7 @@ from repaso.simulator.demo_scenario import (
     scenario_settings,
 )
 from repaso.simulator.demo_transcript import render
+from repaso.simulator.run_directory import MUST_BE_EMPTY, occupied
 from repaso.tools.cassette import load_cassette
 from repaso.tools.cassette_cost import cassette_spend
 from repaso.tools.cassette_provenance import load_provenance, provenance_path
@@ -52,8 +53,8 @@ def main() -> int:
 
     data_dir = Path(args.data_dir)
     cassette = Path(args.cassette)
-    if data_dir.exists() and any(data_dir.iterdir()):
-        parser.error("data-dir must be empty; choose a new directory to preserve previous runs")
+    if occupied(data_dir):
+        parser.error(MUST_BE_EMPTY)
     settings = scenario_settings(data_dir, cassette)
 
     started = time.perf_counter()

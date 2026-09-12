@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from repaso.config.settings import Settings
 from repaso.simulator.demo_clock import run_demo_clock
+from repaso.simulator.run_directory import MUST_BE_EMPTY, occupied
 from repaso.simulator.verdicts import verdict_rows
 
 
@@ -18,7 +19,10 @@ def main() -> int:
     parser.add_argument("--data-dir", default=".local_data/demo_clock")
     args = parser.parse_args()
 
-    settings = Settings(local_mode=True, local_data_dir=Path(args.data_dir))
+    data_dir = Path(args.data_dir)
+    if occupied(data_dir):
+        parser.error(MUST_BE_EMPTY)
+    settings = Settings(local_mode=True, local_data_dir=data_dir)
     started = time.perf_counter()
     result = asyncio.run(run_demo_clock(settings, days=args.days, seed=args.seed))
     elapsed = time.perf_counter() - started
