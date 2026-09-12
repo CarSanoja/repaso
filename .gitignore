@@ -1,4 +1,5 @@
 private/
+.claude/
 
 .local_data/
 .env
