@@ -1,5 +1,7 @@
 import json
+from collections import Counter
 
+from repaso.agents.competency_mapper import CANDIDATE_LIMIT
 from repaso.i18n.competencies import NAMES_ES
 from repaso.schemas.competency import Competency
 from repaso.tools.knowledge import DEFAULT_TAXONOMY_PATH
@@ -39,3 +41,11 @@ def test_the_family_reads_a_spanish_label_for_every_fourth_grade_competency():
     fourth = [entry["id"] for entry in entries() if entry["grade"] == 4]
 
     assert set(fourth) <= set(NAMES_ES)
+
+
+def test_no_grade_outgrows_the_slate_the_mapper_can_show():
+    counted = Counter((entry["grade"], entry["subject"]) for entry in entries())
+
+    assert counted
+    for key, total in counted.items():
+        assert total <= CANDIDATE_LIMIT, key
