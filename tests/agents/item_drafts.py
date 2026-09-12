@@ -26,6 +26,7 @@ def mcq_draft(**overrides) -> ItemDraft:
     payload = {
         "kind": ItemKind.MCQ,
         "difficulty": 2,
+        "bloom": "understand",
         "stem": "¿Cuál fracción es equivalente a 1/2?",
         "options": ["2/4", "1/3", "3/5"],
         "answer_key": "2/4",
@@ -38,6 +39,7 @@ def open_draft(**overrides) -> ItemDraft:
     payload = {
         "kind": ItemKind.OPEN,
         "difficulty": 3,
+        "bloom": "analyze",
         "stem": "Explica por qué 3/6 y 1/2 valen lo mismo.",
         "answer_key": "Porque 3/6 se simplifica dividiendo entre 3.",
         "rationale": "Dividir numerador y denominador entre 3 deja 1/2.",

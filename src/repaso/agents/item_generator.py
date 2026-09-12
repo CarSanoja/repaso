@@ -1,105 +1,42 @@
 from dataclasses import dataclass
 from datetime import datetime
-from hashlib import sha256
-from typing import Annotated
-
-from pydantic import BaseModel
 
 from repaso.agents.base import StructuredCallFailed, structured
-from repaso.agents.prompts.item_generator import PROMPT_VERSION, SYSTEM
-from repaso.schemas.common import CompetencyId, ItemId, Lang
-from repaso.schemas.competency import Competency
-from repaso.schemas.item import (
-    GeneratedItems,
-    GenerationOutcome,
-    Item,
-    ItemKind,
-    ItemStatus,
+from repaso.agents.item_draft import (
+    GeneratedBatch,
+    ItemDraft,
+    is_valid_draft,
+    item_id_for,
+    to_item,
 )
-from repaso.schemas.nullable import NULL_IS_EMPTY
-from repaso.schemas.provenance import Provenance, Source
+from repaso.agents.prompts.item_generator import PROMPT_VERSION, SYSTEM
+from repaso.schemas.common import Lang
+from repaso.schemas.competency import Competency
+from repaso.schemas.item import GeneratedItems, GenerationOutcome, Item
 
-ITEM_ID_LENGTH = 32
-MIN_OPTIONS = 3
-MAX_OPTIONS = 5
-MIN_DIFFICULTY = 1
-MAX_DIFFICULTY = 5
 MAX_OVERPRODUCTION = 2
 LANGUAGE_NAMES: dict[Lang, str] = {Lang.ES: "Spanish", Lang.EN: "English"}
 
-
-class ItemDraft(BaseModel):
-    kind: ItemKind
-    difficulty: int
-    stem: str
-    options: Annotated[list[str], NULL_IS_EMPTY] = []
-    answer_key: str
-    rationale: str
-    rubric: str | None = None
-
-
-class GeneratedBatch(BaseModel):
-    items: Annotated[list[ItemDraft], NULL_IS_EMPTY] = []
+__all__ = [
+    "GeneratedBatch",
+    "GeneratedItems",
+    "Generation",
+    "ItemDraft",
+    "LANGUAGE_NAMES",
+    "MAX_OVERPRODUCTION",
+    "PROMPT_VERSION",
+    "draft_report",
+    "generate_items",
+    "is_valid_draft",
+    "item_id_for",
+    "items_for_material",
+]
 
 
 @dataclass(frozen=True)
 class Generation:
     items: list[Item]
     answered: bool
-
-
-def _filled(text: str | None) -> bool:
-    return bool(text and text.strip())
-
-
-def _valid_mcq(draft: ItemDraft) -> bool:
-    if not MIN_OPTIONS <= len(draft.options) <= MAX_OPTIONS:
-        return False
-    if len(set(draft.options)) != len(draft.options):
-        return False
-    return draft.answer_key in draft.options
-
-
-def is_valid_draft(draft: ItemDraft) -> bool:
-    if not MIN_DIFFICULTY <= draft.difficulty <= MAX_DIFFICULTY:
-        return False
-    if not (_filled(draft.stem) and _filled(draft.answer_key) and _filled(draft.rationale)):
-        return False
-    if draft.kind is ItemKind.MCQ:
-        return _valid_mcq(draft)
-    return not draft.options and _filled(draft.rubric)
-
-
-def item_id_for(competency: Competency, draft: ItemDraft) -> ItemId:
-    seed = "\n".join((str(competency.id), draft.kind.value, draft.stem.strip()))
-    return ItemId(sha256(seed.encode("utf-8")).hexdigest()[:ITEM_ID_LENGTH])
-
-
-def _to_item(
-    draft: ItemDraft,
-    competency: Competency,
-    now: datetime,
-    model_id: str,
-    prompt_version: str,
-) -> Item:
-    return Item(
-        id=item_id_for(competency, draft),
-        competency_id=CompetencyId(str(competency.id)),
-        kind=draft.kind,
-        difficulty=draft.difficulty,
-        stem=draft.stem,
-        options=list(draft.options),
-        answer_key=draft.answer_key,
-        rationale=draft.rationale,
-        rubric=draft.rubric,
-        status=ItemStatus.CANDIDATE,
-        provenance=Provenance(
-            source=Source.GENERATED,
-            created_at=now,
-            model_id=model_id,
-            prompt_version=prompt_version,
-        ),
-    )
 
 
 def _request_text(parsed_text: str, competency: Competency, count: int, lang: Lang) -> str:
@@ -114,7 +51,12 @@ def _request_text(parsed_text: str, competency: Competency, count: int, lang: La
 
 
 def draft_report(drafts: list[ItemDraft], kept: list[Item]) -> dict:
-    return {"generated": len(drafts), "kept": len(kept), "dropped": len(drafts) - len(kept)}
+    return {
+        "generated": len(drafts),
+        "kept": len(kept),
+        "dropped": len(drafts) - len(kept),
+        "untagged": sum(1 for item in kept if item.bloom is None),
+    }
 
 
 async def _ask(
@@ -142,11 +84,13 @@ def _kept(
     competency: Competency,
     count: int,
     now: datetime,
+    grade: int,
+    lang: Lang,
     model_id: str = "",
     prompt_version: str = PROMPT_VERSION,
 ) -> list[Item]:
     kept = [
-        _to_item(draft, competency, now, model_id, prompt_version)
+        to_item(draft, competency, now, model_id, prompt_version, grade, lang)
         for draft in batch.items
         if is_valid_draft(draft)
     ]
@@ -168,7 +112,7 @@ async def generate_items(
         batch = await _ask(parsed_text, competency, count, grade, model, lang, prompt_version)
     except StructuredCallFailed:
         return GeneratedItems(outcome=GenerationOutcome.UNAVAILABLE)
-    kept = _kept(batch, competency, count, now, model_id, prompt_version)
+    kept = _kept(batch, competency, count, now, grade, lang, model_id, prompt_version)
     outcome = GenerationOutcome.DRAFTED if kept else GenerationOutcome.EMPTY
     return GeneratedItems(outcome=outcome, items=kept)
 

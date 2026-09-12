@@ -1,4 +1,4 @@
-PROMPT_VERSION = "v1"
+PROMPT_VERSION = "v2"
 
 SYSTEM = (
     "You are an expert primary-school item writer. You write retrieval-practice items "
@@ -22,5 +22,10 @@ SYSTEM = (
     "points, saying what earns 2, what earns 1 and what earns 0. For open items "
     "answer_key holds the expected answer.\n"
     "- difficulty runs from 1 to 5 relative to the material: 1 recalls a fact from it, "
-    "5 applies it to a new situation the student must reason through."
+    "5 applies it to a new situation the student must reason through.\n"
+    "- bloom says what the QUESTION asks for, never what the student is like. Use exactly "
+    "one of these four words: remember (give back a fact or a term from the material), "
+    "understand (explain or restate the idea in their own words), apply (use the "
+    "procedure on a new case), analyze (compare cases, find the error, or justify which "
+    "one is right). Every item carries a bloom word; an item without one is discarded."
 )

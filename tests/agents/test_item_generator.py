@@ -55,7 +55,7 @@ async def test_valid_batch_becomes_candidate_items(competency):
     assert items[0].provenance.source is Source.GENERATED
     assert items[0].provenance.created_at == NOW
     assert items[0].provenance.model_id == "us.anthropic.claude-haiku-4-5"
-    assert items[0].provenance.prompt_version == "v1"
+    assert items[0].provenance.prompt_version == "v2"
     assert items[1].rubric
 
 
@@ -93,7 +93,12 @@ async def test_invalid_drafts_are_dropped_and_counted(competency):
     model = LocalPlaybackModel([GeneratedBatch(items=drafts)])
     drafted = await generate_items(MATERIAL, competency, 7, 4, model, NOW)
     assert [item.kind for item in drafted.items] == [ItemKind.MCQ]
-    assert draft_report(drafts, drafted.items) == {"generated": 7, "kept": 1, "dropped": 6}
+    assert draft_report(drafts, drafted.items) == {
+        "generated": 7,
+        "kept": 1,
+        "dropped": 6,
+        "untagged": 0,
+    }
 
 
 async def test_an_open_item_whose_options_arrive_null_reaches_the_child(competency):

@@ -1,7 +1,8 @@
 from datetime import datetime
 
+from repaso.schemas.common import Lang
 from repaso.schemas.competency import Competency
-from repaso.schemas.item import Item, ItemKind, ItemStatus
+from repaso.schemas.item import BloomLevel, Item, ItemKind, ItemStatus
 from repaso.schemas.provenance import Provenance, Source
 from repaso.simulator.archetypes import MISCONCEPTIONS
 
@@ -23,6 +24,9 @@ def _mcq(competency: Competency, slot: str, index: int, now: datetime) -> Item:
         competency_id=competency.id,
         kind=ItemKind.MCQ,
         difficulty=min(5, 1 + index),
+        bloom=BloomLevel.REMEMBER,
+        lang=Lang.ES,
+        grade=competency.grade,
         stem=f"Práctica {index + 1} de {competency.name}: elige la opción correcta.",
         options=[correct, misconception, f"otra opción {index}"],
         answer_key=correct,
@@ -38,6 +42,9 @@ def _open(competency: Competency, slot: str, now: datetime) -> Item:
         competency_id=competency.id,
         kind=ItemKind.OPEN,
         difficulty=3,
+        bloom=BloomLevel.UNDERSTAND,
+        lang=Lang.ES,
+        grade=competency.grade,
         stem=f"Explica con tus palabras: {competency.description}",
         options=[],
         answer_key=f"respuesta abierta esperada de {competency.name}",

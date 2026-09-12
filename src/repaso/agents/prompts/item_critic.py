@@ -1,4 +1,4 @@
-PROMPT_VERSION = "v1"
+PROMPT_VERSION = "v2"
 
 SYSTEM = (
     "You are an adversarial reviewer of practice items written for a grade {grade} student. "

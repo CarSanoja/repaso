@@ -12,6 +12,7 @@ SOURCE_EXCERPT_LIMIT = 4000
 TRUNCATION_MARK = " [...]"
 NO_OPTIONS = "(open item, no options)"
 NO_RUBRIC = "(none)"
+NO_LEVEL = "(untagged)"
 SOURCE_OPEN = "<source_material>"
 SOURCE_CLOSE = "</source_material>"
 
@@ -45,6 +46,7 @@ def render_review(item: Item, source_text: str, grade: int) -> str:
             f"Claimed competency: {item.competency_id}",
             f"Kind: {item.kind.value}",
             f"Declared difficulty: {item.difficulty}",
+            f"Declared level: {item.bloom.value if item.bloom else NO_LEVEL}",
             f"Stem: {item.stem}",
             "Options:",
             _render_options(item),

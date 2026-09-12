@@ -2,13 +2,20 @@ from enum import StrEnum
 
 from pydantic import Field
 
-from repaso.schemas.common import CompetencyId, ItemId, StrictBaseModel
+from repaso.schemas.common import CompetencyId, ItemId, Lang, StrictBaseModel
 from repaso.schemas.provenance import Provenance
 
 
 class ItemKind(StrEnum):
     MCQ = "mcq"
     OPEN = "open"
+
+
+class BloomLevel(StrEnum):
+    REMEMBER = "remember"
+    UNDERSTAND = "understand"
+    APPLY = "apply"
+    ANALYZE = "analyze"
 
 
 class ItemStatus(StrEnum):
@@ -35,6 +42,9 @@ class Item(StrictBaseModel):
     competency_id: CompetencyId
     kind: ItemKind
     difficulty: int = Field(ge=1, le=5)
+    bloom: BloomLevel | None = None
+    lang: Lang | None = None
+    grade: int | None = Field(default=None, ge=1, le=12)
     stem: str
     options: list[str] = []
     answer_key: str

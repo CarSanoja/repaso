@@ -3,6 +3,7 @@ GENERATED_BATCH = {
         {
             "kind": "mcq",
             "difficulty": 2,
+            "bloom": "apply",
             "stem": (
                 "En el ejercicio 1 de la página 47 debes completar: 3/4 = 6/__. "
                 "¿Qué número va en el espacio en blanco?"
@@ -19,6 +20,7 @@ GENERATED_BATCH = {
         {
             "kind": "open",
             "difficulty": 3,
+            "bloom": "analyze",
             "stem": (
                 "El ejercicio 3 de la página 47 pide escribir dos fracciones equivalentes a "
                 "1/5. Escribe esas dos fracciones y explica cómo las obtuviste."
