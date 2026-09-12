@@ -11,12 +11,7 @@ from repaso.agents.material_parser import parse_material
 from repaso.config.models import ModelRole
 from repaso.core.harness.legibility import DEFAULT_MIN_CONFIDENCE
 from repaso.core.orchestration.context import IngestRun, Services
-from repaso.core.orchestration.ingest_holds import (
-    hold_screened,
-    hold_unscreened,
-    parse_reply,
-    say,
-)
+from repaso.core.orchestration.ingest_holds import hold_screened, hold_unscreened, parse_reply, say
 from repaso.core.orchestration.nodes import StepNode
 from repaso.i18n.competencies import competency_label
 from repaso.schemas.competency import MappingOutcome, MaterialMapping
@@ -118,7 +113,6 @@ def build_ingest_graph(services: Services, run: IngestRun):
         services.store.put_material(run.material)
 
     async def generate() -> None:
-        answered = True
         if "generated" not in memo:
             generation = await items_for_material(
                 run.material.parsed_text or "",
@@ -146,8 +140,7 @@ def build_ingest_graph(services: Services, run: IngestRun):
                 )
                 for item in generation.items
             ]
-            if answered:
-                save("generated", [i.model_dump(mode="json") for i in items])
+            save("generated", [i.model_dump(mode="json") for i in items])
         run.generated = [Item.model_validate(i) for i in memo.get("generated", [])]
         for item in run.generated:
             if services.store.get_item(item.id) is None:
