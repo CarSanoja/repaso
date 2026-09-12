@@ -2,7 +2,8 @@
 
 This is a review of the code and the synthesized infrastructure as they stand on the branch
 being published. It was written against the security work alone and re-measured after that work
-was merged with the deployment, judging, isolation and measurement work, so the counts and the
+was merged with the deployment, judging, isolation, measurement and language work, so the counts
+and the
 IAM reading below describe this tree and not the one they were first taken from. It records
 what was tested and how, what changed as a result, what risk remains, and which assurances
 cannot exist until the system is deployed.
