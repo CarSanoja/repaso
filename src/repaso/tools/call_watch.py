@@ -73,6 +73,11 @@ class CallWatch:
         }
         if self.output_model is not None:
             fields["output"] = self.output_model
+        if self.stop_reason is not None:
+            fields["stop_reason"] = self.stop_reason
+        version = declared_prompt_version()
+        if version is not None:
+            fields["prompt_version"] = version
         if self.usage is None:
             return fields
         fields["input_tokens"] = str(self.usage.input_tokens)

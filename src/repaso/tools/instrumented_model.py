@@ -58,7 +58,7 @@ class InstrumentedModel(Model):
         self, watch: CallWatch, outcome: CallOutcome, error: str = "", call: str | None = None
     ) -> None:
         watch.close()
-        extra = watch.trace_fields() if call is None else {}
+        extra = watch.trace_fields()
         if error:
             extra["error"] = error
         self._telemetry.trace(
