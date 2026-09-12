@@ -1,7 +1,7 @@
 {
  "date": "2026-09-12",
  "what_it_is": "One run of the competency mapper in this repository against Amazon Bedrock over twenty-three pages at five samples each, plus two comparison runs of the same mapper built from earlier source trees. Seven pages are printed fourth-grade mathematics in Spanish, Portuguese, English, French, Arabic, Russian and Chinese; nine are off-subject school pages across the same six languages; seven are pages the subject gate has to turn away. The curriculum shown to the model is the bundled grade 4 slice of curriculum_math_primary.json, written only in English.",
- "what_it_is_not": "Not a deployment, not a family journey, and not a calibrated accuracy figure. Twenty-three pages at five samples is a conformance run over pages written for this test, not an evaluation set drawn from families, and one model on one day says nothing about another model or another week.",
+ "what_it_is_not": "Not a deployment, not a family journey, and not a calibrated accuracy figure. Every page here is text of the shape a parser hands the mapper, written for this test; none was photographed and read back through OCR, so nothing in it measures what a camera adds. Twenty-three pages at five samples is a conformance run, not an evaluation set drawn from families, and one model on one day says nothing about another model or another week.",
  "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
  "grade": 4,
  "subject": "math",
