@@ -287,8 +287,9 @@ list. Check with `getWebhookInfo`: `pending_update_count` should fall to zero an
 
    This ran on 2026-09-12 against the authorized account and is kept in
    [the evidence register](../docs/evidence/live-conformance-2026-09-12.json).
-   All four configured inference profiles answered. It proves the models fill
-   the schemas; it proves nothing about the deployed stacks.
+   All four configured inference profiles answered, on the role-to-model binding
+   that preceded the measured routing. It proves the models fill the schemas; it
+   proves nothing about the deployed stacks.
 2. Check `/health`, `/healthz`, `/readyz`, `/judge/`, POST `/judge/login` and a
    protected demo request on the real URL. A login is a POST; the API forwards
    every judge method.

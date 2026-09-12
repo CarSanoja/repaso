@@ -148,7 +148,7 @@ gates take about ninety seconds together; the clock takes about seven minutes.
 | --- | --- | --- |
 | `REPASO_LOCAL_MODE=true pytest -q` | `1628 passed, 56 skipped in 143.79s` | — |
 | `ruff check .` | `All checks passed!` | — |
-| `python scripts/check_repo_hygiene.py` | `repo hygiene: 544 tracked files, 1237 historical blobs on this branch, no findings` | — |
+| `python scripts/check_repo_hygiene.py` | `repo hygiene: 544 tracked files, 1241 historical blobs on this branch, no findings` | — |
 | `python scripts/run_demo_scenario.py --decision teacher_note` | 24 of 24 beats as expected | [journey](../evidence/journey-teacher-note.json) |
 | `python scripts/run_demo_scenario.py --decision reduce_load` | 23 of 23 beats as expected | [journey](../evidence/journey-reduce-load.json) |
 | `python scripts/run_demo_clock.py --days 14 --seed 20260901` | `420 student-days`, `responses graded: 1037`, nine gates as expected | [clock](../evidence/clock-14-days.json) |
