@@ -1,0 +1,1349 @@
+{
+ "date": "2026-09-12",
+ "what_it_is": "One run of the competency mapper in this repository against Amazon Bedrock over twenty-three pages at five samples each, plus two comparison runs of the same mapper built from earlier source trees. Seven pages are printed fourth-grade mathematics in Spanish, Portuguese, English, French, Arabic, Russian and Chinese; nine are off-subject school pages across the same six languages; seven are pages the subject gate has to turn away. The curriculum shown to the model is the bundled grade 4 slice of curriculum_math_primary.json, written only in English.",
+ "what_it_is_not": "Not a deployment, not a family journey, and not a calibrated accuracy figure. Twenty-three pages at five samples is a conformance run over pages written for this test, not an evaluation set drawn from families, and one model on one day says nothing about another model or another week.",
+ "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+ "grade": 4,
+ "subject": "math",
+ "slate_size": 14,
+ "samples_per_page": 5,
+ "languages": [
+  "ar",
+  "en",
+  "es",
+  "fr",
+  "pt",
+  "ru",
+  "zh"
+ ],
+ "scripts": [
+  "Arabic",
+  "Cyrillic",
+  "Han",
+  "Latin"
+ ],
+ "pages": [
+  {
+   "page": "blank_page",
+   "bucket": "gate",
+   "language": "none",
+   "script": "none",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": [],
+   "what_it_is": "a blank page"
+  },
+  {
+   "page": "first_grade_es",
+   "bucket": "gate",
+   "language": "es",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": [],
+   "what_it_is": "the right subject, three grades below"
+  },
+  {
+   "page": "geography_pt",
+   "bucket": "off_subject",
+   "language": "pt",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": []
+  },
+  {
+   "page": "grammar_fr",
+   "bucket": "off_subject",
+   "language": "fr",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": []
+  },
+  {
+   "page": "history_en",
+   "bucket": "off_subject",
+   "language": "en",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": []
+  },
+  {
+   "page": "history_es",
+   "bucket": "off_subject",
+   "language": "es",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": []
+  },
+  {
+   "page": "invitation_es",
+   "bucket": "off_subject",
+   "language": "es",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": []
+  },
+  {
+   "page": "medicine_box_en",
+   "bucket": "gate",
+   "language": "en",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": [],
+   "what_it_is": "a photograph of something that is not schoolwork"
+  },
+  {
+   "page": "menu_en",
+   "bucket": "off_subject",
+   "language": "en",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": []
+  },
+  {
+   "page": "ninth_grade_es",
+   "bucket": "gate",
+   "language": "es",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": [],
+   "what_it_is": "the right subject, five grades above"
+  },
+  {
+   "page": "notice_zh",
+   "bucket": "off_subject",
+   "language": "zh",
+   "script": "Han",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": []
+  },
+  {
+   "page": "ocr_noise",
+   "bucket": "gate",
+   "language": "none",
+   "script": "none",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": [],
+   "what_it_is": "an illegible page"
+  },
+  {
+   "page": "printed_page_es",
+   "bucket": "on_subject",
+   "language": "es",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 5,
+   "refused": 0,
+   "competency_ids": [
+    "math.g4.numeration.number_sets",
+    "math.g4.numeration.roman_numerals"
+   ]
+  },
+  {
+   "page": "reading_ru",
+   "bucket": "off_subject",
+   "language": "ru",
+   "script": "Cyrillic",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": []
+  },
+  {
+   "page": "receipt_es",
+   "bucket": "gate",
+   "language": "es",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": [],
+   "what_it_is": "a photograph of something that is not schoolwork"
+  },
+  {
+   "page": "science_ar",
+   "bucket": "off_subject",
+   "language": "ar",
+   "script": "Arabic",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": []
+  },
+  {
+   "page": "uncovered_topic_es",
+   "bucket": "gate",
+   "language": "es",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 0,
+   "refused": 5,
+   "competency_ids": [],
+   "what_it_is": "the right subject and grade, a topic the taxonomy does not carry"
+  },
+  {
+   "page": "worksheet_ar",
+   "bucket": "on_subject",
+   "language": "ar",
+   "script": "Arabic",
+   "samples": 5,
+   "mapped": 5,
+   "refused": 0,
+   "competency_ids": [
+    "math.g4.decimals.tenths_hundredths",
+    "math.g4.fractions.comparison",
+    "math.g4.fractions.equivalence"
+   ]
+  },
+  {
+   "page": "worksheet_en",
+   "bucket": "on_subject",
+   "language": "en",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 5,
+   "refused": 0,
+   "competency_ids": [
+    "math.g4.decimals.tenths_hundredths",
+    "math.g4.fractions.comparison",
+    "math.g4.fractions.equivalence"
+   ]
+  },
+  {
+   "page": "worksheet_fr",
+   "bucket": "on_subject",
+   "language": "fr",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 5,
+   "refused": 0,
+   "competency_ids": [
+    "math.g4.decimals.tenths_hundredths",
+    "math.g4.fractions.comparison",
+    "math.g4.fractions.equivalence"
+   ]
+  },
+  {
+   "page": "worksheet_pt",
+   "bucket": "on_subject",
+   "language": "pt",
+   "script": "Latin",
+   "samples": 5,
+   "mapped": 5,
+   "refused": 0,
+   "competency_ids": [
+    "math.g4.decimals.tenths_hundredths",
+    "math.g4.fractions.comparison",
+    "math.g4.fractions.equivalence"
+   ]
+  },
+  {
+   "page": "worksheet_ru",
+   "bucket": "on_subject",
+   "language": "ru",
+   "script": "Cyrillic",
+   "samples": 5,
+   "mapped": 5,
+   "refused": 0,
+   "competency_ids": [
+    "math.g4.decimals.tenths_hundredths",
+    "math.g4.fractions.comparison",
+    "math.g4.fractions.equivalence"
+   ]
+  },
+  {
+   "page": "worksheet_zh",
+   "bucket": "on_subject",
+   "language": "zh",
+   "script": "Han",
+   "samples": 5,
+   "mapped": 5,
+   "refused": 0,
+   "competency_ids": [
+    "math.g4.decimals.tenths_hundredths",
+    "math.g4.fractions.comparison",
+    "math.g4.fractions.equivalence"
+   ]
+  }
+ ],
+ "totals": {
+  "on_subject": {
+   "pages": 7,
+   "samples": 35,
+   "mapped": 35,
+   "refused": 0
+  },
+  "off_subject": {
+   "pages": 9,
+   "samples": 45,
+   "mapped": 0,
+   "refused": 45
+  },
+  "gate": {
+   "pages": 7,
+   "samples": 35,
+   "mapped": 0,
+   "refused": 35
+  }
+ },
+ "receipt_regression": {
+  "what_happened": "The supermarket receipt is the one page the move to a whole-slate mapping let through. Each arm is the same page against the same model, five samples.",
+  "retrieval_floor_and_prompt_v1": {
+   "source": "wf/audited",
+   "samples": 5,
+   "mapped": 0
+  },
+  "whole_slate_and_prompt_v2": {
+   "source": "1a7dd1c",
+   "samples": 5,
+   "mapped": 5,
+   "competency_ids": [
+    "math.g4.decimals.tenths_hundredths",
+    "math.g4.word_problems.two_step"
+   ]
+  },
+  "whole_slate_and_prompt_v3": {
+   "source": "this branch",
+   "samples": 5,
+   "mapped": 0
+  }
+ },
+ "gate_under_prompt_v2": {
+  "source": "1a7dd1c",
+  "note": "the same seven gate pages before the prompt named everyday paper",
+  "pages": [
+   {
+    "page": "blank_page",
+    "samples": 5,
+    "mapped": 0,
+    "refused": 5
+   },
+   {
+    "page": "first_grade_es",
+    "samples": 5,
+    "mapped": 0,
+    "refused": 5
+   },
+   {
+    "page": "medicine_box_en",
+    "samples": 5,
+    "mapped": 0,
+    "refused": 5
+   },
+   {
+    "page": "ninth_grade_es",
+    "samples": 5,
+    "mapped": 0,
+    "refused": 5
+   },
+   {
+    "page": "ocr_noise",
+    "samples": 5,
+    "mapped": 0,
+    "refused": 5
+   },
+   {
+    "page": "receipt_es",
+    "samples": 5,
+    "mapped": 5,
+    "refused": 0
+   },
+   {
+    "page": "uncovered_topic_es",
+    "samples": 5,
+    "mapped": 0,
+    "refused": 5
+   }
+  ]
+ },
+ "cost": {
+  "note": "The mapper call is the only call the whole-slate change touches. Both arms are restricted to the eighteen pages the retrieval floor let reach the model, so the comparison is per call and not per page.",
+  "pages_compared": 18,
+  "retrieval_floor": {
+   "calls": 54,
+   "input_tokens_mean": 1177,
+   "output_tokens_mean": 51,
+   "latency_ms_p50": 884,
+   "usd_mean": 0.001576
+  },
+  "whole_slate": {
+   "calls": 90,
+   "input_tokens_mean": 1796,
+   "output_tokens_mean": 57,
+   "latency_ms_p50": 944,
+   "usd_mean": 0.002289
+  },
+  "pages_the_floor_never_sent_to_a_model": [
+   "blank_page",
+   "invitation_es",
+   "menu_en",
+   "ocr_noise"
+  ],
+  "one_material_end_to_end": {
+   "page": "worksheet_en",
+   "model_calls": 13,
+   "input_tokens": 15058,
+   "output_tokens": 2617,
+   "cost_usd": 0.07705,
+   "wall_ms": 38943,
+   "per_role": {
+    "classify": 1,
+    "structured": 1,
+    "generate": 1,
+    "judge": 6,
+    "probe": 4
+   },
+   "mapper_share_of_cost": 0.0311
+  }
+ },
+ "calls": 115,
+ "input_tokens": 205155,
+ "output_tokens": 6215,
+ "cost_usd": 0.259853,
+ "latency_ms_p50": 916,
+ "latency_ms_max": 2196,
+ "ledger": [
+  {
+   "label": "blank_page/0",
+   "input_tokens": 1682,
+   "output_tokens": 43,
+   "ms": 1193,
+   "usd": 0.0020867,
+   "error": null
+  },
+  {
+   "label": "blank_page/1",
+   "input_tokens": 1682,
+   "output_tokens": 43,
+   "ms": 916,
+   "usd": 0.0020867,
+   "error": null
+  },
+  {
+   "label": "blank_page/2",
+   "input_tokens": 1682,
+   "output_tokens": 43,
+   "ms": 831,
+   "usd": 0.0020867,
+   "error": null
+  },
+  {
+   "label": "blank_page/3",
+   "input_tokens": 1682,
+   "output_tokens": 43,
+   "ms": 867,
+   "usd": 0.0020867,
+   "error": null
+  },
+  {
+   "label": "blank_page/4",
+   "input_tokens": 1682,
+   "output_tokens": 43,
+   "ms": 900,
+   "usd": 0.0020867,
+   "error": null
+  },
+  {
+   "label": "first_grade_es/0",
+   "input_tokens": 1784,
+   "output_tokens": 43,
+   "ms": 800,
+   "usd": 0.0021989,
+   "error": null
+  },
+  {
+   "label": "first_grade_es/1",
+   "input_tokens": 1784,
+   "output_tokens": 43,
+   "ms": 907,
+   "usd": 0.0021989,
+   "error": null
+  },
+  {
+   "label": "first_grade_es/2",
+   "input_tokens": 1784,
+   "output_tokens": 43,
+   "ms": 847,
+   "usd": 0.0021989,
+   "error": null
+  },
+  {
+   "label": "first_grade_es/3",
+   "input_tokens": 1784,
+   "output_tokens": 43,
+   "ms": 952,
+   "usd": 0.0021989,
+   "error": null
+  },
+  {
+   "label": "first_grade_es/4",
+   "input_tokens": 1784,
+   "output_tokens": 43,
+   "ms": 932,
+   "usd": 0.0021989,
+   "error": null
+  },
+  {
+   "label": "geography_pt/0",
+   "input_tokens": 1767,
+   "output_tokens": 43,
+   "ms": 1019,
+   "usd": 0.0021802,
+   "error": null
+  },
+  {
+   "label": "geography_pt/1",
+   "input_tokens": 1767,
+   "output_tokens": 43,
+   "ms": 901,
+   "usd": 0.0021802,
+   "error": null
+  },
+  {
+   "label": "geography_pt/2",
+   "input_tokens": 1767,
+   "output_tokens": 43,
+   "ms": 853,
+   "usd": 0.0021802,
+   "error": null
+  },
+  {
+   "label": "geography_pt/3",
+   "input_tokens": 1767,
+   "output_tokens": 43,
+   "ms": 875,
+   "usd": 0.0021802,
+   "error": null
+  },
+  {
+   "label": "geography_pt/4",
+   "input_tokens": 1767,
+   "output_tokens": 43,
+   "ms": 853,
+   "usd": 0.0021802,
+   "error": null
+  },
+  {
+   "label": "grammar_fr/0",
+   "input_tokens": 1775,
+   "output_tokens": 43,
+   "ms": 905,
+   "usd": 0.002189,
+   "error": null
+  },
+  {
+   "label": "grammar_fr/1",
+   "input_tokens": 1775,
+   "output_tokens": 43,
+   "ms": 877,
+   "usd": 0.002189,
+   "error": null
+  },
+  {
+   "label": "grammar_fr/2",
+   "input_tokens": 1775,
+   "output_tokens": 43,
+   "ms": 776,
+   "usd": 0.002189,
+   "error": null
+  },
+  {
+   "label": "grammar_fr/3",
+   "input_tokens": 1775,
+   "output_tokens": 43,
+   "ms": 890,
+   "usd": 0.002189,
+   "error": null
+  },
+  {
+   "label": "grammar_fr/4",
+   "input_tokens": 1775,
+   "output_tokens": 43,
+   "ms": 907,
+   "usd": 0.002189,
+   "error": null
+  },
+  {
+   "label": "history_en/0",
+   "input_tokens": 1752,
+   "output_tokens": 43,
+   "ms": 889,
+   "usd": 0.0021637,
+   "error": null
+  },
+  {
+   "label": "history_en/1",
+   "input_tokens": 1752,
+   "output_tokens": 43,
+   "ms": 865,
+   "usd": 0.0021637,
+   "error": null
+  },
+  {
+   "label": "history_en/2",
+   "input_tokens": 1752,
+   "output_tokens": 43,
+   "ms": 922,
+   "usd": 0.0021637,
+   "error": null
+  },
+  {
+   "label": "history_en/3",
+   "input_tokens": 1752,
+   "output_tokens": 43,
+   "ms": 914,
+   "usd": 0.0021637,
+   "error": null
+  },
+  {
+   "label": "history_en/4",
+   "input_tokens": 1752,
+   "output_tokens": 43,
+   "ms": 914,
+   "usd": 0.0021637,
+   "error": null
+  },
+  {
+   "label": "history_es/0",
+   "input_tokens": 1791,
+   "output_tokens": 43,
+   "ms": 943,
+   "usd": 0.0022066,
+   "error": null
+  },
+  {
+   "label": "history_es/1",
+   "input_tokens": 1791,
+   "output_tokens": 43,
+   "ms": 882,
+   "usd": 0.0022066,
+   "error": null
+  },
+  {
+   "label": "history_es/2",
+   "input_tokens": 1791,
+   "output_tokens": 43,
+   "ms": 851,
+   "usd": 0.0022066,
+   "error": null
+  },
+  {
+   "label": "history_es/3",
+   "input_tokens": 1791,
+   "output_tokens": 43,
+   "ms": 937,
+   "usd": 0.0022066,
+   "error": null
+  },
+  {
+   "label": "history_es/4",
+   "input_tokens": 1791,
+   "output_tokens": 43,
+   "ms": 845,
+   "usd": 0.0022066,
+   "error": null
+  },
+  {
+   "label": "invitation_es/0",
+   "input_tokens": 1749,
+   "output_tokens": 43,
+   "ms": 825,
+   "usd": 0.0021604,
+   "error": null
+  },
+  {
+   "label": "invitation_es/1",
+   "input_tokens": 1749,
+   "output_tokens": 43,
+   "ms": 882,
+   "usd": 0.0021604,
+   "error": null
+  },
+  {
+   "label": "invitation_es/2",
+   "input_tokens": 1749,
+   "output_tokens": 43,
+   "ms": 887,
+   "usd": 0.0021604,
+   "error": null
+  },
+  {
+   "label": "invitation_es/3",
+   "input_tokens": 1749,
+   "output_tokens": 43,
+   "ms": 890,
+   "usd": 0.0021604,
+   "error": null
+  },
+  {
+   "label": "invitation_es/4",
+   "input_tokens": 1749,
+   "output_tokens": 43,
+   "ms": 861,
+   "usd": 0.0021604,
+   "error": null
+  },
+  {
+   "label": "medicine_box_en/0",
+   "input_tokens": 1770,
+   "output_tokens": 43,
+   "ms": 1702,
+   "usd": 0.0021835,
+   "error": null
+  },
+  {
+   "label": "medicine_box_en/1",
+   "input_tokens": 1770,
+   "output_tokens": 43,
+   "ms": 955,
+   "usd": 0.0021835,
+   "error": null
+  },
+  {
+   "label": "medicine_box_en/2",
+   "input_tokens": 1770,
+   "output_tokens": 43,
+   "ms": 951,
+   "usd": 0.0021835,
+   "error": null
+  },
+  {
+   "label": "medicine_box_en/3",
+   "input_tokens": 1770,
+   "output_tokens": 43,
+   "ms": 955,
+   "usd": 0.0021835,
+   "error": null
+  },
+  {
+   "label": "medicine_box_en/4",
+   "input_tokens": 1770,
+   "output_tokens": 43,
+   "ms": 895,
+   "usd": 0.0021835,
+   "error": null
+  },
+  {
+   "label": "menu_en/0",
+   "input_tokens": 1740,
+   "output_tokens": 43,
+   "ms": 894,
+   "usd": 0.0021505,
+   "error": null
+  },
+  {
+   "label": "menu_en/1",
+   "input_tokens": 1740,
+   "output_tokens": 43,
+   "ms": 968,
+   "usd": 0.0021505,
+   "error": null
+  },
+  {
+   "label": "menu_en/2",
+   "input_tokens": 1740,
+   "output_tokens": 43,
+   "ms": 888,
+   "usd": 0.0021505,
+   "error": null
+  },
+  {
+   "label": "menu_en/3",
+   "input_tokens": 1740,
+   "output_tokens": 43,
+   "ms": 894,
+   "usd": 0.0021505,
+   "error": null
+  },
+  {
+   "label": "menu_en/4",
+   "input_tokens": 1740,
+   "output_tokens": 43,
+   "ms": 917,
+   "usd": 0.0021505,
+   "error": null
+  },
+  {
+   "label": "ninth_grade_es/0",
+   "input_tokens": 1796,
+   "output_tokens": 43,
+   "ms": 946,
+   "usd": 0.0022121,
+   "error": null
+  },
+  {
+   "label": "ninth_grade_es/1",
+   "input_tokens": 1796,
+   "output_tokens": 43,
+   "ms": 912,
+   "usd": 0.0022121,
+   "error": null
+  },
+  {
+   "label": "ninth_grade_es/2",
+   "input_tokens": 1796,
+   "output_tokens": 43,
+   "ms": 748,
+   "usd": 0.0022121,
+   "error": null
+  },
+  {
+   "label": "ninth_grade_es/3",
+   "input_tokens": 1796,
+   "output_tokens": 43,
+   "ms": 841,
+   "usd": 0.0022121,
+   "error": null
+  },
+  {
+   "label": "ninth_grade_es/4",
+   "input_tokens": 1796,
+   "output_tokens": 43,
+   "ms": 904,
+   "usd": 0.0022121,
+   "error": null
+  },
+  {
+   "label": "notice_zh/0",
+   "input_tokens": 1779,
+   "output_tokens": 43,
+   "ms": 860,
+   "usd": 0.0021934,
+   "error": null
+  },
+  {
+   "label": "notice_zh/1",
+   "input_tokens": 1779,
+   "output_tokens": 43,
+   "ms": 891,
+   "usd": 0.0021934,
+   "error": null
+  },
+  {
+   "label": "notice_zh/2",
+   "input_tokens": 1779,
+   "output_tokens": 43,
+   "ms": 830,
+   "usd": 0.0021934,
+   "error": null
+  },
+  {
+   "label": "notice_zh/3",
+   "input_tokens": 1779,
+   "output_tokens": 43,
+   "ms": 936,
+   "usd": 0.0021934,
+   "error": null
+  },
+  {
+   "label": "notice_zh/4",
+   "input_tokens": 1779,
+   "output_tokens": 43,
+   "ms": 929,
+   "usd": 0.0021934,
+   "error": null
+  },
+  {
+   "label": "ocr_noise/0",
+   "input_tokens": 1736,
+   "output_tokens": 43,
+   "ms": 868,
+   "usd": 0.0021461,
+   "error": null
+  },
+  {
+   "label": "ocr_noise/1",
+   "input_tokens": 1736,
+   "output_tokens": 43,
+   "ms": 878,
+   "usd": 0.0021461,
+   "error": null
+  },
+  {
+   "label": "ocr_noise/2",
+   "input_tokens": 1736,
+   "output_tokens": 43,
+   "ms": 802,
+   "usd": 0.0021461,
+   "error": null
+  },
+  {
+   "label": "ocr_noise/3",
+   "input_tokens": 1736,
+   "output_tokens": 43,
+   "ms": 942,
+   "usd": 0.0021461,
+   "error": null
+  },
+  {
+   "label": "ocr_noise/4",
+   "input_tokens": 1736,
+   "output_tokens": 43,
+   "ms": 916,
+   "usd": 0.0021461,
+   "error": null
+  },
+  {
+   "label": "printed_page_es/0",
+   "input_tokens": 1889,
+   "output_tokens": 69,
+   "ms": 1028,
+   "usd": 0.0024574,
+   "error": null
+  },
+  {
+   "label": "printed_page_es/1",
+   "input_tokens": 1889,
+   "output_tokens": 69,
+   "ms": 1029,
+   "usd": 0.0024574,
+   "error": null
+  },
+  {
+   "label": "printed_page_es/2",
+   "input_tokens": 1889,
+   "output_tokens": 69,
+   "ms": 1065,
+   "usd": 0.0024574,
+   "error": null
+  },
+  {
+   "label": "printed_page_es/3",
+   "input_tokens": 1889,
+   "output_tokens": 69,
+   "ms": 964,
+   "usd": 0.0024574,
+   "error": null
+  },
+  {
+   "label": "printed_page_es/4",
+   "input_tokens": 1889,
+   "output_tokens": 69,
+   "ms": 1039,
+   "usd": 0.0024574,
+   "error": null
+  },
+  {
+   "label": "reading_ru/0",
+   "input_tokens": 1777,
+   "output_tokens": 43,
+   "ms": 950,
+   "usd": 0.0021912,
+   "error": null
+  },
+  {
+   "label": "reading_ru/1",
+   "input_tokens": 1777,
+   "output_tokens": 43,
+   "ms": 900,
+   "usd": 0.0021912,
+   "error": null
+  },
+  {
+   "label": "reading_ru/2",
+   "input_tokens": 1777,
+   "output_tokens": 43,
+   "ms": 882,
+   "usd": 0.0021912,
+   "error": null
+  },
+  {
+   "label": "reading_ru/3",
+   "input_tokens": 1777,
+   "output_tokens": 43,
+   "ms": 911,
+   "usd": 0.0021912,
+   "error": null
+  },
+  {
+   "label": "reading_ru/4",
+   "input_tokens": 1777,
+   "output_tokens": 43,
+   "ms": 907,
+   "usd": 0.0021912,
+   "error": null
+  },
+  {
+   "label": "receipt_es/0",
+   "input_tokens": 1806,
+   "output_tokens": 43,
+   "ms": 890,
+   "usd": 0.0022231,
+   "error": null
+  },
+  {
+   "label": "receipt_es/1",
+   "input_tokens": 1806,
+   "output_tokens": 43,
+   "ms": 855,
+   "usd": 0.0022231,
+   "error": null
+  },
+  {
+   "label": "receipt_es/2",
+   "input_tokens": 1806,
+   "output_tokens": 43,
+   "ms": 872,
+   "usd": 0.0022231,
+   "error": null
+  },
+  {
+   "label": "receipt_es/3",
+   "input_tokens": 1806,
+   "output_tokens": 43,
+   "ms": 798,
+   "usd": 0.0022231,
+   "error": null
+  },
+  {
+   "label": "receipt_es/4",
+   "input_tokens": 1806,
+   "output_tokens": 43,
+   "ms": 997,
+   "usd": 0.0022231,
+   "error": null
+  },
+  {
+   "label": "science_ar/0",
+   "input_tokens": 1808,
+   "output_tokens": 43,
+   "ms": 1006,
+   "usd": 0.0022253,
+   "error": null
+  },
+  {
+   "label": "science_ar/1",
+   "input_tokens": 1808,
+   "output_tokens": 43,
+   "ms": 876,
+   "usd": 0.0022253,
+   "error": null
+  },
+  {
+   "label": "science_ar/2",
+   "input_tokens": 1808,
+   "output_tokens": 43,
+   "ms": 882,
+   "usd": 0.0022253,
+   "error": null
+  },
+  {
+   "label": "science_ar/3",
+   "input_tokens": 1808,
+   "output_tokens": 43,
+   "ms": 898,
+   "usd": 0.0022253,
+   "error": null
+  },
+  {
+   "label": "science_ar/4",
+   "input_tokens": 1808,
+   "output_tokens": 43,
+   "ms": 899,
+   "usd": 0.0022253,
+   "error": null
+  },
+  {
+   "label": "uncovered_topic_es/0",
+   "input_tokens": 1801,
+   "output_tokens": 43,
+   "ms": 889,
+   "usd": 0.0022176,
+   "error": null
+  },
+  {
+   "label": "uncovered_topic_es/1",
+   "input_tokens": 1801,
+   "output_tokens": 43,
+   "ms": 849,
+   "usd": 0.0022176,
+   "error": null
+  },
+  {
+   "label": "uncovered_topic_es/2",
+   "input_tokens": 1801,
+   "output_tokens": 43,
+   "ms": 842,
+   "usd": 0.0022176,
+   "error": null
+  },
+  {
+   "label": "uncovered_topic_es/3",
+   "input_tokens": 1801,
+   "output_tokens": 43,
+   "ms": 2009,
+   "usd": 0.0022176,
+   "error": null
+  },
+  {
+   "label": "uncovered_topic_es/4",
+   "input_tokens": 1801,
+   "output_tokens": 43,
+   "ms": 946,
+   "usd": 0.0022176,
+   "error": null
+  },
+  {
+   "label": "worksheet_ar/0",
+   "input_tokens": 1850,
+   "output_tokens": 81,
+   "ms": 1033,
+   "usd": 0.0024805,
+   "error": null
+  },
+  {
+   "label": "worksheet_ar/1",
+   "input_tokens": 1850,
+   "output_tokens": 81,
+   "ms": 1063,
+   "usd": 0.0024805,
+   "error": null
+  },
+  {
+   "label": "worksheet_ar/2",
+   "input_tokens": 1850,
+   "output_tokens": 81,
+   "ms": 1044,
+   "usd": 0.0024805,
+   "error": null
+  },
+  {
+   "label": "worksheet_ar/3",
+   "input_tokens": 1850,
+   "output_tokens": 81,
+   "ms": 1210,
+   "usd": 0.0024805,
+   "error": null
+  },
+  {
+   "label": "worksheet_ar/4",
+   "input_tokens": 1850,
+   "output_tokens": 81,
+   "ms": 1038,
+   "usd": 0.0024805,
+   "error": null
+  },
+  {
+   "label": "worksheet_en/0",
+   "input_tokens": 1775,
+   "output_tokens": 81,
+   "ms": 1178,
+   "usd": 0.002398,
+   "error": null
+  },
+  {
+   "label": "worksheet_en/1",
+   "input_tokens": 1775,
+   "output_tokens": 81,
+   "ms": 1165,
+   "usd": 0.002398,
+   "error": null
+  },
+  {
+   "label": "worksheet_en/2",
+   "input_tokens": 1775,
+   "output_tokens": 81,
+   "ms": 1144,
+   "usd": 0.002398,
+   "error": null
+  },
+  {
+   "label": "worksheet_en/3",
+   "input_tokens": 1775,
+   "output_tokens": 81,
+   "ms": 1193,
+   "usd": 0.002398,
+   "error": null
+  },
+  {
+   "label": "worksheet_en/4",
+   "input_tokens": 1775,
+   "output_tokens": 81,
+   "ms": 1190,
+   "usd": 0.002398,
+   "error": null
+  },
+  {
+   "label": "worksheet_fr/0",
+   "input_tokens": 1796,
+   "output_tokens": 81,
+   "ms": 1113,
+   "usd": 0.0024211,
+   "error": null
+  },
+  {
+   "label": "worksheet_fr/1",
+   "input_tokens": 1796,
+   "output_tokens": 81,
+   "ms": 1055,
+   "usd": 0.0024211,
+   "error": null
+  },
+  {
+   "label": "worksheet_fr/2",
+   "input_tokens": 1796,
+   "output_tokens": 81,
+   "ms": 1075,
+   "usd": 0.0024211,
+   "error": null
+  },
+  {
+   "label": "worksheet_fr/3",
+   "input_tokens": 1796,
+   "output_tokens": 81,
+   "ms": 1173,
+   "usd": 0.0024211,
+   "error": null
+  },
+  {
+   "label": "worksheet_fr/4",
+   "input_tokens": 1796,
+   "output_tokens": 81,
+   "ms": 1076,
+   "usd": 0.0024211,
+   "error": null
+  },
+  {
+   "label": "worksheet_pt/0",
+   "input_tokens": 1792,
+   "output_tokens": 81,
+   "ms": 1098,
+   "usd": 0.0024167,
+   "error": null
+  },
+  {
+   "label": "worksheet_pt/1",
+   "input_tokens": 1792,
+   "output_tokens": 81,
+   "ms": 1145,
+   "usd": 0.0024167,
+   "error": null
+  },
+  {
+   "label": "worksheet_pt/2",
+   "input_tokens": 1792,
+   "output_tokens": 81,
+   "ms": 1112,
+   "usd": 0.0024167,
+   "error": null
+  },
+  {
+   "label": "worksheet_pt/3",
+   "input_tokens": 1792,
+   "output_tokens": 81,
+   "ms": 1150,
+   "usd": 0.0024167,
+   "error": null
+  },
+  {
+   "label": "worksheet_pt/4",
+   "input_tokens": 1792,
+   "output_tokens": 81,
+   "ms": 1200,
+   "usd": 0.0024167,
+   "error": null
+  },
+  {
+   "label": "worksheet_ru/0",
+   "input_tokens": 1818,
+   "output_tokens": 81,
+   "ms": 1622,
+   "usd": 0.0024453,
+   "error": null
+  },
+  {
+   "label": "worksheet_ru/1",
+   "input_tokens": 1818,
+   "output_tokens": 81,
+   "ms": 1153,
+   "usd": 0.0024453,
+   "error": null
+  },
+  {
+   "label": "worksheet_ru/2",
+   "input_tokens": 1818,
+   "output_tokens": 81,
+   "ms": 1084,
+   "usd": 0.0024453,
+   "error": null
+  },
+  {
+   "label": "worksheet_ru/3",
+   "input_tokens": 1818,
+   "output_tokens": 81,
+   "ms": 2196,
+   "usd": 0.0024453,
+   "error": null
+  },
+  {
+   "label": "worksheet_ru/4",
+   "input_tokens": 1818,
+   "output_tokens": 81,
+   "ms": 1071,
+   "usd": 0.0024453,
+   "error": null
+  },
+  {
+   "label": "worksheet_zh/0",
+   "input_tokens": 1798,
+   "output_tokens": 81,
+   "ms": 969,
+   "usd": 0.0024233,
+   "error": null
+  },
+  {
+   "label": "worksheet_zh/1",
+   "input_tokens": 1798,
+   "output_tokens": 81,
+   "ms": 1061,
+   "usd": 0.0024233,
+   "error": null
+  },
+  {
+   "label": "worksheet_zh/2",
+   "input_tokens": 1798,
+   "output_tokens": 81,
+   "ms": 1021,
+   "usd": 0.0024233,
+   "error": null
+  },
+  {
+   "label": "worksheet_zh/3",
+   "input_tokens": 1798,
+   "output_tokens": 81,
+   "ms": 1037,
+   "usd": 0.0024233,
+   "error": null
+  },
+  {
+   "label": "worksheet_zh/4",
+   "input_tokens": 1798,
+   "output_tokens": 81,
+   "ms": 1061,
+   "usd": 0.0024233,
+   "error": null
+  }
+ ]
+}
