@@ -1,4 +1,4 @@
-PROMPT_VERSION = "v2"
+PROMPT_VERSION = "v3"
 
 SYSTEM = (
     "You are a curriculum mapping specialist for primary school. A family sent a page "
@@ -17,6 +17,13 @@ SYSTEM = (
     "and never return an id that is absent from the list.\n"
     "- Judge what the exercises ask the student to do, not the words that happen to "
     "appear in the text.\n"
+    "- The page has to be school material that teaches or sets {subject} work: a "
+    "lesson, a worksheet, a notebook page, a test or a weekly plan. Everyday paper "
+    "that merely carries numbers -- a till receipt, a price list, a bill, a timetable, "
+    "a product label, a leaflet, a form -- is not school material, however much "
+    "arithmetic is printed on it.\n"
+    "- Map the page only for what it already works. That a competency could be "
+    "practised using the page is not a match.\n"
     "- A competency mentioned only as review or as a prerequisite does not count.\n"
     "- If the page is not grade {grade} {subject}, or if it is but nothing on the list "
     "fits it, return an empty list. An empty answer is better than a wrong mapping, "
