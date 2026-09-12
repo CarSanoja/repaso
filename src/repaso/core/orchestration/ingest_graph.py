@@ -11,7 +11,7 @@ from repaso.agents.material_parser import parse_material
 from repaso.config.models import ModelRole
 from repaso.core.harness.legibility import DEFAULT_MIN_CONFIDENCE
 from repaso.core.orchestration.context import IngestRun, Services
-from repaso.core.orchestration.ingest_outcomes import quarantine, say, unavailable
+from repaso.core.orchestration.ingest_holds import hold_screened, hold_unscreened, say
 from repaso.core.orchestration.nodes import StepNode
 from repaso.i18n.competencies import competency_label
 from repaso.schemas.competency import MappingOutcome, MaterialMapping
@@ -83,9 +83,9 @@ def build_ingest_graph(services: Services, run: IngestRun):
             services.store.put_material(run.material)
             return
         if SCREENER_ERROR_REASON in verdict.reasons:
-            unavailable(run, "screener_unavailable", "material_screen_unavailable")
+            hold_unscreened(run, services)
             return
-        quarantine(services, run, verdict.reasons)
+        hold_screened(run, services, verdict)
 
     async def map_() -> None:
         if "mapping" in memo:
@@ -126,7 +126,10 @@ def build_ingest_graph(services: Services, run: IngestRun):
                 settings.item_regen_max_rounds,
                 lang=run.family.lang,
             )
-            answered = generation.answered
+            if not generation.answered:
+                run.terminal = "generation_unavailable"
+                say(run, "material_interrupted")
+                return
             items = [
                 item.model_copy(
                     update={
@@ -145,13 +148,9 @@ def build_ingest_graph(services: Services, run: IngestRun):
         for item in run.generated:
             if services.store.get_item(item.id) is None:
                 services.store.put_item(item)
-        if run.generated:
-            return
-        if not answered:
-            unavailable(run, "generator_unavailable", "material_generation_unavailable")
-            return
-        run.terminal = "thin_material"
-        say(run, "material_thin")
+        if not run.generated:
+            run.terminal = "thin_material"
+            say(run, "material_thin")
 
     async def validate() -> None:
         judge = services.model(ModelRole.JUDGE)

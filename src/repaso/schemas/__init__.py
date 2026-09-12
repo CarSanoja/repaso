@@ -38,7 +38,15 @@ from repaso.schemas.escalation import (
 from repaso.schemas.events import DomainEvent, EventKind
 from repaso.schemas.family import Family, FamilyStatus
 from repaso.schemas.grading import EvidenceSpan, GradedBy, GradeResult, StudentResponse
-from repaso.schemas.item import Item, ItemFlaw, ItemKind, ItemStatus, ItemVerdict
+from repaso.schemas.item import (
+    GeneratedItems,
+    GenerationOutcome,
+    Item,
+    ItemFlaw,
+    ItemKind,
+    ItemStatus,
+    ItemVerdict,
+)
 from repaso.schemas.mastery import MasteryLevel, MasteryState
 from repaso.schemas.material import Material, MaterialStatus
 from repaso.schemas.provenance import Provenance, Source
@@ -71,10 +79,13 @@ __all__ = [
     "EscalationStatus",
     "EventKind",
     "EvidenceSpan",
+    "ExamDate",
     "Family",
     "FamilyId",
     "FamilyStatus",
     "FrozenStrictModel",
+    "GeneratedItems",
+    "GenerationOutcome",
     "GradeResult",
     "GradedBy",
     "InboundMedia",
@@ -91,8 +102,8 @@ __all__ = [
     "MasteryLevel",
     "MasteryState",
     "Material",
-    "MaterialMapping",
     "MaterialId",
+    "MaterialMapping",
     "MaterialStatus",
     "MediaKind",
     "OutboundMessage",
@@ -105,7 +116,6 @@ __all__ = [
     "SessionStatus",
     "Source",
     "SpacedItemState",
-    "ExamDate",
     "StrictBaseModel",
     "Student",
     "StudentId",

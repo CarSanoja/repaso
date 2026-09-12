@@ -59,25 +59,16 @@ MESSAGES = {
     ),
     "material_received": "Received ✅ Preparing the material.",
     "material_ready": "Material ready: I prepared {item_count} exercises on {competencies}.",
-    "material_rejected": (
-        "That material doesn't look like {subject}. If I got it wrong, resend it with "
-        "a short note about the topic."
-    ),
-    "material_screen_unavailable": (
-        "I couldn't review that page right now: something on my side failed, not your "
-        "photo. No need to take another: send the same one again in a few minutes and "
-        "I'll try again."
-    ),
-    "material_generation_unavailable": (
-        "I read the page fine, but I couldn't write the exercises right now: something on "
-        "my side failed, not your photo. No need to take another: send the same one again "
-        "in a few minutes and I'll try again."
-    ),
     "material_unmatched": (
         "I couldn't place this page in the grade {grade} math syllabus I work from. It "
         "may be from another subject, another grade, or a topic I don't carry yet. If "
         "it is grade {grade} math and I got it wrong, resend it with a short note about "
         "the topic."
+    ),
+    "material_held": (
+        "I set this page aside instead of practising from it: the text carries "
+        "instructions aimed at me and I will not follow them. If it is a school "
+        "worksheet, send me another photo of the same page."
     ),
     "material_interrupted": (
         "I stopped part way through this page: a step on my side did not finish. It is "

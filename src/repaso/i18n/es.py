@@ -60,24 +60,16 @@ MESSAGES = {
     ),
     "material_received": "Recibido ✅ Estoy preparando el material.",
     "material_ready": "Material listo: preparé {item_count} ejercicios sobre {competencies}.",
-    "material_rejected": (
-        "Ese material no parece de {subject}. Si crees que me equivoqué, reenvíalo con "
-        "una nota corta del tema."
-    ),
-    "material_screen_unavailable": (
-        "No pude revisar esa página ahora mismo: falló algo de mi lado, no tu foto. No "
-        "hace falta tomar otra: reenvía la misma en unos minutos y lo intento de nuevo."
-    ),
-    "material_generation_unavailable": (
-        "Leí bien la página, pero no pude escribir los ejercicios ahora mismo: falló algo "
-        "de mi lado, no tu foto. No hace falta tomar otra: reenvía la misma en unos "
-        "minutos y lo intento de nuevo."
-    ),
     "material_unmatched": (
         "No conseguí ubicar esta página en el temario de matemática de {grade}.º grado "
         "con el que trabajo. Puede ser de otra materia, de otro grado, o de un tema que "
         "todavía no tengo cargado. Si es matemática de {grade}.º y me equivoqué, "
         "reenvíala con una nota corta del tema."
+    ),
+    "material_held": (
+        "Aparté esta página en lugar de practicar con ella: el texto trae instrucciones "
+        "dirigidas a mí y no las voy a seguir. Si es una hoja del colegio, mándame otra "
+        "foto de la misma página."
     ),
     "material_interrupted": (
         "Me quedé a medias con esta página: un paso de mi proceso no llegó a terminar. "

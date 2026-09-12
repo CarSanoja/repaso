@@ -9,7 +9,13 @@ from repaso.agents.base import StructuredCallFailed, structured
 from repaso.agents.prompts.item_generator import PROMPT_VERSION, SYSTEM
 from repaso.schemas.common import CompetencyId, ItemId, Lang
 from repaso.schemas.competency import Competency
-from repaso.schemas.item import Item, ItemKind, ItemStatus
+from repaso.schemas.item import (
+    GeneratedItems,
+    GenerationOutcome,
+    Item,
+    ItemKind,
+    ItemStatus,
+)
 from repaso.schemas.nullable import NULL_IS_EMPTY
 from repaso.schemas.provenance import Provenance, Source
 
@@ -157,12 +163,14 @@ async def generate_items(
     model_id: str = "",
     prompt_version: str = PROMPT_VERSION,
     lang: Lang = Lang.ES,
-) -> list[Item]:
+) -> GeneratedItems:
     try:
         batch = await _ask(parsed_text, competency, count, grade, model, lang, prompt_version)
     except StructuredCallFailed:
-        return []
-    return _kept(batch, competency, count, now, model_id, prompt_version)
+        return GeneratedItems(outcome=GenerationOutcome.UNAVAILABLE)
+    kept = _kept(batch, competency, count, now, model_id, prompt_version)
+    outcome = GenerationOutcome.DRAFTED if kept else GenerationOutcome.EMPTY
+    return GeneratedItems(outcome=outcome, items=kept)
 
 
 async def items_for_material(
@@ -179,12 +187,12 @@ async def items_for_material(
         raise ValueError("retries cannot be negative")
     answered = False
     for _ in range(retries + 1):
-        try:
-            batch = await _ask(parsed_text, competency, count, grade, model, lang)
-        except StructuredCallFailed:
+        drafted = await generate_items(
+            parsed_text, competency, count, grade, model, now, lang=lang
+        )
+        if drafted.outcome is GenerationOutcome.UNAVAILABLE:
             continue
         answered = True
-        items = _kept(batch, competency, count, now)
-        if items:
-            return Generation(items=items, answered=True)
+        if drafted.items:
+            return Generation(items=drafted.items, answered=True)
     return Generation(items=[], answered=answered)

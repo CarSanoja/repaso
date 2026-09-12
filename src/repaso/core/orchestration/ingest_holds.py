@@ -1,33 +1,42 @@
-"""What a family is told when an ingest step ends the run, and what it leaves behind."""
-
 from repaso.core.orchestration.context import IngestRun, Services
 from repaso.i18n.catalog import msg
 from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.grading import EvidenceSpan
 from repaso.schemas.material import MaterialStatus
 from repaso.schemas.review import QuarantineItem, QuarantineKind
+from repaso.tools.guardrails import ScreenVerdict
 
 QUOTE_LENGTH = 200
+SCREEN_UNAVAILABLE = "screen_unavailable"
+QUARANTINED = "quarantined"
+SCREENED_UNSAFE = "screened_unsafe"
 
 
 def say(run: IngestRun, key: str, **kwargs) -> None:
-    text = msg(key, run.family.lang, **kwargs)
     run.outbound.append(
-        OutboundMessage(channel=run.family.channel, chat_ref=run.family.chat_ref, text=text)
+        OutboundMessage(
+            channel=run.family.channel,
+            chat_ref=run.family.chat_ref,
+            text=msg(key, run.family.lang, **kwargs),
+        )
     )
 
 
-def unavailable(run: IngestRun, terminal: str, key: str) -> None:
+def _stop(run: IngestRun, services: Services, terminal: str, reason: str) -> None:
     run.terminal = terminal
-    say(run, key)
-
-
-def quarantine(services: Services, run: IngestRun, reasons: list[str]) -> None:
-    run.terminal = "quarantined"
     run.material = run.material.model_copy(
-        update={"status": MaterialStatus.QUARANTINED, "rejection_reason": "screened_unsafe"}
+        update={"status": MaterialStatus.QUARANTINED, "rejection_reason": reason}
     )
     services.store.put_material(run.material)
+
+
+def hold_unscreened(run: IngestRun, services: Services) -> None:
+    _stop(run, services, SCREEN_UNAVAILABLE, SCREEN_UNAVAILABLE)
+    say(run, "material_interrupted")
+
+
+def hold_screened(run: IngestRun, services: Services, verdict: ScreenVerdict) -> None:
+    _stop(run, services, QUARANTINED, SCREENED_UNSAFE)
     services.store.put_quarantine(
         QuarantineItem(
             id=f"quar-{run.material.id}",
@@ -37,8 +46,8 @@ def quarantine(services: Services, run: IngestRun, reasons: list[str]) -> None:
                 quote=(run.material.parsed_text or "")[:QUOTE_LENGTH],
                 source_ref=f"material:{run.material.id}",
             ),
-            payload={"reasons": reasons},
+            payload={"reasons": verdict.reasons},
             created_at=services.clock.now(),
         )
     )
-    say(run, "material_rejected", subject="matemática")
+    say(run, "material_held")

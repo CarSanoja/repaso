@@ -50,3 +50,14 @@ class ItemVerdict(StrictBaseModel):
     flaws: list[ItemFlaw] = []
     probe_answered_blind: bool | None = None
     notes: str = ""
+
+
+class GenerationOutcome(StrEnum):
+    DRAFTED = "drafted"
+    EMPTY = "empty"
+    UNAVAILABLE = "unavailable"
+
+
+class GeneratedItems(StrictBaseModel):
+    outcome: GenerationOutcome
+    items: list[Item] = []

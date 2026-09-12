@@ -9,7 +9,7 @@ from repaso.agents.item_critic import CRITIC_ERROR_NOTE, critique
 from repaso.agents.item_generator import generate_items
 from repaso.schemas.common import CompetencyId, ItemId
 from repaso.schemas.competency import Competency, MappingOutcome
-from repaso.schemas.item import Item, ItemFlaw, ItemKind
+from repaso.schemas.item import GenerationOutcome, Item, ItemFlaw, ItemKind
 from repaso.schemas.provenance import Provenance, Source
 from repaso.tools.guardrails import SCREENER_ERROR_REASON, LocalScreener
 from repaso.tools.knowledge import LocalTaxonomyRetriever
@@ -61,9 +61,10 @@ async def test_the_mapper_guesses_nothing_when_the_call_does_not_finish(kind):
 @pytest.mark.parametrize("kind", STRESSES)
 async def test_the_generator_returns_no_items_rather_than_broken_ones(kind):
     model = stressed(kind, {"items": "cuatro preguntas"})
-    items = await generate_items(MATERIAL, COMPETENCY, 4, 4, model, NOW)
+    drafted = await generate_items(MATERIAL, COMPETENCY, 4, 4, model, NOW)
     assert model.calls == 1
-    assert items == []
+    assert drafted.outcome is GenerationOutcome.UNAVAILABLE
+    assert drafted.items == []
 
 
 @pytest.mark.parametrize("kind", STRESSES)
