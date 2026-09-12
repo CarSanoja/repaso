@@ -1,4 +1,4 @@
-import logging
+import json
 import threading
 from pathlib import Path
 from typing import Protocol, runtime_checkable
@@ -6,6 +6,7 @@ from typing import Protocol, runtime_checkable
 from repaso.config.settings import Settings
 from repaso.core.harness.clock import Clock, SystemClock
 from repaso.core.telemetry.context import invocation_context
+from repaso.core.telemetry.logstream import telemetry_logger
 from repaso.schemas.telemetry import TraceEvent
 
 
@@ -80,7 +81,7 @@ class LocalTelemetrySink:
 
 class CloudWatchTelemetrySink:
     def __init__(self, namespace: str, local_mirror: LocalTelemetrySink) -> None:
-        logging.getLogger("repaso.telemetry").setLevel(logging.INFO)
+        self._logger = telemetry_logger()
         self._namespace = namespace
         self._mirror = local_mirror
 
@@ -95,9 +96,7 @@ class CloudWatchTelemetrySink:
             k: v for k, v in event.extra.items() if k not in ("chat_ref", "student_id", "family_id")
         }
         self._mirror.emit(TraceEvent.model_validate(logged))
-        import json
-
-        logging.getLogger("repaso.telemetry").info(json.dumps(logged))
+        self._logger.info(json.dumps(logged))
         import boto3
 
         client = boto3.client("cloudwatch")
@@ -127,7 +126,7 @@ class CloudWatchTelemetrySink:
                 MetricData=metrics,
             )
         except Exception:
-            logging.getLogger("repaso.telemetry").warning("metric publication failed")
+            self._logger.warning("metric publication failed")
 
     def trace(self, kind: str, name: str, **kwargs) -> None:
         context = invocation_context.get() or {}
