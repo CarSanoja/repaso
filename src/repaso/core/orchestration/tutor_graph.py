@@ -11,13 +11,12 @@ from repaso.agents.session_planner import (
     plan_items,
 )
 from repaso.config.models import ModelRole
+from repaso.core.bank.sources import bank_items
 from repaso.core.orchestration.adaptations import open_variants, select_adapted
 from repaso.core.orchestration.context import Services, TutorRun
 from repaso.core.orchestration.nodes import StepNode
 from repaso.schemas.channel import OutboundMessage
-from repaso.schemas.item import ItemStatus
 from repaso.schemas.mastery import MasteryState
-from repaso.schemas.provenance import Source
 from repaso.schemas.schedule import ExamDate
 from repaso.schemas.session import SessionStatus
 
@@ -26,23 +25,7 @@ EXAM_ITEM_CAP = 4
 
 
 def active_items(services: Services, run: TutorRun) -> list:
-    competencies = {c.id for c in services.retriever.list_competencies(run.student.grade, "math")}
-    items = {
-        i.id: i
-        for i in services.store.list_family_items(run.family.id)
-        if i.competency_id in competencies
-        and i.status is ItemStatus.ACTIVE
-        and i.variant_of is None
-    }
-    for competency_id in competencies:
-        for item in services.store.list_items_by_competency(competency_id, ItemStatus.ACTIVE):
-            shared = item.family_id is None and (
-                services.settings.local_mode
-                or item.provenance.source in {Source.SYSTEM, Source.SIMULATED}
-            )
-            if shared and item.variant_of is None:
-                items[item.id] = item
-    return list(items.values())
+    return bank_items(services, run.family, run.student.grade)
 
 
 def exam_is_near(exams: list[ExamDate], today: date) -> bool:
