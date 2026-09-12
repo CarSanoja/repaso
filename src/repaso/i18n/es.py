@@ -73,6 +73,17 @@ MESSAGES = {
         "de mi lado, no tu foto. No hace falta tomar otra: reenvía la misma en unos "
         "minutos y lo intento de nuevo."
     ),
+    "material_unmatched": (
+        "No conseguí ubicar esta página en el temario de matemática de {grade}.º grado "
+        "con el que trabajo. Puede ser de otra materia, de otro grado, o de un tema que "
+        "todavía no tengo cargado. Si es matemática de {grade}.º y me equivoqué, "
+        "reenvíala con una nota corta del tema."
+    ),
+    "material_interrupted": (
+        "Me quedé a medias con esta página: un paso de mi proceso no llegó a terminar. "
+        "No es por la foto y no perdí nada de lo que enviaste. Vuelve a mandarla en un "
+        "rato y sigo desde ahí."
+    ),
     "material_thin": (
         "Con esto solo conozco el tema, pero no cómo lo trabajan en clase. ¿Me mandas "
         "una foto de un ejercicio resuelto del cuaderno?"

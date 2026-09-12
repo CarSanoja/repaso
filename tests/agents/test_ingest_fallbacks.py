@@ -8,7 +8,7 @@ from repaso.agents.intake_screener import screen_text
 from repaso.agents.item_critic import CRITIC_ERROR_NOTE, critique
 from repaso.agents.item_generator import generate_items
 from repaso.schemas.common import CompetencyId, ItemId
-from repaso.schemas.competency import Competency
+from repaso.schemas.competency import Competency, MappingOutcome
 from repaso.schemas.item import Item, ItemFlaw, ItemKind
 from repaso.schemas.provenance import Provenance, Source
 from repaso.tools.guardrails import SCREENER_ERROR_REASON, LocalScreener
@@ -50,12 +50,12 @@ async def test_the_screener_refuses_material_it_could_not_screen(kind):
 
 
 @pytest.mark.parametrize("kind", STRESSES)
-async def test_the_mapper_falls_back_to_retrieval_ranking(kind):
+async def test_the_mapper_guesses_nothing_when_the_call_does_not_finish(kind):
     model = stressed(kind, {"competency_ids": "math.g4.fractions.equivalence"})
-    matches = await map_material(MATERIAL, 4, "math", LocalTaxonomyRetriever(), model)
+    mapping = await map_material(MATERIAL, 4, "math", LocalTaxonomyRetriever(), model)
     assert model.calls == 1
-    assert matches
-    assert all(match.confidence > 0.0 for match in matches)
+    assert mapping.outcome is MappingOutcome.UNDETERMINED
+    assert mapping.competency_ids == []
 
 
 @pytest.mark.parametrize("kind", STRESSES)

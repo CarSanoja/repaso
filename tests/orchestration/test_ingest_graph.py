@@ -94,12 +94,15 @@ async def test_wrong_subject_material_is_rejected_without_generation(settings):
     services = make_services(settings)
     run = make_run(services, b"Essay about the causes of the French Revolution in Europe")
     services.models[ModelRole.CLASSIFY].enqueue({"safe": True, "reasons": []})
+    services.models[ModelRole.STRUCTURED].enqueue({"competency_ids": []})
 
     await build_ingest_graph(services, run).invoke_async("ingest")
 
     assert run.terminal == "no_match"
     assert services.models[ModelRole.GENERATE].calls == []
-    assert run.outbound
+    assert run.outbound[-1].text == msg(
+        "material_unmatched", run.family.lang, grade=run.student.grade
+    )
 
 
 async def test_material_whose_questions_all_fail_review_says_so(settings):

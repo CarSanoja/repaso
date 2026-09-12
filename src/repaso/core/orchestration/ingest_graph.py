@@ -14,7 +14,7 @@ from repaso.core.orchestration.context import IngestRun, Services
 from repaso.core.orchestration.ingest_outcomes import quarantine, say, unavailable
 from repaso.core.orchestration.nodes import StepNode
 from repaso.i18n.competencies import competency_label
-from repaso.schemas.competency import CompetencyMatch
+from repaso.schemas.competency import MappingOutcome, MaterialMapping
 from repaso.schemas.item import Item, ItemStatus, ItemVerdict
 from repaso.schemas.material import Material, MaterialStatus
 from repaso.schemas.operation import OperationRecord
@@ -22,6 +22,7 @@ from repaso.tools.guardrails import SCREENER_ERROR_REASON, ScreenVerdict
 
 ITEMS_PER_MATERIAL = 6
 STAGE_OWNER = "ingest-graph"
+SUBJECT = "math"
 
 
 def build_ingest_graph(services: Services, run: IngestRun):
@@ -87,22 +88,28 @@ def build_ingest_graph(services: Services, run: IngestRun):
         quarantine(services, run, verdict.reasons)
 
     async def map_() -> None:
-        if "matches" in memo:
-            run.matches = [CompetencyMatch.model_validate(m) for m in memo["matches"]]
+        if "mapping" in memo:
+            mapping = MaterialMapping.model_validate(memo["mapping"])
         else:
-            run.matches = await map_material(
+            mapping = await map_material(
                 run.material.parsed_text or "",
                 run.student.grade,
-                "math",
+                SUBJECT,
                 services.retriever,
                 services.model(ModelRole.STRUCTURED),
             )
-            save("matches", [m.model_dump(mode="json") for m in run.matches])
-        if not run.matches:
-            run.terminal = "no_match"
-            say(run, "material_rejected", subject="matemática")
+            if mapping.outcome is not MappingOutcome.UNDETERMINED:
+                save("mapping", mapping.model_dump(mode="json"))
+        run.matches = list(mapping.competency_ids)
+        if mapping.outcome is MappingOutcome.UNDETERMINED:
+            run.terminal = "mapping_unavailable"
+            say(run, "material_interrupted")
             return
-        run.competency = services.retriever.get_competency(run.matches[0].competency_id)
+        if mapping.outcome is MappingOutcome.UNMATCHED:
+            run.terminal = "no_match"
+            say(run, "material_unmatched", grade=run.student.grade)
+            return
+        run.competency = services.retriever.get_competency(run.matches[0])
         run.material = run.material.model_copy(update={"status": MaterialStatus.MAPPED})
         services.store.put_material(run.material)
 

@@ -21,7 +21,12 @@ from repaso.schemas.common import (
     StudentId,
     utc_now,
 )
-from repaso.schemas.competency import Competency, CompetencyMatch
+from repaso.schemas.competency import (
+    Competency,
+    CompetencyMatch,
+    MappingOutcome,
+    MaterialMapping,
+)
 from repaso.schemas.consent import ConsentRecord
 from repaso.schemas.enrollment import EnrollmentProgress, EnrollmentStep
 from repaso.schemas.escalation import (
@@ -82,9 +87,11 @@ __all__ = [
     "ItemVerdict",
     "JobId",
     "Lang",
+    "MappingOutcome",
     "MasteryLevel",
     "MasteryState",
     "Material",
+    "MaterialMapping",
     "MaterialId",
     "MaterialStatus",
     "MediaKind",

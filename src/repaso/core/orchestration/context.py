@@ -8,7 +8,8 @@ from repaso.config.settings import Settings
 from repaso.core.harness.clock import Clock
 from repaso.core.telemetry.sink import NullTelemetrySink, TelemetrySink
 from repaso.schemas.channel import InboundMessage, OutboundMessage
-from repaso.schemas.competency import Competency, CompetencyMatch
+from repaso.schemas.common import CompetencyId
+from repaso.schemas.competency import Competency
 from repaso.schemas.escalation import Escalation
 from repaso.schemas.events import DomainEvent
 from repaso.schemas.family import Family
@@ -68,7 +69,7 @@ class IngestRun:
     material: Material
     data: bytes
     screen: ScreenVerdict | None = None
-    matches: list[CompetencyMatch] = field(default_factory=list)
+    matches: list[CompetencyId] = field(default_factory=list)
     competency: Competency | None = None
     generated: list[Item] = field(default_factory=list)
     verdicts: list[ItemVerdict] = field(default_factory=list)

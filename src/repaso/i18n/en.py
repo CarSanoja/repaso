@@ -73,6 +73,17 @@ MESSAGES = {
         "my side failed, not your photo. No need to take another: send the same one again "
         "in a few minutes and I'll try again."
     ),
+    "material_unmatched": (
+        "I couldn't place this page in the grade {grade} math syllabus I work from. It "
+        "may be from another subject, another grade, or a topic I don't carry yet. If "
+        "it is grade {grade} math and I got it wrong, resend it with a short note about "
+        "the topic."
+    ),
+    "material_interrupted": (
+        "I stopped part way through this page: a step on my side did not finish. It is "
+        "not your photo, and I haven't lost anything you sent. Send it again in a "
+        "little while and I'll pick it up from there."
+    ),
     "material_thin": (
         "This tells me the topic but not how the class works it. Could you send a "
         "photo of a solved exercise from the notebook?"
