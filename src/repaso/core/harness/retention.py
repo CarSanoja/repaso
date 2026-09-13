@@ -5,6 +5,7 @@ from typing import Any
 from repaso.schemas.operation import OperationRecord
 
 ANSWER_RETENTION_DAYS = 7
+TTL_ATTRIBUTE = "expires_at"
 
 
 def expiry_stamp(now: datetime, days: int = ANSWER_RETENTION_DAYS) -> int:
@@ -12,7 +13,7 @@ def expiry_stamp(now: datetime, days: int = ANSWER_RETENTION_DAYS) -> int:
 
 
 def expiry_of(payload: dict[str, Any]) -> float | None:
-    stamp = payload.get("expires_at")
+    stamp = payload.get(TTL_ATTRIBUTE)
     if isinstance(stamp, bool) or not isinstance(stamp, Number):
         return None
     return float(stamp)

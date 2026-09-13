@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 from repaso.config.settings import Settings
 from repaso.core.harness.clock import Clock, SystemClock
+from repaso.core.harness.retention import TTL_ATTRIBUTE
 from repaso.schemas.common import ItemId, StudentId
 from repaso.schemas.grading import GradeResult
 from repaso.tools.grade_words import (
@@ -159,7 +160,7 @@ class DynamoGradeLog:
         return {
             "pk": {"S": f"STUDENT#{result.student_id}"},
             "sk": {"S": f"{WORDS_PREFIX}{result.item_id}#{stamp}"},
-            "expires_at": {"N": str(words.expires_at)},
+            TTL_ATTRIBUTE: {"N": str(words.expires_at)},
         } | _serialize(words)
 
     def forget_student(self, student_id: StudentId) -> None:

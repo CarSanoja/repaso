@@ -1,7 +1,7 @@
 from datetime import date
 
 from repaso.config.clients import dynamodb_client
-from repaso.core.harness.retention import expiry_of
+from repaso.core.harness.retention import TTL_ATTRIBUTE, expiry_of
 from repaso.schemas.common import (
     CompetencyId,
     EscalationId,
@@ -276,7 +276,7 @@ class DynamoStateStore:
         item = key_of(f"DATA#{record.scope}", record.key) | serialize(record)
         stamp = expiry_of(record.payload)
         if stamp is not None:
-            item["expires_at"] = {"N": str(int(stamp))}
+            item[TTL_ATTRIBUTE] = {"N": str(int(stamp))}
         dynamodb_client().put_item(TableName=self._table, Item=item)
 
     def get_record(self, scope: str, key: str) -> OperationRecord | None:

@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from repaso.core.harness.retention import TTL_ATTRIBUTE
 from tests.infra.fixtures import only, template
 
 STACKS = ("foundation", "messaging", "guardrails", "api", "agentcore", "observability")
@@ -12,6 +13,7 @@ PII_ENTITIES = ("NAME", "PHONE", "EMAIL", "ADDRESS", "AGE")
 NEVER_SET = ("REPASO_LOCAL_MODE", "REPASO_LIVE_TESTS")
 QUEUES = ("ingest", "tutor", "quality")
 GUARDRAIL = "AWS::Bedrock::Guardrail"
+TABLE = "AWS::DynamoDB::Table"
 RUNTIME = "AWS::BedrockAgentCore::Runtime"
 PARAMETER = "AWS::SSM::Parameter"
 AGENTCORE_ASSETS = "repaso-agentcore.assets.json"
@@ -63,6 +65,12 @@ def test_the_guardrail_anonymizes_on_the_way_in_as_well_as_out(assembly):
         assert entry["OutputEnabled"] is True, entry["Type"]
         assert entry["InputAction"] == "ANONYMIZE", entry["Type"]
         assert entry["OutputAction"] == "ANONYMIZE", entry["Type"]
+
+
+def test_the_table_sweeps_the_attribute_the_words_row_stamps(assembly):
+    table = only(assembly, "foundation", TABLE)["TimeToLiveSpecification"]
+
+    assert table == {"AttributeName": TTL_ATTRIBUTE, "Enabled": True}
 
 
 def test_the_guardrail_refuses_in_spanish(assembly):

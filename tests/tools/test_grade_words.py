@@ -5,7 +5,7 @@ import pytest
 from moto import mock_aws
 
 from repaso.core.harness.clock import SimClock
-from repaso.core.harness.retention import ANSWER_RETENTION_DAYS
+from repaso.core.harness.retention import ANSWER_RETENTION_DAYS, TTL_ATTRIBUTE
 from repaso.schemas.grading import EvidenceSpan, GradedBy, GradeResult
 from repaso.tools.grade_log import DynamoGradeLog, LocalGradeLog
 from repaso.tools.grade_words import WORDS_PREFIX, attempt_only, words_of
@@ -54,6 +54,10 @@ def cloud_log(monkeypatch):
                     ],
                 }
             ],
+        )
+        client.update_time_to_live(
+            TableName=TABLE,
+            TimeToLiveSpecification={"Enabled": True, "AttributeName": TTL_ATTRIBUTE},
         )
         for module in ("repaso.config.clients", "repaso.tools.state_dynamo_io"):
             monkeypatch.setattr(f"{module}.dynamodb_client", lambda: client)
@@ -155,6 +159,30 @@ def test_the_cloud_attempt_survives_the_row_the_table_expires(cloud_log):
     kept = log.by_student("s1")
 
     assert len(kept) == 1
+    assert kept[0].evidence.quote == ""
+    assert kept[0].correct is True
+
+
+def test_the_only_row_the_table_would_sweep_is_the_one_holding_the_words(cloud_log):
+    log, client = cloud_log
+    log.append(grade())
+    swept = client.describe_time_to_live(TableName=TABLE)["TimeToLiveDescription"]
+
+    stamped = [row for row in rows(client) if swept["AttributeName"] in row]
+
+    assert swept["TimeToLiveStatus"] == "ENABLED"
+    assert len(stamped) == 1
+    assert WROTE in str(stamped[0])
+
+
+def test_the_cloud_withholds_the_words_before_the_table_gets_round_to_them(cloud_log):
+    log, client = cloud_log
+    log.append(grade())
+    horizon = NOW + timedelta(days=ANSWER_RETENTION_DAYS)
+
+    kept = DynamoGradeLog(TABLE, SimClock(horizon)).by_student("s1")
+
+    assert [row for row in rows(client) if WROTE in str(row)]
     assert kept[0].evidence.quote == ""
     assert kept[0].correct is True
 
