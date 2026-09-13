@@ -2,11 +2,16 @@ import boto3
 import pytest
 from moto import mock_aws
 
+from repaso.config.models import ModelRole
 from repaso.core.harness.retention import expiry_stamp
 from repaso.core.orchestration.privacy import forget_family
 from repaso.core.orchestration.quarantine_resolution import resolve_quarantine
 from repaso.core.orchestration.runner import handle_answer, start_daily_session
+from repaso.core.orchestration.study_answer import current_item
+from repaso.core.orchestration.study_channel import handle_study_text
+from repaso.core.orchestration.study_flow import start_sitting
 from repaso.tools.grade_log import DynamoGradeLog
+from repaso.tools.llm import LocalPlaybackModel
 from repaso.tools.media_store import S3MediaStore
 from repaso.tools.state_dynamo import DynamoStateStore
 from tests.orchestration.fixtures import FRACTIONS, seed_family, seed_held_answer, seed_open_item
@@ -169,3 +174,51 @@ async def test_the_attempt_ledger_is_written_without_a_horizon(cloud_services):
     )["Items"]
     assert len(episodes) == 1
     assert "expires_at" not in episodes[0]
+
+
+@pytest.mark.asyncio
+async def test_a_sitting_reaches_dynamodb_with_the_tables_ttl_attribute(cloud_services):
+    s, client, _ = cloud_services
+    family, student = seed_family(s.store)
+    seed_mcqs(s, family.id)
+    opened = start_sitting(s, family, student)
+    item = current_item(s, opened.session)
+    await handle_study_text(s, family, item.answer_key, 9.0, "m1")
+
+    rows = client.query(
+        TableName="repaso",
+        KeyConditionExpression="pk = :pk AND begins_with(sk, :sk)",
+        ExpressionAttributeValues={":pk": {"S": f"DATA#{family.id}"}, ":sk": {"S": "study#"}},
+    )["Items"]
+    assert len(rows) == 1
+    stamp = int(rows[0]["expires_at"]["N"])
+    assert stamp == int(float(rows[0]["doc"]["M"]["payload"]["M"]["expires_at"]["N"]))
+    assert stamp > s.clock.now().timestamp()
+
+
+@pytest.mark.asyncio
+async def test_the_turn_window_reaches_dynamodb_with_the_tables_ttl_attribute(cloud_services):
+    s, client, _ = cloud_services
+    family, student = seed_family(s.store)
+    seed_mcqs(s, family.id)
+    start_sitting(s, family, student)
+    s.models[ModelRole.STRUCTURED] = LocalPlaybackModel()
+    s.models[ModelRole.GENERATE] = LocalPlaybackModel()
+    s.models[ModelRole.STRUCTURED].enqueue(
+        {
+            "intent": "explanation",
+            "speaker": "child",
+            "asked_for": "que se lo explique",
+            "answer_text": "",
+        }
+    )
+    s.models[ModelRole.GENERATE].enqueue({"text": "Parte la barra.", "approach": "bar split"})
+    await handle_study_text(s, family, "no entiendo", 9.0, "m1")
+
+    rows = client.query(
+        TableName="repaso",
+        KeyConditionExpression="pk = :pk AND begins_with(sk, :sk)",
+        ExpressionAttributeValues={":pk": {"S": f"DATA#{family.id}"}, ":sk": {"S": "turn#"}},
+    )["Items"]
+    assert len(rows) == 1
+    assert int(rows[0]["expires_at"]["N"]) > s.clock.now().timestamp()
