@@ -76,7 +76,9 @@ def topic(target: TurnTarget, family: Family) -> str:
     return competency_label(target.competency, family.lang)
 
 
-def explain_context(family: Family, target: TurnTarget, decision: TurnDecision, said: str):
+def explain_context(
+    family: Family, target: TurnTarget, decision: TurnDecision, said: str
+) -> ExplainContext:
     answer = turn_memory.last_answer(target.window, target.item.id)
     return ExplainContext(
         lang=family.lang,
@@ -97,7 +99,12 @@ def explain_context(family: Family, target: TurnTarget, decision: TurnDecision, 
 
 
 async def explain_turn(
-    services: Services, run: ChannelRun, family: Family, target: TurnTarget, decision, said: str
+    services: Services,
+    run: ChannelRun,
+    family: Family,
+    target: TurnTarget,
+    decision: TurnDecision,
+    said: str,
 ) -> str:
     explanation = await explain(
         explain_context(family, target, decision, said), services.model(EXPLAIN_ROLE)
@@ -105,7 +112,7 @@ async def explain_turn(
     if explanation is not None:
         say(run, family, explanation.text)
         return explanation.approach
-    if target.answered:
+    if target.answered and target.item.rationale.strip():
         say(run, family, target.item.rationale)
     else:
         speak(run, family, "turn_explain_unavailable")

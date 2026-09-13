@@ -419,3 +419,20 @@ async def test_reading_a_turn_costs_one_cheap_call_and_grading_an_option_costs_n
     assert len(services.models[READ_ROLE].calls) == 2
     assert services.models[ModelRole.JUDGE].calls == []
     assert services.models[EXPLAIN_ROLE].calls == []
+
+
+async def test_an_item_with_no_written_reason_never_sends_an_empty_message(settings):
+    services = services_with_recorder(settings)
+    family, student = seed_family(services.store)
+    item = seed_item(services.store, "i1")
+    services.store.put_item(item.model_copy(update={"rationale": ""}))
+    seed_session(services, student.id, ["i1"])
+    reads(services, TurnIntent.ANSWER, "2/8")
+    keeps_going(services)
+    reads(services, TurnIntent.EXPLANATION)
+    services.models[EXPLAIN_ROLE] = stressed("throttled", {})
+
+    await says(services, family, "2/8")
+    run = await says(services, family, "\u00bfpor qu\u00e9?")
+
+    assert said(run) == [msg("turn_explain_unavailable", Lang.ES)]
