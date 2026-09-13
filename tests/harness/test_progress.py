@@ -1,12 +1,15 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from repaso.core.harness.mastery import update_mastery
 from repaso.core.harness.progress import (
     ProgressBucket,
     ProgressReadout,
     bucket_of,
+    practice_days,
     read_progress,
 )
+from repaso.schemas.episode import AttemptEpisode
+from repaso.schemas.grading import GradedBy
 from repaso.schemas.mastery import MasteryLevel, MasteryState
 
 PRACTISED_AT = datetime(2026, 9, 13, 19, 0, tzinfo=UTC)
@@ -87,3 +90,25 @@ def test_no_states_reads_as_nothing_practised():
     assert read_progress([]) == ProgressReadout(
         practised=0, answers=0, correct=0, holds=0, needs_help=0, not_yet_known=0
     )
+
+
+def attempt(hours: int) -> AttemptEpisode:
+    return AttemptEpisode(
+        student_id="s1",
+        session_id="sess1",
+        competency_id="c1",
+        item_id="i1",
+        correct=True,
+        held=False,
+        graded_by=GradedBy.DETERMINISTIC,
+        occurred_at=PRACTISED_AT + timedelta(hours=hours),
+    )
+
+
+def test_three_answers_in_one_evening_are_one_day_of_practice():
+    assert practice_days([attempt(0), attempt(1), attempt(2)]) == 1
+
+
+def test_practice_days_counts_the_days_the_log_can_show():
+    assert practice_days([]) == 0
+    assert practice_days([attempt(0), attempt(24), attempt(48)]) == 3

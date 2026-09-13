@@ -1,3 +1,4 @@
+from repaso.channel.telegram.commands import handle_command
 from repaso.config.models import ModelRole
 from repaso.core.orchestration.privacy import forget_family
 from repaso.core.orchestration.runner import handle_answer
@@ -130,3 +131,19 @@ async def test_a_redelivered_sitting_answer_leaves_one_episode(settings):
     episodes = list_attempts(services.store, family.id, student.id)
     assert len(episodes) == 1
     assert services.store.get_mastery(student.id, item.competency_id).attempts == 1
+
+
+async def test_status_reports_the_days_the_episode_log_can_show(settings):
+    services = with_policy(settings, decisions=6)
+    family, student = seed_family(services.store)
+    seed_item(services.store, "i1")
+    seed_session(services, student.id, ["i1"])
+    await handle_answer(services, family, student, "1/2", 20.0)
+    services.clock.advance(days=1)
+    seed_session(services, student.id, ["i1"], "sess2")
+    await handle_answer(services, family, student, "1/2", 20.0)
+
+    line = handle_command(family, [student], "/status", services.store, services.clock.now())
+
+    assert "en 2 días de práctica registrados" in line.messages[0].text
+    assert len(list_attempts(services.store, family.id, student.id)) == 2

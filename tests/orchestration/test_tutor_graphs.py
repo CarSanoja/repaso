@@ -33,9 +33,11 @@ def seed_item(store, item_id: str, kind: ItemKind = ItemKind.MCQ) -> Item:
     return item
 
 
-def seed_session(services, student_id: str, item_ids: list[str]) -> PracticeSession:
+def seed_session(
+    services, student_id: str, item_ids: list[str], session_id: str = "sess1"
+) -> PracticeSession:
     session = PracticeSession(
-        id="sess1",
+        id=session_id,
         student_id=student_id,
         session_date=services.clock.today(),
         capsule=Capsule(concept_snippet="snippet", item_ids=item_ids),

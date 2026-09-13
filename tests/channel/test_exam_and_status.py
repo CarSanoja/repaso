@@ -123,7 +123,14 @@ def test_status_reports_the_counts_behind_every_claim(store, family):
 
     summary = msg("progress_summary", ES, holds=0, needs_help=0, unknown=3)
     assert said(reply) == msg(
-        "status_line", ES, alias="Leo", answers=12, correct=6, topics=3, progress_map=summary
+        "status_line",
+        ES,
+        alias="Leo",
+        answers=12,
+        correct=6,
+        topics=3,
+        days=0,
+        progress_map=summary,
     )
     assert "-" not in said(reply)
 
@@ -134,7 +141,7 @@ def test_a_never_measured_topic_is_not_reported_as_going_well(store, family):
     said_text = said(handle_command(family, store.list_students("f1"), "/status", store, NOW))
 
     assert "1 aún sin medir" in said_text
-    assert said_text.startswith("Leo: 2 preguntas respondidas, 1 correctas, en 1 temas.")
+    assert said_text.startswith("Leo: 2 preguntas respondidas, 1 correctas, en 1 temas,")
 
 
 def test_status_never_claims_a_topic_is_mastered(store, family):
@@ -161,5 +168,12 @@ def test_status_without_history_shows_zeros_instead_of_placeholders(store, famil
 
     summary = msg("progress_summary", ES, holds=0, needs_help=0, unknown=0)
     assert said(reply) == msg(
-        "status_line", ES, alias="Leo", answers=0, correct=0, topics=0, progress_map=summary
+        "status_line",
+        ES,
+        alias="Leo",
+        answers=0,
+        correct=0,
+        topics=0,
+        days=0,
+        progress_map=summary,
     )

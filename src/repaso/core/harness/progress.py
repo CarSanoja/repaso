@@ -2,6 +2,8 @@ from collections import Counter
 from dataclasses import dataclass
 from enum import StrEnum
 
+from repaso.core.harness.clock import local_date
+from repaso.schemas.episode import AttemptEpisode
 from repaso.schemas.mastery import MasteryState
 from repaso.tools.proportion import wilson_interval
 
@@ -44,3 +46,7 @@ def read_progress(states: list[MasteryState]) -> ProgressReadout:
         needs_help=buckets[ProgressBucket.NEEDS_HELP],
         not_yet_known=buckets[ProgressBucket.NOT_YET_KNOWN],
     )
+
+
+def practice_days(episodes: list[AttemptEpisode]) -> int:
+    return len({local_date(episode.occurred_at) for episode in episodes})

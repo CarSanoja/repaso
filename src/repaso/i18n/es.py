@@ -169,8 +169,8 @@ MESSAGES = {
     ),
     "unknown_command": "No conozco ese comando. /help muestra lo que sé hacer.",
     "status_line": (
-        "{alias}: {answers} preguntas respondidas, {correct} correctas, en {topics} temas.\n"
-        "{progress_map}."
+        "{alias}: {answers} preguntas respondidas, {correct} correctas, en {topics} temas, "
+        "en {days} días de práctica registrados.\n{progress_map}."
     ),
     "supported_material": (
         "En este piloto trabajamos matemática de cuarto grado con fotos de texto impreso "

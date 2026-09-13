@@ -3,7 +3,7 @@ from datetime import date, datetime, time
 
 from repaso.channel.telegram.enrollment import parse_practice_time
 from repaso.channel.telegram.exam_dates import split_exam_argument
-from repaso.core.harness.progress import ProgressReadout, read_progress
+from repaso.core.harness.progress import ProgressReadout, practice_days, read_progress
 from repaso.i18n import msg
 from repaso.schemas.channel import Button, OutboundMessage
 from repaso.schemas.common import Lang
@@ -12,6 +12,7 @@ from repaso.schemas.family import Family, FamilyStatus
 from repaso.schemas.mastery import MasteryState
 from repaso.schemas.schedule import ExamDate
 from repaso.schemas.student import Student
+from repaso.tools.episode_log import list_attempts
 from repaso.tools.state_store import StateStore
 
 FORGET_YES = "forget:yes"
@@ -109,13 +110,20 @@ def _toggle_language(family: Family, store: StateStore) -> CommandReply:
 def _status(family: Family, students: list[Student], store: StateStore) -> CommandReply:
     return CommandReply(
         messages=[
-            _status_line(family, student, store.list_mastery(student.id))
+            _status_line(
+                family,
+                student,
+                store.list_mastery(student.id),
+                practice_days(list_attempts(store, family.id, student.id)),
+            )
             for student in students
         ]
     )
 
 
-def _status_line(family: Family, student: Student, states: list[MasteryState]) -> OutboundMessage:
+def _status_line(
+    family: Family, student: Student, states: list[MasteryState], days: int
+) -> OutboundMessage:
     readout = read_progress(states)
     return _out(
         family,
@@ -126,6 +134,7 @@ def _status_line(family: Family, student: Student, states: list[MasteryState]) -
         answers=readout.answers,
         correct=readout.correct,
         topics=readout.practised,
+        days=days,
         progress_map=_progress_summary(readout, family.lang),
     )
 

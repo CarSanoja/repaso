@@ -168,7 +168,14 @@ def test_status_reports_one_line_per_student(store, family):
     assert len(reply.messages) == 2
     summary = msg("progress_summary", ES, holds=0, needs_help=0, unknown=0)
     line = msg(
-        "status_line", ES, alias="Estrella", answers=0, correct=0, topics=0, progress_map=summary
+        "status_line",
+        ES,
+        alias="Estrella",
+        answers=0,
+        correct=0,
+        topics=0,
+        days=0,
+        progress_map=summary,
     )
     assert said(reply, 1) == line
 
