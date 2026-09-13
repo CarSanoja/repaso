@@ -10,6 +10,7 @@ from repaso.core.orchestration.study_flow import (
     resume_sitting,
     start_sitting,
 )
+from repaso.core.orchestration.study_guard import hold_unsafe
 from repaso.core.orchestration.study_messages import say
 from repaso.core.orchestration.study_store import open_sitting
 from repaso.schemas.family import Family
@@ -71,6 +72,9 @@ def handle_study_text(
     if sitting is None:
         return None
     if sitting.status is StudySessionStatus.ACTIVE:
+        verdict = services.screener.screen(text)
+        if not verdict.safe:
+            return hold_unsafe(services, family, student, sitting, verdict, text)
         return answer_sitting(services, family, student, sitting, text, latency_seconds)
     if _capsule_waiting(services, student):
         return None
