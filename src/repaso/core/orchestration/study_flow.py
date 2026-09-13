@@ -11,9 +11,10 @@ from repaso.core.harness.study_session import (
 )
 from repaso.core.orchestration.context import Services
 from repaso.core.orchestration.study_bank import available_items
-from repaso.core.orchestration.study_messages import closing, question, say
+from repaso.core.orchestration.study_messages import closing, plain, question, say
 from repaso.core.orchestration.study_store import items_served_today, put_study_session
 from repaso.core.orchestration.study_topics import resolve_topic
+from repaso.i18n import counted
 from repaso.i18n.competencies import competency_label
 from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.family import Family
@@ -33,10 +34,13 @@ class StudyReply:
     session: StudySession | None = None
 
 
-def _about(family: Family, goal: StudyGoal, key: str, **kwargs) -> OutboundMessage:
-    if goal.label:
-        return say(family, key, topic=goal.label, **kwargs)
-    return say(family, f"{key}_any", **kwargs)
+def _about(
+    family: Family, goal: StudyGoal, key: str, count: int | None = None
+) -> OutboundMessage:
+    name = key if goal.label else f"{key}_any"
+    if count is None:
+        return say(family, name, topic=goal.label)
+    return plain(family, counted(name, family.lang, count, topic=goal.label))
 
 
 def _goal_for(services: Services, family: Family, student: Student, topic: str) -> StudyGoal | None:

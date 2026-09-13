@@ -4,7 +4,7 @@ import pytest
 
 from repaso.channel.telegram.commands import handle_command
 from repaso.channel.telegram.exam_dates import parse_exam_date, split_exam_argument
-from repaso.i18n import msg
+from repaso.i18n import counted, msg
 from repaso.schemas.channel import ChannelKind
 from repaso.schemas.common import Lang
 from repaso.schemas.events import EventKind
@@ -126,10 +126,10 @@ def test_status_reports_the_counts_behind_every_claim(store, family):
         "status_line",
         ES,
         alias="Leo",
-        answers=12,
-        correct=6,
-        topics=3,
-        days=0,
+        answers=counted("status_answers", ES, 12),
+        correct=counted("status_correct", ES, 6),
+        topics=counted("status_topics", ES, 3),
+        days=counted("status_days", ES, 0),
         progress_map=summary,
     )
     assert "-" not in said(reply)
@@ -141,7 +141,7 @@ def test_a_never_measured_topic_is_not_reported_as_going_well(store, family):
     said_text = said(handle_command(family, store.list_students("f1"), "/status", store, NOW))
 
     assert "1 aún sin medir" in said_text
-    assert said_text.startswith("Leo: 2 preguntas respondidas, 1 correctas, en 1 temas,")
+    assert said_text.startswith("Leo: 2 preguntas respondidas, 1 correcta, en 1 tema,")
 
 
 def test_status_never_claims_a_topic_is_mastered(store, family):
@@ -171,9 +171,9 @@ def test_status_without_history_shows_zeros_instead_of_placeholders(store, famil
         "status_line",
         ES,
         alias="Leo",
-        answers=0,
-        correct=0,
-        topics=0,
-        days=0,
+        answers=counted("status_answers", ES, 0),
+        correct=counted("status_correct", ES, 0),
+        topics=counted("status_topics", ES, 0),
+        days=counted("status_days", ES, 0),
         progress_map=summary,
     )

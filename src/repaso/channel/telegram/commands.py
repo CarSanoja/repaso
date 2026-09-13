@@ -4,7 +4,7 @@ from datetime import date, datetime, time
 from repaso.channel.telegram.enrollment import parse_practice_time
 from repaso.channel.telegram.exam_dates import split_exam_argument
 from repaso.core.harness.progress import ProgressReadout, practice_days, read_progress
-from repaso.i18n import msg
+from repaso.i18n import counted, msg
 from repaso.schemas.channel import Button, OutboundMessage
 from repaso.schemas.common import Lang
 from repaso.schemas.events import DomainEvent, EventKind
@@ -131,10 +131,10 @@ def _status_line(
         None,
         None,
         alias=student.alias,
-        answers=readout.answers,
-        correct=readout.correct,
-        topics=readout.practised,
-        days=days,
+        answers=counted("status_answers", family.lang, readout.answers),
+        correct=counted("status_correct", family.lang, readout.correct),
+        topics=counted("status_topics", family.lang, readout.practised),
+        days=counted("status_days", family.lang, days),
         progress_map=_progress_summary(readout, family.lang),
     )
 

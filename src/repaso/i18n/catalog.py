@@ -17,3 +17,9 @@ def msg(key: str, lang: Lang, **kwargs: object) -> str:
 
 def known_keys() -> set[str]:
     return set(EN_MESSAGES)
+
+
+def counted(key: str, lang: Lang, count: int, **kwargs: object) -> str:
+    singular = f"{key}_one"
+    chosen = singular if count == 1 and singular in EN_MESSAGES else key
+    return msg(chosen, lang, count=count, **kwargs)

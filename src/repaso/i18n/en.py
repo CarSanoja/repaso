@@ -169,9 +169,16 @@ MESSAGES = {
     ),
     "unknown_command": "I don't know that command. /help shows what I can do.",
     "status_line": (
-        "{alias}: {answers} questions answered, {correct} correct, across {topics} topics, "
-        "on {days} recorded practice days.\n{progress_map}."
+        "{alias}: {answers}, {correct}, across {topics}, on {days}.\n{progress_map}."
     ),
+    "status_answers": "{count} questions answered",
+    "status_answers_one": "1 question answered",
+    "status_correct": "{count} correct",
+    "status_correct_one": "1 correct",
+    "status_topics": "{count} topics",
+    "status_topics_one": "1 topic",
+    "status_days": "{count} recorded practice days",
+    "status_days_one": "1 recorded practice day",
     "supported_material": (
         "This pilot supports fourth-grade math: printed-text photos and single-page PDFs "
         "(up to 10 MB). Voice and handwriting are not available yet."
@@ -276,6 +283,22 @@ MESSAGES = {
     ),
     "study_ask_topic": (
         "Which topic? For example: /topic equivalent fractions."
+    ),
+    "study_open_one": (
+        "Let's work on {topic}. I have 1 question saved on it. "
+        "Answer it together, no rush."
+    ),
+    "study_open_any_one": (
+        "Let's do a short review. I have 1 question saved. "
+        "Answer it together, no rush."
+    ),
+    "study_thin_one": (
+        "On {topic} I only have 1 for now. We'll practise with that one. Send me a "
+        "photo of that page from the notebook and I'll prepare more for next time."
+    ),
+    "study_thin_any_one": (
+        "For now I only have 1 saved question. We'll practise with that one. Send me "
+        "a photo of the page you are on and I'll prepare more."
     ),
     "study_not_an_answer": (
         "I couldn't tell which option you picked, so I'm not counting it as an answer. "

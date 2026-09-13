@@ -11,7 +11,7 @@ from repaso.channel.telegram.enrollment import (
     parse_practice_time,
     start_enrollment,
 )
-from repaso.i18n import msg
+from repaso.i18n import counted, msg
 from repaso.schemas.channel import ChannelKind, InboundMessage, OutboundMessage
 from repaso.schemas.common import Lang
 from repaso.schemas.enrollment import EnrollmentStep
@@ -171,10 +171,10 @@ def test_status_reports_one_line_per_student(store, family):
         "status_line",
         ES,
         alias="Estrella",
-        answers=0,
-        correct=0,
-        topics=0,
-        days=0,
+        answers=counted("status_answers", ES, 0),
+        correct=counted("status_correct", ES, 0),
+        topics=counted("status_topics", ES, 0),
+        days=counted("status_days", ES, 0),
         progress_map=summary,
     )
     assert said(reply, 1) == line

@@ -169,9 +169,16 @@ MESSAGES = {
     ),
     "unknown_command": "No conozco ese comando. /help muestra lo que sé hacer.",
     "status_line": (
-        "{alias}: {answers} preguntas respondidas, {correct} correctas, en {topics} temas, "
-        "en {days} días de práctica registrados.\n{progress_map}."
+        "{alias}: {answers}, {correct}, en {topics}, en {days}.\n{progress_map}."
     ),
+    "status_answers": "{count} preguntas respondidas",
+    "status_answers_one": "1 pregunta respondida",
+    "status_correct": "{count} correctas",
+    "status_correct_one": "1 correcta",
+    "status_topics": "{count} temas",
+    "status_topics_one": "1 tema",
+    "status_days": "{count} días de práctica registrados",
+    "status_days_one": "1 día de práctica registrado",
     "supported_material": (
         "En este piloto trabajamos matemática de cuarto grado con fotos de texto impreso "
         "y PDF de una página (hasta 10 MB). Voz y manuscritos todavía no están "
@@ -277,6 +284,22 @@ MESSAGES = {
     ),
     "study_ask_topic": (
         "¿De qué tema? Por ejemplo: /tema fracciones equivalentes."
+    ),
+    "study_open_one": (
+        "Vamos con {topic}. Tengo 1 pregunta guardada de ese tema. "
+        "Respóndanla juntos, sin apuro."
+    ),
+    "study_open_any_one": (
+        "Vamos con un repaso corto. Tengo 1 pregunta guardada. "
+        "Respóndanla juntos, sin apuro."
+    ),
+    "study_thin_one": (
+        "De {topic} solo tengo 1 por ahora. Practicamos con esa. Si me mandas una "
+        "foto de esa página del cuaderno, preparo más para la próxima."
+    ),
+    "study_thin_any_one": (
+        "Por ahora solo tengo 1 pregunta guardada. Practicamos con esa. Si me "
+        "mandas una foto de la página que están viendo, preparo más."
     ),
     "study_not_an_answer": (
         "No supe cuál opción elegiste, así que no la cuento como respuesta. Toca una "

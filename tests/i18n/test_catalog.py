@@ -2,7 +2,7 @@ import re
 
 import pytest
 
-from repaso.i18n.catalog import known_keys, msg
+from repaso.i18n.catalog import counted, known_keys, msg
 from repaso.i18n.en import MESSAGES as EN
 from repaso.i18n.es import MESSAGES as ES
 from repaso.schemas.common import Lang
@@ -65,3 +65,27 @@ def test_no_student_facing_message_asks_for_real_names():
             lowered = catalog[key].lower()
             assert "full name" not in lowered
             assert "nombre completo" not in lowered
+
+
+def test_a_count_of_one_picks_the_singular_wording():
+    for lang in (Lang.ES, Lang.EN):
+        assert counted("status_topics", lang, 1) == msg("status_topics_one", lang)
+        assert counted("status_topics", lang, 2) == msg("status_topics", lang, count=2)
+
+
+def test_every_singular_variant_has_a_plural_to_fall_back_to():
+    for key in known_keys():
+        if key.endswith("_one"):
+            assert key.removesuffix("_one") in known_keys(), key
+
+
+def test_no_family_facing_line_says_one_of_a_plural_noun():
+    plurals = ("preguntas", "temas", "días", "correctas", "questions", "topics", "days")
+    for key in known_keys():
+        if not key.endswith("_one"):
+            continue
+        for catalog in (EN, ES):
+            words = catalog[key].split()
+            for index, word in enumerate(words[:-1]):
+                if word == "1":
+                    assert words[index + 1].strip(".,") not in plurals, (key, catalog[key])
