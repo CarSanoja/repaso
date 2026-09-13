@@ -1,5 +1,6 @@
 from datetime import date
 
+from repaso.core.harness.practice_budget import DAILY_ITEM_LIMIT
 from repaso.core.harness.sm2 import due_items
 from repaso.schemas.common import SessionId, StudentId
 from repaso.schemas.item import Item, ItemKind, ItemStatus
@@ -7,7 +8,6 @@ from repaso.schemas.mastery import MasteryState
 from repaso.schemas.schedule import SpacedItemState
 from repaso.schemas.session import PracticeSession, SessionStatus
 
-DAILY_ITEM_LIMIT = 3
 NEW_ITEM_RESERVE = 1
 UNKNOWN_EMA = 0.5
 
