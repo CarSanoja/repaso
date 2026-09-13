@@ -25,6 +25,11 @@ PRACTICE = {
     "turn_blocked": (
         "Eso no lo puedo responder, pero seguimos: vuelve a la pregunta de la práctica."
     ),
+    "turn_unscreened": (
+        "No pude revisar ese mensaje ahora mismo, y eso no tiene nada que ver con lo que "
+        "escribiste. Si era algo importante, cuéntaselo a una persona grande en la que "
+        "confíes. Cuando quieras, seguimos con la práctica."
+    ),
     "distress_child": (
         "Gracias por escribir eso. Es mucho más importante que la práctica, así que "
         "aquí la dejamos. Cuéntaselo ahora a una persona grande en la que confíes, con "

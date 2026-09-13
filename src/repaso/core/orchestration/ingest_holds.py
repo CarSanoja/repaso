@@ -4,7 +4,7 @@ from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.grading import EvidenceSpan
 from repaso.schemas.material import MaterialStatus
 from repaso.schemas.review import QuarantineItem, QuarantineKind
-from repaso.tools.guardrails import ScreenVerdict
+from repaso.tools.guardrails import SCREENER_ERROR_REASON, ScreenVerdict
 
 QUOTE_LENGTH = 200
 SCREEN_UNAVAILABLE = "screen_unavailable"
@@ -28,6 +28,12 @@ def offered_reply(verdict: ScreenVerdict) -> str:
     if held_kind(verdict) is QuarantineKind.INJECTION_ATTEMPT:
         return ""
     return verdict.reply.strip()
+
+
+def held_key(verdict: ScreenVerdict) -> str:
+    if SCREENER_ERROR_REASON in verdict.reasons:
+        return "turn_unscreened"
+    return "turn_blocked"
 
 
 def say(run: IngestRun, key: str, **kwargs) -> None:

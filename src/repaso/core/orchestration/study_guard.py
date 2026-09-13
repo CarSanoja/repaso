@@ -1,7 +1,12 @@
 from uuid import uuid4
 
 from repaso.core.orchestration.context import Services
-from repaso.core.orchestration.ingest_holds import QUOTE_LENGTH, held_kind, offered_reply
+from repaso.core.orchestration.ingest_holds import (
+    QUOTE_LENGTH,
+    held_key,
+    held_kind,
+    offered_reply,
+)
 from repaso.core.orchestration.study_answer import current_item
 from repaso.core.orchestration.study_flow import StudyReply
 from repaso.core.orchestration.study_messages import plain, question, say
@@ -37,7 +42,7 @@ def hold_unsafe(
     offered = offered_reply(verdict)
     if offered:
         return StudyReply([plain(family, offered)], session)
-    messages = [say(family, "turn_blocked")]
+    messages = [say(family, held_key(verdict))]
     item = current_item(services, session)
     if item is not None:
         messages.append(question(family, session, item, len(session.progress.served)))

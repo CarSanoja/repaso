@@ -26,6 +26,11 @@ PRACTICE = {
         "with whatever you answer."
     ),
     "turn_blocked": ("I cannot answer that, but we carry on: go back to the practice question."),
+    "turn_unscreened": (
+        "I could not check that message just now, and that has nothing to do with what "
+        "you wrote. If it was something important, tell a grown-up you trust. We can "
+        "carry on with the practice whenever you like."
+    ),
     "distress_child": (
         "Thank you for writing that. It matters far more than the practice, so we stop "
         "here. Tell a grown-up you trust now, in the same words you used with me: the "
