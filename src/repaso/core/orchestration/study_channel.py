@@ -1,4 +1,5 @@
 from repaso.agents.capsule_composer import answer_ref
+from repaso.core.harness.pause import is_paused, trace_paused
 from repaso.core.orchestration.context import ChannelRun, Route, Services
 from repaso.core.orchestration.runner import active_session
 from repaso.core.orchestration.runner import current_item as capsule_item
@@ -40,6 +41,9 @@ def handle_study_command(services: Services, family: Family, text: str) -> Study
     student = study_student(services, family)
     if student is None:
         return StudyReply([say(family, "study_one_child")])
+    if is_paused(family):
+        trace_paused(services.telemetry, family, "study_sitting", student.id)
+        return StudyReply([say(family, "paused")])
     sitting = open_sitting(services, family, student)
     if command in CLOSE_COMMANDS:
         if sitting is None:

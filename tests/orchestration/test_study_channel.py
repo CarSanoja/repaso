@@ -9,6 +9,7 @@ from repaso.core.orchestration.study_flow import start_sitting
 from repaso.core.orchestration.study_store import open_sitting
 from repaso.schemas.channel import ChannelKind, InboundMessage
 from repaso.schemas.common import Lang
+from repaso.schemas.family import FamilyStatus
 from repaso.schemas.session import Capsule, PracticeSession, SessionStatus
 from repaso.schemas.study_session import StudySessionStatus
 from tests.orchestration.fixtures import make_services, seed_family
@@ -209,3 +210,17 @@ async def test_listo_with_nothing_open_still_answers(settings):
 
     assert run.outbound
     assert run.study is None
+
+
+async def test_a_paused_family_is_not_handed_practice_it_asked_to_stop(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    seed_bank(services, family, 4)
+    family.status = FamilyStatus.PAUSED
+    services.store.put_family(family)
+
+    run = await handle_channel_message(services, inbound(family.chat_ref, "/sesion"))
+
+    assert run.study is None
+    assert "/resume" in texts(run)
+    assert open_sitting(services, family, student) is None
