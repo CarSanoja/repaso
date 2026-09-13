@@ -1,4 +1,4 @@
-from repaso.agents.grader import grade_mcq
+from repaso.agents.grader import grade_mcq, normalize
 from repaso.core.harness.study_session import record_answer
 from repaso.core.orchestration.answer_outcome import record_answer_outcome
 from repaso.core.orchestration.context import Services
@@ -16,6 +16,16 @@ def current_item(services: Services, session: StudySession) -> Item | None:
     if not session.progress.served:
         return None
     return services.store.get_item(session.progress.served[-1])
+
+
+def picked_option(item: Item, text: str) -> str | None:
+    reply = normalize(text)
+    options = [normalize(option) for option in item.options]
+    if reply in options:
+        return item.options[options.index(reply)]
+    if reply.isdigit() and 1 <= int(reply) <= len(options):
+        return item.options[int(reply) - 1]
+    return None
 
 
 def answer_key_for(session: StudySession) -> str:
@@ -42,6 +52,9 @@ def answer_sitting(
     key = answer_key_for(session)
     if key in session.progress.answered_keys:
         return StudyReply([question(family, session, item, asked)], session)
+    if picked_option(item, text) is None:
+        unread = say(family, "study_not_an_answer")
+        return StudyReply([unread, question(family, session, item, asked)], session)
     now = services.clock.now()
     response = StudentResponse(
         student_id=student.id,

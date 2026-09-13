@@ -246,4 +246,8 @@ MESSAGES = {
     "study_ask_topic": (
         "¿De qué tema? Por ejemplo: /tema fracciones equivalentes."
     ),
+    "study_not_an_answer": (
+        "No supe cuál opción elegiste, así que no la cuento como respuesta. Toca una "
+        "opción o escribe su número."
+    ),
 }

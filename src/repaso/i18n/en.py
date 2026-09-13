@@ -244,4 +244,8 @@ MESSAGES = {
     "study_ask_topic": (
         "Which topic? For example: /topic equivalent fractions."
     ),
+    "study_not_an_answer": (
+        "I couldn't tell which option you picked, so I'm not counting it as an answer. "
+        "Tap an option or write its number."
+    ),
 }
