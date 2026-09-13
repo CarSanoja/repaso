@@ -1,9 +1,11 @@
 from datetime import UTC, datetime
 
 from repaso.agents.adaptation_policy import PolicySignals
+from repaso.schemas.common import Lang
 from repaso.schemas.competency import Competency
 from repaso.schemas.item import Item, ItemKind, ItemStatus
 from repaso.schemas.provenance import Provenance, Source
+from repaso.schemas.turn import PracticeState, TurnContext
 
 GRADE = 4
 SUBJECT = "matemática"
@@ -33,6 +35,7 @@ MATERIAL_TEXT = (
     "3) Escribe dos fracciones equivalentes a 1/5.\n"
     "4) Explica con tus palabras por qué 5/10 y 1/2 nombran la misma cantidad."
 )
+
 
 def _candidate(key: str, name: str, description: str) -> Competency:
     return Competency(id=key, subject=SUBJECT, grade=GRADE, name=name, description=description)
@@ -99,3 +102,20 @@ SIGNALS = PolicySignals(
 )
 
 EVIDENCE_COUNT = 9
+
+TURN_MESSAGE = "no entiendo por que 6/8 es lo mismo, me lo explicas otra vez?"
+
+TURN_CONTEXT = TurnContext(
+    lang=Lang.ES,
+    grade=GRADE,
+    competency=COMPETENCY.name,
+    practice=PracticeState.OPEN,
+    question=MCQ_ITEM.stem,
+    options=list(MCQ_ITEM.options),
+    items_left=2,
+    answered=True,
+    history=[
+        "turn 1 | intent: answer | question: Segun la pagina del cuaderno, cual fraccion "
+        'es equivalente a 3/4? | wrote: "3/8" | harness graded: incorrect'
+    ],
+)

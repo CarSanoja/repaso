@@ -45,6 +45,12 @@ PAYLOADS: dict[str, dict] = {
         "feedback": "Muy bien explicado.",
     },
     "ProbeAnswer": {"answer": "6/8"},
+    "TurnDecision": {
+        "intent": "explanation",
+        "speaker": "child",
+        "asked_for": "Pide que le expliquen la equivalencia otra vez.",
+        "answer_text": "",
+    },
 }
 
 
