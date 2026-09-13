@@ -47,6 +47,11 @@ STATUS_WRONG = (
     "The child already answered and read the result: their answer was not the expected "
     "one.\nThe expected answer: {answer_key}\nThe written reason it is right: {rationale}"
 )
+STATUS_ANSWERED = (
+    "The child already answered this question and read the result; you are not told "
+    "which way it went.\nThe expected answer: {answer_key}\nThe written reason it is "
+    "right: {rationale}"
+)
 STATUS_RIGHT = (
     "The child already answered and got it right; they want to know why.\n"
     "The expected answer: {answer_key}\nThe written reason it is right: {rationale}"

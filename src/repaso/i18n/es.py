@@ -171,6 +171,32 @@ MESSAGES = {
         "y PDF de una página (hasta 10 MB). Voz y manuscritos todavía no están "
         "disponibles."
     ),
+    "turn_not_understood": ("No te entendí. ¿Me lo escribes otra vez con otras palabras?"),
+    "turn_practice_done": (
+        "La práctica de hoy ya está completa, así que esa no la cuento como respuesta. "
+        "Mañana a las {time} llega la siguiente."
+    ),
+    "turn_practice_not_sent": (
+        "Todavía no mandé la práctica de hoy; llega a las {time}. Si quieren adelantar, "
+        "mándame una foto de la hoja del colegio y preparo los ejercicios."
+    ),
+    "turn_more_tomorrow": (
+        "Por hoy son estas preguntas. Mañana a las {time} llega la práctica nueva. Si "
+        "quieren seguir ahora, mándame una foto de otra página y armo ejercicios con ella."
+    ),
+    "turn_stop": ("Está bien, lo dejamos aquí por hoy. Lo que ya hicieron quedó guardado."),
+    "turn_about_practice": (
+        "Eso lo manejo con comandos: /status muestra el avance, /schedule cambia la hora, "
+        "/exam anota una fecha de examen y /pause detiene sin borrar nada."
+    ),
+    "turn_off_task": ("Aquí sigo, para la práctica. Cuando quieran, seguimos con la pregunta."),
+    "turn_explain_unavailable": (
+        "Ahora mismo no logro explicarlo mejor. Prueba la pregunta otra vez y con lo que "
+        "respondas te ayudo."
+    ),
+    "turn_blocked": (
+        "Eso no lo puedo responder, pero seguimos: vuelve a la pregunta de la práctica."
+    ),
     "quarantine_unsure": "No sé todavía",
     "quarantine_deferred": (
         "La respuesta queda pendiente, sin cambiar el avance. Puedes revisarla con el "

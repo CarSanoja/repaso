@@ -140,9 +140,11 @@ def test_closing_the_session_leaves_none_of_the_child_words_behind(settings):
 
     close_window(services, family.id, SESSION)
 
-    assert read_window(services, family.id, SESSION).notes == []
     record = services.store.get_record(family.id, note_key(SESSION, "m1"))
     assert "la mitad" not in str(record.payload)
+    kept = read_window(services, family.id, SESSION).notes[0]
+    assert kept.said == ""
+    assert (kept.item_id, kept.correct) == (item.id, False)
 
 
 def test_the_window_carries_an_expiry_stamp(settings):

@@ -12,8 +12,10 @@ from repaso.schemas.common import Lang
 from repaso.schemas.family import FamilyStatus
 from repaso.schemas.session import Capsule, PracticeSession, SessionStatus
 from repaso.schemas.study_session import StudySessionStatus
+from repaso.schemas.turn import TurnIntent
 from tests.orchestration.fixtures import make_services, seed_family
 from tests.orchestration.test_study_flow import EQUIVALENCE_TOPIC, seed_bank
+from tests.orchestration.test_turn_router import reads
 
 START = datetime(2026, 9, 1, 19, 0, tzinfo=UTC)
 
@@ -150,6 +152,7 @@ async def test_the_daily_capsule_still_gets_the_answer_when_no_sitting_is_open(s
         )
     )
 
+    reads(services, TurnIntent.ANSWER)
     services.models[ModelRole.STRUCTURED].enqueue({"action": "continue", "reason": "fixture"})
     run = await handle_channel_message(services, inbound(family.chat_ref, "2/4", ref="m3"))
 

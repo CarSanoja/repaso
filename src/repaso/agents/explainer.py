@@ -5,6 +5,7 @@ from repaso.agents.prompts.explainer import (
     PROMPT_VERSION,
     REQUEST,
     SAID_LINE,
+    STATUS_ANSWERED,
     STATUS_RIGHT,
     STATUS_WAITING,
     STATUS_WRONG,
@@ -18,7 +19,10 @@ from repaso.schemas.turn import ExplainContext, Explanation
 def status_block(context: ExplainContext) -> str:
     if not context.answered:
         return STATUS_WAITING
-    template = STATUS_RIGHT if context.was_correct else STATUS_WRONG
+    if context.was_correct is None:
+        template = STATUS_ANSWERED
+    else:
+        template = STATUS_RIGHT if context.was_correct else STATUS_WRONG
     return template.format(answer_key=context.answer_key, rationale=context.rationale)
 
 

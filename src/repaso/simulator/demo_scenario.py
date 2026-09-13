@@ -12,6 +12,7 @@ from repaso.core.orchestration.runner import active_session, current_item
 from repaso.i18n import msg
 from repaso.schemas.common import Lang
 from repaso.schemas.item import ItemKind
+from repaso.simulator.authored_turns import AUTHORED_TURNS, AuthoredSchemaModel
 from repaso.simulator.demo_followup import checkpoint, followup
 from repaso.simulator.demo_ledger import close_ledger, harness_reading
 from repaso.simulator.demo_material import (
@@ -61,9 +62,9 @@ def scenario_settings(data_dir: Path, cassette_path: Path | None = None) -> Sett
 
 
 def build_scenario_services(settings: Settings) -> Services:
-    return assemble_services(
-        settings, SimClock(START), {role: build_model(role, settings) for role in ModelRole}
-    )
+    models = {role: build_model(role, settings) for role in ModelRole}
+    models[ModelRole.CLASSIFY] = AuthoredSchemaModel(models[ModelRole.CLASSIFY], AUTHORED_TURNS)
+    return assemble_services(settings, SimClock(START), models)
 
 
 def fill_inbox(settings: Settings) -> None:

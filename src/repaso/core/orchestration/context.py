@@ -116,6 +116,7 @@ class Route(StrEnum):
     MATERIAL = "material"
     ANSWER = "answer"
     STUDY = "study"
+    CONVERSATION = "conversation"
     MEDIA_UNAVAILABLE = "media_unavailable"
     NO_STUDENT = "no_student"
     UNROUTED_CALLBACK = "unrouted_callback"

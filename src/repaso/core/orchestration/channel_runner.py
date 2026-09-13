@@ -26,11 +26,11 @@ from repaso.core.orchestration.study_channel import (
     handle_study_text,
     study_latency,
 )
+from repaso.core.orchestration.turn_router import answering_student, route_answer, route_turn
 from repaso.schemas.channel import InboundMessage, OutboundMessage
 from repaso.schemas.events import DomainEvent, EventKind
 from repaso.schemas.family import Family
 from repaso.schemas.operation import OperationRecord
-from repaso.schemas.student import Student
 
 ESCALATION_PREFIX = "esc:"
 QUARANTINE_PREFIX = "quar:"
@@ -131,7 +131,7 @@ async def _route_family(services: Services, run: ChannelRun, family: Family) -> 
         if study is not None:
             apply_study(run, study)
             return
-        await _route_answer(services, run, family, text)
+        await route_turn(services, run, family, text)
 
 
 def _route_command(services: Services, run: ChannelRun, family: Family, text: str) -> None:
@@ -194,29 +194,16 @@ async def _route_callback(services: Services, run: ChannelRun, family: Family, d
     if data.startswith(ANSWER_PREFIX):
         chosen = _button_answer(services, family, data)
         if chosen is not None:
-            await _route_answer(services, run, family, chosen)
+            await route_answer(services, run, family, chosen)
             return
     run.route = Route.UNROUTED_CALLBACK
-
-
-async def _route_answer(services: Services, run: ChannelRun, family: Family, text: str) -> None:
-    student = _answering_student(services, family)
-    if student is None:
-        run.route = Route.IGNORED
-        return
-    run.student = student
-    run.route = Route.ANSWER
-    latency = _latency(services, student.id, run.message.received_at)
-    run.tutor = await handle_answer(
-        services, family, student, text, latency, response_id=f"chat:{run.message.message_ref}"
-    )
 
 
 def _button_answer(services: Services, family: Family, data: str) -> str | None:
     parts = data.split(":")
     if len(parts) not in (3, ANSWER_CALLBACK_PARTS) or not parts[-1].isdigit():
         return None
-    student = _answering_student(services, family)
+    student = answering_student(services, family)
     if student is None:
         return None
     session = active_session(services, student.id)
@@ -231,20 +218,6 @@ def _button_answer(services: Services, family: Family, data: str) -> str | None:
     if not 0 <= index < len(item.options):
         return None
     return item.options[index]
-
-
-def _answering_student(services: Services, family: Family) -> Student | None:
-    for student in services.store.list_students(family.id):
-        if active_session(services, student.id) is not None:
-            return student
-    return None
-
-
-def _latency(services: Services, student_id: str, received_at: datetime) -> float:
-    session = active_session(services, student_id)
-    if session is None or session.delivered_at is None:
-        return 0.0
-    return max(0.0, (received_at - session.delivered_at).total_seconds())
 
 
 def _escalation_event(

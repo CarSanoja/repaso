@@ -62,8 +62,20 @@ def remember(
 
 def close_window(services: Services, family_id: FamilyId, session_id: SessionId) -> None:
     for record in services.store.list_records(family_id, window_prefix(session_id)):
+        entry = record.payload.get("note")
+        if not entry or not entry.get("said"):
+            continue
         turn_id = record.key.removeprefix(window_prefix(session_id))
-        _write(services, family_id, session_id, turn_id, None)
+        _write(services, family_id, session_id, turn_id, entry | {"said": ""})
+
+
+def last_answer(window: TurnWindow, item_id: str | None) -> TurnNote | None:
+    answers = [
+        entry
+        for entry in window.notes
+        if entry.intent is TurnIntent.ANSWER and entry.item_id == item_id
+    ]
+    return answers[-1] if answers else None
 
 
 def tried_approaches(window: TurnWindow) -> list[str]:

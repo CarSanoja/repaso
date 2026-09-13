@@ -170,6 +170,33 @@ MESSAGES = {
         "This pilot supports fourth-grade math: printed-text photos and single-page PDFs "
         "(up to 10 MB). Voice and handwriting are not available yet."
     ),
+    "turn_not_understood": ("I did not follow that. Can you write it again in other words?"),
+    "turn_practice_done": (
+        "Today's practice is already complete, so I am not counting that as an answer. "
+        "The next one arrives tomorrow at {time}."
+    ),
+    "turn_practice_not_sent": (
+        "I have not sent today's practice yet; it arrives at {time}. If you want to get "
+        "ahead, send me a photo of the school page and I will prepare the exercises."
+    ),
+    "turn_more_tomorrow": (
+        "That is every question for today. The new practice arrives tomorrow at {time}. "
+        "If you want to keep going now, send me a photo of another page and I will build "
+        "exercises from it."
+    ),
+    "turn_stop": ("That is fine, we stop here for today. What you already did is saved."),
+    "turn_about_practice": (
+        "I handle that with commands: /status shows progress, /schedule changes the time, "
+        "/exam notes an exam date and /pause stops without deleting anything."
+    ),
+    "turn_off_task": (
+        "I am still here, for the practice. Whenever you are ready, we carry on with the question."
+    ),
+    "turn_explain_unavailable": (
+        "I cannot explain it better right now. Try the question again and I will help "
+        "with whatever you answer."
+    ),
+    "turn_blocked": ("I cannot answer that, but we carry on: go back to the practice question."),
     "quarantine_unsure": "Not sure yet",
     "quarantine_deferred": (
         "The answer stays pending and does not change progress. You can review it with "

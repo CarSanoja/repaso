@@ -13,6 +13,13 @@ DEFAULTS: dict[str, dict[str, Any]] = {
     "TeacherNote": {"text": NOTE_TEXT},
     "OpenGrade": {"correct": True, "rubric_points": 2.0, "confidence": 0.92, "feedback": "Bien."},
     "IntakeDecision": {"safe": True, "reasons": []},
+    "TurnDecision": {
+        "intent": "answer",
+        "speaker": "child",
+        "asked_for": "Responde la pregunta.",
+        "answer_text": "",
+    },
+    "Explanation": {"text": "Piensa en partir la barra en partes iguales.", "approach": "bar"},
 }
 
 
