@@ -1,0 +1,142 @@
+{
+ "measured_at": "2026-09-13",
+ "region": "us-east-1",
+ "what_this_is": "An evening of extra practice walked end to end against Amazon Bedrock on-demand inference, four times, through the same channel entry point a Telegram webhook reaches. Ten turns an evening: open a sitting, answer right, answer wrong, say \"no entiendo\", ask \"¿por qué?\", ask for another, switch topic, come back after an hour, come back the next day, read /status. Wall clock is measured around the whole turn, from the inbound message to the last outbound message. Dollars are read from the repository's own per-call ledger and priced from the dated table in src/repaso/config/pricing.py. The concurrency, drilling and erasure rows are deterministic runs over the real code paths with a simulated clock and a local store, and make no model call.",
+ "what_this_is_not": "Not a family result. One synthetic family, one child, one grade, one language, one bank of twelve authored questions, on one day. Four evenings is not a rate and eight explanation turns are not a latency distribution. No teacher read any explanation and no child typed any message. None of the model calls carried the Bedrock guardrail the deployed runtime attaches, so every latency here is a floor; the project's own latency work puts that guardrail at roughly +700 ms a screened message. Nothing was deployed and no AWS resource was written: the only calls made were Bedrock inference.",
+ "evenings": 4,
+ "turns_an_evening": 10,
+ "gate_ms": 60000,
+ "wall_clock_ms": {
+  "a_turn_that_explains": {
+   "what_it_is": "the family writes something that names no option and the reader calls it a request to explain: one reader call and one explainer call",
+   "samples": 8,
+   "p50": 4202,
+   "p95": 5095,
+   "min": 3716,
+   "max": 5095,
+   "inside_the_gate": "11.8x at the slowest turn observed"
+  },
+  "a_turn_the_reader_reads_and_nothing_else": {
+   "what_it_is": "the family asks for another question, or writes with no sitting open: one reader call",
+   "samples": 8,
+   "p50": 654,
+   "p95": 699,
+   "min": 542,
+   "max": 699
+  },
+  "a_turn_with_no_model_in_it": {
+   "what_it_is": "opening a sitting, grading a multiple-choice answer, switching topic, /status",
+   "samples": 24,
+   "p50": 9,
+   "p95": 20,
+   "min": 3,
+   "max": 22
+  }
+ },
+ "spend": {
+  "ledgered_calls": 24,
+  "usd_from_the_ledger": 0.0533,
+  "usd_an_evening": 0.013325,
+  "calls_an_evening": 6,
+  "by_role": {
+   "structured": {
+    "calls": 16,
+    "model": "us.amazon.nova-lite-v1:0",
+    "input_tokens": 18402,
+    "output_tokens": 503,
+    "usd": 0.0012,
+    "p50_ms": 651.8,
+    "p95_ms": 1089.0
+   },
+   "generate": {
+    "calls": 8,
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "input_tokens": 10369,
+    "output_tokens": 1395,
+    "usd": 0.052,
+    "p50_ms": 3323.4,
+    "p95_ms": 4310.7
+   }
+  },
+  "outcomes": "24 of 24 answered"
+ },
+ "what_a_sitting_costs": {
+  "serving_a_question": 0,
+  "grading_a_typed_answer_that_names_an_option": 0,
+  "grading_a_button": 0,
+  "asking_for_an_explanation": 2,
+  "asking_for_another_question": 1,
+  "note": "call counts a turn, asserted by tests that the reader and the explainer are never touched when a message names one of the item's own options"
+ },
+ "an_hour_of_drilling": {
+  "how": "a simulated hour through the runtime entry point, a bank of 24 questions, /sesion re-opened the moment a sitting closes",
+  "all_correct_one_answer_every_2_min": {
+   "attempts": 6,
+   "episodes": 6,
+   "model_calls": 0,
+   "stopped_by": "three questions a sitting, then six a day"
+  },
+  "all_wrong_one_answer_every_2_min": {
+   "attempts": 3,
+   "episodes": 3,
+   "model_calls": 0,
+   "stopped_by": "three wrong in a row, which now ends the day"
+  },
+  "all_correct_one_answer_every_4_min": {
+   "attempts": 6,
+   "episodes": 6,
+   "model_calls": 0,
+   "stopped_by": "three questions a sitting, then six a day"
+  },
+  "what_the_family_is_told": "Por hoy ya practicaron bastante, y descansar también es parte de aprender. Mañana seguimos con lo que costó hoy.",
+  "what_is_never_said": "no reply names a call count, a budget, a quota or a limit on the service"
+ },
+ "the_learning_state_moves_once": {
+  "two_messages_at_once": {
+   "how": "asyncio.gather over two invoke_async calls for one family, both naming an option of the question on screen",
+   "attempts": 1,
+   "grade_rows": 1,
+   "episodes": 1,
+   "answered_positions": 1
+  },
+  "a_message_older_than_the_question_on_screen": {
+   "attempts": 0,
+   "grade_rows": 0,
+   "episodes": 0,
+   "reply": "study_out_of_step, then the question again"
+  },
+  "a_redelivered_webhook_mid_sitting": {
+   "attempts": 1,
+   "grade_rows": 1,
+   "episodes": 1,
+   "replies_identical": true
+  },
+  "the_same_webhook_twice_at_once": {
+   "attempts": 1,
+   "grade_rows": 1,
+   "episodes": 1
+  },
+  "a_button_from_a_sitting_abandoned_between_question_and_answer": {
+   "attempts": 0,
+   "grade_rows": 0,
+   "episodes": 0,
+   "sitting": "abandoned by the system, not reopened"
+  },
+  "before_the_guard": "the same two-messages-at-once run measured 2 attempts, 2 grade rows and 2 episodes, the second of them against a question that had been served but never delivered to anyone"
+ },
+ "forget_after_a_sitting": {
+  "how": "one sitting with an explanation request and one graded answer, then the forget:yes callback through the runtime entry point",
+  "study_rows": 0,
+  "episode_rows": 0,
+  "turn_window_rows": 0,
+  "grade_rows": 0,
+  "mastery": null,
+  "family": null,
+  "students": 0,
+  "what_the_child_wrote": "not present in any row under the family scope or the chat scope after erasure"
+ },
+ "suite": {
+  "base_279ff0d": {"passed": 1791, "skipped": 56},
+  "tip": {"passed": 2043, "skipped": 66}
+ }
+}
