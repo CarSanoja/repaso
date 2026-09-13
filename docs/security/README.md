@@ -226,7 +226,8 @@ caught before any model sees them. Both benign controls passed. Nine live calls 
 low-cost model, well under one US cent of inference.
 
 This measures the two-stage screener. It does not measure the Bedrock guardrail's prompt-attack
-filter, which is a third layer that does not exist yet — see **What deployment must prove**.
+filter as a defence — that third layer is now measured, but what it caught was the tutor's own
+scaffolding rather than an attack; see the next section.
 
 ### Out of the model
 
@@ -237,6 +238,19 @@ guardrail id and version into the Strands Bedrock model, which applies them to t
 itself in both directions; `apply_guardrail` on intake is a separate, earlier use of the same
 guardrail. Both are wired. The input direction additionally carries the deterministic screener
 and PII redaction of the child's answer before the grader sees it.
+
+**Being wired was not the same as working, and the difference was measured late.** Every model
+figure in this repository was collected with no guardrail on the call, and the only cost ascribed
+to attaching one was latency. Run through the attached configuration, the turn reader returned
+nothing on 23 of 51 lines — ordinary schoolwork included — because the untrusted-content sentence
+this repository wraps around a family message reads to the prompt-attack filter as a prompt
+attack, and because wrapping a child's sentence in that scaffolding raises the harm filters'
+reading of it. The reader now hands the model the family's message as the turn and carries its
+briefing in the system prompt, which the Converse guardrail does not screen on input, so what the
+attached guardrail sees is the text the screener already passed. Measured in
+[the safeguard path evidence](../evidence/safeguard-path-2026-09-13.md). Two things follow for
+anyone changing a prompt: a user turn on a guarded call is read by the prompt-attack filter, and
+the system prompt not being screened is current service behaviour rather than a guarantee.
 
 **The output side was inheriting a library default, and now states its intent.**
 `guardrail_config` passed an id and a version and nothing else, so every other knob took the
