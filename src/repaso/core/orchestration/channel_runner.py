@@ -129,7 +129,9 @@ async def _route_family(services: Services, run: ChannelRun, family: Family) -> 
         await route_material(services, run, family)
         return
     if text:
-        study = handle_study_text(services, family, text, study_latency(services, family, run))
+        study = await handle_study_text(
+            services, family, text, study_latency(services, family, run), message.message_ref
+        )
         if study is not None:
             apply_study(run, study)
             return

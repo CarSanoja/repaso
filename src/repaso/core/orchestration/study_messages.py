@@ -25,6 +25,10 @@ def say(family: Family, key: str, buttons: list[Button] | None = None, **kwargs)
     )
 
 
+def plain(family: Family, text: str) -> OutboundMessage:
+    return OutboundMessage(channel=family.channel, chat_ref=family.chat_ref, text=text)
+
+
 def study_buttons(session_id: str, item: Item) -> list[Button]:
     if item.kind is not ItemKind.MCQ:
         return []

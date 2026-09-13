@@ -5,6 +5,7 @@ from repaso.core.harness.study_session import (
     is_expired,
     transition,
 )
+from repaso.core.orchestration import turn_memory
 from repaso.core.orchestration.context import Services
 from repaso.schemas.family import Family
 from repaso.schemas.operation import OperationRecord
@@ -25,6 +26,8 @@ def record_key(session: StudySession) -> str:
 
 def put_study_session(services: Services, session: StudySession) -> None:
     expires = services.clock.now() + timedelta(days=RETENTION_DAYS)
+    if session.status not in OPEN_STATUSES:
+        turn_memory.close_window(services, session.family_id, session.id)
     services.store.put_record(
         OperationRecord(
             scope=session.family_id,
