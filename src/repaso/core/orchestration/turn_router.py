@@ -5,9 +5,9 @@ from repaso.agents.turn_reader import read_turn
 from repaso.config.models import ModelRole
 from repaso.core.orchestration import turn_memory
 from repaso.core.orchestration.context import ChannelRun, Route, Services
-from repaso.core.orchestration.ingest_holds import QUOTE_LENGTH, held_kind
+from repaso.core.orchestration.ingest_holds import QUOTE_LENGTH, held_kind, offered_reply
 from repaso.core.orchestration.runner import active_session, current_item, handle_answer
-from repaso.core.orchestration.turn_replies import reply_to, speak
+from repaso.core.orchestration.turn_replies import reply_to, say, speak
 from repaso.core.orchestration.turn_target import (
     answering_student,
     build_target,
@@ -144,4 +144,8 @@ def hold_blocked(
             created_at=services.clock.now(),
         )
     )
+    offered = offered_reply(verdict)
+    if offered:
+        say(run, family, offered)
+        return
     speak(run, family, "turn_blocked")

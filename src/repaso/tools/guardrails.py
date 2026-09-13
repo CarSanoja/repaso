@@ -102,6 +102,7 @@ GLYPH_TABLE = str.maketrans("l", "i")
 class ScreenVerdict(FrozenStrictModel):
     safe: bool
     reasons: list[str] = []
+    reply: str = ""
 
 
 @runtime_checkable
@@ -140,10 +141,22 @@ def _assessment_names(response: dict[str, Any]) -> list[str]:
     return names
 
 
+def _offered_reply(response: dict[str, Any]) -> str:
+    for output in response.get("outputs") or []:
+        offered = (output.get("text") or "").strip()
+        if offered:
+            return offered
+    return ""
+
+
 def _verdict_from_response(response: dict[str, Any]) -> ScreenVerdict:
     if response.get("action") != GUARDRAIL_INTERVENED:
         return ScreenVerdict(safe=True)
-    return ScreenVerdict(safe=False, reasons=_assessment_names(response) or [GUARDRAIL_INTERVENED])
+    return ScreenVerdict(
+        safe=False,
+        reasons=_assessment_names(response) or [GUARDRAIL_INTERVENED],
+        reply=_offered_reply(response),
+    )
 
 
 class LocalScreener:

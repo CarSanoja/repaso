@@ -24,6 +24,12 @@ def held_kind(verdict: ScreenVerdict) -> QuarantineKind:
     return QuarantineKind.INJECTION_ATTEMPT if named else QuarantineKind.UNSAFE_CONTENT
 
 
+def offered_reply(verdict: ScreenVerdict) -> str:
+    if held_kind(verdict) is QuarantineKind.INJECTION_ATTEMPT:
+        return ""
+    return verdict.reply.strip()
+
+
 def say(run: IngestRun, key: str, **kwargs) -> None:
     run.outbound.append(
         OutboundMessage(

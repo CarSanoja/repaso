@@ -8,6 +8,10 @@ from repaso.tools.guardrails import (
 )
 
 CLIENT_PATH = "repaso.config.clients.bedrock_runtime_client"
+BLOCKED_INPUT = (
+    "No puedo ayudarte con eso. Si necesitas hablar de algo asi, "
+    "busca a tu representante o a un adulto de confianza."
+)
 
 
 class FakeGuardrailClient:
@@ -108,6 +112,37 @@ def test_intervention_maps_to_unsafe_with_the_assessment_names(monkeypatch):
     verdict = BedrockGuardrailsScreener("gr-1", "7").screen("texto")
     assert verdict.safe is False
     assert verdict.reasons == ["topicPolicy", "contentPolicy"]
+
+
+def test_the_reply_the_guardrail_offers_reaches_the_verdict(monkeypatch):
+    response = {
+        "action": "GUARDRAIL_INTERVENED",
+        "assessments": [{"contentPolicy": {}}],
+        "outputs": [{"text": BLOCKED_INPUT}],
+    }
+    install_client(monkeypatch, FakeGuardrailClient(response=response))
+    assert BedrockGuardrailsScreener("gr-1", "7").screen("texto").reply == BLOCKED_INPUT
+
+
+def test_a_blank_offered_reply_is_not_carried(monkeypatch):
+    response = {
+        "action": "GUARDRAIL_INTERVENED",
+        "assessments": [{"contentPolicy": {}}],
+        "outputs": [{"text": "   "}, {"text": BLOCKED_INPUT}],
+    }
+    install_client(monkeypatch, FakeGuardrailClient(response=response))
+    assert BedrockGuardrailsScreener("gr-1", "7").screen("texto").reply == BLOCKED_INPUT
+
+
+def test_a_message_that_passes_carries_no_reply(monkeypatch):
+    install_client(monkeypatch, FakeGuardrailClient(response={"action": "NONE"}))
+    assert BedrockGuardrailsScreener("gr-1", "7").screen("texto").reply == ""
+
+
+def test_an_intervention_that_offers_nothing_carries_no_reply(monkeypatch):
+    response = {"action": "GUARDRAIL_INTERVENED", "assessments": [{"contentPolicy": {}}]}
+    install_client(monkeypatch, FakeGuardrailClient(response=response))
+    assert BedrockGuardrailsScreener("gr-1", "7").screen("texto").reply == ""
 
 
 def test_intervention_without_assessments_still_carries_a_reason(monkeypatch):
