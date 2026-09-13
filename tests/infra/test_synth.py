@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from repaso.config.models import DEFAULT_MODELS, ModelRole
 from repaso.core.harness.retention import TTL_ATTRIBUTE
 from tests.infra.fixtures import only, template
 
@@ -27,6 +28,7 @@ IMAGE_CONTEXT = {
     "src",
 }
 INVITE_CODES_SECRET = "repaso/pilot-invite-codes"
+READER_MEASURED_ON = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
 
 
 @pytest.mark.parametrize("name", STACKS)
@@ -135,6 +137,13 @@ def test_the_runtime_environment_holds_no_empty_or_forbidden_value(assembly):
     assert "REPASO_TELEGRAM_TOKEN" not in environment
     assert environment["REPASO_MODEL_GENERATE"]
     assert environment["REPASO_LOCAL_DATA_DIR"] == "/tmp/repaso"
+
+
+def test_the_runtime_overrides_the_role_that_reads_a_child_for_distress(assembly):
+    environment = only(assembly, "agentcore", RUNTIME)["EnvironmentVariables"]
+
+    assert environment["REPASO_MODEL_STRUCTURED"] == READER_MEASURED_ON
+    assert DEFAULT_MODELS[ModelRole.STRUCTURED] != READER_MEASURED_ON
 
 
 def role_statements(assembly: Path) -> list[dict]:
