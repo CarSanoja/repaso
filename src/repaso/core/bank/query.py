@@ -3,7 +3,7 @@ from datetime import date, timedelta
 
 from repaso.core.harness.bloom import BLOOM_ORDER, bloom_distance
 from repaso.schemas.common import CompetencyId, ItemId, Lang
-from repaso.schemas.item import BloomLevel, Item, ItemStatus
+from repaso.schemas.item import BloomLevel, Item, ItemKind, ItemStatus
 from repaso.schemas.schedule import SpacedItemState
 
 UNTAGGED_RANK = len(BLOOM_ORDER)
@@ -13,6 +13,7 @@ RECENT_DAYS = 2
 @dataclass(frozen=True)
 class BankQuery:
     competency_ids: tuple[CompetencyId, ...] = ()
+    kinds: tuple[ItemKind, ...] = ()
     bloom: BloomLevel | None = None
     lang: Lang | None = None
     grade: int | None = None
@@ -30,6 +31,8 @@ def matches(item: Item, query: BankQuery) -> bool:
     if item.id in query.exclude:
         return False
     if query.competency_ids and item.competency_id not in query.competency_ids:
+        return False
+    if query.kinds and item.kind not in query.kinds:
         return False
     return _tag_fits(item.lang, query.lang) and _tag_fits(item.grade, query.grade)
 

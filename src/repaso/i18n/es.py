@@ -174,4 +174,68 @@ MESSAGES = {
         "La respuesta queda pendiente, sin cambiar el avance. Puedes revisarla con el "
         "docente y volver a estos botones."
     ),
+    "study_open": (
+        "Vamos con {topic}. Tengo {count} preguntas guardadas de ese tema. "
+        "Respondan juntos, sin apuro."
+    ),
+    "study_open_any": (
+        "Vamos con un repaso corto. Tengo {count} preguntas guardadas. "
+        "Respondan juntos, sin apuro."
+    ),
+    "study_question": "Pregunta {asked} de {total}:",
+    "study_right": "¡Correcto! {rationale}",
+    "study_wrong": "Todavía no. La respuesta era: {answer}. {rationale}",
+    "study_thin": (
+        "De {topic} solo tengo {count} por ahora. Practicamos con esas. Si me mandas una "
+        "foto de esa página del cuaderno, preparo más para la próxima."
+    ),
+    "study_thin_any": (
+        "Por ahora solo tengo {count} preguntas guardadas. Practicamos con esas. Si me "
+        "mandas una foto de la página que están viendo, preparo más."
+    ),
+    "study_empty": (
+        "Todavía no tengo preguntas de {topic}. Mándame una foto de esa página del "
+        "cuaderno y armo la práctica de ese tema."
+    ),
+    "study_empty_any": (
+        "Todavía no tengo preguntas guardadas para practicar ahora. Mándame una foto de "
+        "la página que están viendo y armo la práctica."
+    ),
+    "study_topic_unknown": (
+        "No ubico ese tema en el temario de matemática de {grade}.º grado con el que "
+        "trabajo. Puedes decirme el tema con otras palabras, o mandarme una foto de la "
+        "página."
+    ),
+    "study_day_done": (
+        "Por hoy ya practicaron bastante, y descansar también es parte de aprender. "
+        "Mañana seguimos con lo que costó hoy."
+    ),
+    "study_done": (
+        "Terminamos esta práctica: {correct} de {answered}. Lo que costó hoy es justo lo "
+        "que vamos a repasar."
+    ),
+    "study_done_time": (
+        "Llevamos {minutes} minutos, así que lo dejamos aquí: {correct} de {answered}. "
+        "Un rato corto todos los días rinde más que uno largo."
+    ),
+    "study_done_day": (
+        "Con esta cerramos por hoy: {correct} de {answered}. Mañana seguimos."
+    ),
+    "study_done_enough": (
+        "Estas últimas están costando, y seguir así cansa más de lo que enseña. Dejémoslo "
+        "aquí por hoy: {correct} de {answered}. Este tema lo repasamos mañana con calma."
+    ),
+    "study_done_bank": (
+        "Se me acabaron las preguntas que tenía guardadas: {correct} de {answered}."
+    ),
+    "study_paused": "Práctica en pausa. Cuando quieran seguir, escriban /sesion.",
+    "study_resumed": "Seguimos donde quedaron.",
+    "study_one_child": (
+        "En este chat sigo a un solo estudiante por ahora, así que no sé de quién sería "
+        "esta práctica."
+    ),
+    "study_stale_button": (
+        "Esa pregunta era de una práctica que ya cerramos. Si quieren otra ronda, "
+        "escriban /sesion."
+    ),
 }

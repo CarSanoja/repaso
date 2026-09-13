@@ -173,4 +173,67 @@ MESSAGES = {
         "The answer stays pending and does not change progress. You can review it with "
         "the teacher and return to these buttons."
     ),
+    "study_open": (
+        "Let's work on {topic}. I have {count} questions saved on it. "
+        "Answer them together, no rush."
+    ),
+    "study_open_any": (
+        "Let's do a short review. I have {count} questions saved. "
+        "Answer them together, no rush."
+    ),
+    "study_question": "Question {asked} of {total}:",
+    "study_right": "That's right! {rationale}",
+    "study_wrong": "Not yet. The answer was: {answer}. {rationale}",
+    "study_thin": (
+        "On {topic} I only have {count} for now. We'll practise with those. Send me a "
+        "photo of that page from the notebook and I'll prepare more for next time."
+    ),
+    "study_thin_any": (
+        "For now I only have {count} saved questions. We'll practise with those. Send me "
+        "a photo of the page you are on and I'll prepare more."
+    ),
+    "study_empty": (
+        "I don't have any questions on {topic} yet. Send me a photo of that page from the "
+        "notebook and I'll build the practice for it."
+    ),
+    "study_empty_any": (
+        "I have no saved questions to practise right now. Send me a photo of the page you "
+        "are on and I'll build the practice."
+    ),
+    "study_topic_unknown": (
+        "I can't place that topic in the grade {grade} maths syllabus I work with. Try "
+        "other words for it, or send me a photo of the page."
+    ),
+    "study_day_done": (
+        "That's enough practice for today, and resting is part of learning too. "
+        "Tomorrow we pick up what was hard today."
+    ),
+    "study_done": (
+        "That's the end of this practice: {correct} of {answered}. What was hard today is "
+        "exactly what we'll review."
+    ),
+    "study_done_time": (
+        "We've been at it {minutes} minutes, so we'll stop here: {correct} of {answered}. "
+        "A short spell every day beats one long one."
+    ),
+    "study_done_day": (
+        "That closes today: {correct} of {answered}. We'll carry on tomorrow."
+    ),
+    "study_done_enough": (
+        "These last ones are hard going, and pushing on tires more than it teaches. Let's "
+        "stop here today: {correct} of {answered}. We'll review this topic calmly tomorrow."
+    ),
+    "study_done_bank": (
+        "I've run out of the questions I had saved: {correct} of {answered}."
+    ),
+    "study_paused": "Practice paused. Write /session when you want to carry on.",
+    "study_resumed": "Picking up where you left off.",
+    "study_one_child": (
+        "In this chat I follow a single student for now, so I don't know whose practice "
+        "this would be."
+    ),
+    "study_stale_button": (
+        "That question belonged to a practice we already closed. Write /session for "
+        "another round."
+    ),
 }
