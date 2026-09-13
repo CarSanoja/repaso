@@ -135,7 +135,10 @@ MESSAGES = {
         "Lo anoto con gusto, pero me falta el día. ¿Cuándo es? Por ejemplo: 12/09 o 12-09-2026."
     ),
     "escalation_ack": ("Listo: {option}."),
-    "mastery_summary": "{mastered} dominados · {developing} en camino · {struggling} difíciles",
+    "progress_summary": (
+        "{holds} con evidencia de que le salen · {needs_help} donde necesita ayuda · "
+        "{unknown} aún sin medir (pocas respuestas todavía)"
+    ),
     "paused": "Pausado. Nada se borra; /resume retoma cuando quieran.",
     "resumed": "¡De vuelta! Mañana a las {time} llega la próxima práctica.",
     "forget_confirm": (
@@ -165,7 +168,10 @@ MESSAGES = {
         "te invitó que te avise cuando se abra un cupo."
     ),
     "unknown_command": "No conozco ese comando. /help muestra lo que sé hacer.",
-    "status_line": "{alias}: {sessions} prácticas, dominio {mastery_map}, racha {streak}.",
+    "status_line": (
+        "{alias}: {answers} preguntas respondidas, {correct} correctas, en {topics} temas.\n"
+        "{progress_map}."
+    ),
     "supported_material": (
         "En este piloto trabajamos matemática de cuarto grado con fotos de texto impreso "
         "y PDF de una página (hasta 10 MB). Voz y manuscritos todavía no están "

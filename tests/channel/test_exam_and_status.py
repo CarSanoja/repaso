@@ -114,24 +114,52 @@ def test_forget_erases_the_exam_dates(store, family):
     assert store.list_exam_dates("s1") == []
 
 
-def test_status_reports_real_numbers(store, family):
+def test_status_reports_the_counts_behind_every_claim(store, family):
     store.put_mastery(mastery("c1", MasteryLevel.MASTERED, attempts=6, streak=3))
     store.put_mastery(mastery("c2", MasteryLevel.DEVELOPING, attempts=4, streak=1))
     store.put_mastery(mastery("c3", MasteryLevel.STRUGGLING, attempts=2, streak=-2))
 
     reply = handle_command(family, store.list_students("f1"), "/status", store, NOW)
 
-    summary = msg("mastery_summary", ES, mastered=1, developing=1, struggling=1)
+    summary = msg("progress_summary", ES, holds=0, needs_help=0, unknown=3)
     assert said(reply) == msg(
-        "status_line", ES, alias="Leo", sessions=12, mastery_map=summary, streak=3
+        "status_line", ES, alias="Leo", answers=12, correct=6, topics=3, progress_map=summary
     )
     assert "-" not in said(reply)
+
+
+def test_a_never_measured_topic_is_not_reported_as_going_well(store, family):
+    store.put_mastery(mastery("c1", MasteryLevel.UNKNOWN, attempts=2, streak=1))
+
+    said_text = said(handle_command(family, store.list_students("f1"), "/status", store, NOW))
+
+    assert "1 aún sin medir" in said_text
+    assert said_text.startswith("Leo: 2 preguntas respondidas, 1 correctas, en 1 temas.")
+
+
+def test_status_never_claims_a_topic_is_mastered(store, family):
+    store.put_mastery(
+        MasteryState(
+            student_id="s1",
+            competency_id="c1",
+            ema_accuracy=0.95,
+            attempts=3,
+            correct=3,
+            streak=3,
+            level=MasteryLevel.MASTERED,
+        )
+    )
+
+    said_text = said(handle_command(family, store.list_students("f1"), "/status", store, NOW))
+
+    assert "domin" not in said_text.lower()
+    assert "1 aún sin medir" in said_text
 
 
 def test_status_without_history_shows_zeros_instead_of_placeholders(store, family):
     reply = handle_command(family, store.list_students("f1"), "/status", store, NOW)
 
-    summary = msg("mastery_summary", ES, mastered=0, developing=0, struggling=0)
+    summary = msg("progress_summary", ES, holds=0, needs_help=0, unknown=0)
     assert said(reply) == msg(
-        "status_line", ES, alias="Leo", sessions=0, mastery_map=summary, streak=0
+        "status_line", ES, alias="Leo", answers=0, correct=0, topics=0, progress_map=summary
     )

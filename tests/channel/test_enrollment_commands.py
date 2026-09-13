@@ -166,8 +166,10 @@ def test_status_reports_one_line_per_student(store, family):
     other = students[0].model_copy(update={"id": "s2", "alias": "Estrella"})
     reply = handle_command(family, [*students, other], "/status", store, NOW)
     assert len(reply.messages) == 2
-    summary = msg("mastery_summary", ES, mastered=0, developing=0, struggling=0)
-    line = msg("status_line", ES, alias="Estrella", sessions=0, mastery_map=summary, streak=0)
+    summary = msg("progress_summary", ES, holds=0, needs_help=0, unknown=0)
+    line = msg(
+        "status_line", ES, alias="Estrella", answers=0, correct=0, topics=0, progress_map=summary
+    )
     assert said(reply, 1) == line
 
 

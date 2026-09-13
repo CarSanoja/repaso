@@ -134,7 +134,10 @@ MESSAGES = {
         "Happy to note it, but I'm missing the day. When is it? For example: 12/09 or 12-09-2026."
     ),
     "escalation_ack": ("Done: {option}."),
-    "mastery_summary": "{mastered} mastered · {developing} on track · {struggling} tricky",
+    "progress_summary": (
+        "{holds} with evidence they are getting them · {needs_help} needing help · "
+        "{unknown} not measured yet (too few answers so far)"
+    ),
     "paused": "Paused. Nothing is erased; /resume picks up whenever you want.",
     "resumed": "Back! Tomorrow at {time} the next practice arrives.",
     "forget_confirm": (
@@ -165,7 +168,10 @@ MESSAGES = {
         "invited you to write when a place opens up."
     ),
     "unknown_command": "I don't know that command. /help shows what I can do.",
-    "status_line": "{alias}: {sessions} practices, mastery {mastery_map}, streak {streak}.",
+    "status_line": (
+        "{alias}: {answers} questions answered, {correct} correct, across {topics} topics.\n"
+        "{progress_map}."
+    ),
     "supported_material": (
         "This pilot supports fourth-grade math: printed-text photos and single-page PDFs "
         "(up to 10 MB). Voice and handwriting are not available yet."

@@ -1,23 +1,21 @@
-from collections import Counter
 from dataclasses import dataclass, field
 from datetime import date, datetime, time
 
 from repaso.channel.telegram.enrollment import parse_practice_time
 from repaso.channel.telegram.exam_dates import split_exam_argument
+from repaso.core.harness.progress import ProgressReadout, read_progress
 from repaso.i18n import msg
 from repaso.schemas.channel import Button, OutboundMessage
 from repaso.schemas.common import Lang
 from repaso.schemas.events import DomainEvent, EventKind
 from repaso.schemas.family import Family, FamilyStatus
-from repaso.schemas.mastery import MasteryLevel, MasteryState
+from repaso.schemas.mastery import MasteryState
 from repaso.schemas.schedule import ExamDate
 from repaso.schemas.student import Student
 from repaso.tools.state_store import StateStore
 
 FORGET_YES = "forget:yes"
 FORGET_NO = "forget:no"
-STRONG_LEVELS = (MasteryLevel.MASTERED, MasteryLevel.SOLID)
-GROWING_LEVELS = (MasteryLevel.DEVELOPING, MasteryLevel.UNKNOWN)
 
 
 @dataclass
@@ -118,26 +116,27 @@ def _status(family: Family, students: list[Student], store: StateStore) -> Comma
 
 
 def _status_line(family: Family, student: Student, states: list[MasteryState]) -> OutboundMessage:
+    readout = read_progress(states)
     return _out(
         family,
         "status_line",
         None,
         None,
         alias=student.alias,
-        sessions=sum(state.attempts for state in states),
-        mastery_map=_mastery_summary(states, family.lang),
-        streak=max([state.streak for state in states] + [0]),
+        answers=readout.answers,
+        correct=readout.correct,
+        topics=readout.practised,
+        progress_map=_progress_summary(readout, family.lang),
     )
 
 
-def _mastery_summary(states: list[MasteryState], lang: Lang) -> str:
-    counts = Counter(state.level for state in states)
+def _progress_summary(readout: ProgressReadout, lang: Lang) -> str:
     return msg(
-        "mastery_summary",
+        "progress_summary",
         lang,
-        mastered=sum(counts[level] for level in STRONG_LEVELS),
-        developing=sum(counts[level] for level in GROWING_LEVELS),
-        struggling=counts[MasteryLevel.STRUGGLING],
+        holds=readout.holds,
+        needs_help=readout.needs_help,
+        unknown=readout.not_yet_known,
     )
 
 
