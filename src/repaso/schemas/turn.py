@@ -66,3 +66,25 @@ class TurnNote(FrozenStrictModel):
 class TurnWindow(StrictBaseModel):
     session_id: SessionId
     notes: list[TurnNote] = []
+
+
+class ExplainContext(FrozenStrictModel):
+    lang: Lang
+    grade: int
+    competency: str
+    question: str
+    description: str = ""
+    options: Annotated[list[str], NULL_IS_EMPTY] = []
+    asked_for: str = ""
+    answer_given: str = ""
+    child_said: str = ""
+    answered: bool = False
+    was_correct: bool | None = None
+    answer_key: str = ""
+    rationale: str = ""
+    already_tried: Annotated[list[str], NULL_IS_EMPTY] = []
+
+
+class Explanation(StrictBaseModel):
+    text: str
+    approach: Annotated[str, NULL_IS_BLANK] = ""

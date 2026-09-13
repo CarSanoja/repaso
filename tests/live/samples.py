@@ -5,7 +5,7 @@ from repaso.schemas.common import Lang
 from repaso.schemas.competency import Competency
 from repaso.schemas.item import Item, ItemKind, ItemStatus
 from repaso.schemas.provenance import Provenance, Source
-from repaso.schemas.turn import PracticeState, TurnContext
+from repaso.schemas.turn import ExplainContext, PracticeState, TurnContext
 
 GRADE = 4
 SUBJECT = "matemática"
@@ -118,4 +118,21 @@ TURN_CONTEXT = TurnContext(
         "turn 1 | intent: answer | question: Segun la pagina del cuaderno, cual fraccion "
         'es equivalente a 3/4? | wrote: "3/8" | harness graded: incorrect'
     ],
+)
+
+EXPLAIN_CONTEXT = ExplainContext(
+    lang=Lang.ES,
+    grade=GRADE,
+    competency=COMPETENCY.name,
+    description=COMPETENCY.description,
+    question=MCQ_ITEM.stem,
+    options=list(MCQ_ITEM.options),
+    asked_for="Pide que le expliquen otra vez por que 6/8 equivale a 3/4.",
+    answer_given="3/8",
+    child_said=TURN_MESSAGE,
+    answered=True,
+    was_correct=False,
+    answer_key=MCQ_ITEM.answer_key,
+    rationale=MCQ_ITEM.rationale,
+    already_tried=["multiply both terms by two"],
 )

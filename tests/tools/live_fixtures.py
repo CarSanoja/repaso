@@ -45,6 +45,10 @@ PAYLOADS: dict[str, dict] = {
         "feedback": "Muy bien explicado.",
     },
     "ProbeAnswer": {"answer": "6/8"},
+    "Explanation": {
+        "text": "Pinta 3 de 4 partes de una barra y 6 de 8 de otra igual.",
+        "approach": "bar split into equal parts",
+    },
     "TurnDecision": {
         "intent": "explanation",
         "speaker": "child",

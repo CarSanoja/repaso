@@ -5,6 +5,7 @@ from repaso.agents.answerability_probe import ProbeAnswer, render_blind
 from repaso.agents.capsule_composer import Snippet
 from repaso.agents.competency_mapper import MappingDecision, request_text
 from repaso.agents.escalation_composer import TeacherNote
+from repaso.agents.explainer import explain_prompt
 from repaso.agents.grader import OpenGrade, open_prompt
 from repaso.agents.intake_screener import IntakeDecision, frame_untrusted
 from repaso.agents.item_critic import FLAW_VOCABULARY, CriticFinding, render_review
@@ -18,13 +19,14 @@ from repaso.agents.prompts import (
     intake_screener,
 )
 from repaso.agents.prompts import competency_mapper as mapper_prompt
+from repaso.agents.prompts import explainer as explainer_prompt
 from repaso.agents.prompts import item_critic as critic_prompt
 from repaso.agents.prompts import item_generator as generator_prompt
 from repaso.agents.prompts import turn_reader as turn_reader_prompt
 from repaso.agents.turn_reader import read_prompt
 from repaso.config.models import ModelRole
 from repaso.schemas.common import FrozenStrictModel, Lang
-from repaso.schemas.turn import TurnDecision
+from repaso.schemas.turn import Explanation, TurnDecision
 from tests.live import samples
 
 MAPPING_LIMIT = 3
@@ -132,6 +134,12 @@ def build_registry() -> tuple[SchemaProbe, ...]:
             output_schema=TurnDecision,
             system=turn_reader_prompt.SYSTEM.format(lang=LANG.value),
             prompt=read_prompt(samples.TURN_CONTEXT, samples.TURN_MESSAGE),
+        ),
+        SchemaProbe(
+            role=ModelRole.STRUCTURED,
+            output_schema=Explanation,
+            system=explainer_prompt.SYSTEM.format(grade=samples.GRADE, lang=LANG.value),
+            prompt=explain_prompt(samples.EXPLAIN_CONTEXT),
         ),
         SchemaProbe(
             role=ModelRole.PROBE,
