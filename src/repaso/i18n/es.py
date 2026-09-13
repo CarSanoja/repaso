@@ -305,6 +305,10 @@ MESSAGES = {
         "Esa respuesta salió antes de que te mandara esta pregunta, así que no la "
         "cuento aquí. Esta es la que toca ahora:"
     ),
+    "study_enough_today": (
+        "Por hoy lo dejamos aquí: las últimas estaban costando y descansar también "
+        "es parte de aprender. Mañana lo retomamos con calma."
+    ),
     "study_not_an_answer": (
         "No supe cuál opción elegiste, así que no la cuento como respuesta. Toca una "
         "opción o escribe su número."

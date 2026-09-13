@@ -12,7 +12,11 @@ from repaso.core.harness.study_session import (
 from repaso.core.orchestration.context import Services
 from repaso.core.orchestration.study_bank import available_items
 from repaso.core.orchestration.study_messages import closing, plain, question, say
-from repaso.core.orchestration.study_store import items_served_today, put_study_session
+from repaso.core.orchestration.study_store import (
+    items_served_today,
+    put_study_session,
+    stopped_for_today,
+)
 from repaso.core.orchestration.study_topics import resolve_topic
 from repaso.i18n import counted
 from repaso.i18n.competencies import competency_label
@@ -58,6 +62,8 @@ def start_sitting(
     goal = _goal_for(services, family, student, topic)
     if goal is None:
         return StudyReply([say(family, "study_topic_unknown", grade=student.grade)])
+    if stopped_for_today(services, family, student):
+        return StudyReply([say(family, "study_enough_today")])
     budget = budget_for(items_served_today(services, family, student))
     if budget.questions < 1:
         return StudyReply([say(family, "study_day_done")])

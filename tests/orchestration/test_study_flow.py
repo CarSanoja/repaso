@@ -17,6 +17,8 @@ from tests.bank.items import FRACTIONS, make_item
 from tests.orchestration.fixtures import make_services, seed_family
 
 EQUIVALENCE_TOPIC = "fracciones equivalentes"
+AREA = "math.g4.geometry.area_rectangles"
+AREA_TOPIC = "área de rectángulos"
 
 
 def seed_bank(services, family, count: int, competency_id: str = FRACTIONS, **fields) -> list[str]:
@@ -267,3 +269,45 @@ def test_the_capsule_questions_of_today_are_not_served_again_in_a_sitting(settin
     reply = start_sitting(services, family, student, EQUIVALENCE_TOPIC)
 
     assert set(reply.session.progress.served).isdisjoint(set(ids[:2]))
+
+
+def test_the_day_ends_where_the_sentence_said_it_would(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    seed_bank(services, family, 12)
+
+    reply = start_sitting(services, family, student, EQUIVALENCE_TOPIC)
+    for _ in range(CONSECUTIVE_WRONG_STOP):
+        reply = answer(services, family, student, reply, "1/3")
+    again = start_sitting(services, family, student, EQUIVALENCE_TOPIC)
+
+    assert again.session is None
+    assert "mañana" in texts(again).lower()
+    assert open_sitting(services, family, student) is None
+
+
+def test_another_topic_is_not_a_way_around_the_day_ending(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    seed_bank(services, family, 12)
+    seed_bank(services, family, 4, competency_id=AREA)
+
+    reply = start_sitting(services, family, student, EQUIVALENCE_TOPIC)
+    for _ in range(CONSECUTIVE_WRONG_STOP):
+        reply = answer(services, family, student, reply, "1/3")
+
+    assert start_sitting(services, family, student, AREA_TOPIC).session is None
+    assert start_sitting(services, family, student).session is None
+
+
+def test_tomorrow_the_practice_opens_again(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    seed_bank(services, family, 12)
+
+    reply = start_sitting(services, family, student, EQUIVALENCE_TOPIC)
+    for _ in range(CONSECUTIVE_WRONG_STOP):
+        reply = answer(services, family, student, reply, "1/3")
+    services.clock.advance(days=1)
+
+    assert start_sitting(services, family, student, EQUIVALENCE_TOPIC).session is not None

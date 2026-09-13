@@ -304,6 +304,10 @@ MESSAGES = {
         "That answer was sent before I sent you this question, so I am not counting "
         "it here. This is the one you are on now:"
     ),
+    "study_enough_today": (
+        "We are leaving it here for today: the last few were hard going, and resting "
+        "is part of learning too. We will pick it up calmly tomorrow."
+    ),
     "study_not_an_answer": (
         "I couldn't tell which option you picked, so I'm not counting it as an answer. "
         "Tap an option or write its number."

@@ -10,7 +10,12 @@ from repaso.core.orchestration.context import Services
 from repaso.schemas.family import Family
 from repaso.schemas.operation import OperationRecord
 from repaso.schemas.student import Student
-from repaso.schemas.study_session import Actor, StudySession, StudySessionStatus
+from repaso.schemas.study_session import (
+    Actor,
+    CloseReason,
+    StudySession,
+    StudySessionStatus,
+)
 
 STUDY_PREFIX = "study#"
 RETENTION_DAYS = 7
@@ -69,6 +74,14 @@ def capsule_items_served(services: Services, student: Student) -> int:
     if session is None or session.capsule is None:
         return 0
     return min(session.current_item_index, len(session.capsule.item_ids))
+
+
+def stopped_for_today(services: Services, family: Family, student: Student) -> bool:
+    today = services.clock.today()
+    return any(
+        session.closed_reason is CloseReason.ENOUGH_FOR_TODAY
+        for session in list_study_sessions(services, family.id, student.id, today)
+    )
 
 
 def items_served_today(services: Services, family: Family, student: Student) -> int:
