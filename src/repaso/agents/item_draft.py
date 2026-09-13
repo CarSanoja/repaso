@@ -2,13 +2,13 @@ from datetime import datetime
 from hashlib import sha256
 from typing import Annotated
 
-from pydantic import BaseModel
+from pydantic import BaseModel, BeforeValidator
 
 from repaso.core.harness.bloom import parse_bloom
 from repaso.schemas.common import CompetencyId, ItemId, Lang
 from repaso.schemas.competency import Competency
 from repaso.schemas.item import Item, ItemKind, ItemStatus
-from repaso.schemas.nullable import NULL_IS_BLANK, NULL_IS_EMPTY
+from repaso.schemas.nullable import NULL_IS_EMPTY
 from repaso.schemas.provenance import Provenance, Source
 
 ITEM_ID_LENGTH = 32
@@ -18,10 +18,19 @@ MIN_DIFFICULTY = 1
 MAX_DIFFICULTY = 5
 
 
+def _as_text(value: object) -> str:
+    if value is None:
+        return ""
+    return value if isinstance(value, str) else str(value)
+
+
+AS_TEXT = BeforeValidator(_as_text)
+
+
 class ItemDraft(BaseModel):
     kind: ItemKind
     difficulty: int
-    bloom: Annotated[str, NULL_IS_BLANK] = ""
+    bloom: Annotated[str, AS_TEXT] = ""
     stem: str
     options: Annotated[list[str], NULL_IS_EMPTY] = []
     answer_key: str

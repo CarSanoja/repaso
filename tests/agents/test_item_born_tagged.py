@@ -60,3 +60,24 @@ async def test_a_tag_is_a_property_of_the_question_and_never_of_the_child(compet
     assert item.bloom is BloomLevel.ANALYZE
     assert "student_id" not in fields
     assert "mastery" not in fields
+
+
+async def test_a_level_that_arrives_as_a_number_is_read_as_text_not_a_crash(competency):
+    batch = GeneratedBatch.model_validate(
+        {"items": [{**mcq_draft().model_dump(), "bloom": 3}]}
+    )
+    model = LocalPlaybackModel([batch])
+    drafted = await generate_items(MATERIAL, competency, 1, 4, model, NOW)
+
+    assert batch.items[0].bloom == "3"
+    assert drafted.items[0].bloom is None
+
+
+async def test_a_level_that_arrives_as_null_is_read_as_untagged(competency):
+    batch = GeneratedBatch.model_validate(
+        {"items": [{**mcq_draft().model_dump(), "bloom": None}]}
+    )
+    model = LocalPlaybackModel([batch])
+    drafted = await generate_items(MATERIAL, competency, 1, 4, model, NOW)
+
+    assert drafted.items[0].bloom is None
