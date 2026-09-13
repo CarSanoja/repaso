@@ -23,7 +23,7 @@ from repaso.agents.prompts import explainer as explainer_prompt
 from repaso.agents.prompts import item_critic as critic_prompt
 from repaso.agents.prompts import item_generator as generator_prompt
 from repaso.agents.prompts import turn_reader as turn_reader_prompt
-from repaso.agents.turn_reader import read_prompt
+from repaso.agents.turn_reader import briefing
 from repaso.config.models import ModelRole
 from repaso.schemas.common import FrozenStrictModel, Lang
 from repaso.schemas.turn import Explanation, TurnDecision
@@ -132,8 +132,8 @@ def build_registry() -> tuple[SchemaProbe, ...]:
         SchemaProbe(
             role=ModelRole.STRUCTURED,
             output_schema=TurnDecision,
-            system=turn_reader_prompt.SYSTEM.format(lang=LANG.value),
-            prompt=read_prompt(samples.TURN_CONTEXT, samples.TURN_MESSAGE),
+            system=f"{turn_reader_prompt.SYSTEM.format(lang=LANG.value)}\n{briefing(samples.TURN_CONTEXT)}",
+            prompt=samples.TURN_MESSAGE,
         ),
         SchemaProbe(
             role=ModelRole.GENERATE,

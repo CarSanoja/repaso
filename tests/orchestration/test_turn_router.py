@@ -24,9 +24,11 @@ class Recorder(LocalPlaybackModel):
     def __init__(self, script=None):
         super().__init__(script)
         self.prompts: list[str] = []
+        self.systems: list[str] = []
 
     async def structured_output(self, output_model, prompt, system_prompt=None, **kwargs):
         self.prompts.append(prompt[0]["content"][0]["text"])
+        self.systems.append(system_prompt or "")
         async for event in super().structured_output(
             output_model, prompt, system_prompt=system_prompt, **kwargs
         ):
@@ -199,10 +201,11 @@ async def test_what_happened_earlier_tonight_reaches_the_next_turn(settings):
     await says(services, family, "2/8")
     await says(services, family, "¿por qué?")
 
-    prompt = services.models[READ_ROLE].prompts[-1]
-    assert "Earlier in tonight's practice" in prompt
-    assert 'wrote: "2/8"' in prompt
-    assert "harness graded: incorrect" in prompt
+    briefed = services.models[READ_ROLE].systems[-1]
+    assert "Earlier in tonight's practice" in briefed
+    assert 'wrote: "2/8"' in briefed
+    assert "harness graded: incorrect" in briefed
+    assert services.models[READ_ROLE].prompts[-1] == "¿por qué?"
 
 
 async def test_an_explanation_asked_before_answering_is_not_told_the_answer(settings):

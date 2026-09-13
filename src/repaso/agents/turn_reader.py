@@ -1,5 +1,4 @@
 from repaso.agents.base import StructuredCallFailed, structured
-from repaso.agents.intake_screener import frame_untrusted
 from repaso.agents.prompts.turn_reader import (
     HISTORY_HEADER,
     PROMPT_VERSION,
@@ -38,14 +37,13 @@ def history_block(context: TurnContext) -> str:
     return HISTORY_HEADER.format(lines="\n".join(context.history))
 
 
-def read_prompt(context: TurnContext, text: str) -> str:
+def briefing(context: TurnContext) -> str:
     return REQUEST.format(
         lang=context.lang.value,
         grade=context.grade,
         competency=context.competency,
         state=state_block(context),
         history=history_block(context),
-        message=frame_untrusted(text),
     )
 
 
@@ -54,8 +52,8 @@ async def read_turn(text: str, context: TurnContext, model) -> TurnDecision | No
         return await structured(
             model,
             TurnDecision,
-            SYSTEM.format(lang=context.lang.value),
-            read_prompt(context, text),
+            f"{SYSTEM.format(lang=context.lang.value)}\n{briefing(context)}",
+            text,
             PROMPT_VERSION,
         )
     except StructuredCallFailed:
