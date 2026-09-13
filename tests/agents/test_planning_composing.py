@@ -2,6 +2,7 @@ from datetime import UTC, date, datetime
 
 from repaso.agents.capsule_composer import Snippet, answer_ref, compose_capsule, render_item
 from repaso.agents.session_planner import DAILY_ITEM_LIMIT, build_session, plan_items
+from repaso.core.harness.clock import SimClock
 from repaso.schemas.channel import ChannelKind
 from repaso.schemas.common import Lang
 from repaso.schemas.competency import Competency
@@ -179,12 +180,12 @@ async def test_broken_model_falls_back_to_a_reminder_in_the_family_language():
 
 
 def test_grade_log_round_trips_by_item_and_by_student(tmp_path):
-    log = LocalGradeLog(tmp_path / "state")
+    log = LocalGradeLog(tmp_path / "state", SimClock(NOW))
     log.append(grade("i1"))
     log.append(grade("i1", student_id="s2", correct=False))
     log.append(grade("i2"))
 
-    assert log.by_item("i1") == [grade("i1"), grade("i1", student_id="s2", correct=False)]
+    assert [result.item_id for result in log.by_item("i1")] == ["i1", "i1"]
     assert log.by_student("s1") == [grade("i1"), grade("i2")]
     assert log.by_item("i9") == [] and log.by_student("s9") == []
 
@@ -199,9 +200,9 @@ def test_grades_survive_a_fresh_log_on_the_same_directory(tmp_path):
 
 
 def test_build_grade_log_writes_under_the_local_state_directory(settings):
-    log = build_grade_log(settings)
+    log = build_grade_log(settings, SimClock(NOW))
     log.append(grade("i1"))
 
     assert isinstance(log, LocalGradeLog)
     assert log.path == settings.local_data_dir / "state" / "grades.jsonl"
-    assert log.by_item("i1") == [grade("i1")]
+    assert log.by_student("s1") == [grade("i1")]

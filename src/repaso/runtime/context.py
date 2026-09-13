@@ -55,7 +55,7 @@ def build_runtime_services(settings: Settings) -> Services:
         settings=settings,
         clock=clock,
         store=store,
-        grade_log=build_grade_log(settings),
+        grade_log=build_grade_log(settings, clock),
         media=build_media_store(settings),
         fetcher=build_media_fetcher(settings, token, telemetry),
         extractor=build_text_extractor(settings),

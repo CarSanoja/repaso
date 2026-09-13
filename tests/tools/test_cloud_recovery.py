@@ -58,7 +58,7 @@ def cloud_services(settings, monkeypatch):
         monkeypatch.setattr("repaso.config.clients.s3_client", lambda: media)
         s = make_services(settings)
         s.store = DynamoStateStore("repaso")
-        s.grade_log = DynamoGradeLog("repaso")
+        s.grade_log = DynamoGradeLog("repaso", s.clock)
         s.media = S3MediaStore("repaso-synthetic-media")
         yield s, client, media
 

@@ -27,7 +27,7 @@ def assemble_services(
         settings=settings,
         clock=clock,
         store=build_state_store(settings),
-        grade_log=build_grade_log(settings),
+        grade_log=build_grade_log(settings, clock),
         media=build_media_store(settings),
         fetcher=build_media_fetcher(settings),
         extractor=build_text_extractor(settings),

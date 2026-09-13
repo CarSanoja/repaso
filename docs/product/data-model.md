@@ -8,11 +8,14 @@ DynamoDB stores typed documents with `pk`, `sk` and a JSON-compatible `doc`. Fam
 | Item / material | Family and material provenance; only explicit system/simulated items enter the common production bank |
 | Session | Planned IDs, capsule, outgoing delivery snapshot, actual acknowledgment time and progress |
 | Grade | Stable ID, origin, provisional/human final outcome, superseded ID and original response time |
+| Answer text | The words the student wrote, on their own row beside the grade, expiring after seven days |
 | Mastery / spaced state | Learning heuristics, updated together with a unique outcome marker |
 | Operation | Scoped pending request, invocation result, enrollment/response/ingest journal, outbox receipts or notice |
 | Adaptation | Student and competency, requested action, difficulty/type/load limits, source and expiry |
 | Erasure receipt | Temporary opaque callback hash allowing deletion/acknowledgment recovery; completed record has no family/chat ID |
 | Lease / budget | Expiring owner lease and atomically reserved family/global daily call counters |
+
+A grade row carries the attempt and not the words: what the student wrote is written beside it on a row that expires, so the outcome stays readable after the sentence behind it is gone. Reads join the two while both exist.
 
 Human final grades supersede provisional grades in signal and quality calculations. Correct and incorrect reviews both count; unresolved answers stay out of final-only quality statistics. Student grade reads merge primary copies with legacy index entries and deduplicate.
 

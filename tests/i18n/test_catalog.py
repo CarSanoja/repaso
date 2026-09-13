@@ -53,6 +53,14 @@ def test_consent_names_everything_enrollment_goes_on_to_ask_for():
             assert item in consent, (lang, item)
 
 
+def test_consent_says_the_words_go_and_the_attempt_stays():
+    expected = {Lang.ES: ("7 días", "el intento"), Lang.EN: ("7 days", "the attempt")}
+    for lang, phrases in expected.items():
+        consent = msg("consent", lang).lower()
+        for phrase in phrases:
+            assert phrase in consent, (lang, phrase)
+
+
 def test_consent_states_both_retention_windows():
     for lang in (Lang.ES, Lang.EN):
         consent = msg("consent", lang)

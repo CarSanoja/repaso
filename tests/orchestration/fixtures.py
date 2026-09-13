@@ -28,12 +28,13 @@ START = datetime(2026, 9, 1, 19, 0, tzinfo=UTC)
 FRACTIONS = "math.g4.fractions.equivalence"
 
 
-def make_services(settings) -> Services:
+def make_services(settings, clock: SimClock | None = None) -> Services:
+    clock = clock or SimClock(START)
     return Services(
         settings=settings,
-        clock=SimClock(START),
+        clock=clock,
         store=build_state_store(settings),
-        grade_log=build_grade_log(settings),
+        grade_log=build_grade_log(settings, clock),
         media=build_media_store(settings),
         fetcher=build_media_fetcher(settings),
         extractor=build_text_extractor(settings),

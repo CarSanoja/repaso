@@ -90,7 +90,9 @@ revoke access. The table now uses the same key as the bucket.
 unless a policy refuses it. Both buckets now deny every request arriving without TLS and every
 request below TLS 1.2.
 
-**Retention.** Material expires after 90 days by lifecycle rule. Operational logs are retained
+**Retention.** Material expires after 90 days by lifecycle rule. The text a child writes in an
+answer expires after seven days, on a row of its own, and the attempt it belonged to stays:
+that there was one, whether it was right, and when. Operational logs are retained
 seven days, which is what the log groups are configured for. Backups are the 35-day
 point-in-time-recovery window. The consent states the seven and the thirty-five, and both are
 accurate.
