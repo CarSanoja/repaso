@@ -300,6 +300,10 @@ MESSAGES = {
         "For now I only have 1 saved question. We'll practise with that one. Send me "
         "a photo of the page you are on and I'll prepare more."
     ),
+    "study_out_of_step": (
+        "That answer was sent before I sent you this question, so I am not counting "
+        "it here. This is the one you are on now:"
+    ),
     "study_not_an_answer": (
         "I couldn't tell which option you picked, so I'm not counting it as an answer. "
         "Tap an option or write its number."

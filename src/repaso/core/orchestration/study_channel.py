@@ -97,7 +97,7 @@ def handle_study_callback(
     chosen = _chosen_option(services, sitting, parts)
     if chosen is None:
         return StudyReply([say(family, "study_stale_button")])
-    return answer_sitting(services, family, student, sitting, chosen, latency_seconds)
+    return answer_sitting(services, family, student, sitting, chosen, max(0.0, latency_seconds))
 
 
 def _chosen_option(services: Services, sitting, parts: list[str]) -> str | None:
@@ -123,4 +123,4 @@ def study_latency(services: Services, family: Family, run: ChannelRun) -> float:
     sitting = open_sitting(services, family, student) if student else None
     if sitting is None:
         return 0.0
-    return max(0.0, (run.message.received_at - sitting.last_event_at).total_seconds())
+    return (run.message.received_at - sitting.last_event_at).total_seconds()

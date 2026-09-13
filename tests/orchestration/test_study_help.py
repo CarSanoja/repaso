@@ -1,6 +1,7 @@
+from repaso.agents.capsule_composer import answer_ref
 from repaso.config.models import ModelRole
 from repaso.core.orchestration.study_answer import current_item
-from repaso.core.orchestration.study_channel import handle_study_text
+from repaso.core.orchestration.study_channel import handle_study_callback, handle_study_text
 from repaso.core.orchestration.study_flow import start_sitting
 from repaso.core.orchestration.study_store import open_sitting
 from repaso.core.orchestration.turn_memory import read_window, tried_approaches
@@ -180,3 +181,39 @@ async def test_what_the_child_wrote_does_not_outlive_the_sitting(settings):
     assert open_sitting(services, family, student) is None
     assert [note.said for note in window.notes] == [""]
     assert tried_approaches(window) == ["bar split"]
+
+
+async def test_an_answer_sent_before_the_question_was_served_is_not_graded(settings):
+    services, family, student, session = open_with(settings)
+    item = current_item(services, session)
+
+    reply = await handle_study_text(services, family, item.answer_key, -0.4, "m1")
+
+    assert msg("study_out_of_step", family.lang) in texts(reply)
+    assert item.stem in texts(reply)
+    assert reply.session.progress.answered_keys == []
+    assert services.store.get_mastery(student.id, item.competency_id) is None
+
+
+async def test_an_extraction_from_a_message_that_predates_the_question_is_not_graded(settings):
+    services, family, student, session = open_with(settings)
+    item = current_item(services, session)
+    reads(services, TurnIntent.ANSWER, answer_text=item.answer_key)
+
+    reply = await handle_study_text(services, family, f"creo que {item.answer_key}", -0.4, "m1")
+
+    assert msg("study_out_of_step", family.lang) in texts(reply)
+    assert services.store.get_mastery(student.id, item.competency_id) is None
+
+
+async def test_a_button_tapped_the_instant_the_question_appears_is_still_graded(settings):
+    services, family, student, session = open_with(settings)
+    item = current_item(services, session)
+    position = item.options.index(item.answer_key) + 1
+
+    reply = handle_study_callback(
+        services, family, f"sit:{answer_ref(session.id, item.id)}:{position}", -0.4
+    )
+
+    assert reply.session.progress.correct == 1
+    assert services.store.get_mastery(student.id, item.competency_id).attempts == 1

@@ -41,6 +41,19 @@ def _unread(services: Services, family: Family, session: StudySession) -> StudyR
     return _with_question(services, family, session, say(family, "study_not_an_answer"))
 
 
+def _graded(
+    services: Services,
+    family: Family,
+    student: Student,
+    session: StudySession,
+    chosen: str,
+    latency_seconds: float,
+) -> StudyReply:
+    if latency_seconds < 0:
+        return _with_question(services, family, session, say(family, "study_out_of_step"))
+    return answer_sitting(services, family, student, session, chosen, latency_seconds)
+
+
 async def answer_or_help(
     services: Services,
     family: Family,
@@ -51,8 +64,10 @@ async def answer_or_help(
     turn_id: str,
 ) -> StudyReply:
     item = current_item(services, session)
-    if item is None or picked_option(item, text) is not None:
-        return answer_sitting(services, family, student, session, text, latency_seconds)
+    if item is None:
+        return answer_sitting(services, family, student, session, text, max(0.0, latency_seconds))
+    if picked_option(item, text) is not None:
+        return _graded(services, family, student, session, text, latency_seconds)
     said = services.screener.redact(text)
     window = turn_memory.read_window(services, family.id, session.id)
     decision = await read_turn(
@@ -86,7 +101,7 @@ async def _act(
         chosen = picked_option(item, decision.answer_text.strip())
         if chosen is None:
             return _unread(services, family, session)
-        return answer_sitting(services, family, student, session, chosen, latency_seconds)
+        return _graded(services, family, student, session, chosen, latency_seconds)
     if decision.intent is TurnIntent.STOP:
         return close_sitting(services, family, session, Actor.FAMILY)
     explained = ""
