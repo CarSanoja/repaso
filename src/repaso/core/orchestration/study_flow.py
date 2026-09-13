@@ -47,7 +47,7 @@ def _about(
     return plain(family, counted(name, family.lang, count, topic=goal.label))
 
 
-def _goal_for(services: Services, family: Family, student: Student, topic: str) -> StudyGoal | None:
+def goal_for(services: Services, family: Family, student: Student, topic: str) -> StudyGoal | None:
     if not topic.strip():
         return StudyGoal()
     competency = resolve_topic(services, student.grade, topic, family.lang)
@@ -57,9 +57,13 @@ def _goal_for(services: Services, family: Family, student: Student, topic: str) 
 
 
 def start_sitting(
-    services: Services, family: Family, student: Student, topic: str = ""
+    services: Services,
+    family: Family,
+    student: Student,
+    topic: str = "",
+    goal: StudyGoal | None = None,
 ) -> StudyReply:
-    goal = _goal_for(services, family, student, topic)
+    goal = goal if goal is not None else goal_for(services, family, student, topic)
     if goal is None:
         return StudyReply([say(family, "study_topic_unknown", grade=student.grade)])
     if stopped_for_today(services, family, student):

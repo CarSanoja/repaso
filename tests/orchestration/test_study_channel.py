@@ -4,7 +4,7 @@ from repaso.agents.capsule_composer import answer_ref
 from repaso.config.models import ModelRole
 from repaso.core.orchestration.channel_runner import handle_channel_message
 from repaso.core.orchestration.context import Route
-from repaso.core.orchestration.study_answer import current_item
+from repaso.core.orchestration.study_answer import answer_sitting, current_item
 from repaso.core.orchestration.study_flow import start_sitting
 from repaso.core.orchestration.study_store import open_sitting
 from repaso.schemas.channel import ChannelKind, InboundMessage
@@ -14,7 +14,7 @@ from repaso.schemas.session import Capsule, PracticeSession, SessionStatus
 from repaso.schemas.study_session import StudySessionStatus
 from repaso.schemas.turn import TurnIntent
 from tests.orchestration.fixtures import make_services, seed_family
-from tests.orchestration.test_study_flow import EQUIVALENCE_TOPIC, seed_bank
+from tests.orchestration.test_study_flow import AREA, AREA_TOPIC, EQUIVALENCE_TOPIC, seed_bank
 from tests.orchestration.test_turn_router import reads
 
 START = datetime(2026, 9, 1, 19, 0, tzinfo=UTC)
@@ -227,3 +227,45 @@ async def test_a_paused_family_is_not_handed_practice_it_asked_to_stop(settings)
     assert run.study is None
     assert "/resume" in texts(run)
     assert open_sitting(services, family, student) is None
+
+
+async def test_a_topic_the_syllabus_lacks_does_not_take_the_open_sitting_with_it(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    seed_bank(services, family, 4)
+    opened = start_sitting(services, family, student, EQUIVALENCE_TOPIC)
+
+    run = await handle_channel_message(services, inbound(family.chat_ref, "/tema cocina", "m10"))
+
+    still_open = open_sitting(services, family, student)
+    assert still_open is not None
+    assert still_open.id == opened.session.id
+    assert "temario" in texts(run)
+
+
+async def test_tema_without_a_topic_does_not_take_the_open_sitting_with_it(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    seed_bank(services, family, 4)
+    start_sitting(services, family, student, EQUIVALENCE_TOPIC)
+
+    await handle_channel_message(services, inbound(family.chat_ref, "/tema", "m11"))
+
+    assert open_sitting(services, family, student) is not None
+
+
+async def test_switching_topic_says_how_the_practice_they_were_in_ended(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    seed_bank(services, family, 4)
+    seed_bank(services, family, 4, competency_id=AREA)
+    opened = start_sitting(services, family, student, EQUIVALENCE_TOPIC)
+    item = current_item(services, opened.session)
+    answer_sitting(services, family, student, opened.session, item.answer_key, 9.0)
+
+    run = await handle_channel_message(
+        services, inbound(family.chat_ref, f"/tema {AREA_TOPIC}", "m12")
+    )
+
+    assert "Terminamos esta práctica" in texts(run)
+    assert run.study.goal.label == "área de rectángulos"

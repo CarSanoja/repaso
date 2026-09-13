@@ -7,6 +7,7 @@ from repaso.core.orchestration.study_answer import answer_sitting, current_item
 from repaso.core.orchestration.study_flow import (
     StudyReply,
     close_sitting,
+    goal_for,
     resume_sitting,
     start_sitting,
 )
@@ -16,7 +17,7 @@ from repaso.core.orchestration.study_messages import say
 from repaso.core.orchestration.study_store import open_sitting
 from repaso.schemas.family import Family
 from repaso.schemas.student import Student
-from repaso.schemas.study_session import Actor, StudySessionStatus
+from repaso.schemas.study_session import Actor, StudySession, StudySessionStatus
 
 SESSION_COMMANDS = frozenset({"/sesion", "/sesión", "/session"})
 TOPIC_COMMANDS = frozenset({"/tema", "/topic"})
@@ -52,15 +53,29 @@ def handle_study_command(services: Services, family: Family, text: str) -> Study
             return StudyReply([say(family, "study_none_open")])
         return close_sitting(services, family, sitting, Actor.FAMILY)
     if command in TOPIC_COMMANDS:
-        topic = argument.strip()
-        if not topic:
-            return StudyReply([say(family, "study_ask_topic")])
-        if sitting is not None:
-            close_sitting(services, family, sitting, Actor.FAMILY)
-        return start_sitting(services, family, student, topic)
+        return _switch_topic(services, family, student, sitting, argument.strip())
     if sitting is not None:
         return resume_sitting(services, family, student, sitting)
     return start_sitting(services, family, student)
+
+
+def _switch_topic(
+    services: Services,
+    family: Family,
+    student: Student,
+    sitting: StudySession | None,
+    topic: str,
+) -> StudyReply:
+    if not topic:
+        return StudyReply([say(family, "study_ask_topic")], sitting)
+    goal = goal_for(services, family, student, topic)
+    if goal is None:
+        return StudyReply([say(family, "study_topic_unknown", grade=student.grade)], sitting)
+    closing = close_sitting(services, family, sitting, Actor.FAMILY) if sitting else None
+    started = start_sitting(services, family, student, topic, goal)
+    if closing is not None:
+        started.messages = [*closing.messages, *started.messages]
+    return started
 
 
 async def handle_study_text(
