@@ -1,0 +1,606 @@
+<title>Sesiones, Bloom y memoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Serif:wght@400;600&display=swap">
+<style>
+:root{
+  --ink:#141c27;
+  --ink-soft:#4a5a6d;
+  --ink-faint:#7c8b9c;
+  --paper:#f6f8fa;
+  --panel:#ffffff;
+  --rule:#d5dde5;
+  --rule-soft:#e6ecf1;
+  --have:#61798f;
+  --have-wash:#eaeff4;
+  --new:#136b66;
+  --new-wash:#e0f0ee;
+  --cost:#8d5510;
+  --cost-wash:#f6eddc;
+  --cut:#9a3524;
+  --cut-wash:#f7e7e3;
+  --sp:clamp(16px,4vw,30px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#e6ecf3;--ink-soft:#a9b7c6;--ink-faint:#78889a;
+    --paper:#0f151c;--panel:#18202a;--rule:#2c3845;--rule-soft:#222b36;
+    --have:#8fa7bd;--have-wash:#1b242e;
+    --new:#4fc0b6;--new-wash:#13282a;
+    --cost:#d7a24f;--cost-wash:#2a2214;
+    --cut:#e08f7c;--cut-wash:#2e1a16;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e6ecf3;--ink-soft:#a9b7c6;--ink-faint:#78889a;
+  --paper:#0f151c;--panel:#18202a;--rule:#2c3845;--rule-soft:#222b36;
+  --have:#8fa7bd;--have-wash:#1b242e;
+  --new:#4fc0b6;--new-wash:#13282a;
+  --cost:#d7a24f;--cost-wash:#2a2214;
+  --cut:#e08f7c;--cut-wash:#2e1a16;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Serif",Georgia,serif;font-size:17px;line-height:1.62;
+  margin:0;padding-inline:var(--sp);padding-block:clamp(26px,6vw,54px);
+}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(30px,5vw,50px)}
+h1,h2,h3,.k,.eyebrow,th,.chip{font-family:Chivo,system-ui,sans-serif}
+h1{font-size:clamp(30px,6vw,48px);line-height:1.05;margin:0;font-weight:900;letter-spacing:-.025em;text-wrap:balance}
+h2{font-size:clamp(20px,3.4vw,27px);margin:0;font-weight:700;letter-spacing:-.015em;text-wrap:balance}
+h3{font-size:16px;margin:0;font-weight:700}
+p{margin:0;max-width:66ch}
+.lede{font-size:clamp(18px,2.4vw,21px);color:var(--ink-soft);max-width:60ch}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;color:var(--new)}
+.masthead{display:flex;flex-direction:column;gap:14px;border-bottom:3px solid var(--ink);padding-bottom:22px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 20px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-faint)}
+section{display:flex;flex-direction:column;gap:18px}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;gap:9px 15px;border-bottom:1px solid var(--rule);padding-bottom:9px}
+.chip{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:2px;white-space:nowrap}
+.chip.have{background:var(--have-wash);color:var(--have)}
+.chip.new{background:var(--new-wash);color:var(--new)}
+.chip.cost{background:var(--cost-wash);color:var(--cost)}
+.chip.cut{background:var(--cut-wash);color:var(--cut)}
+figure{margin:0;display:flex;flex-direction:column;gap:10px}
+.fig{overflow-x:auto;background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:18px}
+svg{max-width:100%;height:auto;display:block;margin:0 auto}
+figcaption{font-size:14px;color:var(--ink-faint);max-width:66ch}
+table{border-collapse:collapse;width:100%;font-size:15px}
+.t{overflow-x:auto}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-faint);font-weight:700;padding:0 14px 7px 0;border-bottom:1px solid var(--rule);white-space:nowrap}
+td{padding:9px 14px 9px 0;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+tr.gone td{color:var(--ink-faint)}
+tr.gone td:first-child{text-decoration:line-through}
+.m{font-family:"IBM Plex Mono",monospace;font-size:13.5px;font-variant-numeric:tabular-nums}
+.note{border-left:3px solid var(--new);padding:2px 0 2px 16px;color:var(--ink-soft);max-width:64ch}
+.note.cost{border-left-color:var(--cost)}
+.note.cut{border-left-color:var(--cut)}
+.note strong{color:var(--ink);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:17px;display:flex;flex-direction:column;gap:8px}
+.card.new{border-left:3px solid var(--new)}
+.card.cut{border-left:3px solid var(--cut)}
+.card.cut h3{color:var(--cut)}
+.card p{font-size:15px;color:var(--ink-soft)}
+ul{margin:0;padding-left:19px;color:var(--ink-soft);font-size:15px}
+li{margin-bottom:4px}
+li::marker{color:var(--new)}
+.card.cut li::marker{color:var(--cut)}
+code{font-family:"IBM Plex Mono",monospace;font-size:.88em;background:var(--rule-soft);padding:1px 5px;border-radius:2px}
+.verdict{background:var(--panel);border:1px solid var(--rule);border-top:3px solid var(--new);border-radius:3px;padding:clamp(16px,3vw,24px);display:flex;flex-direction:column;gap:12px}
+.verdict h3{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--new)}
+.verdict p{font-size:16px}
+footer{border-top:3px solid var(--ink);padding-top:18px;font-size:14px;color:var(--ink-faint);display:flex;flex-direction:column;gap:8px}
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Repaso · propuesta de arquitectura, segunda versión</div>
+  <h1>Sesiones, Bloom y memoria</h1>
+  <p class="lede">Cómo pasar de una cápsula diaria de tres preguntas a sesiones que la familia puede pedir — y por qué la mitad de lo que proponía la primera versión no se puede medir, no se puede entregar o no se puede consentir.</p>
+  <div class="meta">
+    <span>Medido contra el repositorio y la cuenta el 12-sep-2026</span>
+    <span>76 llamadas reales a Bedrock · USD 0,052</span>
+    <span>Lo marcado <strong style="color:var(--new)">nuevo</strong> no existe; lo marcado <strong style="color:var(--cut)">cortado</strong> se cae</span>
+  </div>
+</header>
+
+<section>
+  <div class="head"><h2>El cambio de fondo</h2></div>
+  <p>Hoy el sistema <strong>empuja</strong>: un reloj dispara, se arman tres preguntas, se entregan. La familia solo reacciona. Lo que pides es que también pueda <strong>tirar</strong>: pedir un tema, abrir una sesión, seguirla, cambiarla y cerrarla. Eso sigue en pie y es lo primero que hay que construir.</p>
+  <p>Lo que cambió es el resto. La primera versión acompañaba la sesión con un vector Bloom por estudiante, cuatro capas de memoria y preguntas ilustradas. Medí las tres. El vector necesita <span class="m">116</span> días escolares por celda para llegar al mismo umbral de confianza que el sistema ya exige hoy; la capa semántica no la alcanza <code>/forget</code>; y el modelo de imagen que el documento daba por «verificado» rechaza la llamada. Esta versión propone lo que sí se puede sostener.</p>
+  <p class="note"><strong>La regla que no cambia, y que además se amplía.</strong> La flota decide qué y cuándo; el arnés calcula cuánto. Ningún número de dominio ni intervalo sale de un modelo. Y ahora también: <strong>ninguna afirmación sobre una niña sale de un modelo</strong> si el arnés no puede enseñar los intentos que la respaldan.</p>
+</section>
+
+<section>
+  <div class="head"><h2>Lo que se midió para escribir esto</h2><span class="chip cost">evidencia</span></div>
+  <p>Estas siete medidas sostienen el documento. Las demás cifras salen del código del repositorio, de su registro de operaciones o de sus artefactos de evidencia, y cada una se nombra donde aparece. Ninguna es una estimación.</p>
+  <div class="t">
+    <table>
+      <thead><tr><th>Medida</th><th>Resultado</th><th>De dónde sale</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Intentos por celda de dominio</td>
+          <td class="m">233 celdas · 1.011 intentos · mediana 2 · 15,9 % llega a 9</td>
+          <td>Corrida de 14 días y 30 estudiantes, <code>state/mastery.json</code></td>
+        </tr>
+        <tr>
+          <td>Estabilidad del EMA</td>
+          <td class="m">desviación 0,207 con n=12 y 0,210 con n=80</td>
+          <td>Montecarlo sobre el <code>update_mastery</code> real, 20.000 réplicas</td>
+        </tr>
+        <tr>
+          <td>Concordancia de la etiqueta Bloom</td>
+          <td class="m">0,667 entre Sonnet y Haiku (azar 0,25)</td>
+          <td>72 llamadas en vivo, 12 ítems reales del casete, USD 0,020</td>
+        </tr>
+        <tr>
+          <td>Costo de un diagrama SVG</td>
+          <td class="m">USD 0,016 y 9,4 s, incluida la crítica</td>
+          <td>4 llamadas en vivo a Sonnet 4.6, USD 0,032</td>
+        </tr>
+        <tr>
+          <td>Nova Canvas</td>
+          <td class="m">LEGACY · InvokeModel rechazado</td>
+          <td>Llamada real a <code>bedrock-runtime</code> en la cuenta autorizada</td>
+        </tr>
+        <tr>
+          <td>Barrera de contenido sobre imágenes</td>
+          <td class="m">contentPolicyImageUnits 0 en entrada y salida</td>
+          <td><code>apply_guardrail</code> real sobre la barrera desplegada</td>
+        </tr>
+        <tr>
+          <td>Aviso de desenganche con una sola familia</td>
+          <td class="m">no dispara nunca</td>
+          <td>Corrida del <code>outage_days</code> y el disparador reales</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note cost"><strong>Un hallazgo lateral que importa.</strong> El registro de evidencia del 6 de septiembre dice que Bedrock estaba estrangulado en esta cuenta y que por eso no hay ninguna medida de calidad, latencia ni costo real. Hoy ya no lo está: hice 76 llamadas seguidas sin un solo error. La ventana para correr la ablación del crítico y el contraste del calificador contra las respuestas humanas está abierta <em>ahora</em>, y esos dos experimentos deciden más cosas de este plan que cualquier fase.</p>
+</section>
+
+<section>
+  <div class="head"><h2>La arquitectura que queda</h2><span class="chip have">existe</span><span class="chip new">nuevo</span><span class="chip cut">cortado</span></div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 900 452" role="img" aria-label="Capas del sistema: canal, orquestador de sesión y banco de ítems nuevos; flota y arnés sin cambios; la memoria son tres capas que ya existen y una cuarta cortada.">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <g font-family="Chivo,sans-serif" text-anchor="middle">
+          <rect x="30" y="14" width="840" height="52" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="450" y="36" font-size="13" font-weight="700" fill="currentColor">CANAL · Telegram</text>
+          <text x="300" y="55" font-size="11" fill="currentColor">texto · foto · PDF · botones</text>
+          <text x="680" y="55" font-size="11" fill="var(--cut)">hoy solo sendMessage: no hay ruta de medios</text>
+
+          <rect x="30" y="88" width="840" height="58" rx="3" fill="none" stroke="var(--new)" stroke-width="2.5"/>
+          <text x="450" y="111" font-size="13" font-weight="700" fill="var(--new)">ORQUESTADOR DE SESIÓN</text>
+          <text x="450" y="130" font-size="11" fill="var(--new)">abre · continúa · pausa · cambia de tema · cierra · tope de ítems por niño</text>
+
+          <rect x="30" y="168" width="410" height="60" rx="3" fill="none" stroke="var(--new)" stroke-width="2.5"/>
+          <text x="235" y="190" font-size="13" font-weight="700" fill="var(--new)">BANCO DE ÍTEMS</text>
+          <text x="235" y="209" font-size="11" fill="var(--new)">llenado fuera de sesión · criticado · con nivel</text>
+
+          <rect x="460" y="168" width="410" height="60" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="665" y="190" font-size="13" font-weight="700" fill="currentColor">FLOTA · 13 agentes</text>
+          <text x="665" y="209" font-size="11" fill="currentColor">mapea · genera · critica · califica · sin agentes nuevos</text>
+
+          <rect x="30" y="250" width="840" height="58" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="450" y="272" font-size="13" font-weight="700" fill="currentColor">ARNÉS DETERMINISTA</text>
+          <text x="450" y="291" font-size="11" fill="currentColor">SM-2 · un EMA por competencia · disparadores · sin dimensión nueva</text>
+
+          <rect x="30" y="330" width="620" height="68" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="340" y="352" font-size="13" font-weight="700" fill="currentColor">MEMORIA · ya existe, solo hay que nombrarla</text>
+          <text x="130" y="373" font-size="11" fill="currentColor">trabajo</text>
+          <text x="340" y="373" font-size="11" fill="currentColor">episódica</text>
+          <text x="550" y="373" font-size="11" fill="currentColor">de cohorte</text>
+          <text x="130" y="390" font-size="10" fill="currentColor">la sesión viva</text>
+          <text x="340" y="390" font-size="10" fill="currentColor">qué pasó</text>
+          <text x="550" y="390" font-size="10" fill="currentColor">la sección</text>
+
+          <rect x="668" y="330" width="202" height="68" rx="3" fill="none" stroke="var(--cut)" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <text x="769" y="358" font-size="12" font-weight="700" fill="var(--cut)">semántica</text>
+          <text x="769" y="376" font-size="10" fill="var(--cut)">quién es</text>
+          <text x="769" y="391" font-size="10" fill="var(--cut)">fuera de /forget · cortada</text>
+
+          <rect x="30" y="420" width="840" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="450" y="434" font-size="11" font-weight="700" fill="currentColor">ALMACENAMIENTO · DynamoDB · S3 · EventBridge</text>
+        </g>
+        <g stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)">
+          <line x1="450" y1="70" x2="450" y2="82"/>
+          <line x1="235" y1="150" x2="235" y2="162"/>
+          <line x1="665" y1="150" x2="665" y2="162"/>
+          <line x1="450" y1="232" x2="450" y2="244"/>
+          <line x1="450" y1="312" x2="450" y2="324"/>
+          <line x1="450" y1="402" x2="450" y2="414"/>
+        </g>
+        <line x1="456" y1="198" x2="440" y2="198" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="448" y="189" font-size="9" text-anchor="middle" font-family="Chivo,sans-serif" fill="currentColor">llena el banco</text>
+      </svg>
+    </div>
+    <figcaption>Solo dos cajas son nuevas, y una de ellas —el banco— existe a medias: el grafo de ingesta ya genera y critica ítems, lo que falta es llenarlo fuera de la hora de la sesión. La flota no gana agentes y el arnés no gana dimensiones.</figcaption>
+  </figure>
+  <p class="note"><strong>El banco es lo que hace posible la sesión.</strong> La conformidad en vivo de esta mañana mide el <code>generate</code> en 13,6 s en el percentil 95, y el esquema <code>GeneratedBatch</code> falló las dos veces que se intentó. La meta declarada del proyecto es p95 ≤ 60 s de punta a punta. Una sesión que genera mientras la niña espera no cumple esa meta; una que lee de un banco ya criticado cuesta dos llamadas y responde en segundos.</p>
+</section>
+
+<section>
+  <div class="head"><h2>Sesión como conversación, no como paquete</h2><span class="chip new">nuevo</span></div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 860 250" role="img" aria-label="Máquina de estados de una sesión: propuesta, activa, en pausa, cambio de tema, cerrada o abandonada, con quién dispara cada transición.">
+        <defs>
+          <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <g font-family="Chivo,sans-serif" text-anchor="middle" font-size="12">
+          <rect x="20" y="90" width="128" height="52" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="84" y="114" font-weight="700" fill="currentColor">propuesta</text>
+          <text x="84" y="131" font-size="10" fill="currentColor">reloj o adulto</text>
+
+          <rect x="214" y="90" width="128" height="52" rx="3" fill="none" stroke="var(--new)" stroke-width="2.5"/>
+          <text x="278" y="114" font-weight="700" fill="var(--new)">activa</text>
+          <text x="278" y="131" font-size="10" fill="var(--new)">del banco</text>
+
+          <rect x="408" y="20" width="128" height="52" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="472" y="44" font-weight="700" fill="currentColor">en pausa</text>
+          <text x="472" y="61" font-size="10" fill="currentColor">retomable</text>
+
+          <rect x="408" y="160" width="128" height="52" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="472" y="184" font-weight="700" fill="currentColor">cambio de tema</text>
+          <text x="472" y="201" font-size="10" fill="currentColor">cierra y reabre</text>
+
+          <rect x="610" y="90" width="110" height="52" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="665" y="114" font-weight="700" fill="currentColor">cerrada</text>
+          <text x="665" y="131" font-size="10" fill="currentColor">deja huella</text>
+
+          <rect x="752" y="90" width="96" height="52" rx="3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <text x="800" y="114" font-weight="700" fill="currentColor">abandonada</text>
+          <text x="800" y="131" font-size="10" fill="currentColor">caduca</text>
+        </g>
+        <g stroke="currentColor" stroke-width="1.5" marker-end="url(#ar2)" fill="none">
+          <line x1="150" y1="116" x2="210" y2="116"/>
+          <path d="M330 100 Q380 60 404 50"/>
+          <path d="M404 62 Q360 100 330 108"/>
+          <path d="M330 132 Q380 172 404 182"/>
+          <path d="M404 194 Q300 220 278 148"/>
+          <line x1="344" y1="116" x2="606" y2="116"/>
+          <line x1="722" y1="116" x2="748" y2="116"/>
+        </g>
+        <g font-family="Chivo,sans-serif" font-size="10" fill="currentColor">
+          <text x="180" y="108" text-anchor="middle">acepta</text>
+          <text x="392" y="86" text-anchor="middle">/pausa</text>
+          <text x="392" y="152" text-anchor="middle">/tema</text>
+          <text x="475" y="110" text-anchor="middle">llega al tope de ítems</text>
+          <text x="735" y="108" text-anchor="middle">24 h</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>Una sesión cerrada deja huella aunque no se haya completado: lo respondido ya cuenta hoy —cada respuesta actualiza SM-2 y el dominio en el acto— y lo que faltó vuelve a la cola de repaso.</figcaption>
+  </figure>
+  <div class="grid">
+    <div class="card new">
+      <h3>Qué lleva una sesión</h3>
+      <ul>
+        <li>Un objetivo: una competencia. No un nivel Bloom buscado</li>
+        <li>Un tope de ítems para el niño, no un presupuesto de llamadas</li>
+        <li>Su progreso y lo que queda</li>
+        <li>Quién la abrió: el reloj, el adulto, o una remediación</li>
+      </ul>
+    </div>
+    <div class="card new">
+      <h3>Cómo se abre</h3>
+      <ul>
+        <li><code>/tema fracciones</code> pide un tema concreto</li>
+        <li><code>/sesion</code> pide lo que el sistema recomiende</li>
+        <li>Si el banco de ese tema está vacío: «todavía no tengo eso listo, lo preparo para mañana»</li>
+        <li>Nunca se genera con la niña esperando</li>
+      </ul>
+    </div>
+    <div class="card new">
+      <h3>El tope que de verdad protege</h3>
+      <ul>
+        <li>Calificar una pregunta de opción múltiple es determinista: cuesta <strong>cero</strong> llamadas</li>
+        <li>Por eso el tope de 40 llamadas no puede frenar una sesión conducida por un adulto</li>
+        <li>El tope tiene que ser de ítems por niño y por día, heredando el 3 (4 con examen cerca) que ya existe</li>
+        <li>Y un corte por respuestas seguidas incorrectas, con su propio mensaje</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note cut"><strong>Este es el hallazgo que más me preocupa de toda la revisión.</strong> El representante tiene la única cuenta; la niña no tiene forma de decir «ya no quiero». Hoy eso es inofensivo porque el reloj decide y la cápsula son tres preguntas. En el momento en que el adulto conduce, esa asimetría <em>es</em> el producto. Y el único guardián que la primera versión ofrecía —el tope de gasto— no puede intervenir, porque servir un ítem del banco y calificarlo no gasta nada. El límite tiene que estar escrito en nombre de la niña: «ya hicimos suficiente por hoy» se lee distinto de «se agotó la cuota», y esa diferencia es todo el punto.</p>
+  <p class="note"><strong>Dos detalles de implementación que no son opcionales.</strong> La clave de sesión hoy es <code>SESSION#&lt;fecha&gt;</code>, una por estudiante y día: una segunda sesión el mismo día pisa la primera y descuadra el cierre diario. Tiene que ser <code>SESSION#&lt;fecha&gt;#&lt;n&gt;</code>. Y la clave de idempotencia de una respuesta es hoy la <em>posición</em> en la sesión; con dos mensajes seguidos eso colapsa dos respuestas en una. Debe ser el identificador del mensaje entrante, que el canal ya produce.</p>
+</section>
+
+<section>
+  <div class="head"><h2>Bloom: etiqueta del ítem, no estado del niño</h2><span class="chip new">nuevo</span><span class="chip cut">el vector se cae</span></div>
+  <p>El diagnóstico de la primera versión era bueno: <code>difficulty: 1..5</code> es un número sin unidad que un modelo asigna y nadie valida. Bloom nombra el <em>tipo</em> de pensamiento y eso sí se puede leer. Lo que no sobrevive es la segunda mitad: convertirlo en cuatro números por competencia y por estudiante, con una frontera.</p>
+  <div class="t">
+    <table>
+      <thead><tr><th>Nivel</th><th>Qué pide al estudiante</th><th>Ejemplo en fracciones, 4º grado</th></tr></thead>
+      <tbody>
+        <tr><td class="m">recordar</td><td>traer un hecho</td><td>¿Cuánto vale el denominador en 3/4?</td></tr>
+        <tr><td class="m">comprender</td><td>explicar con sus palabras</td><td>Explica por qué 1/2 y 2/4 son la misma cantidad</td></tr>
+        <tr><td class="m">aplicar</td><td>usarlo en un caso nuevo</td><td>Una torta en 8 partes, comieron 2. ¿Cuánto queda en cuartos?</td></tr>
+        <tr><td class="m">analizar</td><td>comparar, hallar el error</td><td>Un compañero dice que 3/9 es 1/3. ¿Tiene razón? Compruébalo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 760 250" role="img" aria-label="Los mismos doce ítems etiquetados por Sonnet y por Haiku dan dos perfiles de cobertura distintos: Sonnet ve cinco de analizar, Haiku ve uno.">
+        <g font-family="Chivo,sans-serif" font-size="11" fill="currentColor">
+          <text x="20" y="22" font-size="12" font-weight="700">Los mismos 12 ítems reales, etiquetados por los dos modelos que producción usa</text>
+          <text x="20" y="40" font-size="10.5" fill="var(--ink-faint)">3 muestras por ítem y por modelo · 72 llamadas en vivo · 12-sep-2026</text>
+
+          <g font-family="IBM Plex Mono,monospace" font-size="10.5">
+            <text x="20" y="74">recordar</text>
+            <text x="20" y="104">comprender</text>
+            <text x="20" y="134">aplicar</text>
+            <text x="20" y="164">analizar</text>
+          </g>
+
+          <text x="150" y="58" font-size="10" font-weight="700" fill="var(--new)">Sonnet 4.6 · predeterminado</text>
+          <text x="450" y="58" font-size="10" font-weight="700" fill="var(--cut)">Haiku 4.5 · el respaldo</text>
+
+          <g fill="var(--new)">
+            <rect x="150" y="63" width="38" height="16"/>
+            <rect x="150" y="93" width="76" height="16"/>
+            <rect x="150" y="123" width="152" height="16"/>
+            <rect x="150" y="153" width="190" height="16"/>
+          </g>
+          <g font-family="IBM Plex Mono,monospace" font-size="10.5" fill="var(--new)">
+            <text x="196" y="76">1</text><text x="234" y="106">2</text>
+            <text x="310" y="136">4</text><text x="348" y="166">5</text>
+          </g>
+
+          <g fill="var(--cut)">
+            <rect x="450" y="63" width="38" height="16"/>
+            <rect x="450" y="93" width="190" height="16"/>
+            <rect x="450" y="123" width="190" height="16"/>
+            <rect x="450" y="153" width="38" height="16"/>
+          </g>
+          <g font-family="IBM Plex Mono,monospace" font-size="10.5" fill="var(--cut)">
+            <text x="496" y="76">1</text><text x="648" y="106">5</text>
+            <text x="648" y="136">5</text><text x="496" y="166">1</text>
+          </g>
+
+          <line x1="20" y1="186" x2="740" y2="186" stroke="currentColor" stroke-width="1" opacity=".25"/>
+          <text x="20" y="206" font-size="10.5" fill="var(--ink-faint)">Cada modelo está de acuerdo consigo mismo: Sonnet 1,00 · Haiku 0,97 de consistencia interna.</text>
+          <text x="20" y="222" font-size="10.5" fill="var(--ink-faint)">Entre los dos, la concordancia de una sola extracción es 0,667, con 0,25 de azar.</text>
+          <text x="20" y="238" font-size="10.5" fill="var(--ink-faint)">La etiqueta mayoritaria cambia en 4 de los 12 ítems. El rol GENERATE cae a Haiku cuando Sonnet no está.</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>El ejemplo canónico de la propia tabla de arriba —la torta partida en 8— Sonnet lo llama «analizar» y Haiku lo llama «aplicar», los dos con 3 de 3. No es que un modelo sea inestable: cada uno es firme, y firmemente distinto del otro.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 760 268" role="img" aria-label="Dos medidas independientes del mismo niño: con el EMA la frontera coincide alrededor del 40 por ciento sin importar cuántos intentos haya; con una proporción simple sube hasta 0,85 con 80 intentos.">
+        <g font-family="Chivo,sans-serif" fill="currentColor">
+          <text x="20" y="22" font-size="12" font-weight="700">Dos medidas independientes del mismo niño, ¿dan la misma frontera?</text>
+          <text x="20" y="40" font-size="10.5" fill="var(--ink-faint)">Montecarlo sobre el update_mastery real · habilidades verdaderas 0,90 / 0,78 / 0,42 / 0,25 · 6.000 réplicas por punto · la proporción se mide desde 9 intentos</text>
+
+          <line x1="90" y1="220" x2="700" y2="220" stroke="currentColor" stroke-width="1" opacity=".45"/>
+          <line x1="90" y1="70" x2="90" y2="220" stroke="currentColor" stroke-width="1" opacity=".45"/>
+          <g font-family="IBM Plex Mono,monospace" font-size="10" fill="var(--ink-faint)" text-anchor="end">
+            <text x="82" y="224">0,3</text>
+            <text x="82" y="175">0,5</text>
+            <text x="82" y="127">0,7</text>
+            <text x="82" y="78">0,9</text>
+          </g>
+          <g font-family="IBM Plex Mono,monospace" font-size="10" fill="var(--ink-faint)" text-anchor="middle">
+            <text x="90" y="238">3</text><text x="242" y="238">9</text><text x="395" y="238">20</text>
+            <text x="547" y="238">40</text><text x="700" y="238">80</text>
+          </g>
+          <text x="395" y="256" font-size="10.5" text-anchor="middle" fill="var(--ink-faint)">intentos acumulados en cada nivel</text>
+
+          <polyline points="90,205 242,189 395,190 547,186 700,188" fill="none" stroke="var(--cut)" stroke-width="2.5"/>
+          <g fill="var(--cut)">
+            <circle cx="90" cy="205" r="3.5"/><circle cx="242" cy="189" r="3.5"/><circle cx="395" cy="190" r="3.5"/>
+            <circle cx="547" cy="186" r="3.5"/><circle cx="700" cy="188" r="3.5"/>
+          </g>
+          <text x="700" y="207" font-size="10.5" text-anchor="end" fill="var(--cut)" font-weight="700">EMA, alfa 0,3 — se estanca en 0,43</text>
+
+          <polyline points="242,163 395,155 547,125 700,87" fill="none" stroke="var(--new)" stroke-width="2.5"/>
+          <g fill="var(--new)">
+            <circle cx="242" cy="163" r="3.5"/><circle cx="395" cy="155" r="3.5"/>
+            <circle cx="547" cy="125" r="3.5"/><circle cx="700" cy="87" r="3.5"/>
+          </g>
+          <text x="700" y="76" font-size="10.5" text-anchor="end" fill="var(--new)" font-weight="700">proporción simple — 0,85 con 80</text>
+
+          <text x="20" y="60" font-size="10.5" fill="var(--ink-faint)">concordancia entre las dos medidas</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>El techo no es la cantidad de datos: es el estimador. Un EMA con alfa 0,3 tiene una memoria efectiva fija de 5,7 muestras, así que su dispersión se queda en 0,21 con 12 intentos y sigue en 0,21 con 80. Una frontera definida como un cruce de umbral sobre cuatro cantidades así se contradice a sí misma más de la mitad de las veces, para siempre.</figcaption>
+  </figure>
+
+  <p class="note cut"><strong>Y aunque el estimador fuera bueno, no habría datos.</strong> En la mejor corrida del proyecto —420 de 420 sesiones entregadas, sin un día perdido— la celda mediana de (estudiante, competencia) guarda <span class="m">2</span> intentos, y solo el <span class="m">15,9 %</span> llega a los 9 que el propio código exige antes de confiar en un número. Partir esa evidencia en cuatro deja una mediana de <span class="m">0,5</span> intentos por celda y <span class="m">ninguna</span> celda de todo el grupo llegando a 9. Al ritmo medido —<span class="m">0,31</span> intentos por competencia y día— una competencia entera llega a 9 en <span class="m">29</span> días escolares; una sola celda Bloom necesita <span class="m">116</span>.</p>
+
+  <p class="note"><strong>Lo que sí se puede decirle a un maestro.</strong> No «Estrella recuerda y entiende fracciones equivalentes, pero todavía no las aplica»: eso es una afirmación latente sobre una niña con dos observaciones detrás. Sí una frase con esta forma: «de los 12 ítems que hay en el banco de fracciones equivalentes, 1 le pide recordar y 4 le piden aplicar; de las últimas 8 respuestas acertó 3, que con esa cantidad es un intervalo de 0,14 a 0,69». La primera mitad es un recuento de ítems etiquetados, exacto con n=1 por ítem, y sale de la medición de esta página. La segunda lleva su denominador puesto. Las dos le dicen al maestro algo que puede comprobar; la frase original no.</p>
+
+  <div class="grid">
+    <div class="card new">
+      <h3>Qué se construye</h3>
+      <ul>
+        <li>Un campo <code>bloom_level</code> en el ítem, puesto por el generador</li>
+        <li>Dos etiquetas independientes; si no coinciden, el ítem entra sin nivel en vez de con uno inventado</li>
+        <li>Composición de la cápsula por niveles: no todo recordar</li>
+        <li>Cobertura por nivel en el mensaje al representante y en el informe</li>
+      </ul>
+    </div>
+    <div class="card cut">
+      <h3>Qué no se construye</h3>
+      <ul>
+        <li>Un vector de cuatro números por competencia y estudiante</li>
+        <li>Una «frontera» ni un «siguiente objetivo» calculados</li>
+        <li>El umbral de consolidación 0,5, que además no existe en el código: las bandas reales son 0,4 / 0,65 / 0,85</li>
+        <li>Cualquier frase sobre un nivel de pensamiento de una niña dirigida a un adulto</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="note cost"><strong>Una corrección a los tres revisores.</strong> Dos de ellos afirmaron que <code>difficulty: 1..5</code> es peso muerto. No lo es. <code>response_graph</code> pasa <code>item.difficulty</code> a <code>apply_adaptation</code>, que fija un objetivo de dificultad, y <code>select_adapted</code> filtra el fondo de ítems por distancia a ese objetivo: dos de las cuatro acciones adaptativas —subir y bajar dificultad— están implementadas <em>enteramente</em> sobre ese campo. Bloom se suma al lado; el campo se queda hasta que ese camino adaptativo se reescriba. Eso convierte «reemplazar difficulty es gratis» en «hay una migración más», y conviene saberlo antes y no después.</p>
+</section>
+
+<section>
+  <div class="head"><h2>Material que acompaña una pregunta</h2><span class="chip new">nuevo</span><span class="chip cost">costo medido</span><span class="chip cut">cortado</span></div>
+  <p>La regla de la primera versión es correcta y se queda: <strong>todo material que acompaña una pregunta pasa por el crítico igual que el enunciado</strong>. Una barra de fracción mal dividida enseña el error, y el niño confía en ella. Lo que cambia es el precio de esa regla, que ahora está medido.</p>
+  <div class="grid">
+    <div class="card new">
+      <h3>Tablas: texto estructurado</h3>
+      <p>Una tabla no necesita modelo de imagen. Va en el esquema del ítem y el canal la formatea. Cero llamadas, determinista, revisable en una prueba. Es la única de las cuatro ideas de medios que era verdad tal como estaba escrita.</p>
+    </div>
+    <div class="card new">
+      <h3>Diagramas: SVG, con su precio a la vista</h3>
+      <p>Medido hoy: generar un diagrama cuesta <span class="m">USD 0,0088</span> y unos 4,8 s; criticarlo, <span class="m">USD 0,0070</span> y otros 4,6 s. <strong>Sí cuesta una llamada aparte</strong> — la obliga la regla del crítico. Total: <span class="m">USD 0,016</span> por diagrama, contra una meta de <span class="m">USD 0,020</span> por estudiante y día.</p>
+    </div>
+    <div class="card new">
+      <h3>Audio: Polly, verificado</h3>
+      <p>Comprobado en la cuenta: la voz <span class="m">es-US Lupe</span> admite los motores neuronal y generativo. No es un modelo fundacional, así que no toca el tope de 40 llamadas, y cacheado en S3 por ítem cuesta casi nada. Es la parte de la fase de medios que sobrevive entera.</p>
+    </div>
+    <div class="card cut">
+      <h3>Ilustraciones: no</h3>
+      <p>«Nova Canvas está autorizado y disponible» era falso. Está marcado <span class="m">LEGACY</span> y la llamada se rechaza: <em>«Access denied. This Model is marked by provider as Legacy…»</em>. No hay otro modelo de texto a imagen en la región: los demás son de edición. Y no tiene precio en <code>pricing.py</code>, así que el libro de gasto no sabría cobrarla.</p>
+    </div>
+  </div>
+  <p class="note cut"><strong>Hay dos razones más para no generar imágenes, y son peores que la disponibilidad.</strong> Primero: llamé a la barrera de contenido desplegada con una imagen real, en entrada y en salida, y las dos veces devolvió <code>contentPolicyImageUnits: 0</code> — la imagen se acepta y <em>no se inspecciona</em>; con texto sí devuelve 1. Segundo: el código pide siempre <code>source="INPUT"</code>, así que los cinco filtros de daño configurados en salida no se han ejecutado jamás, pese a que la descripción de la barrera desplegada dice que revisa «cada respuesta antes de llegar a la familia». Una ilustración generada a partir del texto de una hoja que mandó un representante llegaría a una niña sin un humano y sin un filtro en el camino.</p>
+  <p class="note cost"><strong>Y nada de esto se puede entregar todavía.</strong> El canal implementa un solo extremo: <code>sendMessage</code>. No hay <code>sendPhoto</code>, ni <code>sendDocument</code>, ni <code>sendVoice</code>; los campos <code>audio_ref</code> del esquema existen y nadie los lee. Telegram tampoco dibuja SVG, así que hace falta rasterizar en el servidor — una dependencia nativa nueva en unas imágenes cuya integridad es parte de la evidencia publicada. La fase de medios no es un cambio de esquema de dos días: es una ruta de salida que hoy no existe.</p>
+  <p class="note"><strong>Lo que sí quedó probado.</strong> Le pedí al crítico que revisara la geometría de los dos diagramas generados y lo hizo de verdad: comprobó que 40 + 320 × 1/3 = 146,67 coincide con la marca dibujada, marca por marca. El instinto de la primera versión era bueno. Solo necesita presupuesto de razonamiento —un crítico truncado devuelve prosa sin veredicto y parece una revisión— y una prueba de la geometría escrita en Python, porque una afirmación aritmética no debería depender de que un modelo la revise.</p>
+</section>
+
+<section>
+  <div class="head"><h2>Memoria: tres capas ya existen, la cuarta se cae</h2><span class="chip have">existe</span><span class="chip cut">cortado</span></div>
+  <p>«Hoy no hay memoria» no es exacto. Hay tres capas, funcionando, dentro de la tabla que <code>/forget</code> ya recorre. Lo que falta no es construirlas: es nombrarlas y ponerles un número de retención.</p>
+  <div class="t">
+    <table>
+      <thead><tr><th>Capa</th><th>Qué guarda</th><th>Dónde vive hoy</th><th>Qué hay que hacer</th></tr></thead>
+      <tbody>
+        <tr><td class="m">trabajo</td><td>los turnos de la sesión abierta</td><td><code>PracticeSession</code> y <code>OperationRecord</code></td><td>añadir <code>PAUSED</code> y la clave con secuencia</td></tr>
+        <tr><td class="m">episódica</td><td>qué respondió, qué falló, el error textual</td><td>registro de calificaciones, SM-2 y dominio</td><td><strong>ponerle caducidad: hoy no tiene ninguna</strong></td></tr>
+        <tr><td class="m">de cohorte</td><td>qué le cuesta a la sección</td><td><code>CohortFailure</code>, mínimo 3 familias</td><td>nada</td></tr>
+        <tr class="gone"><td class="m">semántica</td><td>qué es cierto del estudiante: confusiones, ritmo, qué lo engancha</td><td>no existe; iría a AgentCore Memory</td><td>no se construye</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note cut"><strong>Por qué se cae la capa semántica, en tres razones que no se arreglan con cuidado.</strong> Una: el consentimiento que el representante aceptó enumera cuatro cosas —«el alias, el grado, el material que envíes y las respuestas de práctica»—, y las cuatro son cosas que <em>la familia entrega</em>. Guardar conclusiones que el sistema <em>fabrica</em> sobre una niña de nueve años no cabe en ninguna lectura de esa frase, y «permanente» contradice el único plazo que se le prometió. Dos: <code>/forget</code> mentiría. <code>forget_family</code> alcanza la tabla de DynamoDB, el prefijo de S3 y el registro de calificaciones; <code>tools/agentcore.py</code> tiene una sola función y ningún cliente de memoria. Tres: con una mediana de 2 intentos por celda, una «confusión recurrente» se apoyaría en dos observaciones, repetidas a lo largo de 233 celdas a la vez — una máquina de fabricar defectos permanentes sobre una niña que simplemente está aprendiendo.</p>
+  <p class="note"><strong>La forma que sí podría tener, más adelante.</strong> Si la capa hace falta, va en la tabla que ya se borra, no en un almacén nuevo: una fila <code>SEMANTIC#&lt;estudiante&gt;</code> con un máximo de afirmaciones, cada una escrita por una regla determinista sobre el registro de calificaciones y no por un extractor opaco, cada una con su denominador en la cara —no «confunde la equivalencia» sino «falló 3 de 4 ítems de equivalencia entre el 1 y el 12 de septiembre»— y con un plazo en días. Y con un párrafo de consentimiento propio, aceptado aparte, que diga en castellano llano que el sistema va a escribir conclusiones y que una conclusión puede estar equivocada. Nada de «ritmo» ni de «qué lo engancha»: eso es inferencia de personalidad sobre una menor sin ningún uso que el EMA por competencia no cubra ya.</p>
+</section>
+
+<section>
+  <div class="head"><h2>Tres defectos que hay que arreglar antes de construir nada</h2><span class="chip cut">en producción hoy</span></div>
+  <p>Los encontré atacando la propuesta, pero no son de la propuesta: están en el sistema desplegado, con una familia inscrita.</p>
+  <div class="grid">
+    <div class="card cut">
+      <h3>1 · El aviso de desenganche no puede dispararse</h3>
+      <p>El detector de caídas de plataforma usa el total del grupo como línea base. Con una sola familia inscrita, <em>el grupo es esa familia</em>: su silencio se reclasifica como caída del servicio y se borra de la ventana. Lo corrí: la misma serie de respuestas da aviso con 30 estudiantes y <strong>ningún aviso</strong> con una familia, porque 4 de 10 días quedan enmascarados. El único mensaje proactivo que este producto envía está apagado en la población que de verdad tiene.</p>
+    </div>
+    <div class="card cut">
+      <h3>2 · Las respuestas equivocadas se guardan para siempre</h3>
+      <p><code>evidence_for</code> guarda <code>quote = response.text</code>: la frase literal de la niña, en cada calificación. La tabla tiene caducidad configurada y <em>solo</em> la usa la lápida de borrado. Además esas frases ya viajan: las tres últimas se juntan en el resumen que va al representante, y la escalada ofrece componer una nota para el maestro. Escribir una caducidad de 14 días en esas filas es una línea de código.</p>
+    </div>
+    <div class="card cut">
+      <h3>3 · No hay vuelta atrás para ningún cambio de esquema</h3>
+      <p>Todos los modelos persistidos llevan <code>extra="forbid"</code>. En cuanto una versión nueva escriba un ítem con <code>bloom_level</code>, la versión anterior no puede leer esa fila: revertir el despliegue no revierte los datos, y las filas afectadas son justo las que la cápsula diaria lee primero. Sin arreglar esto, cada fase es una puerta de un solo sentido.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="head"><h2>Qué haría, en qué orden</h2><span class="chip cost">esfuerzo</span></div>
+  <div class="t">
+    <table>
+      <thead><tr><th>Fase</th><th>Qué entrega</th><th>Toca</th><th>Esfuerzo</th></tr></thead>
+      <tbody>
+        <tr><td class="m">0</td><td>Los tres defectos de arriba: caducidad en las respuestas, <code>extra="ignore"</code> en los modelos persistidos, y línea base mínima de 3 familias antes de enmascarar días</td><td>esquemas, registro, grafo de calidad</td><td class="m">1–2 días</td></tr>
+        <tr><td class="m">0b</td><td>La ablación del crítico y el contraste del calificador contra respuestas humanas, ahora que Bedrock responde</td><td>evaluación, sin tocar producción</td><td class="m">1–2 días</td></tr>
+        <tr><td class="m">1</td><td>Bloom como etiqueta del ítem, con dos etiquetas que deben coincidir, y cobertura por nivel en el informe</td><td>esquema del ítem, generador, composición</td><td class="m">2 días</td></tr>
+        <tr><td class="m">2</td><td>Llenado del banco fuera de sesión, por competencia, bajo el tope global</td><td>ingesta, trabajo nocturno</td><td class="m">2–3 días</td></tr>
+        <tr><td class="m">3</td><td>Sesión con estado, <code>/tema</code> y <code>/sesion</code>, leyendo solo del banco, con tope de ítems por niño</td><td>orquestador nuevo, canal, claves de sesión</td><td class="m">4–5 días</td></tr>
+        <tr><td class="m">4</td><td>Tablas en el ítem; SVG detrás de una prueba de geometría escrita en Python</td><td>generador, crítico, pruebas</td><td class="m">2–3 días</td></tr>
+        <tr><td class="m">5</td><td>Varios horarios por estudiante — <strong>no es 1 día</strong>: hoy la clave del disparo es por estudiante y día y el segundo aviso no publica nada, la alarma se nombra solo con la familia, y <code>practice_time</code> es un único valor en la familia</td><td>alarmas, planificador, migración de datos</td><td class="m">3–4 días</td></tr>
+        <tr><td class="m">6</td><td>Ruta de medios en el canal, y audio con Polly sobre ella</td><td>canal, S3, recibos por parte</td><td class="m">3–4 días</td></tr>
+        <tr class="gone"><td class="m"></td><td><s>Vector Bloom por estudiante · capa semántica · ilustraciones</s></td><td>—</td><td class="m">no se hace</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note cost"><strong>Por qué la fase 2 va antes que la 3.</strong> La contabilidad de llamadas es la que decide. Una ronda de generación de 6 ítems cuesta 11 llamadas —1 de generar, 6 de crítica, y 4 de sondeo ciego a la fracción de opción múltiple medida, 0,667—, el crítico rechaza cerca del 63 % de los ítems buenos según la ablación del repositorio, y en la nube sobrevivieron 4 de 6 y 1 de 6. El sistema ya gasta <span class="m">4,38</span> llamadas por estudiante y día antes de todo esto. El tope son 40 por <em>familia</em> —no por estudiante— al día, y ya se agotó de verdad durante las pruebas. Una sesión que genera es un evento de presupuesto; una sesión que lee del banco no lo es.</p>
+</section>
+
+<section>
+  <div class="head"><h2>Qué se cayó, y qué objeción lo tumbó</h2></div>
+  <div class="t">
+    <table>
+      <thead><tr><th>Lo que decía la primera versión</th><th>Qué la tumbó</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Un vector Bloom por competencia, con frontera y siguiente objetivo</td>
+          <td>Dos medidas del mismo niño coinciden el 43 % de las veces, y ese número no mejora con más datos porque el EMA no converge. Además la celda mediana tendría 0,5 intentos.</td>
+        </tr>
+        <tr>
+          <td>«Estrella recuerda y entiende, pero todavía no aplica» como frase para el maestro</td>
+          <td>Con tres preguntas al día esa frase se lee sobre 2 o 3 intentos. Un niño que adivina en opción múltiple cruza el umbral que la propia figura proponía el 15,6 % de las veces.</td>
+        </tr>
+        <tr>
+          <td>El nivel Bloom lo pone el modelo generador, como ya pone la dificultad</td>
+          <td>Sonnet y Haiku —el predeterminado y su respaldo— concuerdan 0,667 en una extracción y discrepan en la etiqueta mayoritaria de 4 de 12 ítems reales.</td>
+        </tr>
+        <tr>
+          <td>Una capa semántica permanente con afirmaciones sobre la estudiante</td>
+          <td>El consentimiento enumera cosas que la familia entrega, no conclusiones que el sistema fabrica; y <code>/forget</code> no tiene ningún camino hacia AgentCore Memory.</td>
+        </tr>
+        <tr>
+          <td>Ilustraciones con Nova Canvas, «autorizado y disponible»</td>
+          <td>La llamada real se rechaza: el modelo está marcado LEGACY. Y la barrera desplegada no inspecciona imágenes: 0 unidades en entrada y en salida.</td>
+        </tr>
+        <tr>
+          <td>Las ilustraciones se generan una vez y se reutilizan entre familias</td>
+          <td>El identificador del ítem es <code>sha256(familia:material:ítem)</code> y cada ítem lleva su <code>family_id</code>: dos familias nunca comparten un ítem. El denominador del reparto de costo es 1, no N.</td>
+        </tr>
+        <tr>
+          <td>El SVG «no cuesta una llamada aparte»</td>
+          <td>La regla del crítico, que la propia propuesta impone, obliga la segunda llamada. Medido: 0,0070 dólares y 4,6 s solo por criticar.</td>
+        </tr>
+        <tr>
+          <td>La sesión hereda el tope de 40 llamadas y eso la acota</td>
+          <td>Calificar opción múltiple es determinista y cuesta cero. El tope de gasto no puede parar a un adulto que conduce a una niña toda la tarde.</td>
+        </tr>
+        <tr>
+          <td>Varios horarios por estudiante, 1 día, solo el planificador de alarmas</td>
+          <td>La clave de idempotencia del disparo es por estudiante y día, y el segundo aviso del día registra «ya disparó» y no publica nada. Sería una función silenciosa que no entrega nada.</td>
+        </tr>
+        <tr>
+          <td>Cada fase se entrega sola y deja el sistema funcionando</td>
+          <td>Cierto hacia adelante, falso hacia atrás: con <code>extra="forbid"</code> no hay reversión posible una vez escrita la primera fila nueva.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><strong>Dos objeciones que no acepté.</strong> La primera: que <code>difficulty: 1..5</code> sea peso muerto — no lo es, sostiene el camino adaptativo entero, y eso agrega trabajo en vez de quitarlo. La segunda: que el SVG escrito por un modelo sea inviable — lo medí y el crítico comprueba la aritmética de las coordenadas de verdad, marca por marca. El SVG se queda; lo que se cae es la idea de que era gratis.</p>
+</section>
+
+<section>
+  <div class="head"><h2>La recomendación</h2></div>
+  <div class="verdict">
+    <h3>Qué construir primero</h3>
+    <p><strong>La fase 0 esta semana, y la ablación del crítico junto a ella.</strong> Los tres defectos son de producción y dos de ellos se arreglan en una línea. La ventana de Bedrock está abierta hoy y el experimento que decide si la generación bajo demanda es viable cuesta un día.</p>
+    <h3>Qué construir después</h3>
+    <p><strong>Bloom como etiqueta del ítem, el banco, y la sesión — en ese orden.</strong> Las tres juntas dan lo que de verdad pediste: una familia que puede pedir un tema y recibirlo en segundos, y un informe que por primera vez dice qué <em>tipo</em> de pregunta está recibiendo la niña. Nada de eso necesita medir a la niña con más precisión de la que tres preguntas al día permiten.</p>
+    <h3>Qué no construir</h3>
+    <p><strong>El vector Bloom por estudiante, la capa semántica y las ilustraciones.</strong> El primero no se puede medir, la segunda no se puede consentir ni borrar, y las terceras no se pueden generar ni revisar ni entregar. Ninguna de las tres mejora con más cuidado de implementación; las tres necesitan que cambie algo que está fuera de este documento.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Todas las cifras de esta página salen del repositorio, de una corrida sobre su propio código, o de una llamada real a la cuenta autorizada el 12 de septiembre de 2026. Gasto total de la verificación: USD 0,052 en 76 llamadas a Bedrock, cero errores, más tres llamadas a la barrera de contenido y una a Nova Canvas que fue rechazada.</p>
+  <p>Lo que esta página no establece: nada sobre aprendizaje, retención ni efecto en familias. La única familia inscrita es una, y el aviso que debía cuidarla está apagado hasta la fase 0.</p>
+</footer>
+
+</div>
