@@ -26,7 +26,8 @@ from repaso.core.orchestration.study_channel import (
     handle_study_text,
     study_latency,
 )
-from repaso.core.orchestration.turn_router import answering_student, route_answer, route_turn
+from repaso.core.orchestration.turn_router import route_answer, route_turn
+from repaso.core.orchestration.turn_target import answering_student
 from repaso.schemas.channel import InboundMessage, OutboundMessage
 from repaso.schemas.events import DomainEvent, EventKind
 from repaso.schemas.family import Family
