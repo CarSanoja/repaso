@@ -67,6 +67,14 @@ def test_consent_states_both_retention_windows():
         assert "7" in consent and "35" in consent
 
 
+def test_the_sitting_tells_the_child_who_reads_the_chat():
+    expected = {Lang.ES: ("chat", "lee"), Lang.EN: ("chat", "read")}
+    for lang, phrases in expected.items():
+        opening = msg("study_who_reads", lang).lower()
+        for phrase in phrases:
+            assert phrase in opening, (lang, phrase)
+
+
 def test_no_student_facing_message_asks_for_real_names():
     for key in known_keys():
         for catalog in (EN, ES):

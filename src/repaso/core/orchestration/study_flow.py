@@ -74,6 +74,7 @@ def start_sitting(
     found = available_items(services, family, student, goal, budget.questions)
     if not found:
         return StudyReply([_about(family, goal, "study_empty")])
+    opening = say(family, "study_who_reads")
     now = services.clock.now()
     session = open_session(
         uuid4().hex,
@@ -85,7 +86,7 @@ def start_sitting(
         goal,
     )
     session = transition(session, StudySessionStatus.ACTIVE, Actor.FAMILY, now)
-    reply = StudyReply([_about(family, goal, "study_open", count=len(found))])
+    reply = StudyReply([opening, _about(family, goal, "study_open", count=len(found))])
     if len(found) < budget.questions:
         reply.messages.append(_about(family, goal, "study_thin", count=len(found)))
     return serve_next(services, family, student, session, reply)

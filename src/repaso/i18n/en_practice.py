@@ -39,6 +39,10 @@ PRACTICE = {
         "above, in their own words. Talk with your child now, away from the screen. If "
         "you think there is danger, get help straight away."
     ),
+    "study_who_reads": (
+        "One thing worth knowing before we start: this chat belongs to the grown-up who is "
+        "with you, and they read everything you write here. Write freely."
+    ),
     "study_open": (
         "Let's work on {topic}. I have {count} questions saved on it. "
         "Answer them together, no rush."

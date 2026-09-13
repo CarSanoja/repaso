@@ -38,6 +38,10 @@ PRACTICE = {
         "propias palabras. Habla con tu hijo o hija ahora, sin pantalla de por medio. "
         "Si crees que hay peligro, busca ayuda de inmediato."
     ),
+    "study_who_reads": (
+        "Antes de empezar, algo que es bueno que sepas: este chat es de la persona grande "
+        "que está contigo, y ella lee todo lo que escribas aquí. Escribe con confianza."
+    ),
     "study_open": (
         "Vamos con {topic}. Tengo {count} preguntas guardadas de ese tema. "
         "Respondan juntos, sin apuro."

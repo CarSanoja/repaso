@@ -11,6 +11,7 @@ from repaso.core.orchestration.study_flow import (
     start_sitting,
 )
 from repaso.core.orchestration.study_store import items_served_today, open_sitting
+from repaso.i18n import msg
 from repaso.schemas.item import BloomLevel, ItemStatus
 from repaso.schemas.study_session import Actor, CloseReason, StudySessionStatus
 from tests.bank.items import FRACTIONS, make_item
@@ -219,6 +220,30 @@ def test_the_day_is_bounded_by_items_not_by_model_calls(settings):
     assert served == DAILY_ITEM_ALLOWANCE
     assert "descansar" in texts(start_sitting(services, family, student, EQUIVALENCE_TOPIC))
     assert all(model.calls == [] for model in services.models.values())
+
+
+def test_a_sitting_opens_by_saying_who_reads_this_chat(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    seed_bank(services, family, 4)
+
+    reply = start_sitting(services, family, student, EQUIVALENCE_TOPIC)
+
+    assert reply.messages[0].text == msg("study_who_reads", family.lang)
+    assert reply.messages[-1].buttons
+
+
+def test_the_child_is_told_who_reads_once_and_not_again_on_the_way_back(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    seed_bank(services, family, 4)
+
+    opened = start_sitting(services, family, student, EQUIVALENCE_TOPIC)
+    paused = pause_sitting(services, family, opened.session, Actor.FAMILY)
+    resumed = resume_sitting(services, family, student, paused.session)
+
+    assert texts(opened).count(msg("study_who_reads", family.lang)) == 1
+    assert msg("study_who_reads", family.lang) not in texts(resumed)
 
 
 def test_a_paused_sitting_is_resumed_by_the_family_and_never_by_the_system(settings):
