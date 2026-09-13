@@ -1,0 +1,585 @@
+{
+ "measured_at": "2026-09-13",
+ "region": "us-east-1",
+ "what_this_is": "One campaign against Amazon Bedrock on-demand inference, measuring the two model calls a conversational turn can make: the reader that says what a family message is, and the explainer that answers it. Latency and tokens are what the provider reported; dollars are priced from the dated table in src/repaso/config/pricing.py through the repository's own call ledger.",
+ "what_this_is_not": "Not a family result and not an accuracy figure. Twenty-two message shapes at two samples is a conformance run against labels one reader wrote, on one question, in one language, on one day; three explanation situations at two samples is smaller still. No teacher labelled anything, no child typed any of it, and none of it was measured with the deployed guardrail attached.",
+ "live_calls": 322,
+ "usd_from_the_ledger": 0.193457,
+ "reader": {
+  "shapes": [
+   {
+    "wrote": "3/8",
+    "labelled": "answer"
+   },
+   {
+    "wrote": "6/8",
+    "labelled": "answer"
+   },
+   {
+    "wrote": "la 1",
+    "labelled": "answer"
+   },
+   {
+    "wrote": "creo que es 6/8",
+    "labelled": "answer"
+   },
+   {
+    "wrote": "es 6/8 porque multiplique arriba y abajo",
+    "labelled": "answer"
+   },
+   {
+    "wrote": "sumé uno arriba y abajo",
+    "labelled": "answer"
+   },
+   {
+    "wrote": "no entiendo",
+    "labelled": "explanation"
+   },
+   {
+    "wrote": "no entiendo nadaaa 😭",
+    "labelled": "explanation"
+   },
+   {
+    "wrote": "¿por qué?",
+    "labelled": "explanation"
+   },
+   {
+    "wrote": "explicame otra vez pf",
+    "labelled": "explanation"
+   },
+   {
+    "wrote": "como se hace eso",
+    "labelled": "explanation"
+   },
+   {
+    "wrote": "¿esta pregunta es de la tarea de ayer?",
+    "labelled": "explanation"
+   },
+   {
+    "wrote": "otra más",
+    "labelled": "another_question"
+   },
+   {
+    "wrote": "dame otra pregunta porfa",
+    "labelled": "another_question"
+   },
+   {
+    "wrote": "repite la pregunta",
+    "labelled": "another_question"
+   },
+   {
+    "wrote": "ya no quiero, estoy cansado",
+    "labelled": "stop"
+   },
+   {
+    "wrote": "no quiero seguir hoy",
+    "labelled": "stop"
+   },
+   {
+    "wrote": "mañana tiene examen de fracciones",
+    "labelled": "about_the_practice"
+   },
+   {
+    "wrote": "¿a qué hora llega la práctica?",
+    "labelled": "about_the_practice"
+   },
+   {
+    "wrote": "gracias!",
+    "labelled": "something_else"
+   },
+   {
+    "wrote": "hola",
+    "labelled": "something_else"
+   },
+   {
+    "wrote": "👍",
+    "labelled": "something_else"
+   }
+  ],
+  "arms": {
+   "us.amazon.nova-micro-v1:0": {
+    "samples_per_shape": 2,
+    "exact_intent": "34/44",
+    "answer_against_not_an_answer": "39/44",
+    "misses": [
+     {
+      "wrote": "explicame otra vez pf",
+      "expected": "explanation",
+      "read_as": "answer",
+      "answer_text": "6/8"
+     },
+     {
+      "wrote": "dame otra pregunta porfa",
+      "expected": "another_question",
+      "read_as": "answer",
+      "answer_text": "6/8"
+     },
+     {
+      "wrote": "dame otra pregunta porfa",
+      "expected": "another_question",
+      "read_as": "answer",
+      "answer_text": "6/8"
+     },
+     {
+      "wrote": "mañana tiene examen de fracciones",
+      "expected": "about_the_practice",
+      "read_as": "something_else",
+      "answer_text": ""
+     },
+     {
+      "wrote": "mañana tiene examen de fracciones",
+      "expected": "about_the_practice",
+      "read_as": "something_else",
+      "answer_text": ""
+     },
+     {
+      "wrote": "¿a qué hora llega la práctica?",
+      "expected": "about_the_practice",
+      "read_as": "another_question",
+      "answer_text": ""
+     },
+     {
+      "wrote": "¿a qué hora llega la práctica?",
+      "expected": "about_the_practice",
+      "read_as": "explanation",
+      "answer_text": " "
+     },
+     {
+      "wrote": "gracias!",
+      "expected": "something_else",
+      "read_as": "explanation",
+      "answer_text": ""
+     },
+     {
+      "wrote": "👍",
+      "expected": "something_else",
+      "read_as": "answer",
+      "answer_text": "6/8"
+     },
+     {
+      "wrote": "👍",
+      "expected": "something_else",
+      "read_as": "answer",
+      "answer_text": "6/8"
+     }
+    ],
+    "calls": 44,
+    "latency_p50_ms": 557,
+    "latency_p95_ms": 619,
+    "latency_max_ms": 945,
+    "input_tokens_median": 1122.0,
+    "output_tokens_median": 33.0,
+    "usd": 0.001927,
+    "usd_per_call": 4.381e-05
+   },
+   "us.amazon.nova-lite-v1:0": {
+    "samples_per_shape": 2,
+    "exact_intent": "37/44",
+    "answer_against_not_an_answer": "42/44",
+    "misses": [
+     {
+      "wrote": "sumé uno arriba y abajo",
+      "expected": "answer",
+      "read_as": "explanation",
+      "answer_text": "sumé uno arriba y abajo"
+     },
+     {
+      "wrote": "sumé uno arriba y abajo",
+      "expected": "answer",
+      "read_as": "explanation",
+      "answer_text": "sumé uno arriba y abajo"
+     },
+     {
+      "wrote": "repite la pregunta",
+      "expected": "another_question",
+      "read_as": "explanation",
+      "answer_text": ""
+     },
+     {
+      "wrote": "repite la pregunta",
+      "expected": "another_question",
+      "read_as": "explanation",
+      "answer_text": ""
+     },
+     {
+      "wrote": "mañana tiene examen de fracciones",
+      "expected": "about_the_practice",
+      "read_as": "something_else",
+      "answer_text": ""
+     },
+     {
+      "wrote": "mañana tiene examen de fracciones",
+      "expected": "about_the_practice",
+      "read_as": "something_else",
+      "answer_text": ""
+     },
+     {
+      "wrote": "¿a qué hora llega la práctica?",
+      "expected": "about_the_practice",
+      "read_as": "explanation",
+      "answer_text": ""
+     }
+    ],
+    "calls": 44,
+    "latency_p50_ms": 676,
+    "latency_p95_ms": 1083,
+    "latency_max_ms": 1359,
+    "input_tokens_median": 1122.0,
+    "output_tokens_median": 37.0,
+    "usd": 0.003346,
+    "usd_per_call": 7.605e-05
+   },
+   "us.anthropic.claude-haiku-4-5-20251001-v1:0": {
+    "samples_per_shape": 2,
+    "exact_intent": "41/44",
+    "answer_against_not_an_answer": "42/44",
+    "misses": [
+     {
+      "wrote": "sumé uno arriba y abajo",
+      "expected": "answer",
+      "read_as": "explanation",
+      "answer_text": ""
+     },
+     {
+      "wrote": "sumé uno arriba y abajo",
+      "expected": "answer",
+      "read_as": "explanation",
+      "answer_text": ""
+     },
+     {
+      "wrote": "repite la pregunta",
+      "expected": "another_question",
+      "read_as": "explanation",
+      "answer_text": ""
+     }
+    ],
+    "calls": 44,
+    "latency_p50_ms": 1237,
+    "latency_p95_ms": 1678,
+    "latency_max_ms": 2364,
+    "input_tokens_median": 1418.0,
+    "output_tokens_median": 93.5,
+    "usd": 0.083695,
+    "usd_per_call": 0.00190216
+   }
+  }
+ },
+ "session_window_cost": {
+  "model_id": "us.amazon.nova-lite-v1:0",
+  "shapes_per_arm": 22,
+  "arms": [
+   {
+    "remembered_turns": 0,
+    "calls": 22,
+    "latency_p50_ms": 649,
+    "latency_p95_ms": 807,
+    "latency_max_ms": 964,
+    "input_tokens_median": 1122.0,
+    "output_tokens_median": 35.5,
+    "usd": 0.001676,
+    "usd_per_call": 7.62e-05
+   },
+   {
+    "remembered_turns": 1,
+    "calls": 22,
+    "latency_p50_ms": 654,
+    "latency_p95_ms": 849,
+    "latency_max_ms": 938,
+    "input_tokens_median": 1168.0,
+    "output_tokens_median": 36.5,
+    "usd": 0.001734,
+    "usd_per_call": 7.88e-05
+   },
+   {
+    "remembered_turns": 3,
+    "calls": 22,
+    "latency_p50_ms": 643,
+    "latency_p95_ms": 903,
+    "latency_max_ms": 1013,
+    "input_tokens_median": 1243.0,
+    "output_tokens_median": 34.0,
+    "usd": 0.001831,
+    "usd_per_call": 8.321e-05
+   }
+  ]
+ },
+ "explainer": {
+  "situations": [
+   "the child asks for help before answering",
+   "the child asks why after choosing a wrong option",
+   "the child says the first explanation did not land"
+  ],
+  "samples_per_situation": 2,
+  "criterion": "Read against five written rules: Spanish at the grade, at most three short sentences, no answer before the child has answered, start from what the child wrote, and never repeat a way in the prompt lists as already tried. Scored by hand by one reader, not by a teacher and not by a model.",
+  "arms": {
+   "us.amazon.nova-micro-v1:0": {
+    "kept_the_answer_back_before_it_was_answered": "2/2",
+    "started_from_what_the_child_wrote": "0/2",
+    "took_a_way_in_that_was_not_already_tried": "0/2",
+    "named_the_approach_for_the_window": "5/6",
+    "calls": 6,
+    "latency_p50_ms": 766,
+    "latency_p95_ms": 1092,
+    "latency_max_ms": 1092,
+    "input_tokens_median": 1024.0,
+    "output_tokens_median": 86.5,
+    "usd": 0.000287,
+    "usd_per_call": 4.78e-05
+   },
+   "us.amazon.nova-lite-v1:0": {
+    "kept_the_answer_back_before_it_was_answered": "2/2",
+    "started_from_what_the_child_wrote": "2/2",
+    "took_a_way_in_that_was_not_already_tried": "1/2",
+    "named_the_approach_for_the_window": "6/6",
+    "calls": 6,
+    "latency_p50_ms": 940,
+    "latency_p95_ms": 1131,
+    "latency_max_ms": 1131,
+    "input_tokens_median": 1024.0,
+    "output_tokens_median": 68.5,
+    "usd": 0.000481,
+    "usd_per_call": 8.018e-05
+   },
+   "us.anthropic.claude-haiku-4-5-20251001-v1:0": {
+    "kept_the_answer_back_before_it_was_answered": "2/2",
+    "started_from_what_the_child_wrote": "2/2",
+    "took_a_way_in_that_was_not_already_tried": "2/2",
+    "named_the_approach_for_the_window": "6/6",
+    "calls": 6,
+    "latency_p50_ms": 2059,
+    "latency_p95_ms": 2196,
+    "latency_max_ms": 2196,
+    "input_tokens_median": 1320.0,
+    "output_tokens_median": 178.5,
+    "usd": 0.013208,
+    "usd_per_call": 0.00220133
+   },
+   "us.anthropic.claude-sonnet-4-6": {
+    "kept_the_answer_back_before_it_was_answered": "2/2",
+    "started_from_what_the_child_wrote": "2/2",
+    "took_a_way_in_that_was_not_already_tried": "2/2",
+    "named_the_approach_for_the_window": "6/6",
+    "calls": 6,
+    "latency_p50_ms": 3315,
+    "latency_p95_ms": 3635,
+    "latency_max_ms": 3635,
+    "input_tokens_median": 1321.0,
+    "output_tokens_median": 188.0,
+    "usd": 0.040302,
+    "usd_per_call": 0.006717
+   }
+  },
+  "defects_seen": [
+   "us.amazon.nova-micro-v1:0 left the approach label empty once in six, which is the field the session window reads back.",
+   "us.amazon.nova-lite-v1:0 wrote about the child in the third person to the child once, inside an arithmetic aside that is wrong on its own terms.",
+   "us.anthropic.claude-sonnet-4-6 emitted markdown asterisks in 3 of 6 replies; the chat sends plain text, so the family would read the asterisks."
+  ],
+  "replies": [
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-micro-v1:0",
+    "case": "before_answering",
+    "text": "Primero, piensa en qué significan las fracciones. Imagina que tienes cuatro cuartos de un pastel y tienes tres de ellos. ¿Qué fracción eso es? Ahora, para encontrar una fracción equivalente, prueba multiplicar tanto el numerador como el denominador por el mismo número, como dos. Mira si eso te ayuda.",
+    "approach": "bar split into equal parts",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-micro-v1:0",
+    "case": "before_answering",
+    "text": "Piensa en la fracción 3/4 como partes de un todo. Imagina que tienes 4 piezas y tienes 3 de ellas. Para encontrar una fracción equivalente, puedes multiplicar tanto el numerador como el denominador por el mismo número. Prueba a hacerlo con el número 2. ¿Qué fracción obtienes? ",
+    "approach": "",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-micro-v1:0",
+    "case": "after_wrong_choice",
+    "text": "Primero, digamos que tienes la fracción 3/4. Para encontrar una fracción equivalente, multiplicamos el numerador y el denominador por el mismo número. Intenta multiplicar el numerador y el denominador de 3/4 por 2. ¿Qué obtienes? Luego, compara con las opciones dadas.",
+    "approach": "multiplicar por el mismo número",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-micro-v1:0",
+    "case": "after_wrong_choice",
+    "text": "Para que la fracción sea equivalente, multiplicamos tanto el numerador como el denominador por el mismo número. Aquí multiplicamos ambos por 2. Intenta hacerlo tú mismo: 3x2 y 4x2. ¿Qué obtienes?",
+    "approach": "multiply both parts by the same number",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-micro-v1:0",
+    "case": "second_try",
+    "text": "Veamos si podemos entenderlo con otro ejemplo. Imagina que tienes 3 piezas de un pastel de 4 partes iguales. Si multiplicamos ambas piezas y las partes por el mismo número, como 2, ¿qué fracción obtendrías? Prueba de nuevo y dinos qué resultado obtienes.",
+    "approach": "bar split into equal parts",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-micro-v1:0",
+    "case": "second_try",
+    "text": "Mira, si multiplicamos el numerador y el denominador por el mismo número, obtenemos una fracción equivalente. Intentemos hacerlo juntos: multiplicamos el numerador 3 por 2 y el denominador 4 también por 2. ¿Qué nos da?",
+    "approach": "bar split into equal parts",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-lite-v1:0",
+    "case": "before_answering",
+    "text": "Una fracción equivalente es cuando dos fracciones parecen diferentes pero representan la misma cantidad. Para encontrar una fracción equivalente, multiplicamos o dividimos el numerador y el denominador por el mismo número.",
+    "approach": "Explain the concept",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-lite-v1:0",
+    "case": "before_answering",
+    "text": "¿Sabes qué es una fracción? Es una parte de un todo. ¿Puedes decir qué significan el numerador y el denominador en una fracción?",
+    "approach": "ask for fraction definition",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-lite-v1:0",
+    "case": "after_wrong_choice",
+    "text": "Para encontrar una fracción equivalente, multipliquemos el numerador y el denominador por el mismo número. Aquí, el niño multiplicó el numerador y el denominador por números diferentes: 3x2 = 6, pero 4x1 = 4, no 8. Entonces, 3/8 no es igual a 3/4.",
+    "approach": "explain why 3/8 is wrong",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-lite-v1:0",
+    "case": "after_wrong_choice",
+    "text": "La razón es que multiplicamos el numerador y el denominador por el mismo número. Aquí, multiplicamos 3 por 2 para obtener 6, y 4 por 2 para obtener 8. Pero tu respuesta de 3/8 no es correcta porque no multiplicaste ambos números por el mismo número. En su lugar, solo multiplicaste el numerador. Si quisieras tener 3/8 de algo, deberías dividirlo en 8 partes iguales y tomar 3 de ellas.",
+    "approach": "bar split into equal parts",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-lite-v1:0",
+    "case": "second_try",
+    "text": "Dibuja dos barras iguales. Divide la primera barra en 4 partes iguales y pinta 3 de ellas. Ahora divide la segunda barra en 8 partes iguales y pinta 6 de ellas. Compara las dos barras.",
+    "approach": "draw fraction bars",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.amazon.nova-lite-v1:0",
+    "case": "second_try",
+    "text": "Podemos ver si dos fracciones son iguales multiplicando ambos números del lado superior y del lado inferior por el mismo número.",
+    "approach": "comparar fracciones",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "case": "before_answering",
+    "text": "Una fracción equivalente es otra fracción que representa la misma cantidad. Para encontrarla, multiplicamos el número de arriba y el número de abajo por el mismo número. Mira 3/4 y prueba: si multiplicas el 3 y el 4 por 2, ¿qué números obtienes?",
+    "approach": "multiply numerator and denominator by same number",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "case": "before_answering",
+    "text": "Una fracción equivalente es una fracción que vale lo mismo, pero con números diferentes. Aquí tienes 3/4, y necesitas encontrar cuál de las tres opciones vale exactamente lo mismo que 3/4. Para saberlo, puedes multiplicar el numerador 3 y el denominador 4 por el mismo número y ver si obtienes una de esas opciones. ¿Por cuál número podrías multiplicar 3 y 4 para conseguir fracciones más grandes?",
+    "approach": "multiply numerator and denominator by same number",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "case": "after_wrong_choice",
+    "text": "En 3/4, multiplicas el número de arriba y el número de abajo por el mismo número. Si multiplicas 3 por 2, da 6, y si multiplicas 4 por 2, da 8. Entonces 6/8 es lo mismo que 3/4. En tu respuesta 3/8, solo bajaste el número de abajo, pero no subiste el número de arriba. Ahora multiplica el 3 y el 4 de la fracción 3/4 por 2 para ver cuál fracción equivale.",
+    "approach": "multiply numerator and denominator by same number",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "case": "after_wrong_choice",
+    "text": "Mirá: en 3/4, multiplicamos el 3 por 2 y obtenemos 6, pero también tenemos que multiplicar el 4 por 2 y obtenemos 8. Por eso, 3/4 equivale a 6/8. En tu respuesta 3/8, el numerador quedó igual (3) pero el denominador cambió a 8. Prueba multiplicar el 4 por 2 para ver qué número te da en el denominador.",
+    "approach": "multiply top and bottom by same number",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "case": "second_try",
+    "text": "Cuando multiplicas los dos números de una fracción por el mismo número, la fracción dice lo mismo. Mira: 3/4 multiplicamos por 2 arriba y por 2 abajo, entonces 3 × 2 = 6 y 4 × 2 = 8, da 6/8. Ahora trata tú: ¿qué números ves en 3/4, y por cuál número los vas a multiplicar?",
+    "approach": "multiply numerator and denominator by same number",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "case": "second_try",
+    "text": "Mira la fracción 3/4. Para encontrar una fracción que vale lo mismo, multiplicamos el número de arriba por 2 y el número de abajo por 2: 3 por 2 es 6, y 4 por 2 es 8. Entonces 3/4 y 6/8 son iguales. Ahora toma la fracción 3/4 y multiplica solo el número de arriba por 2. ¿Cuál número de arriba te sale? ¿Es ése la fracción 3/8 que elegiste?",
+    "approach": "multiply both top and bottom, check what happens if you forget one",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-sonnet-4-6",
+    "case": "before_answering",
+    "text": "Dos fracciones son equivalentes cuando valen lo mismo, como si partieras un pastel en trozos distintos pero te comieras la misma cantidad. Para encontrar una fracción equivalente a 3/4, puedes multiplicar el 3 y el 4 por el mismo número, por ejemplo por 2: arriba 3×2 y abajo 4×2. Intenta hacer esa multiplicación y mira cuál de las opciones te da ese resultado.",
+    "approach": "multiply top and bottom by same number",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-sonnet-4-6",
+    "case": "before_answering",
+    "text": "Dos fracciones son equivalentes cuando valen lo mismo, como si cortaras una pizza en más pedazos pero comieras la misma cantidad. Para encontrar una fracción equivalente, multiplicas el número de arriba y el número de abajo por el mismo número. Elige una de las opciones, multiplica el 3 y el 4 de 3/4 por un mismo número, y fíjate si te da esa opción.",
+    "approach": "multiply top and bottom by same number",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-sonnet-4-6",
+    "case": "after_wrong_choice",
+    "text": "Tu respuesta fue 3/8, pero ahí solo cambió el 4 por el 8, y el 3 se quedó igual — eso no es fracciones equivalentes. Para que sea equivalente, hay que multiplicar el numerador **y** el denominador por el mismo número: 3 × 2 = 6 y 4 × 2 = 8, así que la fracción equivalente es 6/8. ¡Mira la opción 1 y fíjate cómo los dos números cambiaron multiplicando por 2!",
+    "approach": "multiply top and bottom by same number",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-sonnet-4-6",
+    "case": "after_wrong_choice",
+    "text": "En 3/8, el 3 de arriba es igual que en 3/4, pero el 8 de abajo no se obtuvo multiplicando el 4 por el mismo número que el 3. Para que sea equivalente, hay que multiplicar los dos números por lo mismo: 3×2 = 6 y 4×2 = 8, y así se llega a 6/8. ¡Intenta comprobar que 3×2 y 4×2 te dan exactamente el 6 y el 8 de la opción 1!",
+    "approach": "multiply top and bottom by same number",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-sonnet-4-6",
+    "case": "second_try",
+    "text": "Mira el 3 de arriba y el 4 de abajo en 3/4: los dos los multiplicamos por el mismo número, el 2. Entonces 3 × 2 = 6 va arriba, y 4 × 2 = 8 va abajo, y eso nos da 6/8. Intenta escribir: 3 × 2 = ___ arriba, y 4 × 2 = ___ abajo, y ve qué fracción te queda.",
+    "approach": "multiply top and bottom by same number",
+    "ok": true
+   },
+   {
+    "probe": "explainer",
+    "model_id": "us.anthropic.claude-sonnet-4-6",
+    "case": "second_try",
+    "text": "El 3 de arriba y el 4 de abajo se multiplican cada uno por el mismo número, el 2: 3×2 = 6 y 4×2 = 8, y así queda 6/8. Fíjate que 3/8 solo cambió el número de abajo, pero el de arriba se quedó igual, y eso no funciona porque los dos tienen que multiplicarse por el mismo número. Ahora mira la opción 1 y comprueba que el número de arriba y el de abajo son exactamente 3×2 y 4×2.",
+    "approach": "multiply top and bottom by same number",
+    "ok": true
+   }
+  ]
+ },
+ "turn_clock": {
+  "shape": "a child who says the explanation did not land, mid-capsule",
+  "routing": "reader us.amazon.nova-lite-v1:0, explainer us.anthropic.claude-sonnet-4-6",
+  "samples": 6,
+  "read_p50_ms": 623,
+  "read_p95_ms": 1028,
+  "explain_p50_ms": 2854,
+  "explain_p95_ms": 3316,
+  "turn_p50_ms": 3543,
+  "turn_p95_ms": 4343,
+  "usd_per_turn": 0.006615,
+  "gate_seconds": 60
+ }
+}
