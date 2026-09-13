@@ -5,6 +5,7 @@ from repaso.core.orchestration.channel_runner import handle_channel_message
 from repaso.core.orchestration.context import Route
 from repaso.core.orchestration.turn_memory import read_window
 from repaso.core.orchestration.turn_replies import EXPLAIN_ROLE
+from repaso.core.orchestration.turn_router import READ_ROLE
 from repaso.i18n import msg
 from repaso.schemas.channel import ChannelKind, InboundMessage
 from repaso.schemas.common import Lang
@@ -34,7 +35,7 @@ class Recorder(LocalPlaybackModel):
 
 def services_with_recorder(settings):
     services = make_services(settings)
-    services.models[ModelRole.CLASSIFY] = Recorder()
+    services.models[READ_ROLE] = Recorder()
     services.models[EXPLAIN_ROLE] = Recorder()
     return services
 
@@ -71,7 +72,7 @@ def seed_session(services, student_id: str, item_ids: list[str], status=SessionS
 
 
 def reads(services, intent: TurnIntent, answer_text: str = "") -> None:
-    services.models[ModelRole.CLASSIFY].enqueue(
+    services.models[READ_ROLE].enqueue(
         {
             "intent": intent.value,
             "speaker": "child",
@@ -86,7 +87,7 @@ def explains(services, payload=None) -> None:
 
 
 def keeps_going(services) -> None:
-    services.models[ModelRole.STRUCTURED].enqueue({"action": "continue", "reason": "fixture"})
+    services.models[READ_ROLE].enqueue({"action": "continue", "reason": "fixture"})
 
 
 async def says(services, family, text: str, message_ref: str | None = None):
@@ -198,7 +199,7 @@ async def test_what_happened_earlier_tonight_reaches_the_next_turn(settings):
     await says(services, family, "2/8")
     await says(services, family, "¿por qué?")
 
-    prompt = services.models[ModelRole.CLASSIFY].prompts[-1]
+    prompt = services.models[READ_ROLE].prompts[-1]
     assert "Earlier in tonight's practice" in prompt
     assert 'wrote: "2/8"' in prompt
     assert "harness graded: incorrect" in prompt
@@ -359,7 +360,7 @@ async def test_a_turn_the_reader_cannot_read_is_never_graded(settings):
     family, student = seed_family(services.store)
     seed_item(services.store, "i1")
     seed_session(services, student.id, ["i1"])
-    services.models[ModelRole.CLASSIFY] = stressed("throttled", {})
+    services.models[READ_ROLE] = stressed("throttled", {})
 
     run = await says(services, family, "1/2")
 
@@ -415,6 +416,6 @@ async def test_reading_a_turn_costs_one_cheap_call_and_grading_an_option_costs_n
 
     await says(services, family, "1/2")
 
-    assert len(services.models[ModelRole.CLASSIFY].calls) == 1
+    assert len(services.models[READ_ROLE].calls) == 2
     assert services.models[ModelRole.JUDGE].calls == []
     assert services.models[EXPLAIN_ROLE].calls == []

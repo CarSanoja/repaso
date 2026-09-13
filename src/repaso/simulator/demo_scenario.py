@@ -9,6 +9,7 @@ from repaso.config.settings import Settings
 from repaso.core.harness.clock import SimClock
 from repaso.core.orchestration.context import Services
 from repaso.core.orchestration.runner import active_session, current_item
+from repaso.core.orchestration.turn_router import READ_ROLE
 from repaso.i18n import msg
 from repaso.schemas.common import Lang
 from repaso.schemas.item import ItemKind
@@ -63,7 +64,7 @@ def scenario_settings(data_dir: Path, cassette_path: Path | None = None) -> Sett
 
 def build_scenario_services(settings: Settings) -> Services:
     models = {role: build_model(role, settings) for role in ModelRole}
-    models[ModelRole.CLASSIFY] = AuthoredSchemaModel(models[ModelRole.CLASSIFY], AUTHORED_TURNS)
+    models[READ_ROLE] = AuthoredSchemaModel(models[READ_ROLE], AUTHORED_TURNS)
     return assemble_services(settings, SimClock(START), models)
 
 

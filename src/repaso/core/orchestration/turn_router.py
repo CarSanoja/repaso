@@ -28,7 +28,7 @@ from repaso.schemas.turn import (
 )
 from repaso.tools.guardrails import ScreenVerdict
 
-READ_ROLE = ModelRole.CLASSIFY
+READ_ROLE = ModelRole.STRUCTURED
 OPEN_STATUSES = {SessionStatus.DELIVERED, SessionStatus.IN_PROGRESS}
 NO_WINDOW = TurnWindow(session_id="")
 

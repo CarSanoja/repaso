@@ -130,13 +130,13 @@ def build_registry() -> tuple[SchemaProbe, ...]:
             prompt=open_prompt(samples.OPEN_ITEM, samples.STUDENT_ANSWER, LANG),
         ),
         SchemaProbe(
-            role=ModelRole.CLASSIFY,
+            role=ModelRole.STRUCTURED,
             output_schema=TurnDecision,
             system=turn_reader_prompt.SYSTEM.format(lang=LANG.value),
             prompt=read_prompt(samples.TURN_CONTEXT, samples.TURN_MESSAGE),
         ),
         SchemaProbe(
-            role=ModelRole.STRUCTURED,
+            role=ModelRole.GENERATE,
             output_schema=Explanation,
             system=explainer_prompt.SYSTEM.format(grade=samples.GRADE, lang=LANG.value),
             prompt=explain_prompt(samples.EXPLAIN_CONTEXT),

@@ -5,8 +5,9 @@ from dataclasses import asdict
 from repaso.agents.capsule_composer import item_buttons
 from repaso.config.models import ModelRole
 from repaso.core.orchestration.runner import active_session, current_item
+from repaso.core.orchestration.turn_router import READ_ROLE
 from repaso.schemas.item import ItemKind
-from repaso.simulator.authored_turns import AUTHORED_TURNS, TURN_DECISION
+from repaso.simulator.authored_turns import AUTHORED_TURNS, AuthoredSchemaModel
 from repaso.simulator.demo_stage import session_event
 from repaso.simulator.demo_transcript import CHILD, PARENT
 from repaso.tools.grade_log import effective_grades
@@ -68,6 +69,7 @@ async def followup(stage, family, student, decision):
     services = stage.services
     originals = services.models
     models = {role: LocalPlaybackModel() for role in ModelRole}
+    models[READ_ROLE] = AuthoredSchemaModel(models[READ_ROLE], AUTHORED_TURNS)
     services.models = instrument_models(models, services.telemetry)
     try:
         for day in (2, 3):
@@ -90,7 +92,6 @@ async def followup(stage, family, student, decision):
                 if state and state.attempts == 8:
                     models[ModelRole.GENERATE].enqueue({"text": NOTE})
                 if item.kind is ItemKind.OPEN:
-                    models[ModelRole.CLASSIFY].enqueue(AUTHORED_TURNS[TURN_DECISION])
                     models[ModelRole.JUDGE].enqueue(
                         {
                             "correct": False,

@@ -1,4 +1,5 @@
 from repaso.config.models import ModelRole
+from repaso.core.orchestration.turn_router import READ_ROLE
 from repaso.i18n import msg
 from repaso.schemas.common import Lang
 from repaso.schemas.turn import TurnIntent
@@ -16,7 +17,7 @@ from tests.runtime.fixtures import (
 
 
 def read_as(services, intent: TurnIntent, answer_text: str = "") -> None:
-    services.models[ModelRole.CLASSIFY].enqueue(
+    services.models[READ_ROLE].enqueue(
         {
             "intent": intent.value,
             "speaker": "child",
@@ -31,8 +32,8 @@ def test_free_text_during_a_live_session_is_graded(settings):
     _, student = seed_family(services.store)
     seed_item(services.store, "i1")
     seed_session(services, student.id, ["i1"], delivered_at=services.clock.now())
-    services.models[ModelRole.STRUCTURED].enqueue({"action": "continue", "reason": "ok"})
     read_as(services, TurnIntent.ANSWER, "1/2")
+    services.models[ModelRole.STRUCTURED].enqueue({"action": "continue", "reason": "ok"})
 
     received = services.clock.now().replace(minute=42)
     response = send(services, inbound(text="1/2", chat_ref=FAMILY_CHAT, received_at=received))
@@ -92,7 +93,7 @@ def test_an_injection_typed_into_the_chat_is_quarantined_not_graded(settings):
     assert route_of(response) == "conversation"
     assert response["result"]["tutor"] is None
     assert texts(response) == [msg("turn_blocked", Lang.ES)]
-    assert services.models[ModelRole.CLASSIFY].calls == []
+    assert services.models[READ_ROLE].calls == []
     quarantined = services.store.list_pending_quarantine(family.id)
     assert len(quarantined) == 1
     assert quarantined[0].payload["student_id"] == student.id
