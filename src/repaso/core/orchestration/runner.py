@@ -3,6 +3,7 @@ from hashlib import sha256
 from uuid import uuid4
 
 from repaso.core.harness.pause import is_paused, trace_paused
+from repaso.core.harness.retention import expired, expiry_stamp
 from repaso.core.orchestration.adaptations import apply_adaptation
 from repaso.core.orchestration.context import (
     CloseRun,
@@ -84,6 +85,13 @@ async def start_daily_session(services: Services, family: Family, student: Stude
     return run
 
 
+def live_journal(services: Services, scope: str, key: str) -> OperationRecord | None:
+    record = services.store.get_record(scope, key)
+    if record is None or expired(record, services.clock.now()):
+        return None
+    return record
+
+
 def active_session(services: Services, student_id: str) -> PracticeSession | None:
     session = services.store.get_session_by_date(student_id, services.clock.today())
     if session is None or session.status not in ACTIVE_SESSION_STATUSES:
@@ -121,7 +129,7 @@ async def handle_answer(
             )
         )
         return None
-    saved = services.store.get_record(family.id, f"answer#{response_id}") if response_id else None
+    saved = live_journal(services, family.id, f"answer#{response_id}") if response_id else None
     session = (
         PracticeSession.model_validate(saved.payload["session"])
         if saved
@@ -144,12 +152,15 @@ async def handle_answer(
         response_id or sha256(f"{session.id}:{session.current_item_index}".encode()).hexdigest()
     )
     key = f"answer#{response_id}"
-    saved = saved or services.store.get_record(family.id, key)
+    saved = saved or live_journal(services, family.id, key)
     if saved is None:
+        now = services.clock.now()
         pending = [
             r
             for r in services.store.list_records(family.id, "answer#")
-            if r.payload.get("student_id") == student.id and not r.payload.get("complete")
+            if r.payload.get("student_id") == student.id
+            and not r.payload.get("complete")
+            and not expired(r, now)
         ]
         if pending:
             raise RuntimeError("previous answer is awaiting recovery")
@@ -160,6 +171,7 @@ async def handle_answer(
                 "session": session.model_dump(mode="json"),
                 "student_id": student.id,
                 "response": response.model_dump(mode="json"),
+                "expires_at": expiry_stamp(now),
             },
         )
         services.store.put_record(saved)

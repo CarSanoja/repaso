@@ -17,6 +17,7 @@ from repaso.core.orchestration.runner import (
     current_item,
     deliver_outbound,
     handle_answer,
+    live_journal,
 )
 from repaso.core.orchestration.scheduling import sync_schedule
 from repaso.core.orchestration.study_channel import (
@@ -57,7 +58,7 @@ async def handle_channel_message(services: Services, message: InboundMessage) ->
     else:
         run.family = family
         sync_schedule(services, family)
-        saved = services.store.get_record(family.id, f"answer#chat:{message.message_ref}")
+        saved = live_journal(services, family.id, f"answer#chat:{message.message_ref}")
         if saved:
             run.route = Route.ANSWER
             run.student = services.store.get_student(saved.payload["student_id"])

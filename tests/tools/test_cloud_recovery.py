@@ -2,6 +2,7 @@ import boto3
 import pytest
 from moto import mock_aws
 
+from repaso.core.harness.retention import expiry_stamp
 from repaso.core.orchestration.privacy import forget_family
 from repaso.core.orchestration.quarantine_resolution import resolve_quarantine
 from repaso.core.orchestration.runner import handle_answer, start_daily_session
@@ -131,3 +132,40 @@ def test_erasure_resumes_after_partial_delete_and_finds_an_orphaned_copy(
     assert s.store.get_family(family.id) is None and s.store.get_student(student.id) is None
     assert s.store.get_family(other.id) is not None
     assert not s.store.list_family_items(family.id)
+
+
+@pytest.mark.asyncio
+async def test_the_answer_journal_reaches_dynamodb_with_the_tables_ttl_attribute(cloud_services):
+    s, client, _ = cloud_services
+    family, student = seed_family(s.store)
+    seed_mcqs(s, family.id)
+    await start_daily_session(s, family, student)
+    await handle_answer(s, family, student, "1", 45, response_id="first")
+
+    row = client.get_item(
+        TableName="repaso",
+        Key={"pk": {"S": f"DATA#{family.id}"}, "sk": {"S": "answer#first"}},
+    )["Item"]
+    stamp = int(row["expires_at"]["N"])
+    assert stamp == expiry_stamp(s.clock.now())
+    assert stamp == int(float(row["doc"]["M"]["payload"]["M"]["expires_at"]["N"]))
+
+
+@pytest.mark.asyncio
+async def test_the_attempt_ledger_is_written_without_a_horizon(cloud_services):
+    s, client, _ = cloud_services
+    family, student = seed_family(s.store)
+    seed_mcqs(s, family.id)
+    await start_daily_session(s, family, student)
+    await handle_answer(s, family, student, "1", 45, response_id="first")
+
+    episodes = client.query(
+        TableName="repaso",
+        KeyConditionExpression="pk = :pk AND begins_with(sk, :sk)",
+        ExpressionAttributeValues={
+            ":pk": {"S": f"DATA#{family.id}"},
+            ":sk": {"S": "episode#"},
+        },
+    )["Items"]
+    assert len(episodes) == 1
+    assert "expires_at" not in episodes[0]
