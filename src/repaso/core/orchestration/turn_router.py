@@ -48,7 +48,8 @@ async def route_turn(services: Services, run: ChannelRun, family: Family, text: 
         student_id=target.student.id if target.student else None,
     )
     if decision.intent is TurnIntent.ANSWER and target.state is PracticeState.OPEN:
-        await route_answer(services, run, family, answer_for(target.item, decision, text))
+        chosen = answer_for(target.item, decision, text, said)
+        await route_answer(services, run, family, chosen)
         return
     await reply_to(services, run, family, target, decision, said)
 
@@ -112,9 +113,15 @@ def names_an_option(item: Item, candidate: str) -> bool:
     return chosen.isdigit() and 1 <= int(chosen) <= len(options)
 
 
-def answer_for(item: Item | None, decision: TurnDecision, text: str) -> str:
+def copied_verbatim(said: str, candidate: str) -> bool:
+    return normalize(candidate) in normalize(said)
+
+
+def answer_for(item: Item | None, decision: TurnDecision, text: str, said: str) -> str:
     candidate = decision.answer_text.strip()
     if not candidate or item is None or item.kind is not ItemKind.MCQ:
+        return text
+    if not copied_verbatim(said, candidate):
         return text
     return candidate if names_an_option(item, candidate) else text
 

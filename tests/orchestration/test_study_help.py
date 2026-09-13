@@ -217,3 +217,27 @@ async def test_a_button_tapped_the_instant_the_question_appears_is_still_graded(
 
     assert reply.session.progress.correct == 1
     assert services.store.get_mastery(student.id, item.competency_id).attempts == 1
+
+
+async def test_an_option_the_family_never_wrote_is_not_graded_in_a_sitting(settings):
+    services, family, student, session = open_with(settings)
+    item = current_item(services, session)
+    reads(services, TurnIntent.ANSWER, answer_text=item.answer_key)
+
+    reply = await handle_study_text(services, family, "👍", 8.0, "m1")
+
+    assert reply.session.progress.answered_keys == []
+    assert services.store.get_mastery(student.id, item.competency_id) is None
+    assert msg("study_not_an_answer", family.lang) in texts(reply)
+
+
+async def test_the_part_the_family_did_write_is_still_graded(settings):
+    services, family, student, session = open_with(settings)
+    item = current_item(services, session)
+    reads(services, TurnIntent.ANSWER, answer_text=item.answer_key)
+
+    reply = await handle_study_text(
+        services, family, f"mmm creo que la {item.answer_key}", 8.0, "m1"
+    )
+
+    assert reply.session.progress.correct == 1

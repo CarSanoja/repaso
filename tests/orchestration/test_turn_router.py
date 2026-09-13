@@ -436,3 +436,17 @@ async def test_an_item_with_no_written_reason_never_sends_an_empty_message(setti
     run = await says(services, family, "\u00bfpor qu\u00e9?")
 
     assert said(run) == [msg("turn_explain_unavailable", Lang.ES)]
+
+
+async def test_an_option_the_family_never_wrote_is_not_graded_as_their_answer(settings):
+    services = services_with_recorder(settings)
+    family, student = seed_family(services.store)
+    seed_item(services.store, "i1")
+    seed_session(services, student.id, ["i1"])
+    reads(services, TurnIntent.ANSWER, "1/2")
+    keeps_going(services)
+
+    run = await says(services, family, "👍")
+
+    assert run.tutor.grade.correct is False
+    assert run.tutor.grade.evidence.quote == "👍"

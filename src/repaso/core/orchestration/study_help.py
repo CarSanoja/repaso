@@ -7,7 +7,7 @@ from repaso.core.orchestration.study_context import explain_context, read_contex
 from repaso.core.orchestration.study_flow import StudyReply, close_sitting
 from repaso.core.orchestration.study_messages import plain, question, say
 from repaso.core.orchestration.turn_replies import EXPLAIN_ROLE
-from repaso.core.orchestration.turn_router import READ_ROLE
+from repaso.core.orchestration.turn_router import READ_ROLE, copied_verbatim
 from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.family import Family
 from repaso.schemas.item import Item
@@ -54,6 +54,13 @@ def _graded(
     return answer_sitting(services, family, student, session, chosen, latency_seconds)
 
 
+def _extracted(item: Item, decision: TurnDecision, said: str) -> str | None:
+    candidate = decision.answer_text.strip()
+    if not candidate or not copied_verbatim(said, candidate):
+        return None
+    return picked_option(item, candidate)
+
+
 async def answer_or_help(
     services: Services,
     family: Family,
@@ -98,7 +105,7 @@ async def _act(
     turn_id: str,
 ) -> StudyReply:
     if decision.intent is TurnIntent.ANSWER:
-        chosen = picked_option(item, decision.answer_text.strip())
+        chosen = _extracted(item, decision, said)
         if chosen is None:
             return _unread(services, family, session)
         return _graded(services, family, student, session, chosen, latency_seconds)
