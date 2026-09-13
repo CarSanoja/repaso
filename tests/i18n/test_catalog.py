@@ -67,6 +67,21 @@ def test_consent_states_both_retention_windows():
         assert "7" in consent and "35" in consent
 
 
+def test_the_child_is_pointed_past_the_adult_who_may_be_the_reason():
+    expected = {Lang.ES: "maestra", Lang.EN: "teacher"}
+    for lang, elsewhere in expected.items():
+        told = msg("distress_child", lang).lower()
+        assert elsewhere in told, lang
+
+
+def test_the_alarm_never_sends_the_adult_looking_at_our_own_message():
+    forbidden = {Lang.ES: ("de arriba", "está arriba"), Lang.EN: ("message above", "it is above")}
+    for lang, phrases in forbidden.items():
+        alarm = msg("distress_parent", lang).lower()
+        for phrase in phrases:
+            assert phrase not in alarm, (lang, phrase)
+
+
 def test_the_sitting_tells_the_child_who_reads_the_chat():
     expected = {Lang.ES: ("chat", "lee"), Lang.EN: ("chat", "read")}
     for lang, phrases in expected.items():

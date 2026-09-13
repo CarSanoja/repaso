@@ -27,16 +27,16 @@ PRACTICE = {
     ),
     "distress_child": (
         "Gracias por escribir eso. Es mucho más importante que la práctica, así que "
-        "aquí la dejamos. Díselo ahora a la persona grande que está contigo, con las "
-        "mismas palabras que usaste conmigo. Si no está, busca a una persona adulta en "
-        "la que confíes. Esto no lo tienes que resolver tú."
+        "aquí la dejamos. Cuéntaselo ahora a una persona grande en la que confíes, con "
+        "las mismas palabras que usaste conmigo: la que está contigo, o tu maestra, o "
+        "alguien de tu familia. Esto no lo tienes que resolver tú."
     ),
     "distress_parent": (
-        "Atención, esto es para ti, la persona adulta de este chat. El mensaje de "
-        "arriba no es sobre la práctica: es algo que te necesita ahora. Detuve la "
-        "práctica y no la sigo. No repito aquí lo que se escribió; está arriba, en sus "
-        "propias palabras. Habla con tu hijo o hija ahora, sin pantalla de por medio. "
-        "Si crees que hay peligro, busca ayuda de inmediato."
+        "Atención, esto es para ti, la persona adulta de este chat. Lo que se acaba de "
+        "escribir aquí no es sobre la práctica: es algo que te necesita ahora. Detuve "
+        "la práctica y no la sigo. No repito esas palabras; ya están en este chat, tal "
+        "como se escribieron. Habla con tu hijo o hija ahora, sin pantalla de por "
+        "medio. Si crees que hay peligro, busca ayuda de inmediato."
     ),
     "study_who_reads": (
         "Antes de empezar, algo que es bueno que sepas: este chat es de la persona grande "

@@ -28,16 +28,17 @@ PRACTICE = {
     "turn_blocked": ("I cannot answer that, but we carry on: go back to the practice question."),
     "distress_child": (
         "Thank you for writing that. It matters far more than the practice, so we stop "
-        "here. Tell the grown-up who is with you now, in the same words you used with "
-        "me. If they are not there, find an adult you trust. This is not yours to sort "
-        "out on your own."
+        "here. Tell a grown-up you trust now, in the same words you used with me: the "
+        "one who is with you, or your teacher, or someone in your family. This is not "
+        "yours to sort out on your own."
     ),
     "distress_parent": (
-        "Attention, this one is for you, the adult in this chat. The message above is "
-        "not about the practice: it needs you now. I have stopped the practice and I "
-        "am not carrying on with it. I am not repeating what was written here; it is "
-        "above, in their own words. Talk with your child now, away from the screen. If "
-        "you think there is danger, get help straight away."
+        "Attention, this one is for you, the adult in this chat. What has just been "
+        "written here is not about the practice: it needs you now. I have stopped the "
+        "practice and I am not carrying on with it. I am not repeating those words; "
+        "they are already in this chat, exactly as they were typed. Talk with your "
+        "child now, away from the screen. If you think there is danger, get help "
+        "straight away."
     ),
     "study_who_reads": (
         "One thing worth knowing before we start: this chat belongs to the grown-up who is "
