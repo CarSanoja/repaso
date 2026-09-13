@@ -89,3 +89,14 @@ def test_no_family_facing_line_says_one_of_a_plural_noun():
             for index, word in enumerate(words[:-1]):
                 if word == "1":
                     assert words[index + 1].strip(".,") not in plurals, (key, catalog[key])
+
+
+PLURAL_IMPERATIVES = ("escriban", "manden", "mándenme", "toquen", "envíen")
+
+
+def test_a_command_is_asked_of_the_one_person_who_types_it():
+    for key in known_keys():
+        if "/" not in ES[key]:
+            continue
+        for form in PLURAL_IMPERATIVES:
+            assert form not in ES[key].lower(), (key, form)

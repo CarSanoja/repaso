@@ -14,6 +14,7 @@ from repaso.tools.episode_log import list_attempts
 from tests.orchestration.fixtures import FRACTIONS, START, seed_family
 from tests.runtime.fixtures import FAMILY_CHAT, channel_request, inbound, pilot
 
+CHILD_WORDS = "no entiendo nada de esto"
 ONCE = {"attempts": 1, "grades": 1, "episodes": 1}
 NEVER = {"attempts": 0, "grades": 0, "episodes": 0}
 BANK = (
@@ -65,6 +66,20 @@ def reads_an_answer(services, answer_text: str) -> None:
             "answer_text": answer_text,
         }
     )
+
+
+def prefixed(services, family, prefix: str) -> int:
+    return len(services.store.list_records(family.id, prefix))
+
+
+def stored_text(services, family) -> str:
+    scopes = (family.id, f"chat:{family.chat_ref}")
+    rows = [
+        record.payload
+        for scope in scopes
+        for record in services.store.list_records(scope, "")
+    ]
+    return "\n".join(str(row) for row in rows)
 
 
 def learning_state(services, family, student) -> dict:
@@ -169,3 +184,32 @@ async def test_the_sitting_abandoned_between_question_and_answer_is_not_reopened
 
     stored = list_study_sessions(services, family.id, student.id, sitting.opened_on)
     assert [session.status for session in stored] == [StudySessionStatus.ABANDONED]
+
+
+async def test_forget_after_a_sitting_leaves_nothing_the_sitting_wrote(settings):
+    services, family, student = await opened(settings)
+    item = current_item(services, open_sitting(services, family, student))
+    services.models[ModelRole.STRUCTURED].enqueue(
+        {
+            "intent": "explanation",
+            "speaker": "child",
+            "asked_for": "que se lo explique",
+            "answer_text": "",
+        }
+    )
+    services.models[ModelRole.GENERATE].enqueue(
+        {"text": "Parte la barra en cuatro.", "approach": "bar split"}
+    )
+    await sent(services, inbound(text=CHILD_WORDS, chat_ref=FAMILY_CHAT, message_ref="h1"))
+    await sent(services, inbound(text=item.answer_key, chat_ref=FAMILY_CHAT, message_ref="a1"))
+    assert CHILD_WORDS in stored_text(services, family)
+
+    await sent(services, inbound(callback="forget:yes", chat_ref=FAMILY_CHAT))
+
+    assert learning_state(services, family, student) == NEVER
+    assert services.store.get_family(family.id) is None
+    assert services.store.list_students(family.id) == []
+    assert prefixed(services, family, "study#") == 0
+    assert prefixed(services, family, "episode#") == 0
+    assert prefixed(services, family, "turn#") == 0
+    assert stored_text(services, family) == ""

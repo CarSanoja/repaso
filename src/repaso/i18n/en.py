@@ -271,15 +271,15 @@ MESSAGES = {
     "study_paused": "Practice paused. Write /session when you want to carry on.",
     "study_resumed": "Picking up where you left off.",
     "study_one_child": (
-        "In this chat I follow a single student for now, so I don't know whose practice "
-        "this would be."
+        "I can see more than one student here and I will not guess whose practice this "
+        "would be. The daily practice carries on as always."
     ),
     "study_stale_button": (
         "That question belonged to a practice we already closed. Write /session for "
         "another round."
     ),
     "study_none_open": (
-        "There is no practice open right now. Write /session when you want one."
+        "There is no practice open right now. Write /session whenever you want one."
     ),
     "study_ask_topic": (
         "Which topic? For example: /topic equivalent fractions."
@@ -309,7 +309,7 @@ MESSAGES = {
         "is part of learning too. We will pick it up calmly tomorrow."
     ),
     "study_not_an_answer": (
-        "I couldn't tell which option you picked, so I'm not counting it as an answer. "
-        "Tap an option or write its number."
+        "I could not tell which of the options that was, so I am not counting it as an "
+        "answer. Tap an option or write its number."
     ),
 }

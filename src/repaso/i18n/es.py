@@ -269,18 +269,18 @@ MESSAGES = {
     "study_done_bank": (
         "Se me acabaron las preguntas que tenía guardadas: {correct} de {answered}."
     ),
-    "study_paused": "Práctica en pausa. Cuando quieran seguir, escriban /sesion.",
+    "study_paused": "Práctica en pausa. Cuando quieras seguir, escribe /sesion.",
     "study_resumed": "Seguimos donde quedaron.",
     "study_one_child": (
-        "En este chat sigo a un solo estudiante por ahora, así que no sé de quién sería "
-        "esta práctica."
+        "Aquí veo más de un estudiante y no quiero adivinar de cuál sería esta "
+        "práctica. La práctica diaria sigue llegando como siempre."
     ),
     "study_stale_button": (
-        "Esa pregunta era de una práctica que ya cerramos. Si quieren otra ronda, "
-        "escriban /sesion."
+        "Esa pregunta era de una práctica que ya cerramos. Si quieres otra ronda, "
+        "escribe /sesion."
     ),
     "study_none_open": (
-        "No hay una práctica abierta ahora mismo. Escribe /sesion cuando quieran una."
+        "No hay una práctica abierta ahora mismo. Escribe /sesion cuando quieras una."
     ),
     "study_ask_topic": (
         "¿De qué tema? Por ejemplo: /tema fracciones equivalentes."
@@ -310,7 +310,7 @@ MESSAGES = {
         "es parte de aprender. Mañana lo retomamos con calma."
     ),
     "study_not_an_answer": (
-        "No supe cuál opción elegiste, así que no la cuento como respuesta. Toca una "
-        "opción o escribe su número."
+        "No me quedó claro cuál de las opciones era, así que no la cuento como "
+        "respuesta. Toca una opción o escribe su número."
     ),
 }
