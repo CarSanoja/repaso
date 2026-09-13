@@ -10,6 +10,7 @@ from repaso.schemas.grading import StudentResponse
 from repaso.schemas.item import Item
 from repaso.schemas.student import Student
 from repaso.schemas.study_session import StudySession
+from repaso.tools.episode_log import record_grade
 
 
 def current_item(services: Services, session: StudySession) -> Item | None:
@@ -67,6 +68,7 @@ def answer_sitting(
     grade.id = f"study:{key}"
     grade.responded_at = now
     services.grade_log.append(grade)
+    record_grade(services.store, family.id, session.id, item.competency_id, grade, response)
     correct = bool(grade.correct)
     record_answer_outcome(services, student.id, item, correct, latency_seconds, f"study:{key}")
     answered = record_answer(session, key, correct, now)

@@ -31,6 +31,7 @@ from repaso.schemas.grading import GradeResult
 from repaso.schemas.item import ItemKind
 from repaso.schemas.review import QuarantineItem
 from repaso.schemas.session import SessionStatus
+from repaso.tools.episode_log import record_grade
 from repaso.tools.grade_log import effective_grades
 
 SIGNAL_WINDOW_DAYS = 14
@@ -103,6 +104,14 @@ def build_response_graph(services: Services, run: TutorRun):
             )
             services.store.put_record(run.operation)
         services.grade_log.append(run.grade)
+        record_grade(
+            services.store,
+            run.family.id,
+            run.session.id,
+            item.competency_id,
+            run.grade,
+            run.response,
+        )
         if run.quarantine is not None:
             run.quarantine.payload["grade_id"] = run.grade.id
             services.store.put_quarantine(run.quarantine)
