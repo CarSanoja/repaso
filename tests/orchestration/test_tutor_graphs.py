@@ -217,3 +217,46 @@ async def test_struggle_hard_rule_escalates_even_when_model_says_continue(settin
     assert any(m.buttons and m.buttons[0].callback_data.startswith("esc:") for m in run.outbound)
     note_calls = services.models[ModelRole.GENERATE].calls
     assert note_calls and all("Leo" not in str(call) for call in note_calls)
+
+
+async def test_a_wrong_choice_is_told_why_with_the_reason_already_written(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    item = seed_item(services.store, "i1")
+    seed_item(services.store, "i2")
+    session = seed_session(services, student.id, ["i1", "i2"])
+    services.models[ModelRole.STRUCTURED].enqueue({"action": "continue", "reason": "ok"})
+
+    run = TutorRun(
+        family=family,
+        student=student,
+        session=session,
+        items=[item],
+        response=make_response(student.id, "i1", "3/4"),
+    )
+    await build_response_graph(services, run).invoke_async("response")
+
+    assert run.outbound[0].text == f"Todav\u00eda no. {item.rationale}"
+    assert services.models[ModelRole.JUDGE].calls == []
+
+
+async def test_an_open_answer_keeps_the_feedback_the_judge_wrote(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    item = seed_item(services.store, "i1", kind=ItemKind.OPEN)
+    session = seed_session(services, student.id, ["i1"])
+    services.models[ModelRole.JUDGE].enqueue(
+        {"correct": False, "rubric_points": 0.0, "confidence": 0.95, "feedback": "Casi: revisa."}
+    )
+    services.models[ModelRole.STRUCTURED].enqueue({"action": "continue", "reason": "ok"})
+
+    run = TutorRun(
+        family=family,
+        student=student,
+        session=session,
+        items=[item],
+        response=make_response(student.id, "i1", "porque s\u00ed"),
+    )
+    await build_response_graph(services, run).invoke_async("response")
+
+    assert run.outbound[0].text == "Todav\u00eda no. Casi: revisa."

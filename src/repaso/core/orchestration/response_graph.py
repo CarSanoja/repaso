@@ -145,8 +145,12 @@ def build_response_graph(services: Services, run: TutorRun):
                 run.response.latency_seconds,
                 outcome_id=f"answer:{run.session.id}:{run.session.current_item_index}",
             )
-            key = "feedback_correct" if run.grade.correct else "feedback_incorrect"
-            _say(run, msg(key, run.family.lang, feedback=run.grade.feedback).strip())
+            if run.grade.correct:
+                said = msg("feedback_correct", run.family.lang, feedback=run.grade.feedback)
+                _say(run, said.strip())
+            else:
+                reason = run.grade.feedback or item.rationale
+                _say(run, msg("feedback_incorrect", run.family.lang, feedback=reason).strip())
         next_index = run.session.current_item_index + 1
         remaining = run.session.capsule.item_ids[next_index:] if run.session.capsule else []
         if remaining:
