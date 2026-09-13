@@ -5,6 +5,7 @@ from repaso.agents.turn_reader import read_turn
 from repaso.config.models import ModelRole
 from repaso.core.orchestration import turn_memory
 from repaso.core.orchestration.context import ChannelRun, Route, Services
+from repaso.core.orchestration.distress import raise_alarm
 from repaso.core.orchestration.ingest_holds import QUOTE_LENGTH, held_kind, offered_reply
 from repaso.core.orchestration.runner import active_session, current_item, handle_answer
 from repaso.core.orchestration.turn_replies import reply_to, say, speak
@@ -47,6 +48,12 @@ async def route_turn(services: Services, run: ChannelRun, family: Family, text: 
         family_id=family.id,
         student_id=target.student.id if target.student else None,
     )
+    if decision.intent is TurnIntent.DISTRESS:
+        run.route = Route.CONVERSATION
+        run.outbound.extend(
+            raise_alarm(services, family, target.student, run.message.message_ref)
+        )
+        return
     if decision.intent is TurnIntent.ANSWER and target.state is PracticeState.OPEN:
         chosen = answer_for(target.item, decision, text, said)
         await route_answer(services, run, family, chosen)

@@ -26,6 +26,19 @@ PRACTICE = {
         "with whatever you answer."
     ),
     "turn_blocked": ("I cannot answer that, but we carry on: go back to the practice question."),
+    "distress_child": (
+        "Thank you for writing that. It matters far more than the practice, so we stop "
+        "here. Tell the grown-up who is with you now, in the same words you used with "
+        "me. If they are not there, find an adult you trust. This is not yours to sort "
+        "out on your own."
+    ),
+    "distress_parent": (
+        "Attention, this one is for you, the adult in this chat. The message above is "
+        "not about the practice: it needs you now. I have stopped the practice and I "
+        "am not carrying on with it. I am not repeating what was written here; it is "
+        "above, in their own words. Talk with your child now, away from the screen. If "
+        "you think there is danger, get help straight away."
+    ),
     "study_open": (
         "Let's work on {topic}. I have {count} questions saved on it. "
         "Answer them together, no rush."

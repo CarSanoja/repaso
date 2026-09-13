@@ -13,6 +13,7 @@ from repaso.schemas.nullable import NULL_IS_BLANK, NULL_IS_EMPTY
 
 
 class TurnIntent(StrEnum):
+    DISTRESS = "distress"
     ANSWER = "answer"
     EXPLANATION = "explanation"
     ANOTHER_QUESTION = "another_question"

@@ -27,6 +27,7 @@ class CloseReason(StrEnum):
     ENOUGH_FOR_TODAY = "enough_for_today"
     BANK_EMPTY = "bank_empty"
     FAMILY_CLOSED = "family_closed"
+    STOPPED_FOR_CARE = "stopped_for_care"
     EXPIRED = "expired"
 
 

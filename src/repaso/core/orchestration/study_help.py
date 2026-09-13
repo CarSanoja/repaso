@@ -2,6 +2,7 @@ from repaso.agents.explainer import explain
 from repaso.agents.turn_reader import read_turn
 from repaso.core.orchestration import turn_memory
 from repaso.core.orchestration.context import Services
+from repaso.core.orchestration.distress import raise_alarm, stop_sitting
 from repaso.core.orchestration.study_answer import answer_sitting, current_item, picked_option
 from repaso.core.orchestration.study_context import explain_context, read_context
 from repaso.core.orchestration.study_flow import StudyReply, close_sitting
@@ -39,6 +40,17 @@ def _with_question(
 
 def _unread(services: Services, family: Family, session: StudySession) -> StudyReply:
     return _with_question(services, family, session, say(family, "study_not_an_answer"))
+
+
+def _stopped(
+    services: Services,
+    family: Family,
+    student: Student,
+    session: StudySession,
+    turn_id: str,
+) -> StudyReply:
+    messages = raise_alarm(services, family, student, turn_id)
+    return StudyReply(messages, stop_sitting(services, session))
 
 
 def _graded(
@@ -104,6 +116,8 @@ async def _act(
     latency_seconds: float,
     turn_id: str,
 ) -> StudyReply:
+    if decision.intent is TurnIntent.DISTRESS:
+        return _stopped(services, family, student, session, turn_id)
     if decision.intent is TurnIntent.ANSWER:
         chosen = _extracted(item, decision, said)
         if chosen is None:

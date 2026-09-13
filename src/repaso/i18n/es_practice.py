@@ -25,6 +25,19 @@ PRACTICE = {
     "turn_blocked": (
         "Eso no lo puedo responder, pero seguimos: vuelve a la pregunta de la práctica."
     ),
+    "distress_child": (
+        "Gracias por escribir eso. Es mucho más importante que la práctica, así que "
+        "aquí la dejamos. Díselo ahora a la persona grande que está contigo, con las "
+        "mismas palabras que usaste conmigo. Si no está, busca a una persona adulta en "
+        "la que confíes. Esto no lo tienes que resolver tú."
+    ),
+    "distress_parent": (
+        "Atención, esto es para ti, la persona adulta de este chat. El mensaje de "
+        "arriba no es sobre la práctica: es algo que te necesita ahora. Detuve la "
+        "práctica y no la sigo. No repito aquí lo que se escribió; está arriba, en sus "
+        "propias palabras. Habla con tu hijo o hija ahora, sin pantalla de por medio. "
+        "Si crees que hay peligro, busca ayuda de inmediato."
+    ),
     "study_open": (
         "Vamos con {topic}. Tengo {count} preguntas guardadas de ese tema. "
         "Respondan juntos, sin apuro."
