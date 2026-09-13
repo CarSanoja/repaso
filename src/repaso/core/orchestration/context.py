@@ -20,6 +20,7 @@ from repaso.schemas.operation import OperationRecord
 from repaso.schemas.review import QuarantineItem
 from repaso.schemas.session import PracticeSession
 from repaso.schemas.student import Student
+from repaso.schemas.study_session import StudySession
 from repaso.schemas.verification import DailyCloseReport
 from repaso.tools.event_bus import EventPublisher
 from repaso.tools.guardrails import Screener, ScreenVerdict
@@ -114,6 +115,7 @@ class Route(StrEnum):
     QUARANTINE = "quarantine"
     MATERIAL = "material"
     ANSWER = "answer"
+    STUDY = "study"
     MEDIA_UNAVAILABLE = "media_unavailable"
     NO_STUDENT = "no_student"
     UNROUTED_CALLBACK = "unrouted_callback"
@@ -130,6 +132,7 @@ class ChannelRun:
     events: list[DomainEvent] = field(default_factory=list)
     ingest: IngestRun | None = None
     tutor: TutorRun | None = None
+    study: StudySession | None = None
     replayed_summary: dict | None = None
 
 

@@ -1,11 +1,10 @@
-from repaso.agents.capsule_composer import render_item
+from repaso.agents.capsule_composer import answer_ref, render_item
 from repaso.i18n import msg
 from repaso.schemas.channel import Button, OutboundMessage
 from repaso.schemas.family import Family
 from repaso.schemas.item import Item, ItemKind
 from repaso.schemas.study_session import CloseReason, StudySession
 
-STUDY_PREFIX = "sit:"
 CLOSING_KEYS: dict[CloseReason, str] = {
     CloseReason.QUESTIONS_SPENT: "study_done",
     CloseReason.MINUTES_SPENT: "study_done_time",
@@ -26,15 +25,11 @@ def say(family: Family, key: str, buttons: list[Button] | None = None, **kwargs)
     )
 
 
-def study_ref(session_id: str, item_id: str, number: int) -> str:
-    return f"{STUDY_PREFIX}{session_id}:{item_id}:{number}"
-
-
 def study_buttons(session_id: str, item: Item) -> list[Button]:
     if item.kind is not ItemKind.MCQ:
         return []
     return [
-        Button(label=option, callback_data=study_ref(session_id, item.id, number))
+        Button(label=option, callback_data=f"sit:{answer_ref(session_id, item.id)}:{number}")
         for number, option in enumerate(item.options, start=1)
     ]
 

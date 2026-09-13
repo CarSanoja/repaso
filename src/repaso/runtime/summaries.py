@@ -11,6 +11,7 @@ from repaso.core.orchestration.context import (
 )
 from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.grading import GradeResult
+from repaso.schemas.study_session import StudySession
 
 
 def outbound_summary(messages: list[OutboundMessage]) -> list[dict[str, Any]]:
@@ -70,6 +71,19 @@ def close_summary(run: CloseRun) -> dict[str, Any]:
     }
 
 
+def study_summary(session: StudySession | None) -> dict[str, Any] | None:
+    if session is None:
+        return None
+    return {
+        "session_id": session.id,
+        "status": session.status.value,
+        "competency_id": session.goal.competency_id,
+        "asked": len(session.progress.served),
+        "correct": session.progress.correct,
+        "closed_reason": session.closed_reason.value if session.closed_reason else None,
+    }
+
+
 def channel_summary(run: ChannelRun) -> dict[str, Any]:
     if run.replayed_summary is not None:
         return run.replayed_summary
@@ -81,6 +95,7 @@ def channel_summary(run: ChannelRun) -> dict[str, Any]:
         "events": [event.kind.value for event in run.events],
         "ingest": ingest_summary(run.ingest) if run.ingest is not None else None,
         "tutor": tutor_summary(run.tutor) if run.tutor is not None else None,
+        "study": study_summary(run.study),
         "outbound": outbound_summary(run.outbound),
     }
 

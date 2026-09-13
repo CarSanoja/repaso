@@ -150,6 +150,8 @@ MESSAGES = {
     "consent_decline": "No acepto",
     "forget_keep": "No borré nada.",
     "help": (
+        "/sesion practica un rato más ahora\n/tema <tema> practica un tema\n"
+        "/listo cierra la práctica\n"
         "/schedule cambia la hora de práctica\n/exam avisa una fecha de examen\n"
         "/pause y /resume detienen y retoman\n/status muestra el avance\n"
         "/language cambia el idioma\n/forget borra todos los datos"
@@ -237,5 +239,11 @@ MESSAGES = {
     "study_stale_button": (
         "Esa pregunta era de una práctica que ya cerramos. Si quieren otra ronda, "
         "escriban /sesion."
+    ),
+    "study_none_open": (
+        "No hay una práctica abierta ahora mismo. Escribe /sesion cuando quieran una."
+    ),
+    "study_ask_topic": (
+        "¿De qué tema? Por ejemplo: /tema fracciones equivalentes."
     ),
 }

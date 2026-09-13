@@ -150,6 +150,8 @@ MESSAGES = {
     "consent_decline": "I do not accept",
     "forget_keep": "Nothing was erased.",
     "help": (
+        "/session practises a little more now\n/topic <topic> practises one topic\n"
+        "/done closes the practice\n"
         "/schedule changes the practice time\n/exam registers an exam date\n"
         "/pause and /resume stop and restart\n/status shows progress\n"
         "/language switches language\n/forget erases all data"
@@ -235,5 +237,11 @@ MESSAGES = {
     "study_stale_button": (
         "That question belonged to a practice we already closed. Write /session for "
         "another round."
+    ),
+    "study_none_open": (
+        "There is no practice open right now. Write /session when you want one."
+    ),
+    "study_ask_topic": (
+        "Which topic? For example: /topic equivalent fractions."
     ),
 }

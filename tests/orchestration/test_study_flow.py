@@ -20,13 +20,14 @@ from tests.orchestration.fixtures import make_services, seed_family
 EQUIVALENCE_TOPIC = "fracciones equivalentes"
 
 
-def seed_bank(services, family, count: int, competency_id: str = FRACTIONS) -> list[str]:
+def seed_bank(services, family, count: int, competency_id: str = FRACTIONS, **fields) -> list[str]:
     ids = []
     for index in range(count):
         item = make_item(
             f"{competency_id}-{index}",
             family_id=family.id,
             competency_id=competency_id,
+            **fields,
             stem=f"¿Cuál fracción equivale a 1/2? ({index})",
             rationale="Multiplicas arriba y abajo por dos.",
             bloom=BloomLevel.APPLY if index % 2 else BloomLevel.REMEMBER,
