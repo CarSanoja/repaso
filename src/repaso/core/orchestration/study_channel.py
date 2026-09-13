@@ -1,12 +1,11 @@
 from repaso.agents.capsule_composer import answer_ref
-from repaso.core.orchestration.context import Services
+from repaso.core.orchestration.context import ChannelRun, Route, Services
 from repaso.core.orchestration.runner import active_session
 from repaso.core.orchestration.runner import current_item as capsule_item
+from repaso.core.orchestration.study_answer import answer_sitting, current_item
 from repaso.core.orchestration.study_flow import (
     StudyReply,
-    answer_sitting,
     close_sitting,
-    current_item,
     resume_sitting,
     start_sitting,
 )
@@ -100,3 +99,17 @@ def _chosen_option(services: Services, sitting, parts: list[str]) -> str | None:
     if not 0 <= index < len(item.options):
         return None
     return item.options[index]
+
+
+def apply_study(run: ChannelRun, reply: StudyReply) -> None:
+    run.route = Route.STUDY
+    run.study = reply.session
+    run.outbound.extend(reply.messages)
+
+
+def study_latency(services: Services, family: Family, run: ChannelRun) -> float:
+    student = study_student(services, family)
+    sitting = open_sitting(services, family, student) if student else None
+    if sitting is None:
+        return 0.0
+    return max(0.0, (run.message.received_at - sitting.last_event_at).total_seconds())

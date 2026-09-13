@@ -1,4 +1,5 @@
-from repaso.core.orchestration.study_flow import answer_sitting, current_item, start_sitting
+from repaso.core.orchestration.study_answer import answer_sitting, current_item
+from repaso.core.orchestration.study_flow import start_sitting
 from repaso.core.orchestration.study_store import open_sitting, put_study_session
 from repaso.schemas.study_session import StudySessionStatus
 from tests.orchestration.fixtures import make_services, seed_family

@@ -4,7 +4,8 @@ from repaso.agents.capsule_composer import answer_ref
 from repaso.config.models import ModelRole
 from repaso.core.orchestration.channel_runner import handle_channel_message
 from repaso.core.orchestration.context import Route
-from repaso.core.orchestration.study_flow import current_item, start_sitting
+from repaso.core.orchestration.study_answer import current_item
+from repaso.core.orchestration.study_flow import start_sitting
 from repaso.core.orchestration.study_store import open_sitting
 from repaso.schemas.channel import ChannelKind, InboundMessage
 from repaso.schemas.common import Lang

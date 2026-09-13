@@ -3,10 +3,9 @@ from repaso.core.harness.practice_budget import (
     DAILY_ITEM_ALLOWANCE,
     DAILY_ITEM_LIMIT,
 )
+from repaso.core.orchestration.study_answer import answer_sitting, current_item
 from repaso.core.orchestration.study_flow import (
-    answer_sitting,
     close_sitting,
-    current_item,
     pause_sitting,
     resume_sitting,
     start_sitting,

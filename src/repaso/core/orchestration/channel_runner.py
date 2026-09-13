@@ -20,12 +20,12 @@ from repaso.core.orchestration.runner import (
 )
 from repaso.core.orchestration.scheduling import sync_schedule
 from repaso.core.orchestration.study_channel import (
+    apply_study,
     handle_study_callback,
     handle_study_command,
     handle_study_text,
-    study_student,
+    study_latency,
 )
-from repaso.core.orchestration.study_store import open_sitting
 from repaso.schemas.channel import InboundMessage, OutboundMessage
 from repaso.schemas.events import DomainEvent, EventKind
 from repaso.schemas.family import Family
@@ -127,9 +127,9 @@ async def _route_family(services: Services, run: ChannelRun, family: Family) -> 
         await route_material(services, run, family)
         return
     if text:
-        study = handle_study_text(services, family, text, _study_latency(services, family, run))
+        study = handle_study_text(services, family, text, study_latency(services, family, run))
         if study is not None:
-            _apply_study(run, study)
+            apply_study(run, study)
             return
         await _route_answer(services, run, family, text)
 
@@ -137,7 +137,7 @@ async def _route_family(services: Services, run: ChannelRun, family: Family) -> 
 def _route_command(services: Services, run: ChannelRun, family: Family, text: str) -> None:
     study = handle_study_command(services, family, text)
     if study is not None:
-        _apply_study(run, study)
+        apply_study(run, study)
         return
     students = services.store.list_students(family.id)
     reply = handle_command(family, students, text, services.store, services.clock.now())
@@ -187,11 +187,9 @@ async def _route_callback(services: Services, run: ChannelRun, family: Family, d
             )
             return
     if data.startswith(STUDY_PREFIX):
-        study = handle_study_callback(
-            services, family, data, _study_latency(services, family, run)
-        )
+        study = handle_study_callback(services, family, data, study_latency(services, family, run))
         if study is not None:
-            _apply_study(run, study)
+            apply_study(run, study)
             return
     if data.startswith(ANSWER_PREFIX):
         chosen = _button_answer(services, family, data)
@@ -199,12 +197,6 @@ async def _route_callback(services: Services, run: ChannelRun, family: Family, d
             await _route_answer(services, run, family, chosen)
             return
     run.route = Route.UNROUTED_CALLBACK
-
-
-def _apply_study(run: ChannelRun, reply) -> None:
-    run.route = Route.STUDY
-    run.study = reply.session
-    run.outbound.extend(reply.messages)
 
 
 async def _route_answer(services: Services, run: ChannelRun, family: Family, text: str) -> None:
@@ -246,14 +238,6 @@ def _answering_student(services: Services, family: Family) -> Student | None:
         if active_session(services, student.id) is not None:
             return student
     return None
-
-
-def _study_latency(services: Services, family: Family, run: ChannelRun) -> float:
-    student = study_student(services, family)
-    sitting = open_sitting(services, family, student) if student else None
-    if sitting is None:
-        return 0.0
-    return max(0.0, (run.message.received_at - sitting.last_event_at).total_seconds())
 
 
 def _latency(services: Services, student_id: str, received_at: datetime) -> float:

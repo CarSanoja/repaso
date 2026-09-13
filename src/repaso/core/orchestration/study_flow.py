@@ -1,17 +1,14 @@
 from dataclasses import dataclass, field
 from uuid import uuid4
 
-from repaso.agents.grader import grade_mcq
 from repaso.core.harness.study_session import (
     budget_for,
     close_if_spent,
     open_session,
     questions_left,
-    record_answer,
     record_served,
     transition,
 )
-from repaso.core.orchestration.answer_outcome import record_answer_outcome
 from repaso.core.orchestration.context import Services
 from repaso.core.orchestration.study_bank import available_items
 from repaso.core.orchestration.study_messages import closing, question, say
@@ -20,8 +17,6 @@ from repaso.core.orchestration.study_topics import resolve_topic
 from repaso.i18n.competencies import competency_label
 from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.family import Family
-from repaso.schemas.grading import StudentResponse
-from repaso.schemas.item import Item
 from repaso.schemas.student import Student
 from repaso.schemas.study_session import (
     Actor,
@@ -79,18 +74,19 @@ def start_sitting(
     reply = StudyReply([_about(family, goal, "study_open", count=len(found))])
     if len(found) < budget.questions:
         reply.messages.append(_about(family, goal, "study_thin", count=len(found)))
-    return _serve(services, family, student, session, reply)
+    return serve_next(services, family, student, session, reply)
 
 
 def resume_sitting(
     services: Services, family: Family, student: Student, session: StudySession
 ) -> StudyReply:
     if session.status is StudySessionStatus.ACTIVE:
-        return _serve(services, family, student, session, StudyReply())
+        return serve_next(services, family, student, session, StudyReply())
     resumed = transition(session, StudySessionStatus.ACTIVE, Actor.FAMILY, services.clock.now())
     if resumed is None:
         return StudyReply([], session)
-    return _serve(services, family, student, resumed, StudyReply([say(family, "study_resumed")]))
+    said = StudyReply([say(family, "study_resumed")])
+    return serve_next(services, family, student, resumed, said)
 
 
 def pause_sitting(
@@ -117,55 +113,6 @@ def close_sitting(
     return StudyReply([closing(family, closed, reason)], closed)
 
 
-def current_item(services: Services, session: StudySession) -> Item | None:
-    if not session.progress.served:
-        return None
-    return services.store.get_item(session.progress.served[-1])
-
-
-def answer_key_for(session: StudySession) -> str:
-    return f"{session.id}:{max(0, len(session.progress.served) - 1)}"
-
-
-def answer_sitting(
-    services: Services,
-    family: Family,
-    student: Student,
-    session: StudySession,
-    text: str,
-    latency_seconds: float,
-) -> StudyReply:
-    item = current_item(services, session)
-    if item is None:
-        return _serve(services, family, student, session, StudyReply())
-    asked = len(session.progress.served)
-    key = answer_key_for(session)
-    if key in session.progress.answered_keys:
-        return StudyReply([question(family, session, item, asked)], session)
-    now = services.clock.now()
-    response = StudentResponse(
-        student_id=student.id,
-        item_id=item.id,
-        text=text,
-        latency_seconds=latency_seconds,
-        received_at=now,
-    )
-    grade = grade_mcq(item, response, now)
-    grade.id = f"study:{key}"
-    grade.responded_at = now
-    services.grade_log.append(grade)
-    correct = bool(grade.correct)
-    record_answer_outcome(services, student.id, item, correct, latency_seconds, f"study:{key}")
-    answered = record_answer(session, key, correct, now)
-    said = StudyReply([_feedback(family, item, correct)])
-    return _serve(services, family, student, answered, said)
-
-
-def _feedback(family: Family, item: Item, correct: bool) -> OutboundMessage:
-    key = "study_right" if correct else "study_wrong"
-    return say(family, key, answer=item.answer_key, rationale=item.rationale.strip())
-
-
 def _closed(
     services: Services,
     family: Family,
@@ -179,7 +126,7 @@ def _closed(
     return reply
 
 
-def _serve(
+def serve_next(
     services: Services,
     family: Family,
     student: Student,
