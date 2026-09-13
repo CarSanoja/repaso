@@ -14,6 +14,7 @@ ANONYMIZE = "ANONYMIZE"
 HARM_FILTERS = ("HATE", "INSULTS", "SEXUAL", "VIOLENCE", "MISCONDUCT")
 PROMPT_ATTACK = "PROMPT_ATTACK"
 PII_ENTITIES = ("NAME", "PHONE", "EMAIL", "ADDRESS", "AGE")
+PII_DIRECTIONS = ("input", "output")
 
 BLOCKED_INPUT = (
     "No puedo ayudarte con eso. Si necesitas hablar de algo asi, "
@@ -37,6 +38,7 @@ def policy_digest() -> str:
             HARM_FILTERS,
             PROMPT_ATTACK,
             PII_ENTITIES,
+            PII_DIRECTIONS,
             HIGH,
             NONE,
             ANONYMIZE,
@@ -97,7 +99,12 @@ class GuardrailsStack(cdk.Stack):
         return bedrock.CfnGuardrail.SensitiveInformationPolicyConfigProperty(
             pii_entities_config=[
                 bedrock.CfnGuardrail.PiiEntityConfigProperty(
-                    type=entity, action=ANONYMIZE
+                    type=entity,
+                    action=ANONYMIZE,
+                    input_action=ANONYMIZE,
+                    input_enabled=True,
+                    output_action=ANONYMIZE,
+                    output_enabled=True,
                 )
                 for entity in PII_ENTITIES
             ]

@@ -52,6 +52,19 @@ def test_the_guardrail_anonymizes_what_identifies_a_child(assembly):
     }
 
 
+def test_the_guardrail_anonymizes_on_the_way_in_as_well_as_out(assembly):
+    entities = only(assembly, "guardrails", GUARDRAIL)["SensitiveInformationPolicyConfig"][
+        "PiiEntitiesConfig"
+    ]
+
+    assert len(entities) == len(PII_ENTITIES)
+    for entry in entities:
+        assert entry["InputEnabled"] is True, entry["Type"]
+        assert entry["OutputEnabled"] is True, entry["Type"]
+        assert entry["InputAction"] == "ANONYMIZE", entry["Type"]
+        assert entry["OutputAction"] == "ANONYMIZE", entry["Type"]
+
+
 def test_the_guardrail_refuses_in_spanish(assembly):
     guardrail = only(assembly, "guardrails", GUARDRAIL)
 

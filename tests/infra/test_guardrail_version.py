@@ -21,6 +21,7 @@ def test_the_digest_is_stable_while_the_policy_is():
     [
         ("HARM_FILTERS", ("HATE",)),
         ("PII_ENTITIES", ("NAME",)),
+        ("PII_DIRECTIONS", ("output",)),
         ("BLOCKED_INPUT", "otra cosa"),
         ("BLOCKED_OUTPUT", "otra cosa"),
         ("HIGH", "MEDIUM"),
