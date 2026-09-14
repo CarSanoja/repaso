@@ -13,7 +13,12 @@
   const empty = s => `<p class="empty">${esc(s)}</p>`;
   const labels = {explanation:'Asked for help',answer:'Answer evaluated',another_question:'Requested another question',stop:'Chose to stop',distress:'Adult attention requested',something_else:'Conversation',about_the_practice:'About the practice'};
   async function api(path, options = {}) {
-    const response = await fetch(path, {...options, headers:{'X-Judge-Code':code,'Content-Type':'application/json',...(options.headers || {})},cache:'no-store',signal:AbortSignal.timeout(25000)});
+    let response;
+    for(let attempt=0;attempt<4;attempt++) {
+      response = await fetch(path, {...options, headers:{'X-Judge-Code':code,'Content-Type':'application/json',...(options.headers || {})},cache:'no-store',signal:AbortSignal.timeout(25000)});
+      if(![429,503].includes(response.status) || attempt===3)break;
+      await new Promise(resolve=>setTimeout(resolve,250 * (2 ** attempt)));
+    }
     if (!response.ok) throw new Error(response.status === 403 ? 'Access code rejected.' : response.status === 404 ? 'This family is no longer available to this observer.' : 'The memory source could not be reached. Displayed data may be out of date.');
     return response.json();
   }
@@ -289,6 +294,8 @@
     $('changes').innerHTML=changes.map(c=>`<article class="change"><span class="kind">${esc(c.kind)}</span><h3>${esc(c.title)}</h3><p class="delta">${esc(c.before)} → ${esc(c.after)}</p><p>${esc(c.detail)}</p></article>`).join('') || empty('The first snapshot is your baseline. New changes will appear here.');
   }
   function rehearsalControls() {
+    $('rehearsal-reset').hidden=!current?.rehearsal_reset_available;
+    $('rehearsal-reset').disabled=rehearsalBusy;
     const completed=current?.rehearsal_completed || [];
     const next=['help','another','answer','reduce'].find(step=>!completed.includes(step));
     document.querySelectorAll('[data-step]').forEach(b=>{b.disabled=rehearsalBusy || b.dataset.step!==next;});
@@ -338,5 +345,11 @@
   $('family').addEventListener('change',()=>{resetEvolution();closeTopic();$('topic-map').innerHTML=empty('Loading this learning circle…');generation++;previous=current=null;changes=[];knownEvents.clear();knownNotes.clear();['assessed','explanations','pending','questions'].forEach(id=>$(id).textContent='—');$('source').textContent='Connecting';$('updated').textContent='Waiting for state';$('practice-date').textContent='Reading selected family';$('reply').textContent='';$('chat-preview').hidden=true;$('memory-content').innerHTML=empty('Loading this family…');$('events').innerHTML='';$('changes').innerHTML='';$('learning-loop').innerHTML='';$('learning-topics').innerHTML='';proof('FOLLOWING A NEW FAMILY','Reading this family’s memory.','Each family has its own observation baseline.');poll();});
   document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{selectedTab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('selected',x===b));renderMemory();}));
   $('verify').addEventListener('click',async()=>{const before=current;if(!before)return;const epoch=generation;$('verify').disabled=true;try{const data=await readSnapshot(before.family_id);if(epoch!==generation)return;render(data);const same=JSON.stringify({notes:before.notes,decisions:before.decisions,adaptations:before.adaptations})===JSON.stringify({notes:data.notes,decisions:data.decisions,adaptations:data.adaptations});proof('MOMENT 04 / MEMORY OUTLIVES THE SCREEN',same?'Read again. The memory is still there.':'Fresh evidence arrived during verification.',same?'Conversation notes and decisions matched a new read from storage.':'The observer has updated to the latest stored state.','04');}catch(e){$('error').textContent=e.message;$('error').hidden=false;}finally{$('verify').disabled=false;}});
+  $('rehearsal-reset').addEventListener('click',async()=>{
+    if(rehearsalBusy)return;rehearsalBusy=true;rehearsalControls();
+    try{await api('/judge/memory/rehearsal/reset',{method:'POST',body:'{}'});closeTopic();resetEvolution();previous=current=null;changes=[];knownEvents.clear();knownNotes.clear();$('reply').textContent='';$('chat-preview').hidden=true;proof('SYNTHETIC DEMO / FRESH START','Your demonstration has been reset.','Run the four labeled steps. This resets only your temporary demonstration state.');await poll();}
+    catch(e){$('error').textContent=e.message;$('error').hidden=false;}
+    finally{rehearsalBusy=false;rehearsalControls();}
+  });
   document.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',async()=>{if(rehearsalBusy)return;rehearsalBusy=true;document.querySelectorAll('[data-step]').forEach(x=>x.disabled=true);try{const reply=await api('/judge/memory/rehearsal/'+b.dataset.step,{method:'POST',body:'{}'});$('chat-preview').hidden=false;$('reply').textContent=reply.messages.join('\n\n');await poll();}catch(e){$('error').textContent=e.message;$('error').hidden=false;}finally{rehearsalBusy=false;rehearsalControls();}}));
 })();
