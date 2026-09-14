@@ -53,13 +53,31 @@ def test_legitimate_paths_pass(path):
 def test_secret_shapes_are_detected(tmp_path, label, sample):
     target = tmp_path / "leak.txt"
     target.write_text(f"token = {sample}\n", encoding="utf-8")
-    assert hygiene.check_secrets(["leak.txt"], tmp_path)
+    assert hygiene.content_findings(["leak.txt"], tmp_path)
 
 
 def test_ordinary_content_is_not_flagged(tmp_path):
     target = tmp_path / "fine.md"
     target.write_text("The grader threshold is 0.85 and the seed is 20260901.\n", encoding="utf-8")
-    assert hygiene.check_secrets(["fine.md"], tmp_path) == []
+    assert hygiene.content_findings(["fine.md"], tmp_path) == []
+
+
+def test_report_prints_the_location_and_rule_without_the_matched_value(
+    tmp_path, monkeypatch, capsys
+):
+    sample = "ghp_" + "z" * 36
+    (tmp_path / "leak.txt").write_text(f"token = {sample}\n")
+    (tmp_path / ".gitignore").write_text("\n".join(hygiene.REQUIRED_IGNORES))
+    monkeypatch.setattr(hygiene, "__file__", str(tmp_path / "scripts" / "check_repo_hygiene.py"))
+    monkeypatch.setattr(hygiene, "tracked_files", lambda: ["leak.txt"])
+    monkeypatch.setattr(hygiene, "history_blobs", lambda *args: [])
+    monkeypatch.setattr(hygiene, "check_history", lambda *args: [])
+
+    assert hygiene.main() == 1
+
+    printed = capsys.readouterr()
+    assert "leak.txt:1: looks like a github token" in printed.err
+    assert sample not in printed.out + printed.err
 
 
 def test_a_gitignore_missing_a_required_entry_is_reported(tmp_path):
