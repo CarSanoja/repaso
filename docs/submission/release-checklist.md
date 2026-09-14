@@ -28,21 +28,21 @@ commit `08826b26f8df5dbd3a125539666cbf7058f3f9cd` and evaluation commit
 `42d7096fe349a741ac174f6ec5e00513ec98ae03`. Both predate the deployment and
 judging work; the register says which of its rows were re-measured after them.
 
-## Only the owner can finish these
+## Submission handoff — checked September 14, 2026
 
 | Item | State |
 | --- | --- |
 | Final submitted commit and source archive SHA-256 | Record when freezing the public submission |
-| Public repository, MIT license, anonymous access | Not published |
-| Deployed stacks | Not deployed. `preflight_deploy.py` reports exactly one blocker today: the account is not bootstrapped under the `repaso01` qualifier |
-| Hosted judge URL and judge code | Do not exist. They fill the table at the top of [`judging.md`](judging.md) once they do |
-| Public video URL, under five minutes, English captions | Not published; the local preview and script are here |
+| Public repository, MIT license, anonymous access | `gh repo view` still reports `CarSanoja/repaso` private. MIT license exists; public source access remains pending. |
+| Deployed runtime | AgentCore version 13 is deployed. Two live Telegram explanations, memory retrieval and transport links verified; see the September 14 live record. |
+| Judge testing access | Loopback observer runs locally; not a public URL. A local test build and instructions exist in [`judging.md`](judging.md). Select and verify the testing path supplied in the form. |
+| Public video URL, at most five minutes, English or translated | No public video URL is recorded in the submission package. The existing MP4 is a local preview; record the current working interface and publish the final video. |
 | Builder ID email for submission | Owner supplies privately |
-| Primary category | Recommended: Everyday Agents |
+| Primary category | Good Neighbor Agents: School Community Memory. Description updated to distinguish the implemented family/observer flow from proposed school integrations. |
 | Construction, provenance and individual eligibility | [`provenance.md`](provenance.md); owner verification pending |
 | Three Builder Center URLs | Drafts prepared; not published |
 | Availability operator through October 8 | Unassigned |
-| Successful real scheduled journey and ten cloud runs | Not performed. Live inference answered 930 counted calls on September 12; nothing is deployed |
+| Live evidence | Real Telegram help → retrieval → different explanation → saved memory → delivery verified twice. A scheduled practice also ran with its own correlation. Additional runs are validation options, not invented contest requirements. |
 | Family pilot and independent teacher review | Not performed; both kits prepared and empty |
 
 Before freezing: verify the official deadline and rules, run the candidate
@@ -55,3 +55,21 @@ Official sources: [submission requirements](https://agentsforhumans.devpost.com/
 [FAQ](https://agentsforhumans.devpost.com/details/faqs). The September 6 review
 recorded September 14, 17:00 PDT / 20:00 Caracas as the deadline, and free judge
 access through October 8.
+
+
+## Latest requirements audit
+
+The [official rules](https://agentsforhumans.devpost.com/rules) were opened again
+on September 14. The deadline is September 14 at 17:00 PDT (20:00 Caracas).
+Required materials include a public code repository with MIT or Apache licensing,
+README, architecture diagram, description, public YouTube/Vimeo demonstration
+video of at most five minutes, and AWS Builder ID. Submission materials must be
+English or accompanied by English translations. Provide working project access
+or a test build with usable instructions. A live demo link is optional.
+
+The architecture assets already exist in `docs/media/architecture.svg` and
+`architecture.png`. The live record and episode runbook replace earlier statements
+that nothing was deployed. Do not mark the submission complete merely because the
+local frontend works: verify the public code/video links and the completed form.
+No repository visibility change, publication or Devpost submission was performed
+by this audit.

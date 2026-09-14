@@ -147,8 +147,16 @@ async def _explained(
     said: str,
     window: TurnWindow,
 ) -> tuple[StudyReply, str]:
+    context = explain_context(services, family, student, item, decision, said, window)
+    services.telemetry.trace(
+        "memory",
+        "explanation.context_loaded",
+        family_id=family.id,
+        notes_loaded=len(window.notes),
+        approaches_loaded=len(context.already_tried),
+    )
     explanation = await explain(
-        explain_context(services, family, student, item, decision, said, window),
+        context,
         services.model(EXPLAIN_ROLE),
     )
     if explanation is None:

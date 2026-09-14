@@ -1,0 +1,47 @@
+A child asks for help. Tomorrow, somebody has to remember what happened today.
+
+In Venezuela, UNICEF's report covering twenty twenty-five estimated that two point seven million children needed educational support, and one point five million were out of school. Community learning support needs continuity between the people helping and the families learning.
+
+UNICEF's education response required twenty-three point seven million dollars in twenty twenty-five, with a seventy-seven percent funding gap. That is a real resource constraint. Every hour spent reconstructing scattered messages is time a facilitator cannot spend helping a learner.
+
+Repaso turns school material, practice at home, and the memory of what happened into a record an adult can follow.
+
+Building this also led me to submit two upstream bug-fix pull requests to Strands Agents: one for reliable model identity in telemetry, and one for the model streaming interface. Both are open for review.
+
+Repaso runs its agent workflows on Amazon Bedrock AgentCore. Here is what that engineering makes possible.
+
+The family dashboard answers practical questions. Who practised? Which topic? How many different questions were assessed? When is a review due?
+
+Select a day, then open its learning episode. The screen becomes three connected views: the conversation, the agent's recorded actions and memory, and the evidence for this topic.
+
+This is the real Telegram interaction we recorded, linked to its stored AWS evidence.
+
+First, the learner asks for another explanation of equivalent fractions. Repaso explains with a cake and remembers the approach.
+
+Then the learner says, “I still don't understand. Use another example.”
+
+Watch the middle column. One previous approach was loaded. That retained approach is shown here. The new explanation uses folded paper, and its new approach is saved for the next turn.
+
+The reply, the memory, and the delivery are connected by recorded identifiers. We can inspect that connection.
+
+Two requests for help. Two remembered explanations. The assessed-answer count stays at three. Asking for help has not become a wrong answer.
+
+Now look at the learning evidence. Those three earlier assessments repeated the same question content. Repaso shows that limitation. Three correct answers to the same question do not establish learning improvement.
+
+The chart has one day of observed activity. It does not invent a progress curve. Cumulative evidence shows the record growing; it is not a historical mastery score.
+
+That makes the next question useful: can the learner apply the idea to different content?
+
+Read the memory again. The approaches are still there.
+
+Strands coordinates material ingestion, practice planning, responses and daily review. DynamoDB preserves the evidence, while application rules control evaluations and state changes.
+
+The gain demonstrated here is continuity: the next explanation can use what came before, and the adult can inspect the evidence behind it.
+
+Our Good Neighbor proposal is a community facilitator supporting families between meetings, starting with fourth-grade mathematics.
+
+The working demonstration is family scoped. A full school coordination workflow and a community pilot are next steps. We have not measured learning gains or staff time saved.
+
+Repaso keeps a request for help connected to its history and its next action.
+
+The conversation ends. The next step stays on record.

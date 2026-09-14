@@ -1,97 +1,145 @@
-# Repaso
+# Repaso — School Community Memory
 
-Repaso turns a fourth-grade math sheet into a daily practice routine in a parent's Telegram chat. It prepares practice, follows responses, changes the next session and asks the adult for a decision when an answer is uncertain or difficulty persists.
+**A learner should not have to start from zero every time they ask for help.**
 
-**Current evidence:** the complete journey is reproducible with synthetic data. Its day-one model outputs are replayed from a recording of the model fleet made against Amazon Bedrock on September 12, 2026, and priced from what the provider reported; the days after it are still authored, and a replay is not a live run. On that same day another 867 live calls measured which model each role should use, what one day of practice costs, what every role does when a call fails, and how the grader compares with the labels the author proposed for half the evaluation set, and a bounded conformance run had every configured Bedrock model answer and fill its schema, 27 of 27. A separate, actual Amazon Textract call recognized a new printed Spanish fractions page on September 6, 2026. No teacher has reviewed a case and no family has used the product, so no learning benefit, family pilot, deployed cloud journey or accuracy result is claimed. See the [evidence register](docs/evidence/README.md).
+Repaso connects a family's Telegram conversation to a persistent learning record: what the learner tried, which explanation the agent used, what an answer demonstrated, and what should happen next. A family dashboard makes that continuity visible to the adult supporting them.
 
-**Evaluating this?** [docs/submission/judging.md](docs/submission/judging.md) is a five-minute path that needs no account, no keys and no deployment.
+Built for the **Good Neighbor Agents** track with the **Strands Agents SDK** and **Amazon Bedrock AgentCore Runtime**. The proposed audience is a community learning facilitator supporting families between meetings, starting with fourth-grade mathematics.
 
-## Try the complete journey
+**Contributing back to Strands:** this project led to two upstream bug-fix pull requests: [model ID telemetry through the public model configuration API](https://github.com/strands-agents/harness-sdk/pull/4207) and [custom model streaming signatures aligned with runtime arguments](https://github.com/strands-agents/harness-sdk/pull/4208). Both include regression tests; both were **open, not merged**, when verified on September 14, 2026. [Contribution evidence](docs/submission/upstream-contributions.md).
 
-Python 3.12 or newer; no AWS account or Telegram token required for this demo. Name the interpreter rather than trusting `python3`: on macOS that is still 3.9, and the install then fails with a message about a missing `setup.py` that says nothing about the version.
+[Try it locally](#try-it-locally) · [Five-minute judging guide](docs/submission/judging.md) · [Architecture](#architecture) · [Live evidence](docs/submission/memory-live-check-2026-09-14.md) · [Deployment](deploy/README.md) · [MIT license](LICENSE)
+
+## See the memory at work
+
+![School Community Memory family dashboard, showing a synthetic rehearsal](docs/submission/assets/family-dashboard-rehearsal.png)
+
+*Verified local rehearsal screenshot. The family, model replies and advanced clock are synthetic; this image is not evidence of a school deployment or a learning gain.*
+
+The dashboard moves from **family → learner → topic → recorded day → learning episode**. An episode opens three synchronized columns:
+
+| Conversation | Agent and memory | Learning evidence |
+| --- | --- | --- |
+| Retained learner excerpts and linked agent replies | Previous context retrieved, new approach saved, model and delivery events | Evaluated answers, distinct question content, difficulty coverage and stored mastery estimate |
+
+Select a message to follow the same turn across all three. Replay explores recorded turns; Live observes new stored evidence. Current topic totals remain labeled as current during replay. The dashboard also shows daily and cumulative evidence, stored spaced-review dates and recorded adult decisions.
+
+![Three synchronized columns: conversation, memory comparison and topic evidence](docs/submission/assets/episode-observer-rehearsal.png)
+
+*Verified synthetic rehearsal: two explanation approaches, zero assessed answers. The comparison shows application memory, not hidden model reasoning.*
+
+## What is working
+
+**A real Telegram exchange was verified against AWS on September 14, 2026, using AgentCore runtime version 13.** The learner asked for another example of equivalent fractions. Repaso retrieved its previous cake approach, produced a paper-folding explanation and saved that new approach. Correlated AWS events linked retrieval, generation, saved memory and delivery. Both successful help requests left the assessed-answer count at three.
+
+Those three earlier assessments repeated the same question content. The interface shows **three answers, one distinct question**, rather than presenting that result as proven mastery. There is currently one day of real activity, not a measured improvement curve. The [dated live record](docs/submission/memory-live-check-2026-09-14.md) includes failures, fixes and the exact evidence boundaries.
+
+| Demonstration | What it establishes |
+| --- | --- |
+| Live Telegram + AWS observer | A request retrieves prior context, receives another explanation and leaves new memory; help is not graded as an answer |
+| Local memory rehearsal | Repeatable help → another approach → assessed answer → adult decision → reduced next practice |
+| Offline judge journey | Material ingestion, scheduled practice, uncertain-answer review and both adult decisions, using recorded/authored model outputs |
+| Automated tests | Application behavior, recovery and isolation under their stated test substitutions |
+
+Neither the developer-operated Telegram trial nor the synthetic demonstrations are a family pilot, teacher evaluation or measurement of educational impact.
+
+## Try it locally
+
+Use **Python 3.12 or newer**. The local demonstrations need no AWS account, Telegram token, Docker or paid inference.
 
 ```bash
+git clone https://github.com/CarSanoja/repaso.git
+cd repaso
 python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -c requirements.lock -e ".[dev]"
+python scripts/run_memory_observer.py --rehearsal --port 8870
+```
+
+Open **http://127.0.0.1:8870/judge/memory/** and enter **`REPASO-VIEW`**.
+
+1. Press **Ask for help**, then open the fractions topic's learning episode.
+2. Press **Explain another way**. The chat and memory comparison follow the new turn; the previous approach is visible beside the newly saved approach.
+3. Press **Answer**. An assessed answer appears in the learning record.
+4. Press **Choose less practice**. Inspect the saved decision and next scheduled practice under **Inspect the evidence → Decisions / Practice**.
+5. Return to **Family dashboard**. Select a learner, topic and day; open the day's episode and explore Replay. **Verify saved memory** performs another read from storage.
+
+The rehearsal uses real application orchestration with scripted model replies, local delivery and an explicitly advanced clock. Its state lives in a temporary directory and resets when the process stops. It sends nothing to Telegram.
+
+For the separate, seven-stage judge journey:
+
+```bash
 python scripts/run_judge_demo.py
 ```
 
-Open **http://127.0.0.1:8766/judge/** and enter **REPASO-DEMO**. Run the journey, then move through seven stages: the material, scheduled delivery, an uncertain answer, adult review, persistent difficulty, the adult's choice and the next practice. Compare **a note for the teacher** with **less practice tomorrow**. Both choices have a visible consequence. The clock and data are isolated from any pilot family. English navigation accompanies a Spanish family conversation; the technical details and JSON export are secondary.
+Open **http://127.0.0.1:8766/judge/**, code **`REPASO-DEMO`**. Compare **a note for the teacher** with **less practice tomorrow**. Day one replays a recorded Bedrock cassette; later days are authored. See the [judging guide](docs/submission/judging.md) for the full route and terminal commands.
 
-For a terminal run, choose an empty output directory:
+## Observe your AWS deployment
+
+The observer is read-only and requires an explicit family allowlist and credentials able to read the deployment's state and logs:
 
 ```bash
-python scripts/run_demo_scenario.py --data-dir .local_data/demo-note --decision teacher_note --report .local_data/demo-note.json
-python scripts/run_demo_scenario.py --data-dir .local_data/demo-light --decision reduce_load --report .local_data/demo-light.json
+python scripts/run_memory_observer.py \
+  --profile YOUR_AWS_PROFILE \
+  --region us-east-1 \
+  --family-id YOUR_AUTHORIZED_FAMILY_ID \
+  --port 8767
 ```
 
-These are executions of the actual orchestration against a recorded cassette, with local storage and local delivery. Advancing four labeled school days takes seconds. The footer prints **$0.1649 over 31 calls**, which is what recording that cassette cost — `scripts/record_demo_cassette.py` read every token from the provider and wrote it into `demo_fracciones.provenance.json`. Replaying it reaches no network and spends nothing, those dollars do not price the authored days that follow day one, and no infrastructure is in them.
+Open **http://127.0.0.1:8767/judge/memory/**, code **`REPASO-VIEW`** by default. `--code` overrides it. The server binds to loopback; this is not a publicly hosted judge URL. You operate Telegram separately. The observer uses local send/publish adapters and cannot send Telegram messages or enqueue work.
 
-## What it costs
+`--history-minutes 1440` is the default initial log lookback. Retained state can remain visible when matching logs have expired or are unavailable; missing links are labeled rather than inferred from timestamps.
 
-One student's day of practice cost **$0.1629** in model calls: 29 live Amazon Bedrock calls on September 12, 2026, in `us-east-1`, every token read from the provider's own usage metadata. `scripts/run_live_journey.py` runs that journey and prints the figure; running it again writes a different item set and a different number, because generation is live. It ran end to end against live inference — enrolment, two photographed pages ingested, an item bank generated and reviewed, one capsule of three questions delivered, three answers graded, one answer quarantined and released by the parent. Building the item bank from the two pages was $0.1516 of it; the day's practice itself was $0.0111.
-
-Twenty school days for one student comes to between $0.37 and $3.26, and thirty families to between $11.21 and $97.73 a month, depending entirely on how often a new page is photographed. Those two figures are **arithmetic on that one measured journey, not an observed cost**: no family has run a second day and no invoice has been read. Both exclude infrastructure, storage, delivery, text extraction and human time.
-
-Behind the routing that produced it: 288 calls from `scripts/run_model_matrix.py` put nine schemas against four model ids at eight samples a cell, 284 parsed, and 128 calls from `scripts/run_decision_probe.py` asked four questions whose answer is defined. Two of the five roles moved on that evidence and three did not. Eight samples is not a rate, and none of it measures whether a question is good or a grade is right. The whole profile, with every interval, is in [the model profile](docs/evidence/model-profile-2026-09-12.md).
-
-## What the family can do
-
-The current pilot scope is one child per family, fourth-grade math, a clear printed Spanish PNG/JPEG or an unencrypted one-page PDF, at most 10 MB. Voice notes, Spanish handwriting, other subjects and broader grade coverage are outside this release. The bundled taxonomy contains neighboring grades for development, but enrollment exposes fourth grade.
-
-- Enroll with an invitation, choose an alias, class section and practice time. A family alarm is created at that time, in the pilot's single configured timezone, which enrollment does not ask for and no command changes; pause, resume, schedule changes and deletion update that alarm.
-- Submit material. Legibility and supported-format checks precede OCR; content and generated items are reviewed before activation. Items derived from one family's sheet stay scoped to that family.
-- Receive practice at the agreed time. A session is marked delivered after the transport acknowledges it. Unacknowledged messages remain recoverable.
-- Answer and receive feedback. Rules update mastery and spaced review. Persistent difficulty, fast guessing and adult choices can change difficulty, require an explanation or reduce the next workload for a limited time.
-- Review an uncertain answer with the question, answer, key and rubric in the same message. Correct and incorrect decisions both create a final human assessment. “I don't know yet” leaves it pending.
-- Choose a drafted teacher note or reduced practice after persistent difficulty. The note goes to the parent to review and forward; Repaso does not message the teacher automatically.
-- Use `/pause`, `/resume`, `/schedule` and `/forget`. Deletion removes active family state, material versions, grades and alarms. Existing Telegram messages are managed by Telegram; operational logs have seven-day configured retention and managed backups can retain prior data for up to 35 days.
+For provisioning, prerequisites, secrets, CDK stacks and acceptance checks, use [the deployment runbook](deploy/README.md), [AgentCore runtime guide](deploy/agentcore/README.md) and [infrastructure guide](infra/README.md). Live inference and deployed infrastructure incur AWS charges. Configure your own authorized account and project secrets; no credentials are bundled.
 
 ## Architecture
 
-```mermaid
-flowchart LR
-  T[Parent's Telegram chat] --> A[HTTP API / webhook Lambda]
-  A --> E[EventBridge]
-  E --> Q[SQS]
-  Q --> W[Worker Lambda]
-  W --> R[AgentCore Runtime / Strands]
-  S[Family Scheduler alarms] --> L[Scheduler Lambda]
-  L --> E
-  R --> D[(DynamoDB / S3)]
-  R --> B[Bedrock / Textract]
-  R --> T
-  R --> O[CloudWatch]
-```
+![Repaso architecture: Telegram transport, AgentCore and Strands, durable learning state, and a read-only School Community Memory observer](docs/media/architecture.svg)
 
-Four Strands graphs cover ingestion, session planning, response handling and daily quality review. Model roles classify, generate, judge, map and probe; deterministic code controls learning updates, ownership, deadlines, budgets and decisions with external effects. The production worker resolves the AgentCore ARN through SSM and invokes the remote runtime. Cost and blast-radius controls are listed, with where each is enforced, in [the controls page](docs/operations/controls.md). Lambda dependencies and the AgentCore runtime are packaged as Linux ARM64 images. The diagram describes the implemented deployment path; the [deployment checklist](deploy/README.md) records the remaining cloud acceptance work.
+[PNG version](docs/media/architecture.png) · [Diagram notes](docs/media/README.md)
 
-Durable operation records, leases and a pending-message outbox support retries. Tested duplicate events do not double-apply grades or learning updates. Telegram does not provide an idempotency key for sends: if it accepts a message and its acknowledgment is lost, a retry can duplicate that message. This is an at-least-once delivery design, not a universal exactly-once claim.
+Telegram updates enter the HTTP API, then pass through EventBridge, SQS and a worker that invokes AgentCore Runtime. Scheduler events enter the same work pipeline. The runtime uses Strands for typed model calls and graph orchestration, DynamoDB for learning and operational state, S3 for material, Bedrock for inference and Textract for supported OCR. A recoverable outbox sends replies back to Telegram.
 
-## Verify
+The observer reads DynamoDB state and correlated CloudWatch events. This application implements its own learning memory; it does **not** provision the separate AgentCore Memory service. Its dashboard is currently a local observer of the deployed runtime, not a school administration platform.
+
+### Where Strands does the work
+
+| Implementation | Responsibility |
+| --- | --- |
+| [Ingestion graph](src/repaso/core/orchestration/ingest_graph.py) | Parse → screen → map → generate → validate supported learning material |
+| [Practice graph](src/repaso/core/orchestration/tutor_graph.py) | Plan → compose a practice capsule |
+| [Response graph](src/repaso/core/orchestration/response_graph.py) | Grade → apply → adapt → escalate when required |
+| [Quality graph](src/repaso/core/orchestration/quality_graph.py) | Verify → engagement → cohort → optimize |
+| [Structured model boundary](src/repaso/agents/base.py) | Strands structured output validated into typed schemas, with explicit failure behavior |
+| [Conversational help](src/repaso/core/orchestration/study_help.py) and [explainer](src/repaso/agents/explainer.py) | Read the turn, retrieve retained approaches and produce an explanation with the current context |
+| [Learning projection](src/repaso/api/memory_learning.py), [episodes](src/repaso/api/memory_episodes.py), [evolution](src/repaso/api/memory_evolution.py) | Turn stored assessments and correlated events into inspectable evidence |
+
+Deterministic code controls family ownership, assessments, spacing, mastery updates, time limits and decisions with external effects. Durable operation records and leases prevent tested duplicate events from double-applying learning effects. Delivery is at least once: Telegram can duplicate a message if it accepts a send and its acknowledgement is lost.
+
+## Verify the implementation
 
 ```bash
 REPASO_LOCAL_MODE=true pytest -q
 ruff check .
-python scripts/run_demo_clock.py --days 14 --seed 20260901 --data-dir .local_data/clock-new
-python scripts/run_answer_evaluation.py
+node --check src/repaso/api/static/memory.js
+python scripts/check_repo_hygiene.py
 ```
 
-The full suite includes ten complete transport simulations through webhook, EventBridge, SQS, worker, AgentCore adapter, runtime, DynamoDB, S3, Scheduler and Telegram adapter. AWS services are emulated by Moto; the AgentCore HTTP boundary and Telegram network are substituted. Alternate runs inject failures and replay events. Those runs prove integration behavior under those substitutions, not ten successful deployments.
+Node is needed only for the JavaScript syntax check. Install `.[dev,deploy,runtime]` instead of `.[dev]` to include infrastructure and runtime dependencies. Optional live tests require explicit configuration and a budget; see [tests/live](tests/live/README.md). The [episode runbook](docs/submission/episode-demo-runbook.md) records browser checks at 1440, 900 and 390 px and dated AWS verification. The [evidence register](docs/evidence/README.md) distinguishes live calls, recorded replay and synthetic transport tests.
 
-The 60-answer evaluation set is split in half. `scripts/run_answer_evaluation.py` collected the development thirty against live inference and scored them: 25 judge calls, 5 answers stopped by the local screener first, and **agreement with the labels the author proposed for their own answers** — 18/18 grades on the automatic decisions, 24/30 review decisions, and no automatic decision wrongly called correct out of the 8 it called correct, which bounds that error only at 32.4%. The confidence threshold was swept there and frozen at 0.85 before the held-out thirty were opened, which they have not been. No teacher has completed a line of `evaluation/teacher_labels.jsonl` — all 60 rows still carry a null label — so none of this is accuracy and no quality claim is allowed. [Development run](docs/evidence/answer-evaluation-development-2026-09-12.md) · [Evaluation protocol](evaluation/README.md) · [Pilot kit](docs/pilot/README.md).
+A measured September 12 synthetic journey used **$0.1629 in Bedrock model calls**. That is one run, not a production price; it excludes infrastructure, storage, delivery, OCR and human time. See [the measured model profile](docs/evidence/model-profile-2026-09-12.md) for denominators and limitations.
 
-Live checks are opt-in and incur AWS charges. Use only the authorized `quanta` account and region. [Live conformance](tests/live/README.md) · [Deployment](deploy/README.md) · [Product details](docs/product/product-overview.md) · [Submission materials](docs/submission/README.md).
+## Scope and responsible use
 
-This system stores a record about a child and sends material a stranger could have influenced to a model. What that record holds, how it is encrypted, what erasure reaches, how prompt injection is screened in both directions, and which assurances only a deployment can give, are written down in the [security posture](docs/security/README.md).
+- The supported enrollment path is one learner per family, fourth-grade mathematics, with clear printed Spanish PNG/JPEG or unencrypted one-page PDF material up to 10 MB. The observer can separate multiple stored learner records; this does not expand enrollment support.
+- Voice notes, handwriting and other subjects are outside this release. The workflow requires connectivity and an adult contact.
+- Family-owned material stays scoped to that family. The observer exposes only explicitly allowlisted families. See [security and retention](docs/security/README.md).
+- A teacher note is drafted for the adult to review and forward. Repaso does not automatically contact a teacher. Stored review dates are not delivery guarantees.
+- Held assessments are excluded from topic correctness totals. Help history is retention-limited. Mastery is a stored application estimate, not a validated learning outcome.
+- There is no claimed school partnership, independent teacher grading evaluation or measured benefit to families. The community-facilitator use case is the proposed audience; roster integration and school administration remain outside the demonstrated product.
 
-## Evidence and limits
+## Documentation and license
 
-Every claim in the submission should point to the [current evidence register](docs/evidence/README.md), which lists what was measured with its denominators, what is still not done, and what the live campaigns cost. Historical August seed sweeps describe their own simulator versions and assumptions; they are not current product accuracy or family-impact measurements. Self-reported model confidence is not a calibrated probability.
+[Submission materials](docs/submission/README.md) · [Project description](docs/submission/project-description.md) · [Demo runbook](docs/submission/episode-demo-runbook.md) · [Research and audience](docs/submission/pitch-research.md) · [Script catalog](scripts/README.md) · [Evaluation protocol](evaluation/README.md) · [Release checklist](docs/submission/release-checklist.md)
 
-The options-only answerability probe is advisory; guessing a correct choice does not veto an otherwise valid math exercise. `scripts/run_probe_ablation.py` measured whether that call is worth making across 30 frozen items and three option orders: it changed none of the 90 decisions, and it answered UNKNOWN on 23 of the 24 decisions that carried a planted option clue. Those labels are defects the harness planted, not a teacher's judgement, so the run answers the cost question and leaves the quality question open. The recommendation is to disable the probe in the ingest path; it is still called there, because that is a product decision and not a consolidation one. A shared section signal is experimental and does not establish formal anonymity.
-
-The recommended hackathon category is **Everyday Agents**: the main user is the parent maintaining a family routine. The difference to demonstrate is completed work between messages—scheduling, adaptation and an informed adult decision—not the number of agents.
-
-MIT licensed. Dependencies and reusable components are declared in `pyproject.toml`, `requirements.lock` and the [submission provenance checklist](docs/submission/provenance.md). Public release, hosted availability, final video links, Builder ID and article publication remain explicit release steps.
+Repaso is **MIT licensed**. Dependency versions and provenance are in [pyproject.toml](pyproject.toml), [requirements.lock](requirements.lock) and the [provenance checklist](docs/submission/provenance.md). Hosted access, public video and submission status are tracked in the release checklist; a loopback address is never a public demo link.

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from hashlib import sha256
 
 from repaso.core.orchestration.context import Services
 from repaso.schemas.common import FamilyId, SessionId
@@ -130,4 +131,11 @@ def _write(
             key=note_key(session_id, turn_id),
             payload={"note": payload, "expires_at": int(expires_at.timestamp())},
         )
+    )
+    services.telemetry.trace(
+        "memory",
+        "turn.saved",
+        family_id=family_id,
+        record_ref=sha256(note_key(session_id, turn_id).encode()).hexdigest()[:24],
+        intent=str((payload or {}).get("intent", "")),
     )

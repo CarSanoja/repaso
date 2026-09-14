@@ -68,7 +68,7 @@ responses==0.26.3
 rpds-py==2026.6.3
 ruff==0.16.4
 s3transfer==0.19.2
-setuptools==80.9.0
+setuptools==83.0.0
 six==1.17.0
 sse-starlette==3.4.8
 starlette==1.6.0

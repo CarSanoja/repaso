@@ -1,218 +1,98 @@
-# Judging Repaso
+# Judge Repaso in five minutes
 
-Repaso turns a photograph of a printed fourth-grade math page into a short daily
-practice that arrives in the parent's Telegram chat at an agreed time. Between
-messages it does the work a parent would otherwise repeat every evening: it
-reviews the material, keeps a practice bank scoped to that one family, grades
-answers, adjusts what comes next, and refuses to grade an answer it is not sure
-about. When it is unsure, or when difficulty persists, it stops and hands the
-adult a decision with the evidence attached — and the next session shows what
-that decision changed.
+**Repaso — School Community Memory** connects a family's Telegram practice to a learning record an adult can inspect. The proposed **Good Neighbor Agents** audience is a community facilitator supporting families between meetings. The demonstration focuses on continuity: a request for another explanation retrieves the approach already tried, changes the example and leaves usable memory.
 
-## Look at this first
+The project uses the Strands Agents SDK and a deployed Amazon Bedrock AgentCore Runtime. Two related upstream Strands bug-fix PRs were submitted with regression tests: [model telemetry](https://github.com/strands-agents/harness-sdk/pull/4207) and [custom model streaming compatibility](https://github.com/strands-agents/harness-sdk/pull/4208). Both were open, not merged, when verified on September 14, 2026; see [contribution evidence](upstream-contributions.md).
 
-The same family, the same page, the same nine reviewed answers, one adult
-decision — and two different next mornings. These are the last two rows of the
-two runs in [the local path](#the-local-path) below, verbatim:
+## Choose an evidence path
 
-```
-the chosen action is resolved                                        teacher_note             teacher_note  as expected
-the next scheduled practice reflects the plan                                   3                        3  as expected
-```
+| Path | What you can inspect | Boundary |
+| --- | --- | --- |
+| Local School Community Memory rehearsal | Family dashboard, three-column episode, retained approaches, answer and adult follow-through | Scripted model replies, isolated local state and delivery, controlled clock |
+| Local seven-stage judge journey | Ingestion, practice, uncertain-answer review, teacher note versus reduced workload | Recorded Bedrock outputs for day one; authored later days |
+| Dated live Telegram record | Two successful explanations, prior-context retrieval and AWS delivery evidence on AgentCore v13 | Developer-operated technical trial, not a family pilot or learning-gain evaluation |
 
-```
-the chosen action is resolved                                         reduce_load              reduce_load  as expected
-the next scheduled practice reflects the plan                                   1                        1  as expected
-```
+The local URLs below are loopback addresses, not public judge URLs. Public repository, video and hosted-access status belong in the [release checklist](release-checklist.md).
 
-Three questions tomorrow, or one. A button that only acknowledges the tap is the
-common failure in this category; the check that the plan actually changed is the
-one worth spending your first minute on.
+## Install once
 
-## Is there a hosted demo?
-
-| | Value at this commit |
-| --- | --- |
-| Judge URL | not published |
-| Judge code | not issued |
-
-Nothing in this repository has ever been deployed. `deploy/README.md` is the
-procedure and it marks which of its commands were executed read-only against the
-authorized account and which were deliberately not run. If the two cells above
-are filled in, open the URL, enter the code, and skip to step 3 of the path
-below. If they still read *not published*, the local path gets you the same
-screen — the same code, the same page, the same assertions — in about three
-minutes.
-
-## The five-minute path
-
-1. Get the judge page on screen: the hosted URL if the table above names one,
-   otherwise `python scripts/run_judge_demo.py` from the local path below.
-2. Enter the code `REPASO-DEMO` and press **a note for the teacher**. The run
-   takes a couple of seconds and ends with 24 of 24 checks green.
-3. Walk the seven stages: the material, the scheduled delivery, an uncertain
-   answer, the adult's review, persistent difficulty, the adult's choice, the
-   next practice. The family conversation is Spanish; the navigation is English.
-4. Run it again with **less practice tomorrow** and compare stage seven. That is
-   the comparison in *Look at this first*.
-5. Open [the evidence register](../evidence/README.md) and read its *Claim
-   boundaries* section. It is the shortest honest summary of what this project
-   has and has not shown.
-
-Everything in steps 2 to 4 is a replay: real orchestration code, real storage,
-real scheduling and grading rules, and the first day's model answers played back
-from a recording made against Amazon Bedrock on September 12, 2026. The days
-after it are authored. The judge endpoint says so in its own response body
-(`"origin": "recorded replay"`, `"live_inference": false`), and the terminal run
-prints what that recording measured above the table. A replay reaches no network
-and spends nothing.
-
-## The local path
-
-No AWS account, no Telegram token, no keys, no Docker. Python 3.12 or newer, named
-on the command line: a bare `python3` is 3.9 on macOS, and the install under it
-fails with a message about a missing `setup.py` that never mentions the version.
-Any `python3.12`, `python3.13` or newer works in its place.
+Python 3.12 or newer is required. No AWS account, Telegram token or Docker is needed for either local demonstration.
 
 ```bash
-git clone <repository url> repaso && cd repaso
+git clone https://github.com/CarSanoja/repaso.git
+cd repaso
 python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -c requirements.lock -e ".[dev]"
 ```
 
-The install is pinned by `requirements.lock` and ends with a line naming every
-package it placed, `repaso-0.1.0` last **[run]**:
+Use a Python interpreter that satisfies the version requirement; for example, `python3.13` can replace `python3.12`.
 
-```
-Successfully built repaso
-Installing collected packages: py-partiql-parser, jsonpath_ng, xmltodict, wrapt, ... strands-agents, moto, repaso
+## The five-minute product route
+
+```bash
+python scripts/run_memory_observer.py --rehearsal --port 8870
 ```
 
-Then the browser experience:
+Open **http://127.0.0.1:8870/judge/memory/** and enter **`REPASO-VIEW`**.
+
+1. **0:00–0:45 — A family, a topic, an evidence trail.** Inspect the family dashboard. Its daily and cumulative views describe recorded activity, with empty history labeled honestly. Select the learner and fractions topic.
+2. **0:45–1:30 — Ask for help.** Use **1. Ask for help**, then **Open learning episode**. The three columns show retained conversation, recorded agent/memory activity and topic evidence.
+3. **1:30–2:30 — Ask again.** Use **2. Explain another way**. The next turn retrieves one prior approach, saves another and presents both in the memory comparison. The assessed-answer count remains zero: asking for help is not a wrong answer.
+4. **2:30–3:15 — Look for learning evidence.** Use **3. Answer**. An actual assessed result appears. Distinct content and difficulty coverage are separate from raw attempt count. A stored mastery estimate is not presented as proof of improvement.
+5. **3:15–4:15 — Make a human decision matter.** Use **4. Choose less practice**. Under **Inspect the evidence → Decisions / Practice**, inspect the resolved choice, saved adaptation and next practice with one question. This step explicitly advances the rehearsal clock.
+6. **4:15–5:00 — Reopen the evidence.** Return to **Family dashboard**, select the recorded day and follow its episode. Replay moves through stored turns; the right column still labels current topic totals. **Verify saved memory** reads storage again.
+
+The server uses temporary local state and resets when stopped. Controls do not send Telegram messages or call a paid model. The [episode runbook](episode-demo-runbook.md) explains reconstruction, retention, event links and the recording sequence.
+
+![Synthetic School Community Memory family dashboard](assets/family-dashboard-rehearsal.png)
+
+*Verified local rehearsal screenshot, including a controlled next-day clock. This is not a school deployment screenshot.*
+
+## Compare the two adult interventions
+
+The separate judge journey provides a compact, reproducible comparison:
 
 ```bash
 python scripts/run_judge_demo.py
 ```
 
-It prints its own address and stays in the foreground **[run]**:
+Open **http://127.0.0.1:8766/judge/**, code **`REPASO-DEMO`**. Run **a note for the teacher**, then **less practice tomorrow**, and compare the final stage. One choice retains a three-question plan; the other reduces it to one question. The teacher note is drafted for the parent to review and forward, not automatically sent to a teacher.
 
-```
-Judge experience: http://127.0.0.1:8766/judge/ · code: REPASO-DEMO
-INFO:     Started server process [21992]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8766 (Press CTRL+C to quit)
-```
-
-Open **http://127.0.0.1:8766/judge/** and enter **REPASO-DEMO**. The state lives
-in a temporary directory that is deleted when you stop the server; no family
-data, no credentials and no paid model are reachable from those controls.
-
-The same journey runs in the terminal, which is what to use if you want the
-assertions rather than the screens. Choose an empty output directory **[run]**:
+For machine-readable checkpoints, choose new empty output directories:
 
 ```bash
-python scripts/run_demo_scenario.py --data-dir .local_data/demo-note  --decision teacher_note --report .local_data/demo-note.json
-python scripts/run_demo_scenario.py --data-dir .local_data/demo-light --decision reduce_load  --report .local_data/demo-light.json
+python scripts/run_demo_scenario.py --data-dir .local_data/judge-note --decision teacher_note --report .local_data/judge-note.json
+python scripts/run_demo_scenario.py --data-dir .local_data/judge-light --decision reduce_load --report .local_data/judge-light.json
 ```
 
+The teacher-note and reduced-load scenarios contain 24 and 23 checks respectively. They execute application orchestration with recorded/authored model outputs. The cassette's printed model cost is the cost of recording it, not a charge or price for replaying the scenario.
+
+## What was verified live
+
+On September 14, a developer-operated Telegram exchange used **AgentCore runtime version 13**. Repaso first explained equivalent fractions with a cake example. When asked again, it loaded the prior approach, produced a paper-folding explanation and stored it. Correlated AWS records connected retrieval, successful generation, saved memory and transport acknowledgements.
+
+The live observer showed **three assessed answers, one distinct assessed question, three retained help requests and two successful retained explanation approaches**. One earlier help request failed and remains visible without being counted as a successful explanation. The existing three answers repeated the same content; there is only one day of real activity. Those facts demonstrate working adaptation and traceability, not improved learning.
+
+Read [the dated live check](memory-live-check-2026-09-14.md) for the recorded failures and fixes. The adult-decision-to-next-practice scene has its own local evidence; it is not validated by the two live explanations. The observer reconstructs retained records, not a complete Telegram archive, and an acknowledgement is not a read receipt.
+
+## Inspect the implementation
+
+- [Architecture diagram](../media/architecture.svg) and [runtime guide](../../deploy/agentcore/README.md): queued transport into AgentCore, four Strands graphs, typed model calls and persistent application memory.
+- [Ingestion](../../src/repaso/core/orchestration/ingest_graph.py), [practice](../../src/repaso/core/orchestration/tutor_graph.py), [responses](../../src/repaso/core/orchestration/response_graph.py), [daily quality](../../src/repaso/core/orchestration/quality_graph.py): the four executable graphs.
+- [Episode projection](../../src/repaso/api/memory_episodes.py): verified record/event linkage, explicit transcript gaps and retained assessments.
+- [Evolution projection](../../src/repaso/api/memory_evolution.py): effective assessment history, timezone boundaries, learner isolation and retention-limited help history.
+- [Evidence register](../evidence/README.md), [evaluation protocol](../../evaluation/README.md) and [security posture](../security/README.md): measured results and their limits.
+
+```bash
+REPASO_LOCAL_MODE=true pytest -q
+ruff check .
+node --check src/repaso/api/static/memory.js
+python scripts/check_repo_hygiene.py
 ```
-cost: 34,697 input + 6,204 output tokens and $0.1649 over 31 recorded model calls
-The model outputs are replayed from a recording made on 2026-09-12 in us-east-1, against 3 model ids,
-on top of commit a3e382f835a7: the tokens and dollars above are what that one recording measured.
-This replay reached no network and spent nothing, and it is not evidence that the models
-would answer this way again.
-one family, four labeled school days, simulated in 0.5s into .local_data/demo-note
 
-beat                                                                     expected                   actual  verdict
-enrolment ends with the family enrolled                                  enrolled                 enrolled  as expected
-a name that looks real is refused as an alias                             refused                  refused  as expected
-the notebook photo becomes practice                                      material                 material  as expected
-questions written from the page                                                 6                        6  as expected
-questions that survived review                                                  6                        6  as expected
-the capsule carries the day's three questions                                   3                        3  as expected
-the answer the grader would not sign reaches the parent                   one tap                  one tap  as expected
-the parent's tap settles it as wrong                                     rejected                 rejected  as expected
-the guide's worked example is caught                                 all_rejected             all_rejected  as expected
-nothing from the guide reaches the child                                        0                        0  as expected
-```
+The Node command is an optional frontend syntax check. Install `.[dev,deploy,runtime]` to include the infrastructure and runtime dependencies. Live tests remain opt-in; ordinary tests substitute external services or model replies. Dated test and browser results are recorded in the [episode runbook](episode-demo-runbook.md), rather than a permanent assertion that every future checkout has the same count.
 
-The teacher-note run prints 24 beats, the reduce-load run 23; both end with
-`the complete journey has no runtime failures  0  0  as expected`.
+## What the project does not claim
 
-## For a skeptical judge
-
-Each row is a command you can run yourself and the number it prints. The three
-gates take about ninety seconds together; the clock takes about seven minutes.
-
-| Command | What it printed here **[run]** | Artifact |
-| --- | --- | --- |
-| `REPASO_LOCAL_MODE=true pytest -q` | `1642 passed, 56 skipped in 77.74s` | — |
-| `ruff check .` | `All checks passed!` | — |
-| `python scripts/check_repo_hygiene.py` | `repo hygiene: 549 tracked files, 1264 historical blobs on this branch, no findings` | — |
-| `python scripts/run_demo_scenario.py --decision teacher_note` | 24 of 24 beats as expected | [journey](../evidence/journey-teacher-note.json) |
-| `python scripts/run_demo_scenario.py --decision reduce_load` | 23 of 23 beats as expected | [journey](../evidence/journey-reduce-load.json) |
-| `python scripts/run_demo_clock.py --days 14 --seed 20260901` | `420 student-days`, `responses graded: 1037`, nine gates as expected | [clock](../evidence/clock-14-days.json) |
-| `python scripts/run_answer_evaluation.py` | `"cases": 60, "predictions": 0, "quality_claim_allowed": false` | [validation](../evidence/answer-evaluation-validation.json) |
-
-The 83 skips are the live tier — 56 tests in `tests/live`, off unless you hand
-it AWS credentials and a budget — and 27 skips standing in for the
-infrastructure tests that read synthesized CloudFormation and need the CDK
-libraries. Those 27 are not 27 tests: most of `tests/infra` is never collected
-without `aws_cdk`, so `pip install -c requirements.lock -e ".[deploy]"` turns
-them into the 124 tests that directory really holds, and the suite then reads
-`1642 passed, 56 skipped` — 1518 plus 124, and 83 minus the 27 that stopped
-being skips. The hygiene gate also counts every blob reachable
-from this branch, which is why it reports a second number the September figures
-did not. The suite figure in `docs/evidence/verification-2026-09-06.json` is
-`1169` because it was recorded on September 6 against an earlier tree.
-
-`run_answer_evaluation.py` is the one worth reading the output of. It has a
-60-example answer set and zero independent labels, and it refuses to turn the
-author's own proposed labels into an agreement score: `quality_claim_allowed`
-stays `false` and every agreement figure stays `null`. Empty data does not
-become perfect accuracy.
-
-## Measured, prepared, and not done
-
-| Claim | State |
-| --- | --- |
-| Both adult decisions change the next session | Measured, locally, on authored model answers |
-| Transport recovers across retries and duplicate events | Measured under Moto with the AgentCore and Telegram boundaries substituted |
-| Fourteen days of continuity hold under nine scenario gates | Measured on 30 synthetic students |
-| A new printed Spanish page is recognized outside the cassette | Measured: one real Amazon Textract call, confidence 0.9957 |
-| Every configured model answers and fills its schema | Measured on 2026-09-12: 27 of 27 calls parsed, $0.1444 |
-| Six CloudFormation stacks and two ARM64 images build | Prepared: they synthesize and the containers start and serve; nothing is deployed |
-| Model grading quality | Not done. Kit prepared, labels deliberately blank |
-| Benefit to a real family | Not done. Three-day observation protocol prepared, no participants |
-
-The single figure a judge should not read past: **no cloud deployment and no
-real family exist.** Every number above comes from this machine or from a
-read-only call to a service.
-
-## Where the failures are published
-
-- [Claim boundaries](../evidence/README.md#claim-boundaries) — the register's
-  own list of what its rows do not establish, including the ten transport runs
-  that are *not* ten deployed journeys.
-- [The tests that changed the product](article-3-evidence.md) — the features
-  whose descriptions turned out to be wrong: a button that acknowledged instead
-  of sending, a rejected human review that never became an incorrect outcome, a
-  deletion that left bytes behind.
-- [The live tier](../../tests/live/README.md) — calls are never retried, because
-  a retry repairs exactly the failure that tier exists to find; a failed call is
-  recorded and the run continues.
-- [The deployment runbook](../../deploy/README.md) — every command marked `[run]`
-  or `[unverified]`, and a teardown section about a retained KMS key that nothing
-  reports.
-- The at-least-once boundary: Telegram `sendMessage` has no idempotency key. If
-  it accepts a message and the acknowledgment is lost, a retry can duplicate it.
-  Idempotent learning effects and exactly-once visible delivery are different
-  properties and only the first is claimed.
-
-## If you want to go deeper
-
-[How it works](../product/how-it-works.md) · [Data model](../product/data-model.md) ·
-[Evaluation protocol](../../evaluation/README.md) · [Pilot protocol](../pilot/README.md) ·
-[Deployment runbook](../../deploy/README.md) · [Evidence register](../evidence/README.md)
+No independent teacher grading evaluation, family pilot, school partnership or measured educational benefit is claimed. The supported enrollment path is one learner per family, fourth-grade mathematics and supported printed Spanish material. The observer can separate multiple stored learner records; that does not imply a deployed school roster integration. This is application learning memory in DynamoDB, not the separate AgentCore Memory service.

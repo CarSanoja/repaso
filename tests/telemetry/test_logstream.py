@@ -1,6 +1,7 @@
 import json
 import logging
 from datetime import UTC, datetime
+from unittest.mock import Mock
 
 import pytest
 
@@ -39,6 +40,8 @@ def test_a_second_call_does_not_double_the_handlers():
 
 
 def test_the_deployed_sink_writes_every_trace_to_the_log_stream(tmp_path, capsys, monkeypatch):
+    cloudwatch = Mock()
+    monkeypatch.setattr("boto3.client", Mock(return_value=cloudwatch))
     settings = Settings(aws_region="us-east-1", local_mode=False, local_data_dir=tmp_path)
     sink = build_telemetry_sink(settings, SimClock(START))
     assert isinstance(sink, CloudWatchTelemetrySink)
@@ -51,3 +54,4 @@ def test_the_deployed_sink_writes_every_trace_to_the_log_stream(tmp_path, capsys
     assert logged["name"] == "judge.structured"
     assert logged["duration_ms"] == 812.0
     assert logged["extra"]["input_tokens"] == "1200"
+    cloudwatch.put_metric_data.assert_called_once()

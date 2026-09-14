@@ -1,13 +1,76 @@
-# Repaso — the school page becomes a family routine
+# Repaso — School Community Memory
 
-A parent can ask a chatbot for exercises. The next evening, they still have to remember, prepare another practice, interpret mistakes and decide when to involve the teacher. Repaso is built around that repeated work.
+A community educator can support many families through messages. Keeping track
+of what each learner tried, where they needed help, and what should happen next
+becomes a second job. Repaso turns that follow-up into persistent, inspectable
+learning memory.
 
-The parent sends a supported printed fourth-grade math page to a Telegram chat. Repaso reviews the material, builds a family-owned practice bank and schedules a short daily capsule. As the child answers with the parent, deterministic learning rules update the next practice. When the model is uncertain, the parent gets the question, answer and rubric together. When difficulty persists, the parent can receive a drafted teacher note or choose a lighter practice week. The following session shows the consequence.
+Families use Telegram to submit supported printed fourth-grade mathematics
+material and practise in short sessions. Repaso reviews the material, maintains
+a family-owned question bank, schedules practice, evaluates answers and retains
+the explanation approaches it has tried. Adults can inspect the learning evidence
+and handle decisions that need human judgment.
 
-Four Strands graphs coordinate ingestion, practice, responses and daily review. Bedrock supplies model roles; the production worker invokes AgentCore Runtime through an ARN in SSM. DynamoDB transactions, recoverable operation records and delivery receipts keep repeated events from double-applying assessed outcomes. Telegram sends still have an acknowledgment-loss ambiguity, which the documentation states explicitly.
+The School Community Memory interface connects the conversation to its effects.
+Its family dashboard lets an adult select a learner, a topic and a day, compare
+daily activity with cumulative assessment evidence, and inspect stored review
+dates and human decisions. The 14- and 30-day views use the family's timezone
+and identify the current single day of real activity as a starting point.
+Opening a learner's topic reveals three synchronized views: retained conversation,
+the agent's recorded actions and memory, and evidence for that topic. Selecting a
+message reveals its linked context retrieval, saved approach and delivery records.
+Replay lets a viewer inspect earlier recorded turns while keeping current topic
+totals explicitly labeled. Assessments remain visible even when their original
+chat text is no longer available.
 
-The current browser experience lets a judge compare both adult choices across seven stages in isolated synthetic state. Ten complete adapter simulations exercise the transport chain with injected failures, and a 14-day simulation delivered 420 local sessions for 30 synthetic students. A separate actual Textract call processed a new printed Spanish fractions page. These are distinct forms of evidence: they do not establish live model quality or benefit to real families.
+## Built with Strands, with contributions upstream
 
-On September 12, 2026 a bounded live run reached every configured Bedrock model: 27 of 27 calls filled the exact schema their agent asks for. That is a contract result, not a grading-quality result, and twenty-seven probe calls say nothing about sustained throughput. The demonstration journey replays model outputs recorded from the same inference on the same day, which is not a live run. Cloud deployment acceptance, independent teacher evaluation and a family pilot remain outstanding. The repository includes a 60-answer blind-review kit and a three-day observation protocol so those claims can be measured before being made.
+The project uses Strands graph orchestration and typed model calls in a deployed
+AgentCore runtime. Work on model wrappers and replay also produced two upstream
+Strands bug-fix pull requests: [model ID telemetry through the public model
+configuration API](https://github.com/strands-agents/harness-sdk/pull/4207) and
+[streaming contracts aligned with the runtime's arguments](https://github.com/strands-agents/harness-sdk/pull/4208).
+Both include regression tests and were open, not merged, when verified on
+September 14. See the [verified contribution record](upstream-contributions.md).
 
-Repaso's intended advantage is a routine the parent can control: practice at an agreed time, less repeated preparation and an informed decision when help is needed. The current scope is deliberately small: one child, fourth-grade math, printed photos and single-page PDFs. The proposed category is Everyday Agents.
+## What we demonstrated
+
+In the deployed Telegram trial, a learner asked for another explanation of
+fraction equivalence. Repaso retrieved the previously used cake approach, offered
+a paper-folding example and saved the new approach. The observer linked the actual
+reply to the memory and delivery events in AWS. Both successful help requests left
+the assessed-answer count unchanged at three. Those earlier three assessments
+repeated the same question content, so the interface identifies that limitation
+instead of presenting the result as proven learning improvement.
+
+A separate, explicitly labeled local rehearsal exercises the adult's decision to
+reduce practice and verifies its effect on the next scheduled capsule. Its model
+responses, transport and clock are controlled for demonstration. This is distinct
+from the live Telegram evidence; neither is a family pilot or an educational
+impact evaluation.
+
+## How it works
+
+![Implemented Repaso architecture](../media/architecture.svg)
+
+
+Strands Agents coordinates material ingestion, practice, responses and daily
+review. Model roles run on Amazon Bedrock, with the Telegram worker invoking
+Amazon Bedrock AgentCore Runtime. DynamoDB stores family-scoped learning state,
+recoverable operations and transport receipts. Deterministic rules update the
+mastery estimate and spaced practice from evaluated answers. Input and output
+filters remain active. The observer reads stored evidence; it does not manufacture
+model reasoning or treat transport acknowledgements as read receipts.
+
+## Who it is for
+
+The proposed Good Neighbor Agents use case is a community learning facilitator
+supporting families between meetings, starting with fourth-grade mathematics.
+The implemented access model is an explicit family allowlist. A complete school
+administration system, class roster integration and a teacher-to-family approval
+workflow are outside the demonstrated scope.
+
+Repaso's promise is continuity: the next request for help can use what happened
+before, and the adult can see the evidence behind the next step. It requires
+connectivity and an adult contact. No school or nonprofit partnership, measured
+learning gain, or replacement for teachers is claimed.

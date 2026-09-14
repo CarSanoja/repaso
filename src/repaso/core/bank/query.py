@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import date, timedelta
+from unicodedata import normalize
 
 from repaso.core.harness.bloom import BLOOM_ORDER, bloom_distance
 from repaso.schemas.common import CompetencyId, ItemId, Lang
@@ -19,6 +20,7 @@ class BankQuery:
     grade: int | None = None
     exclude: frozenset[ItemId] = field(default_factory=frozenset)
     limit: int = 3
+    distinct_content: bool = False
 
 
 def _tag_fits(tagged: object, wanted: object) -> bool:
@@ -58,7 +60,25 @@ def query_bank(items: list[Item], query: BankQuery) -> list[Item]:
         return []
     found = [item for item in items if matches(item, query)]
     found.sort(key=lambda item: _order(item, query))
+    if query.distinct_content:
+        seen = {question_key(item) for item in items if item.id in query.exclude}
+        distinct = []
+        for item in found:
+            key = question_key(item)
+            if key not in seen:
+                distinct.append(item)
+                seen.add(key)
+        found = distinct
     return found[: query.limit]
+
+
+def question_key(item: Item) -> tuple:
+    """Display content, independent of database ID or answer-option order."""
+
+    def text(value: str) -> str:
+        return " ".join(normalize("NFKC", value).casefold().split())
+
+    return item.kind, text(item.stem), tuple(sorted(text(option) for option in item.options))
 
 
 def last_seen(state: SpacedItemState) -> date:

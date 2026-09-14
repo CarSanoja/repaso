@@ -1,429 +1,58 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1680" viewBox="0 0 1680 1680" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
-  <defs>
-    <marker id="aSquid" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#232f3e"/></marker>
-    <marker id="aGrey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5f6b7a"/></marker>
-    <marker id="aRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d91515"/></marker>
-    <marker id="aPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b40b2"/></marker>
-  </defs>
-
-  <rect x="0" y="0" width="1680" height="1680" fill="#ffffff"/>
-
-  <!-- ================= HEADER ================= -->
-  <text x="36" y="52" font-size="27" font-weight="bold" fill="#0f1b2a">Repaso — the whole system on one page</text>
-  <text x="36" y="78" font-size="14" fill="#3c4650">A parent photographs a notebook page; the child practices in the same chat, and a person is interrupted only on evidence.</text>
-  <text x="36" y="97" font-size="14" fill="#3c4650">3 Strands graphs · 13 agents · a deterministic harness underneath all of it · 100 % of model calls on Amazon Bedrock.</text>
-
-  <rect x="1041" y="66" width="12" height="12" rx="2" fill="#0972d3"/><text x="1059" y="77" font-size="11" fill="#3c4650">our code</text>
-  <rect x="1123" y="66" width="12" height="12" rx="2" fill="#ff9900"/><text x="1141" y="77" font-size="11" fill="#3c4650">AWS managed</text>
-  <rect x="1222" y="66" width="12" height="12" rx="2" fill="#037f0c"/><text x="1240" y="77" font-size="11" fill="#3c4650">deterministic harness &amp; state</text>
-  <rect x="1423" y="66" width="12" height="12" rx="2" fill="#6b40b2"/><text x="1441" y="77" font-size="11" fill="#3c4650">a human</text>
-  <rect x="1499" y="66" width="12" height="12" rx="2" fill="#232f3e"/><text x="1517" y="77" font-size="11" fill="#3c4650">transport</text>
-  <rect x="1586" y="66" width="12" height="12" rx="2" fill="#d91515"/><text x="1604" y="77" font-size="11" fill="#3c4650">refuses</text>
-
-  <!-- ================= FAMILY ================= -->
-  <rect x="36" y="118" width="344" height="178" rx="12" fill="#f2ecfa" stroke="#6b40b2" stroke-width="1.6"/>
-  <text x="48" y="142" font-size="12.5" font-weight="bold" fill="#6b40b2">The family, in Telegram</text>
-
-  <text x="48" y="164" font-size="11.5" font-weight="bold" fill="#6b40b2">in  →</text>
-  <text x="48" y="182" font-size="10.5" fill="#3c4650">a photo of the notebook page</text>
-  <text x="48" y="195" font-size="10.5" fill="#3c4650">the student's answer — text,</text>
-  <text x="48" y="208" font-size="10.5" fill="#3c4650">photo or voice</text>
-  <text x="48" y="225" font-size="10.5" fill="#3c4650">the parent's yes or no</text>
-
-  <text x="216" y="164" font-size="11.5" font-weight="bold" fill="#6b40b2">←  out</text>
-  <text x="216" y="182" font-size="10.5" fill="#3c4650">tonight's capsule — 5 items</text>
-  <text x="216" y="195" font-size="10.5" fill="#3c4650">a decision request (yes/no)</text>
-  <text x="216" y="208" font-size="10.5" fill="#3c4650">a drafted teacher note</text>
-  <text x="216" y="221" font-size="10.5" fill="#3c4650">an engagement alert, weekly</text>
-  <text x="216" y="238" font-size="10.5" font-style="italic" fill="#5f6b7a">nothing else, ever</text>
-
-  <text x="48" y="260" font-size="10.5" font-style="italic" fill="#5f6b7a">The parent is the only account holder. The student has</text>
-  <text x="48" y="274" font-size="10.5" font-style="italic" fill="#5f6b7a">no account and no name — an alias only. The teacher</text>
-  <text x="48" y="288" font-size="10.5" font-style="italic" fill="#5f6b7a">installs nothing and reads only what the parent sends.</text>
-
-  <text x="88" y="314" font-size="10.5" font-style="italic" fill="#6b40b2">↑ everything the family receives comes back up this line, from delivery at the foot of the runtime</text>
-
-  <path d="M380,189 L399,189" stroke="#6b40b2" stroke-width="1.8" marker-end="url(#aPurple)"/>
-
-  <!-- ================= TRANSPORT SPINE ================= -->
-  <text x="404" y="140" font-size="11" font-style="italic" fill="#5f6b7a">the AWS transport spine — one webhook in, one long turn out</text>
-
-  <rect x="404" y="152" width="227" height="74" rx="10" fill="#ffffff" stroke="#232f3e" stroke-width="1.8"/>
-  <text x="416" y="174" font-size="12.5" font-weight="bold" fill="#232f3e">API Gateway</text>
-  <text x="416" y="192" font-size="10.5" fill="#3c4650">HTTPS webhook from Telegram</text>
-  <text x="416" y="208" font-size="10.5" fill="#5f6b7a">secret token checked at the edge</text>
-
-  <rect x="657" y="152" width="227" height="74" rx="10" fill="#ffffff" stroke="#232f3e" stroke-width="1.8"/>
-  <text x="669" y="174" font-size="12.5" font-weight="bold" fill="#232f3e">AWS Lambda</text>
-  <text x="669" y="192" font-size="10.5" fill="#3c4650">FastAPI + Mangum</text>
-  <text x="669" y="208" font-size="10.5" fill="#5f6b7a">ACK in &lt; 200 ms, then returns</text>
-
-  <rect x="910" y="152" width="227" height="74" rx="10" fill="#ffffff" stroke="#232f3e" stroke-width="1.8"/>
-  <text x="922" y="174" font-size="12.5" font-weight="bold" fill="#232f3e">EventBridge</text>
-  <text x="922" y="192" font-size="10.5" fill="#3c4650">bus: repaso</text>
-  <text x="922" y="208" font-size="10.5" fill="#5f6b7a">typed domain events</text>
-
-  <rect x="1163" y="152" width="227" height="74" rx="10" fill="#ffffff" stroke="#232f3e" stroke-width="1.8"/>
-  <text x="1175" y="174" font-size="12.5" font-weight="bold" fill="#232f3e">SQS  +  DLQ</text>
-  <text x="1175" y="192" font-size="10.5" fill="#3c4650">one queue pair per flow</text>
-  <text x="1175" y="208" font-size="10.5" fill="#5f6b7a">3 receives → dead letter</text>
-
-  <rect x="1416" y="152" width="227" height="74" rx="10" fill="#ffffff" stroke="#232f3e" stroke-width="1.8"/>
-  <text x="1428" y="174" font-size="12.5" font-weight="bold" fill="#232f3e">Worker</text>
-  <text x="1428" y="192" font-size="10.5" fill="#3c4650">minutes, not milliseconds</text>
-  <text x="1428" y="208" font-size="10.5" fill="#5f6b7a">invokes AgentCore Runtime</text>
-
-  <path d="M635,189 L652,189" stroke="#232f3e" stroke-width="1.8" marker-end="url(#aSquid)"/>
-  <path d="M888,189 L905,189" stroke="#232f3e" stroke-width="1.8" marker-end="url(#aSquid)"/>
-  <path d="M1141,189 L1158,189" stroke="#232f3e" stroke-width="1.8" marker-end="url(#aSquid)"/>
-  <path d="M1394,189 L1411,189" stroke="#232f3e" stroke-width="1.8" marker-end="url(#aSquid)"/>
-  <path d="M1529,226 L1529,315" stroke="#232f3e" stroke-width="1.8" marker-end="url(#aSquid)"/>
-  <text x="1539" y="275" font-size="10.5" font-style="italic" fill="#5f6b7a">one long turn</text>
-
-  <text x="404" y="252" font-size="11" font-weight="bold" fill="#232f3e">why the hand-off</text>
-  <text x="404" y="268" font-size="10.5" fill="#5f6b7a">Telegram retries a webhook that does not answer within seconds, and a</text>
-  <text x="404" y="281" font-size="10.5" fill="#5f6b7a">tutoring turn takes longer than that. Lambda acknowledges and hands off;</text>
-  <text x="404" y="294" font-size="10.5" fill="#5f6b7a">the worker then takes as long as the work honestly takes.</text>
-
-  <rect x="910" y="240" width="280" height="62" rx="10" fill="#ffffff" stroke="#232f3e" stroke-width="1.8" stroke-dasharray="5 3"/>
-  <text x="922" y="262" font-size="12.5" font-weight="bold" fill="#232f3e">EventBridge Scheduler</text>
-  <text x="922" y="280" font-size="10.5" fill="#3c4650">one alarm per family — the agent</text>
-  <text x="922" y="296" font-size="10.5" fill="#3c4650">reschedules its own for exam mode</text>
-  <path d="M1024,240 L1024,231" stroke="#232f3e" stroke-width="1.8" marker-end="url(#aSquid)"/>
-
-  <!-- ========== HARNESS PLANE (drawn first — the graphs stand ON it) ========== -->
-  <rect x="60" y="756" width="1584" height="200" rx="12" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.8"/>
-  <text x="76" y="782" font-size="13" font-weight="bold" fill="#037f0c">The deterministic harness — the plane every graph above stands on</text>
-  <text x="76" y="800" font-size="10.5" font-style="italic" fill="#5f6b7a">no model decides pedagogy here: same input, same output, every run, offline. This is the half a school can audit — and the half that fires the alarms.</text>
-
-  <rect x="76" y="812" width="291" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.2"/>
-  <text x="90" y="834" font-size="12.5" font-weight="bold" fill="#037f0c">SM-2 spacing</text>
-  <text x="90" y="852" font-size="10.5" fill="#5f6b7a">session · plan — when an item comes back</text>
-
-  <rect x="391" y="812" width="291" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.2"/>
-  <text x="405" y="834" font-size="12.5" font-weight="bold" fill="#037f0c">mastery EMA</text>
-  <text x="405" y="852" font-size="10.5" fill="#5f6b7a">response · apply — the level, and its cold start</text>
-
-  <rect x="706" y="812" width="291" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.2"/>
-  <text x="720" y="834" font-size="12.5" font-weight="bold" fill="#037f0c">escalation triggers</text>
-  <text x="720" y="852" font-size="10.5" fill="#5f6b7a">response · escalate — 9 attempts, 7-day cooldown</text>
-
-  <rect x="1021" y="812" width="291" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.2"/>
-  <text x="1035" y="834" font-size="12.5" font-weight="bold" fill="#037f0c">psychometrics</text>
-  <text x="1035" y="852" font-size="10.5" fill="#5f6b7a">close · tournament — point-biserial retirement</text>
-
-  <rect x="1336" y="812" width="291" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.2"/>
-  <text x="1350" y="834" font-size="12.5" font-weight="bold" fill="#037f0c">legibility</text>
-  <text x="1350" y="852" font-size="10.5" fill="#5f6b7a">ingest · parse — blur floor, ask for a re-photo</text>
-
-  <rect x="76" y="878" width="291" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.2"/>
-  <text x="90" y="900" font-size="12.5" font-weight="bold" fill="#037f0c">claims</text>
-  <text x="90" y="918" font-size="10.5" fill="#5f6b7a">every stage — exactly once, even after a crash</text>
-
-  <rect x="391" y="878" width="291" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.2"/>
-  <text x="405" y="900" font-size="12.5" font-weight="bold" fill="#037f0c">budgets</text>
-  <text x="405" y="918" font-size="10.5" fill="#5f6b7a">every model call — a declared hard ceiling</text>
-
-  <rect x="706" y="878" width="291" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.2"/>
-  <text x="720" y="900" font-size="12.5" font-weight="bold" fill="#037f0c">clock</text>
-  <text x="720" y="918" font-size="10.5" fill="#5f6b7a">every graph — injected, never a wall-clock read</text>
-
-  <rect x="1021" y="878" width="291" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.2"/>
-  <text x="1035" y="896" font-size="12.5" font-weight="bold" fill="#037f0c">calendar</text>
-  <text x="1035" y="912" font-size="10.5" fill="#5f6b7a">close · engagement — rest days, holidays and</text>
-  <text x="1035" y="925" font-size="10.5" fill="#5f6b7a">outage days masked before any alert can fire</text>
-
-  <text x="1336" y="892" font-size="10.5" font-style="italic" fill="#037f0c">Local mode runs this whole plane with</text>
-  <text x="1336" y="905" font-size="10.5" font-style="italic" fill="#037f0c">no LLM at all — a strict playback double</text>
-  <text x="1336" y="918" font-size="10.5" font-style="italic" fill="#037f0c">raises on any unplanned model call.</text>
-
-  <!-- ========== AGENTCORE RUNTIME (sits on the plane) ========== -->
-  <rect x="100" y="320" width="1512" height="444" rx="12" fill="#fff4e5" stroke="#ff9900" stroke-width="2"/>
-  <text x="116" y="344" font-size="13" font-weight="bold" fill="#b26a00">Amazon Bedrock AgentCore Runtime</text>
-  <text x="460" y="344" font-size="10.5" font-style="italic" fill="#5f6b7a">every node traced in AgentCore Observability · L1 session memory held per family · the runtime executes our graphs, it does not decide anything</text>
-
-  <rect x="116" y="354" width="1480" height="352" rx="10" fill="#eaf3fd" stroke="#0972d3" stroke-width="1.6"/>
-  <text x="128" y="376" font-size="12" font-weight="bold" fill="#0972d3">Our code — 3 Strands graphs from 4 builders (session and response are the two halves of the tutor loop) · 13 agents</text>
-  <text x="128" y="392" font-size="10.5" font-style="italic" fill="#5f6b7a">nodes in execution order; each chip names the node, the model behind it, and the agent or harness module that runs it. Green = no model involved.</text>
-
-  <!-- ROW 1 · ingest -->
-  <text x="128" y="422" font-size="12.5" font-weight="bold" fill="#0972d3">ingest</text>
-  <text x="128" y="438" font-size="10.5" fill="#3c4650">new material</text>
-  <text x="128" y="451" font-size="10.5" fill="#8c99a8">5 nodes · 6 agents</text>
-
-  <rect x="240" y="402" width="196" height="54" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="1.3"/>
-  <rect x="241.5" y="403.5" width="3.5" height="51" rx="1.6" fill="#ff9900"/>
-  <text x="338" y="423" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">parse</text>
-  <text x="338" y="439" font-size="11" fill="#b26a00" text-anchor="middle">Textract · no LLM</text>
-  <text x="338" y="452" font-size="10.5" fill="#5f6b7a" text-anchor="middle">material parser</text>
-
-  <rect x="470" y="402" width="196" height="54" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="1.3"/>
-  <rect x="471.5" y="403.5" width="3.5" height="51" rx="1.6" fill="#ff9900"/>
-  <text x="568" y="423" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">screen</text>
-  <text x="568" y="439" font-size="11" fill="#b26a00" text-anchor="middle">Nova Lite</text>
-  <text x="568" y="452" font-size="10.5" fill="#5f6b7a" text-anchor="middle">intake screener</text>
-
-  <rect x="700" y="402" width="196" height="54" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="1.3"/>
-  <rect x="701.5" y="403.5" width="3.5" height="51" rx="1.6" fill="#ff9900"/>
-  <text x="798" y="423" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">map</text>
-  <text x="798" y="439" font-size="11" fill="#b26a00" text-anchor="middle">Haiku 4.5</text>
-  <text x="798" y="452" font-size="10.5" fill="#5f6b7a" text-anchor="middle">competency mapper</text>
-
-  <rect x="930" y="402" width="196" height="54" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="1.3"/>
-  <rect x="931.5" y="403.5" width="3.5" height="51" rx="1.6" fill="#ff9900"/>
-  <text x="1028" y="423" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">generate</text>
-  <text x="1028" y="439" font-size="11" fill="#b26a00" text-anchor="middle">Sonnet 4.6</text>
-  <text x="1028" y="452" font-size="10.5" fill="#5f6b7a" text-anchor="middle">item generator</text>
-
-  <rect x="1160" y="402" width="196" height="54" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="1.3"/>
-  <rect x="1161.5" y="403.5" width="3.5" height="51" rx="1.6" fill="#ff9900"/>
-  <text x="1258" y="423" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">validate</text>
-  <text x="1258" y="439" font-size="11" fill="#b26a00" text-anchor="middle">Sonnet 4.6</text>
-  <text x="1258" y="452" font-size="10.5" fill="#5f6b7a" text-anchor="middle">item critic</text>
-
-  <rect x="1390" y="402" width="196" height="54" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="1.3"/>
-  <rect x="1391.5" y="403.5" width="3.5" height="51" rx="1.6" fill="#ff9900"/>
-  <text x="1488" y="423" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">validate</text>
-  <text x="1488" y="439" font-size="11" fill="#b26a00" text-anchor="middle">Nova Micro</text>
-  <text x="1488" y="452" font-size="10.5" fill="#5f6b7a" text-anchor="middle">answerability probe</text>
-
-  <path d="M441,429 L465,429" stroke="#5f6b7a" stroke-width="1.4" marker-end="url(#aGrey)"/>
-  <path d="M671,429 L695,429" stroke="#5f6b7a" stroke-width="1.4" marker-end="url(#aGrey)"/>
-  <path d="M901,429 L925,429" stroke="#5f6b7a" stroke-width="1.4" marker-end="url(#aGrey)"/>
-  <path d="M1131,429 L1155,429" stroke="#5f6b7a" stroke-width="1.4" marker-end="url(#aGrey)"/>
-  <path d="M1361,429 L1385,429" stroke="#5f6b7a" stroke-width="1.4" marker-end="url(#aGrey)"/>
-  <path d="M1160,462 L1160,458 L1586,458 L1586,462" fill="none" stroke="#8c99a8" stroke-width="1.2"/>
-  <text x="1373" y="472" font-size="10.5" font-style="italic" fill="#8c99a8" text-anchor="middle">one node, two agents — an item ships only if both accept</text>
-
-  <!-- ROW 2 · session -->
-  <text x="128" y="496" font-size="12.5" font-weight="bold" fill="#0972d3">session</text>
-  <text x="128" y="512" font-size="10.5" fill="#3c4650">the daily capsule</text>
-  <text x="128" y="525" font-size="10.5" fill="#8c99a8">2 nodes · 2 agents</text>
-
-  <rect x="240" y="476" width="196" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.5"/>
-  <rect x="241.5" y="477.5" width="3.5" height="51" rx="1.6" fill="#037f0c"/>
-  <text x="338" y="497" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">plan</text>
-  <text x="338" y="513" font-size="11" fill="#037f0c" text-anchor="middle">deterministic</text>
-  <text x="338" y="526" font-size="10.5" fill="#5f6b7a" text-anchor="middle">session planner</text>
-
-  <rect x="470" y="476" width="196" height="54" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="1.3"/>
-  <rect x="471.5" y="477.5" width="3.5" height="51" rx="1.6" fill="#ff9900"/>
-  <text x="568" y="497" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">compose</text>
-  <text x="568" y="513" font-size="11" fill="#b26a00" text-anchor="middle">Sonnet 4.6</text>
-  <text x="568" y="526" font-size="10.5" fill="#5f6b7a" text-anchor="middle">capsule composer</text>
-
-  <path d="M441,503 L465,503" stroke="#5f6b7a" stroke-width="1.4" marker-end="url(#aGrey)"/>
-
-  <text x="700" y="497" font-size="10.5" fill="#5f6b7a">One capsule per student per day: the SM-2 review queue plus one slot the planner reserves for unseen material, so a strong</text>
-  <text x="700" y="511" font-size="10.5" fill="#5f6b7a">student still meets new work. Composed for a nine-year-old, checked by the legibility harness, and never sent on a rest day.</text>
-
-  <!-- ROW 3 · response -->
-  <text x="128" y="570" font-size="12.5" font-weight="bold" fill="#0972d3">response</text>
-  <text x="128" y="586" font-size="10.5" fill="#3c4650">the student answers</text>
-  <text x="128" y="599" font-size="10.5" fill="#8c99a8">4 nodes · 3 agents</text>
-
-  <rect x="240" y="550" width="196" height="54" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="1.3"/>
-  <rect x="241.5" y="551.5" width="3.5" height="51" rx="1.6" fill="#ff9900"/>
-  <text x="338" y="571" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">grade</text>
-  <text x="338" y="587" font-size="11" fill="#b26a00" text-anchor="middle">Sonnet 4.6</text>
-  <text x="338" y="600" font-size="10.5" fill="#5f6b7a" text-anchor="middle">grader</text>
-
-  <rect x="470" y="550" width="196" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.5"/>
-  <rect x="471.5" y="551.5" width="3.5" height="51" rx="1.6" fill="#037f0c"/>
-  <text x="568" y="571" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">apply</text>
-  <text x="568" y="587" font-size="11" fill="#037f0c" text-anchor="middle">deterministic</text>
-  <text x="568" y="600" font-size="10.5" fill="#5f6b7a" text-anchor="middle">mastery EMA + SM-2</text>
-
-  <rect x="700" y="550" width="196" height="54" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="1.3"/>
-  <rect x="701.5" y="551.5" width="3.5" height="51" rx="1.6" fill="#ff9900"/>
-  <text x="798" y="571" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">adapt</text>
-  <text x="798" y="587" font-size="11" fill="#b26a00" text-anchor="middle">Haiku 4.5</text>
-  <text x="798" y="600" font-size="10.5" fill="#5f6b7a" text-anchor="middle">adaptation policy</text>
-
-  <rect x="930" y="550" width="196" height="54" rx="7" fill="#ffffff" stroke="#d91515" stroke-width="1.8"/>
-  <rect x="931.5" y="551.5" width="3.5" height="51" rx="1.6" fill="#ff9900"/>
-  <text x="1028" y="571" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">escalate</text>
-  <text x="1028" y="587" font-size="11" fill="#b26a00" text-anchor="middle">Sonnet 4.6</text>
-  <text x="1028" y="600" font-size="10.5" fill="#5f6b7a" text-anchor="middle">escalation composer</text>
-
-  <path d="M441,577 L465,577" stroke="#5f6b7a" stroke-width="1.4" marker-end="url(#aGrey)"/>
-  <path d="M671,577 L695,577" stroke="#5f6b7a" stroke-width="1.4" marker-end="url(#aGrey)"/>
-  <path d="M901,577 L925,577" stroke="#d91515" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#aRed)"/>
-
-  <text x="1160" y="564" font-size="10.5" fill="#5f6b7a">A grade below 0.85 confidence quarantines: a grade that is</text>
-  <text x="1160" y="576" font-size="10.5" fill="#5f6b7a">not sure does not exist, and no one is told anything about it.</text>
-  <text x="1160" y="590" font-size="10.5" fill="#d91515">escalate is a conditional edge — STRUGGLING ∧ ≥ 9 attempts</text>
-  <text x="1160" y="602" font-size="10.5" fill="#d91515">∧ a 7-day cooldown per student, or the graph ends here.</text>
-
-  <!-- ROW 4 · daily close -->
-  <text x="128" y="644" font-size="12.5" font-weight="bold" fill="#0972d3">daily close</text>
-  <text x="128" y="660" font-size="10.5" fill="#3c4650">one sweep per day</text>
-  <text x="128" y="673" font-size="10.5" fill="#8c99a8">4 nodes · 2 agents</text>
-
-  <rect x="240" y="624" width="196" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.5"/>
-  <rect x="241.5" y="625.5" width="3.5" height="51" rx="1.6" fill="#037f0c"/>
-  <text x="338" y="645" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">verify</text>
-  <text x="338" y="661" font-size="11" fill="#037f0c" text-anchor="middle">deterministic</text>
-  <text x="338" y="674" font-size="10.5" fill="#5f6b7a" text-anchor="middle">goal verifier</text>
-
-  <rect x="470" y="624" width="196" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.5"/>
-  <rect x="471.5" y="625.5" width="3.5" height="51" rx="1.6" fill="#037f0c"/>
-  <text x="568" y="645" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">engagement</text>
-  <text x="568" y="661" font-size="11" fill="#037f0c" text-anchor="middle">deterministic</text>
-  <text x="568" y="674" font-size="10.5" fill="#5f6b7a" text-anchor="middle">trigger + calendar mask</text>
-
-  <rect x="700" y="624" width="196" height="54" rx="7" fill="#ffffff" stroke="#0972d3" stroke-width="1.3"/>
-  <rect x="701.5" y="625.5" width="3.5" height="51" rx="1.6" fill="#ff9900"/>
-  <text x="798" y="645" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">cohort</text>
-  <text x="798" y="661" font-size="11" fill="#b26a00" text-anchor="middle">Sonnet 4.6</text>
-  <text x="798" y="674" font-size="10.5" fill="#5f6b7a" text-anchor="middle">escalation composer</text>
-
-  <rect x="930" y="624" width="196" height="54" rx="7" fill="#ffffff" stroke="#037f0c" stroke-width="1.5"/>
-  <rect x="931.5" y="625.5" width="3.5" height="51" rx="1.6" fill="#037f0c"/>
-  <text x="1028" y="645" font-size="13" font-weight="bold" fill="#0f1b2a" text-anchor="middle">tournament</text>
-  <text x="1028" y="661" font-size="11" fill="#037f0c" text-anchor="middle">deterministic</text>
-  <text x="1028" y="674" font-size="10.5" fill="#5f6b7a" text-anchor="middle">item optimizer</text>
-
-  <path d="M441,651 L465,651" stroke="#5f6b7a" stroke-width="1.4" marker-end="url(#aGrey)"/>
-  <path d="M671,651 L695,651" stroke="#5f6b7a" stroke-width="1.4" marker-end="url(#aGrey)"/>
-  <path d="M901,651 L925,651" stroke="#5f6b7a" stroke-width="1.4" marker-end="url(#aGrey)"/>
-
-  <text x="1160" y="636" font-size="10.5" fill="#5f6b7a">A cohort note needs k ≥ 3 distinct families in the same section</text>
-  <text x="1160" y="648" font-size="10.5" fill="#5f6b7a">× competency, and fires at most once per ISO week.</text>
-  <text x="1160" y="660" font-size="10.5" fill="#5f6b7a">Items retire on point-biserial discrimination, not on a hunch.</text>
-  <text x="1160" y="674" font-size="10.5" fill="#8c99a8">cohort reuses the response graph's escalation composer — which</text>
-  <text x="1160" y="686" font-size="10.5" fill="#8c99a8">is why the fleet is 13 agents across 15 nodes, not 14.</text>
-
-  <text x="128" y="698" font-size="10.5" font-style="italic" fill="#5f6b7a">Conditional edges are real: a graph that has nothing to say ends without saying it, and the run costs nothing further.</text>
-
-  <!-- delivery band -->
-  <rect x="116" y="716" width="1480" height="36" rx="8" fill="#232f3e"/>
-  <text x="130" y="739" font-size="12.5" font-weight="bold" fill="#ffffff">outbound · delivery</text>
-  <text x="272" y="739" font-size="10.5" fill="#c9d3de">every message is claimed exactly once — a retried event never sends the same thing twice · quiet hours and the family calendar are honoured before anything leaves</text>
-  <text x="1584" y="739" font-size="10.5" fill="#c9d3de" text-anchor="end">Telegram Bot API</text>
-
-  <path d="M114,734 L76,734 L76,302" fill="none" stroke="#6b40b2" stroke-width="1.8" marker-end="url(#aPurple)"/>
-
-  <!-- ================= PANELS ================= -->
-  <rect x="36" y="980" width="520" height="308" rx="12" fill="#fff4e5" stroke="#ff9900" stroke-width="1.8"/>
-  <text x="52" y="1008" font-size="14" font-weight="bold" fill="#b26a00">Amazon Bedrock — model routing</text>
-  <text x="52" y="1026" font-size="10.5" font-style="italic" fill="#5f6b7a">100 % of model calls · no other provider · every role declares its own fallback chain</text>
-
-  <rect x="52" y="1042" width="488" height="72" rx="7" fill="#ffffff" stroke="#ff9900" stroke-width="1.2"/>
-  <text x="66" y="1066" font-size="13" font-weight="bold" fill="#0f1b2a">Claude Sonnet 4.6</text>
-  <text x="66" y="1084" font-size="11" fill="#b26a00">generate · judge</text>
-  <text x="66" y="1100" font-size="10.5" fill="#5f6b7a">items, capsules, open-answer grading, escalation and cohort notes</text>
-
-  <rect x="52" y="1122" width="488" height="72" rx="7" fill="#ffffff" stroke="#ff9900" stroke-width="1.2"/>
-  <text x="66" y="1146" font-size="13" font-weight="bold" fill="#0f1b2a">Claude Haiku 4.5</text>
-  <text x="66" y="1164" font-size="11" fill="#b26a00">structured</text>
-  <text x="66" y="1180" font-size="10.5" fill="#5f6b7a">competency mapper, adaptation policy — schema-bound, cheap, fast</text>
-
-  <rect x="52" y="1202" width="488" height="72" rx="7" fill="#ffffff" stroke="#ff9900" stroke-width="1.2"/>
-  <text x="66" y="1226" font-size="13" font-weight="bold" fill="#0f1b2a">Amazon Nova Lite · Micro</text>
-  <text x="66" y="1244" font-size="11" fill="#b26a00">classify · probe</text>
-  <text x="66" y="1260" font-size="10.5" fill="#5f6b7a">the Armor screen and the answerability probe — the two smallest jobs</text>
-
-  <rect x="580" y="980" width="520" height="308" rx="12" fill="#ffffff" stroke="#8c99a8" stroke-width="1.4"/>
-  <text x="596" y="1008" font-size="14" font-weight="bold" fill="#0f1b2a">Memory, in three tiers</text>
-  <text x="596" y="1026" font-size="10.5" font-style="italic" fill="#5f6b7a">what is remembered where, and which tier is the system of record</text>
-
-  <rect x="596" y="1042" width="488" height="72" rx="7" fill="#fff4e5" stroke="#ff9900" stroke-width="1.2"/>
-  <text x="610" y="1066" font-size="12.5" font-weight="bold" fill="#b26a00">L1 · AgentCore session memory</text>
-  <text x="610" y="1084" font-size="10.5" fill="#3c4650">the running conversation, held per family</text>
-  <text x="610" y="1100" font-size="10.5" fill="#5f6b7a">short-lived; never the system of record</text>
-
-  <rect x="596" y="1122" width="488" height="72" rx="7" fill="#fff4e5" stroke="#ff9900" stroke-width="1.2"/>
-  <text x="610" y="1146" font-size="12.5" font-weight="bold" fill="#b26a00">L2 · Bedrock Knowledge Bases</text>
-  <text x="610" y="1164" font-size="10.5" fill="#3c4650">curriculum, competencies and worked examples</text>
-  <text x="610" y="1180" font-size="10.5" fill="#5f6b7a">what the mapper matches new material against</text>
-
-  <rect x="596" y="1202" width="488" height="72" rx="7" fill="#eaf6ea" stroke="#037f0c" stroke-width="1.2"/>
-  <text x="610" y="1226" font-size="12.5" font-weight="bold" fill="#037f0c">L3 · DynamoDB single table + grade log</text>
-  <text x="610" y="1244" font-size="10.5" fill="#3c4650">PAY_PER_REQUEST · PITR · RETAIN</text>
-  <text x="610" y="1260" font-size="10.5" fill="#5f6b7a">the system of record; grades are append-only</text>
-
-  <rect x="1124" y="980" width="520" height="308" rx="12" fill="#ffffff" stroke="#232f3e" stroke-width="1.4"/>
-  <text x="1140" y="1008" font-size="14" font-weight="bold" fill="#232f3e">The rest of the plane</text>
-  <text x="1140" y="1026" font-size="10.5" font-style="italic" fill="#5f6b7a">all of it CDK, all of it namespaced repaso-*</text>
-  <text x="1140" y="1052" font-size="10.5" fill="#3c4650">S3 + KMS — notebook photos and voice notes, encrypted at rest</text>
-  <text x="1140" y="1074" font-size="10.5" fill="#3c4650">Secrets Manager — repaso/telegram, repaso/judge</text>
-  <text x="1140" y="1096" font-size="10.5" fill="#3c4650">DynamoDB PITR + RETAIN — a stack delete does not delete a history</text>
-  <text x="1140" y="1118" font-size="10.5" fill="#3c4650">EventBridge Scheduler — one alarm per family, moved by the agent</text>
-  <text x="1140" y="1140" font-size="10.5" fill="#3c4650">SQS dead-letter queues — 3 receives, then a human looks</text>
-  <text x="1140" y="1162" font-size="10.5" fill="#3c4650">AgentCore Observability — every node, claim and refusal traced</text>
-  <text x="1140" y="1184" font-size="10.5" fill="#3c4650">AWS Budgets — one alarm per declared spend limit</text>
-  <text x="1140" y="1206" font-size="10.5" fill="#3c4650">API Gateway secret token — the webhook is not a public endpoint</text>
-  <text x="1140" y="1240" font-size="10.5" font-style="italic" fill="#5f6b7a">Local mode reproduces every one of these behind a file-backed</text>
-  <text x="1140" y="1254" font-size="10.5" font-style="italic" fill="#5f6b7a">double: 885 tests, zero credentials, zero network, ~5 seconds.</text>
-
-  <!-- ================= MEASURED EVIDENCE ================= -->
-  <text x="36" y="1310" font-size="12" font-weight="bold" fill="#0f1b2a">Measured, not asserted — every number traces to a dated run</text>
-
-  <rect x="36" y="1320" width="384" height="124" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
-  <text x="52" y="1366" font-size="27" font-weight="bold" fill="#037f0c">0.970</text>
-  <text x="144" y="1366" font-size="12" font-weight="bold" fill="#0f1b2a">struggle-interrupt precision</text>
-  <text x="52" y="1390" font-size="10.5" fill="#3c4650">95 % CI [0.947–0.983] · recall 0.994 [0.980–0.998]</text>
-  <text x="52" y="1403" font-size="10.5" fill="#3c4650">40 virgin seeds = 16,800 simulated student-days. Rate-matched</text>
-  <text x="52" y="1416" font-size="10.5" fill="#3c4650">random baseline: 0.300. Never-interrupt recall: 0.000.</text>
-  <text x="52" y="1434" font-size="10.5" font-style="italic" fill="#8c99a8">calibration run · 2026-08-20</text>
-
-  <rect x="444" y="1320" width="384" height="124" rx="10" fill="#ffffff" stroke="#d91515" stroke-width="1.8"/>
-  <text x="460" y="1366" font-size="27" font-weight="bold" fill="#d91515">400 / 400</text>
-  <text x="600" y="1366" font-size="12" font-weight="bold" fill="#0f1b2a">attacks intercepted</text>
-  <text x="460" y="1390" font-size="10.5" fill="#3c4650">9 attack families, ES + EN, including OCR-corrupted variants.</text>
-  <text x="460" y="1403" font-size="10.5" fill="#3c4650">0 % false blocks on 200 clean grade-4 texts — including the</text>
-  <text x="460" y="1416" font-size="10.5" fill="#3c4650">near-miss strings written to trip the screener.</text>
-  <text x="460" y="1434" font-size="10.5" font-style="italic" fill="#8c99a8">armor bench · 2026-08-20</text>
-
-  <rect x="852" y="1320" width="384" height="124" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
-  <text x="868" y="1366" font-size="27" font-weight="bold" fill="#037f0c">885</text>
-  <text x="930" y="1366" font-size="12" font-weight="bold" fill="#0f1b2a">offline tests, ~5 seconds</text>
-  <text x="868" y="1390" font-size="10.5" fill="#3c4650">Zero credentials. Zero network. Graphs, harness, Armor and</text>
-  <text x="868" y="1403" font-size="10.5" fill="#3c4650">calendar all run on a laptop against a strict playback double</text>
-  <text x="868" y="1416" font-size="10.5" fill="#3c4650">that raises on any unplanned model call.</text>
-  <text x="868" y="1434" font-size="10.5" font-style="italic" fill="#8c99a8">pytest -q · local mode, not one Bedrock call</text>
-
-  <rect x="1260" y="1320" width="384" height="124" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
-  <text x="1276" y="1366" font-size="27" font-weight="bold" fill="#037f0c">420</text>
-  <text x="1338" y="1366" font-size="12" font-weight="bold" fill="#0f1b2a">student-days in ~14 s, $0</text>
-  <text x="1276" y="1390" font-size="10.5" fill="#3c4650">30 students × 14 days through the real pipeline.</text>
-  <text x="1276" y="1403" font-size="10.5" fill="#3c4650">1,062 responses graded · 20 items retired · byte-identical</text>
-  <text x="1276" y="1416" font-size="10.5" fill="#3c4650">transcript for the same seed, on any machine.</text>
-  <text x="1276" y="1434" font-size="10.5" font-style="italic" fill="#8c99a8">demo clock · 2026-08-20</text>
-
-  <rect x="36" y="1456" width="384" height="124" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
-  <text x="52" y="1502" font-size="27" font-weight="bold" fill="#037f0c">0</text>
-  <text x="88" y="1502" font-size="12" font-weight="bold" fill="#0f1b2a">false engagement alerts</text>
-  <text x="52" y="1526" font-size="10.5" fill="#3c4650">Per 100 student-weeks, calendar mask and delivery-health gate</text>
-  <text x="52" y="1539" font-size="10.5" fill="#3c4650">on: 0 across 2,400 student-weeks, gate A 20/20 seeds. The</text>
-  <text x="52" y="1552" font-size="10.5" fill="#3c4650">pre-fix control arm still fires 1,689 — 70.4 per 100.</text>
-  <text x="52" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">calendar bench · 2026-08-21</text>
-
-  <rect x="444" y="1456" width="384" height="124" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
-  <text x="460" y="1502" font-size="27" font-weight="bold" fill="#037f0c">60 / 60</text>
-  <text x="574" y="1502" font-size="12" font-weight="bold" fill="#0f1b2a">real dropouts still caught</text>
-  <text x="460" y="1526" font-size="10.5" fill="#3c4650">Masking must not buy quiet by going blind: every genuine</text>
-  <text x="460" y="1539" font-size="10.5" fill="#3c4650">dropout alerted within 3 practicable days — including the one</text>
-  <text x="460" y="1552" font-size="10.5" fill="#3c4650">whose silence starts on the first outage day (20/20).</text>
-  <text x="460" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">calendar bench · 2026-08-21</text>
-
-  <rect x="852" y="1456" width="384" height="124" rx="10" fill="#ffffff" stroke="#037f0c" stroke-width="1.8"/>
-  <text x="868" y="1502" font-size="27" font-weight="bold" fill="#037f0c">53 / 63</text>
-  <text x="982" y="1502" font-size="12" font-weight="bold" fill="#0f1b2a">interrupts / 420 student-days</text>
-  <text x="868" y="1526" font-size="10.5" fill="#3c4650">p50 and p95 over 40 virgin seeds — the interruption budget a</text>
-  <text x="868" y="1539" font-size="10.5" fill="#3c4650">family actually lives with. 7 of 8 pre-registered gates pass;</text>
-  <text x="868" y="1552" font-size="10.5" fill="#3c4650">G2, zero false-positive students, stays red on the board.</text>
-  <text x="868" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">calibration run · 2026-08-20</text>
-
-  <rect x="1260" y="1456" width="384" height="124" rx="10" fill="#ffffff" stroke="#d91515" stroke-width="1.8"/>
-  <text x="1276" y="1502" font-size="27" font-weight="bold" fill="#d91515">0.917</text>
-  <text x="1368" y="1502" font-size="12" font-weight="bold" fill="#0f1b2a">the recall that killed a fix</text>
-  <text x="1276" y="1526" font-size="10.5" fill="#3c4650">A corroboration floor promised to cut the residual false</text>
-  <text x="1276" y="1539" font-size="10.5" fill="#3c4650">positives. Its own pre-declared protocol measured recall fall</text>
-  <text x="1276" y="1552" font-size="10.5" fill="#3c4650">0.994 → 0.917. Falsified in four hours, reverted the same hour.</text>
-  <text x="1276" y="1570" font-size="10.5" font-style="italic" fill="#8c99a8">falsification run · 2026-08-21</text>
-
-  <text x="36" y="1620" font-size="10.5" font-style="italic" fill="#5f6b7a">Open, and on the board: 11 residual struggle false positives across the 40 virgin seeds keep gate G2 below its 95 % bar. The root cause is the EMA's cold start — three consecutive misses multiply the estimate by 0.7³ from any prior history.</text>
-  <text x="36" y="1638" font-size="10.5" font-style="italic" fill="#5f6b7a">Threshold-level guards are exhausted: two swept, one slab-confirmed, one falsified. The remaining fix is the estimator itself — a BKT-style slip/guess separation — and it is on the roadmap rather than in this drawing.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200" role="img" aria-labelledby="title desc">
+<title id="title">Repaso — School Community Memory architecture</title>
+<desc id="desc">Telegram messages pass through an HTTP webhook, EventBridge, SQS and a Lambda worker into AgentCore Runtime. Four Strands graphs and conversational help use Bedrock, Textract and family-scoped DynamoDB and S3 state. A recoverable outbox sends replies. A separate read-only observer reconstructs learning episodes from DynamoDB records and correlated CloudWatch events.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#9bc270"/></marker><marker id="bluearrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#7ccbd5"/></marker><style>text{font-family:Arial,Helvetica,sans-serif;fill:#e8eee7}.label{font-size:12px;letter-spacing:2px;fill:#9cb194}.title{font-size:23px;font-weight:600}.body{font-size:16px;fill:#b9c9b6}.small{font-size:13px;fill:#9dae9b}.green{fill:#b8f37a}.blue{fill:#7ccbd5}.box{fill:#15221b;stroke:#40593a;stroke-width:1.5}.sub{fill:#1c2d20;stroke:#40543a;stroke-width:1}.flow{fill:none;stroke:#9bc270;stroke-width:2;marker-end:url(#arrow)}.read{fill:none;stroke:#7ccbd5;stroke-width:2;stroke-dasharray:7 5;marker-end:url(#bluearrow)}</style></defs>
+<rect width="1600" height="1200" fill="#0c1311"/>
+<rect x="50" y="48" width="52" height="52" rx="15" fill="#b8f37a"/><text x="64" y="83" font-size="35" font-weight="700" style="fill:#152211">r.</text>
+<text x="120" y="68" class="label">REPASO / SCHOOL COMMUNITY MEMORY</text><text x="120" y="106" font-size="34" font-weight="500">A conversation that leaves a usable learning record.</text>
+<text x="50" y="145" class="body">Implemented application path · AgentCore v13 live exchange verified 14 September 2026 · observer runs locally</text>
+
+<rect x="50" y="185" width="285" height="155" rx="15" class="box"/>
+<text x="72" y="214" class="label blue">THE FAMILY</text><text x="72" y="250" class="title">Telegram</text><text x="72" y="280" class="body">Material · questions · answers</text><text x="72" y="307" class="body">Requests for help · adult choices</text>
+<path d="M335 258H389" class="flow"/>
+
+<rect x="395" y="185" width="805" height="155" rx="15" class="box"/>
+<text x="421" y="214" class="label">ASYNC TRANSPORT / AWS</text><text x="421" y="253" class="title">HTTP webhook → EventBridge → SQS → Worker</text><text x="421" y="284" class="body">API Gateway + Lambda · queued work · dead-letter queues</text><text x="421" y="310" class="small">The worker resolves the runtime ARN through SSM and invokes AgentCore.</text>
+<path d="M797 340V384" class="flow"/>
+
+<rect x="1250" y="185" width="300" height="155" rx="15" class="box"/>
+<text x="1272" y="214" class="label">SCHEDULED WORK</text><text x="1272" y="251" class="title">Family schedule</text><text x="1272" y="282" class="body">EventBridge Scheduler</text><text x="1272" y="308" class="small">Scheduler Lambda → event bus</text>
+<path d="M1250 258H1205" class="flow"/>
+
+<rect x="395" y="390" width="805" height="325" rx="17" fill="#1a2b1d" stroke="#7eaa58" stroke-width="2"/>
+<text x="422" y="422" class="label green">AMAZON BEDROCK AGENTCORE RUNTIME</text><text x="422" y="458" class="title">Strands graphs + typed model calls</text>
+<rect x="421" y="480" width="360" height="68" rx="9" class="sub"/><text x="439" y="507" font-size="17" class="green">Ingestion</text><text x="439" y="532" class="small">Parse → screen → map → generate → validate</text>
+<rect x="799" y="480" width="374" height="68" rx="9" class="sub"/><text x="817" y="507" font-size="17" class="green">Practice</text><text x="817" y="532" class="small">Plan → compose</text>
+<rect x="421" y="562" width="360" height="68" rx="9" class="sub"/><text x="439" y="589" font-size="17" class="green">Response</text><text x="439" y="614" class="small">Grade → apply → adapt → escalate</text>
+<rect x="799" y="562" width="374" height="68" rx="9" class="sub"/><text x="817" y="589" font-size="17" class="green">Daily quality</text><text x="817" y="614" class="small">Verify → engagement → cohort → optimize</text>
+<text x="422" y="660" class="body">Help path: interpret turn → retrieve prior approaches → explain → remember</text>
+<text x="422" y="689" class="small">Deterministic controls: ownership · assessment · spacing · budgets · recovery · decisions</text>
+
+<rect x="1250" y="425" width="300" height="235" rx="15" class="box"/>
+<text x="1272" y="456" class="label">INFERENCE + DOCUMENTS</text><text x="1272" y="493" class="title">Amazon Bedrock</text><text x="1272" y="524" class="body">Role-specific model selection</text><text x="1272" y="551" class="body">Input / output guardrails</text><path d="M1272 569H1526" stroke="#354b32"/><text x="1272" y="599" class="title">Amazon Textract</text><text x="1272" y="631" class="body">Supported printed material</text>
+<path d="M1200 532H1245" class="flow"/>
+
+<rect x="50" y="500" width="285" height="165" rx="15" class="box"/>
+<text x="72" y="530" class="label">RECOVERABLE DELIVERY</text><text x="72" y="567" class="title">Pending outbox</text><text x="72" y="598" class="body">Send → retain acknowledgement</text><text x="72" y="631" class="small">At least once; a retry can duplicate</text><text x="72" y="649" class="small">a message if its receipt was lost.</text>
+<path d="M395 580H340" class="flow"/><path d="M192 500V346" class="flow"/>
+<text x="207" y="420" class="small green">reply</text>
+
+<rect x="395" y="770" width="435" height="140" rx="15" class="box"/>
+<text x="419" y="799" class="label">FAMILY-SCOPED PERSISTENCE</text><text x="419" y="835" class="title">DynamoDB</text><text x="419" y="865" class="body">Notes · assessments · mastery · review dates</text><text x="419" y="891" class="small">Human decisions · operation records · outbox receipts</text>
+<path d="M612 715V765" class="flow"/>
+<rect x="860" y="770" width="340" height="140" rx="15" class="box"/>
+<text x="883" y="799" class="label">MATERIAL STORAGE</text><text x="883" y="835" class="title">Amazon S3</text><text x="883" y="865" class="body">Uploaded material · curriculum</text><text x="883" y="891" class="small">Encrypted storage · scoped material access</text>
+<path d="M1030 715V765" class="flow"/>
+<rect x="1250" y="770" width="300" height="140" rx="15" class="box"/>
+<text x="1272" y="799" class="label">INSTRUMENTED EVIDENCE</text><text x="1272" y="835" class="title">CloudWatch</text><text x="1272" y="865" class="body">Correlated application events</text><text x="1272" y="891" class="small">Model calls · retrieval · delivery</text>
+<path d="M1173 715V740H1400V765" class="flow"/>
+
+<rect x="50" y="790" width="285" height="120" rx="12" fill="#142021" stroke="#355359"/>
+<text x="72" y="822" class="label blue">HUMAN IN CONTROL</text><text x="72" y="855" class="body">Review uncertain answers.</text><text x="72" y="881" class="body">Choose the next intervention.</text>
+
+<rect x="395" y="990" width="1155" height="150" rx="17" fill="#142326" stroke="#629ca3" stroke-width="1.8"/>
+<text x="423" y="1022" class="label blue">SEPARATE READ-ONLY OBSERVER / LOCAL FASTAPI + BROWSER</text><text x="423" y="1058" class="title">School Community Memory</text><text x="423" y="1088" class="body">Family dashboard → learner / topic / day → retained conversation + agent memory + learning evidence</text><text x="423" y="1116" class="small">Explicit family allowlist · verified record/event links · Live / Replay · gaps and current totals labeled</text>
+<path d="M612 910V984" class="read"/><path d="M1400 910V984" class="read"/>
+<text x="628" y="953" class="small blue">read stored state</text><text x="1220" y="953" class="small blue">read correlated events</text>
+<text x="50" y="1176" class="small">Application learning memory is stored in DynamoDB. The separate AgentCore Memory service is not provisioned. A stored review date is not a delivery receipt.</text>
 </svg>

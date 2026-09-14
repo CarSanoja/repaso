@@ -336,3 +336,37 @@ def test_tomorrow_the_practice_opens_again(settings):
     services.clock.advance(days=1)
 
     assert start_sitting(services, family, student, EQUIVALENCE_TOPIC).session is not None
+
+
+def test_copies_of_one_question_are_not_offered_as_three_different_exercises(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    for key in ["copy-a", "copy-b", "copy-c"]:
+        services.store.put_item(make_item(key, family_id=family.id, stem="¿Cuál equivale a 1/2?"))
+    reply = start_sitting(services, family, student, EQUIVALENCE_TOPIC)
+    assert reply.session.budget.questions == 1
+    assert "foto" in texts(reply)
+    done = answer(
+        services, family, student, reply, current_item(services, reply.session).answer_key
+    )
+    assert done.session.status is StudySessionStatus.CLOSED
+    assert done.session.progress.correct == 1
+
+
+def test_a_copy_of_an_answered_question_cannot_reappear_under_a_new_id(settings):
+    services = make_services(settings)
+    family, student = seed_family(services.store)
+    for key in ["a", "b", "c"]:
+        services.store.put_item(
+            make_item(key, family_id=family.id, difficulty=1, stem="¿Cuál equivale a 1/2?")
+        )
+    other = make_item("other", family_id=family.id, stem="¿Cuál equivale a 2/3?", difficulty=2)
+    services.store.put_item(other)
+    opened = start_sitting(services, family, student, EQUIVALENCE_TOPIC)
+    assert opened.session.budget.questions == 2
+    first = current_item(services, opened.session)
+    after = answer(services, family, student, opened, first.answer_key)
+    assert current_item(services, after.session).id == other.id
+    done = answer(services, family, student, after, other.answer_key)
+    assert done.session.status is StudySessionStatus.CLOSED
+    assert done.session.progress.correct == 2
