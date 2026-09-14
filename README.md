@@ -8,7 +8,7 @@ Built for the **Good Neighbor Agents** track with the **Strands Agents SDK** and
 
 **Contributing back to Strands:** this project led to two upstream bug-fix pull requests: [model ID telemetry through the public model configuration API](https://github.com/strands-agents/harness-sdk/pull/4207) and [custom model streaming signatures aligned with runtime arguments](https://github.com/strands-agents/harness-sdk/pull/4208). Both include regression tests; both were **open, not merged**, when verified on September 14, 2026. [Contribution evidence](docs/submission/upstream-contributions.md).
 
-[Try it locally](#try-it-locally) · [Five-minute judging guide](docs/submission/judging.md) · [Published Builder Center story](https://builder.aws.com/content/3JL6ZEQTNgN6UIDQBfmjuHqjxoN/agents-for-humans-school-community-memory-with-repaso) · [Architecture](#architecture) · [Live evidence](docs/submission/memory-live-check-2026-09-14.md) · [Deployment](deploy/README.md) · [MIT license](LICENSE)
+[Open the hosted demo](https://mwn2zjxcm2sz7jtrpj3y6ttblq0svgru.lambda-url.us-east-1.on.aws/judge/memory/) · [Try it locally](#try-it-locally) · [Five-minute judging guide](docs/submission/judging.md) · [Published Builder Center story](https://builder.aws.com/content/3JL6ZEQTNgN6UIDQBfmjuHqjxoN/agents-for-humans-school-community-memory-with-repaso) · [Architecture](#architecture) · [Live evidence](docs/submission/memory-live-check-2026-09-14.md) · [Deployment](deploy/README.md) · [MIT license](LICENSE)
 
 ## See the memory at work
 
@@ -42,6 +42,12 @@ Those three earlier assessments repeated the same question content. The interfac
 | Automated tests | Application behavior, recovery and isolation under their stated test substitutions |
 
 Neither the developer-operated Telegram trial nor the synthetic demonstrations are a family pilot, teacher evaluation or measurement of educational impact.
+
+## Try the hosted demo
+
+Open **[School Community Memory](https://mwn2zjxcm2sz7jtrpj3y6ttblq0svgru.lambda-url.us-east-1.on.aws/judge/memory/)** and enter **`REPASO-LIVE`**. Follow **Ask for help → Explain another way → Answer → Choose less practice**; use **Reset demo** to restart.
+
+This dedicated AWS Lambda demo uses synthetic learners, scripted model replies and isolated temporary storage. It sends no Telegram messages and reads no production family data. Each browser has its own state; a cold start or cache eviction can reset it. The separate real Telegram and AgentCore evidence is documented above.
 
 ## Try it locally
 
