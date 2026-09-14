@@ -140,7 +140,12 @@ async def page() -> FileResponse:
 
 @router.get("/assets/{name}")
 async def asset(name: str) -> FileResponse:
-    allowed = {"judge.css": "text/css", "judge.js": "application/javascript"}
-    if name not in allowed:
+    assets = {
+        "judge.css": (STATIC_DIR / "judge.css", "text/css"),
+        "judge.js": (STATIC_DIR / "judge.js", "application/javascript"),
+    }
+    selected = assets.get(name)
+    if selected is None:
         raise HTTPException(status_code=404)
-    return FileResponse(STATIC_DIR / name, media_type=allowed[name])
+    path, media_type = selected
+    return FileResponse(path, media_type=media_type)

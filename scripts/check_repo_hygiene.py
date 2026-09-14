@@ -81,7 +81,8 @@ def scan_text(label: str, text: str) -> list[str]:
     return problems
 
 
-def check_secrets(files: list[str], root: Path) -> list[str]:
+def content_findings(files: list[str], root: Path) -> list[str]:
+    """Return diagnostic locations and rule labels, never matched credential values."""
     problems = []
     for path in files:
         if not scannable(path):
@@ -177,7 +178,7 @@ def main(every_ref: bool = False) -> int:
     files = tracked_files()
     blobs = history_blobs(every_ref)
     history = check_history(every_ref)
-    problems = check_paths(files) + check_secrets(files, root) + check_gitignore(root) + history
+    problems = check_paths(files) + content_findings(files, root) + check_gitignore(root) + history
     if problems:
         print(f"repo hygiene: {len(problems)} problem(s)", file=sys.stderr)
         for problem in problems:

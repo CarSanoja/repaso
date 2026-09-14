@@ -171,6 +171,12 @@ async def test_judge_page_is_served(client):
     assert asset.status_code == 200 and "X-Judge-Code" in asset.text
 
 
+@pytest.mark.parametrize("name", [".env", "README.md", "..%2Fjudge.py", "%2Fetc%2Fpasswd"])
+async def test_judge_assets_do_not_resolve_request_names_as_filesystem_paths(client, name):
+    response = await client.get(f"/judge/assets/{name}")
+    assert response.status_code == 404
+
+
 @pytest.mark.parametrize("decision,count", [("teacher_note", 3), ("reduce_load", 1)])
 async def test_complete_judge_run_is_isolated_and_keeps_rejected_material_visible_as_rejected(
     client, container, decision, count
