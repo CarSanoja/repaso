@@ -15,6 +15,7 @@ from the final video and Devpost form, which remain separate submission steps.
 | Artifact | Purpose | State |
 | --- | --- | --- |
 | [Project description](project-description.md) | English Good Neighbor Agents submission copy | Ready for the submission form |
+| [Devpost fields](devpost-fields.txt) | Testing instructions, elevator pitch, project story and build tags | Copy-ready text; the account email is supplied privately |
 | [Judging guide](judging.md) | Local test build with no AWS credentials or Telegram token | Complete journeys and explicit replay labels |
 | [Episode recording runbook](episode-demo-runbook.md) | Dashboard, three-column episode, live/replay and recording sequence | Implemented and browser tested |
 | [Memory demonstration](memory-demo-runbook.md) | Help, retrieval, evaluation and adult follow-through | Real Telegram evidence and synthetic rehearsal distinguished |

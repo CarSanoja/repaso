@@ -1,0 +1,78 @@
+1. AWS Builder ID
+
+[Provided separately from the authenticated AWS Builder profile; do not commit account email]
+
+2. Testing instructions
+
+Public source: https://github.com/CarSanoja/repaso
+
+Use Python 3.12 or newer. The local demonstrations need no AWS credentials, Telegram token or paid model calls. Install the test build:
+
+```bash
+git clone https://github.com/CarSanoja/repaso.git
+cd repaso
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -c requirements.lock -e ".[dev]"
+python scripts/run_memory_observer.py --rehearsal --port 8870
+```
+
+Open http://127.0.0.1:8870/judge/memory/ and enter REPASO-VIEW.
+
+Follow the four controls in order:
+1. Ask for help, then open the learning episode.
+2. Explain another way. Inspect the previous approach and newly saved approach. The assessed count remains zero.
+3. Answer. Inspect the evaluated result, distinct content and difficulty evidence.
+4. Choose less practice. Inspect the saved adult decision and next scheduled practice containing one question.
+
+Return to the family dashboard, select a learner, topic and day, then follow its episode. Try Replay and Verify saved memory. This rehearsal uses synthetic learners, scripted model replies, local delivery and an explicitly advanced clock. It sends no Telegram messages and resets when stopped.
+
+Alternative: run `python scripts/run_judge_demo.py`, open http://127.0.0.1:8766/judge/ and enter REPASO-DEMO. Compare the teacher-note and reduced-practice scenarios. These local addresses run on your computer. The submitted video and dated evidence document the separate real Telegram interaction on AWS. Full instructions: docs/submission/judging.md.
+
+3. Elevator pitch
+
+School Community Memory turns schoolwork into Telegram practice, remembers what each learner tried, and connects families to evidence, human decisions and the next useful step.
+
+4. About the project
+
+## Inspiration
+
+Community learning support depends on someone remembering what happened between meetings. UNICEF's end-2025 Venezuela report estimated 2.7 million children needing educational support and 1.5 million out of school. Its education response required US$23.7 million, with a 77% funding gap. These describe the humanitarian context, not savings or beneficiaries attributable to this project. [UNICEF report, pages 6 and 16](https://www.unicef.org/media/178481/file/Venezuela-Humanitarian-SitRep-No.2-(End-of-Year),-31-December-2025.pdf.pdf).
+
+A historical UNICEF account described facilitators following 25 children each in Zulia through visits and messaging where available. That inspired our Good Neighbor Agents proposal: help a community facilitator maintain continuity with families between meetings. [UNICEF field account](https://www.unicef.org/venezuela/en/stories/education-cannot-wait-programme-doesnt-stop-during-quarantine). No partnership with UNICEF, a school or an NGO is established.
+
+## What it does
+
+Repaso, presented as School Community Memory, turns supported printed fourth-grade mathematics material into short Telegram practice. It reviews generated questions, schedules practice, evaluates answers and retains the explanation approaches already tried. Human decisions can change the next practice.
+
+The dashboard connects daily activity, learner and topic evidence, stored review dates and adult decisions. Opening an episode reveals three synchronized views: retained conversation, recorded agent actions and memory, and learning evidence. Selecting a message shows what was retrieved, what changed and what was saved. Distinct question content is separate from repeated attempts.
+
+## How we built it
+
+Four Strands Agents graphs coordinate material ingestion, session planning, responses and daily quality review. Amazon Bedrock provides inference; the Telegram worker invokes deployed Amazon Bedrock AgentCore Runtime. DynamoDB stores family-scoped application memory, assessed outcomes, operations and delivery receipts. This uses application memory rather than the separate AgentCore Memory service.
+
+Typed schemas and deterministic application rules control ownership, grading updates, budgets and state transitions. FastAPI and a JavaScript interface project stored records into linked episodes and timezone-aware history. Event identifiers connect replies, memory and transport evidence.
+
+## Challenges we ran into
+
+A guardrail blocked our own explanation template. Separating application instructions from structured lesson data restored explanations while keeping the filters active. Different item IDs also concealed repeated question content, so practice selection gained content-level deduplication.
+
+We needed an honest reconstruction: retained excerpts can be incomplete, delayed logs can be missing, and a transport acknowledgement does not mean someone read a message. Replay therefore identifies recorded turns and labels topic totals as current state.
+
+## Accomplishments that we're proud of
+
+Building Repaso led to two upstream Strands bug-fix PRs with regression coverage: [model identity in telemetry, #4207](https://github.com/strands-agents/harness-sdk/pull/4207), and [streaming interface compatibility, #4208](https://github.com/strands-agents/harness-sdk/pull/4208). Both remain open for review.
+
+In the real Telegram trial, Repaso retrieved a cake explanation, offered a paper-folding example and saved the new approach. Two successful help requests left the assessed count at three. AWS records connected the actual replies to retrieval, memory and delivery. A separate labeled local rehearsal verified that an adult's reduced-workload choice changed the next capsule.
+
+## What we learned
+
+Memory becomes useful when it changes a later action and a person can inspect why. Asking for help must remain distinct from answering incorrectly. Our three earlier assessments repeated one question, so they do not demonstrate learning improvement. One observed day is a starting point, not a progress study.
+
+## What's next for SCHOOL COMMUNITY MEMORY
+
+The demonstrated access model is family scoped. Next steps are coordinator permissions, school roster integration, a teacher-to-family approval workflow and a consented community pilot. We would measure time spent on follow-up, performance on distinct questions and whether human decisions receive the intended follow-through. Learning gains, staff time savings and recursive self-improvement are not claimed.
+
+5. Built with
+
+Strands Agents, Amazon Bedrock, Amazon Bedrock AgentCore, Python, FastAPI, Telegram, Amazon DynamoDB, Amazon EventBridge, Amazon SQS, AWS Lambda, Amazon API Gateway, Amazon S3, Amazon Textract, Amazon CloudWatch, AWS CDK, Docker, JavaScript, HTML, CSS, Pydantic
