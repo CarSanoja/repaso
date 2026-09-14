@@ -42,7 +42,7 @@ python scripts/run_memory_observer.py --profile YOUR_PROFILE --region us-east-1 
 
 This binds to loopback and reads the deployment; it is not a public hosted URL.
 The initial log lookback defaults to 24 hours and can be changed with
-`--history-minutes` (1–10080). Missing log links remain labeled as missing.
+`--history-minutes` (1-10080). Missing log links remain labeled as missing.
 See the [episode runbook](../docs/submission/episode-demo-runbook.md) and
 [deployment guide](../deploy/README.md) for prerequisites and evidence boundaries.
 

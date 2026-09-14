@@ -102,17 +102,17 @@ No usar `/listo` antes de enseñar las frases retenidas: cerrar la ventana borra
 el texto `said` por diseño. Las notas expiran a los siete días; no son memoria
 ilimitada. El contador de explicaciones refleja notas retenidas.
 
-## Montaje de 2:30–3:00
+## Montaje de 2:30-3:00
 
-- **0:00–0:20:** un facilitador comunitario y el problema de acompañar a varias
+- **0:00-0:20:** un facilitador comunitario y el problema de acompañar a varias
   familias. Usar una cifra con fuente, fecha y población, tomadas del dossier.
-- **0:20–0:40:** Telegram junto al observador; indicar que el material está preparado.
-- **0:40–1:25:** ayuda → memoria → otro enfoque. Mantener visible el contador base
+- **0:20-0:40:** Telegram junto al observador; indicar que el material está preparado.
+- **0:40-1:25:** ayuda → memoria → otro enfoque. Mantener visible el contador base
   (3 en la prueba AWS del 14 de septiembre; 0 en un ensayo nuevo).
-- **1:25–1:45:** respuesta → contador base + 1. Acercar el encuadre a la evidencia.
-- **1:45–2:20:** decisión adulta → plan más ligero. Identificar el historial
+- **1:25-1:45:** respuesta → contador base + 1. Acercar el encuadre a la evidencia.
+- **1:45-2:20:** decisión adulta → plan más ligero. Identificar el historial
   preparado y cualquier salto de reloj o segmento de ensayo.
-- **2:20–2:40:** nueva lectura y cierre: “A conversation becomes a next step.”
+- **2:20-2:40:** nueva lectura y cierre: “A conversation becomes a next step.”
 
 La interfaz está en inglés; Telegram puede estar en español con subtítulos en
 inglés. Evitar enumerar infraestructura durante la escena humana. Abrir un solo

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Repaso - School Community Memory</title>
+<desc id="desc">Conceptual cover showing three linked panels: conversation, agent and memory, and learning evidence. One request. A remembered approach. A visible next step. Built with Strands Agents and Amazon Bedrock AgentCore. This is an illustration, not a product screenshot or measured result.</desc>
+<defs>
+<linearGradient id="background" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#09100e"/><stop offset="1" stop-color="#1b2b1c"/></linearGradient>
+<linearGradient id="panel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1d2c21"/><stop offset="1" stop-color="#101a15"/></linearGradient>
+<linearGradient id="memory" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#344c29"/><stop offset="1" stop-color="#1b2d1a"/></linearGradient>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#b8f37a"/></marker>
+<style>text{font-family:Arial,Helvetica,sans-serif}.white{fill:#ecf4e8}.muted{fill:#adbdac}.lime{fill:#b8f37a}.label{font-size:12px;letter-spacing:2px;font-weight:600}.body{font-size:16px}.line{fill:none;stroke:#57704c;stroke-width:2;stroke-linecap:round}</style>
+</defs>
+<rect width="1200" height="675" fill="url(#background)"/>
+<g fill="none" stroke="#b8f37a" stroke-opacity=".07"><circle cx="1126" cy="68" r="176"/><circle cx="1126" cy="68" r="222"/><circle cx="1126" cy="68" r="270"/></g>
+<rect x="55" y="45" width="53" height="53" rx="16" fill="#b8f37a"/><text x="69" y="82" font-size="38" font-weight="700" fill="#152111">r.</text>
+<text x="125" y="80" class="white" font-size="31" font-weight="700" letter-spacing="-1">repaso</text><path d="M251 56V86" stroke="#44563d"/><text x="273" y="76" class="label muted">AN AGENT FOR LEARNING CONTINUITY</text>
+<text x="55" y="164" class="white" font-size="53" font-weight="600" letter-spacing="-2">School Community Memory</text>
+<text x="58" y="209" class="muted" font-size="22">One request. A remembered approach. A visible next step.</text>
+
+<rect x="55" y="261" width="326" height="291" rx="18" fill="url(#panel)" stroke="#405039"/>
+<rect x="437" y="261" width="326" height="291" rx="18" fill="url(#memory)" stroke="#819f61"/>
+<rect x="819" y="261" width="326" height="291" rx="18" fill="url(#panel)" stroke="#405039"/>
+<text x="80" y="297" class="label muted">01</text><text x="113" y="297" class="white" font-size="18" font-weight="600">Conversation</text>
+<text x="462" y="297" class="label lime">02</text><text x="497" y="297" class="white" font-size="18" font-weight="600">Agent + Memory</text>
+<text x="844" y="297" class="label muted">03</text><text x="879" y="297" class="white" font-size="18" font-weight="600">Learning evidence</text>
+<path d="M79 316H356M461 316H738M843 316H1120" stroke="#41553b"/>
+
+<rect x="139" y="339" width="218" height="61" rx="12" fill="#36502d"/><path d="M339 386L357 406V383Z" fill="#36502d"/><text x="156" y="364" class="lime" font-size="10" letter-spacing="1.5">LEARNER</text><text x="156" y="386" class="white" font-size="17">“Another example?”</text>
+<rect x="80" y="419" width="220" height="79" rx="12" fill="#20312c"/><path d="M80 478V506L98 487Z" fill="#20312c"/><text x="97" y="444" fill="#85c6c5" font-size="10" letter-spacing="1.5">REPASO</text><path d="M98 462H277M98 479H237" stroke="#7a9885" stroke-width="6" stroke-linecap="round"/>
+<text x="81" y="530" class="muted" font-size="12">A familiar place to ask for help.</text>
+
+<rect x="463" y="338" width="274" height="58" rx="10" fill="#1d2d1c" stroke="#637c4e"/><circle cx="485" cy="367" r="7" fill="none" stroke="#9abe73" stroke-width="2"/><text x="505" y="372" class="white" font-size="16">Retrieve the prior approach</text>
+<path d="M600 401V421" stroke="#b8f37a" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="463" y="430" width="274" height="68" rx="10" fill="#b8f37a"/><path d="M480 463L486 469L498 454" fill="none" stroke="#243b19" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><text x="512" y="457" fill="#1e3214" font-size="16" font-weight="600">Offer another way.</text><text x="512" y="481" fill="#345026" font-size="14">Remember it for next time.</text>
+<text x="463" y="530" class="muted" font-size="12">An explanation with a past.</text>
+
+<g transform="translate(844 345)"><rect width="275" height="46" rx="9" fill="#19261c"/><circle cx="21" cy="23" r="5" fill="#b8f37a"/><text x="40" y="29" class="white" font-size="16">Attempts and distinct content</text></g>
+<g transform="translate(844 401)"><rect width="275" height="46" rx="9" fill="#19261c"/><circle cx="21" cy="23" r="5" fill="#85c6c5"/><text x="40" y="29" class="white" font-size="16">Recorded learning evidence</text></g>
+<g transform="translate(844 457)"><rect width="275" height="46" rx="9" fill="#19261c"/><circle cx="21" cy="23" r="5" fill="#b8f37a"/><text x="40" y="29" class="white" font-size="16">A next step adults can inspect</text></g>
+<text x="845" y="530" class="muted" font-size="12">The record behind the response.</text>
+
+<path d="M389 409H426" stroke="#b8f37a" stroke-width="2" marker-end="url(#arrow)"/><path d="M771 409H808" stroke="#b8f37a" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M56 590H1144" stroke="#35442f"/>
+<text x="57" y="627" class="muted" font-size="16">Built with <tspan fill="#ecf4e8" font-weight="600">Strands Agents</tspan> + <tspan fill="#ecf4e8" font-weight="600">Amazon Bedrock AgentCore</tspan></text>
+<text x="1144" y="627" class="lime" font-size="12" letter-spacing="1.7" text-anchor="end">GOOD NEIGHBOR AGENTS</text>
+</svg>

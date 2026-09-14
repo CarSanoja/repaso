@@ -11,7 +11,7 @@ refiere a esa entrega. La validación de producción y un piloto con familias so
 trabajos distintos y no deben convertirse en requisitos inventados del concurso.
 
 La dirección elegida para desarrollar el pitch es **Good Neighbor Agents**:
-comunicación escuela–familias y seguimiento de un grupo de aprendizaje, con
+comunicación escuela-familias y seguimiento de un grupo de aprendizaje, con
 memoria persistente de lo ocurrido, las decisiones humanas y sus consecuencias.
 
 El usuario manejará Telegram. El asistente preparará la segunda pantalla y las
@@ -56,7 +56,7 @@ realizado una revisión exhaustiva de competidores ni se afirma exclusividad.
 | Banco de memoria y trazabilidad | Evidencia persistente y causa de cada cambio | Hay que mostrar una consecuencia útil, no solo almacenamiento |
 | Refuerzo para quienes no pueden pagar clases | Motivación de acceso y costo medible | Falta una cifra local verificable de asequibilidad y una comparación equivalente con tutorías |
 | Continuidad para niños fuera de la escuela | Necesidad documentada y rol del facilitador | La versión actual requiere conexión, adulto y material; no reemplaza la escuela |
-| Escuela/comunidad–familias con seguimiento | Grupo, decisiones humanas y memoria con consecuencias | Requiere completar el acceso y la intervención del coordinador |
+| Escuela/comunidad-familias con seguimiento | Grupo, decisiones humanas y memoria con consecuencias | Requiere completar el acceso y la intervención del coordinador |
 
 La recomendación concreta está en [good-neighbor-case.md](good-neighbor-case.md):
 un pequeño grupo de recuperación de aprendizajes con un facilitador, comenzando
@@ -186,7 +186,7 @@ Todos son propuestas de pitch, sujetos a lo que finalmente funcione en la demo.
 the people helping a community learn.
 
 **Product promise:** Repaso connects school material, practice at home, and the
-next human intervention—so each decision has evidence and every next step can
+next human intervention-so each decision has evidence and every next step can
 be followed through.
 
 **Opening:** A facilitator can support a whole group of children. Keeping track
@@ -198,7 +198,7 @@ that observation change what happens next.
 
 **Closing:** The conversation ends. The next step stays on record.
 
-La duración propuesta será de 2–3 minutos si permite mostrar el ciclo completo.
+La duración propuesta será de 2-3 minutos si permite mostrar el ciclo completo.
 No sacrificar la prueba de funcionamiento para cumplir una duración arbitraria.
 El guion de pantallas y los requisitos técnicos están en
 [live-memory-demo.md](live-memory-demo.md).

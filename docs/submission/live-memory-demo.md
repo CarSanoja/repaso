@@ -31,20 +31,20 @@ Una selección de familia debe controlar toda la vista. El espectador debe poder
 relacionar lo que escribió con lo que cambió sin leer JSON ni identificadores
 largos. El detalle técnico conserva los identificadores necesarios para auditar.
 
-## Secuencia sugerida: 2–3 minutos
+## Secuencia sugerida: 2-3 minutos
 
 Los tiempos son editoriales, no objetivos de latencia ni mediciones del producto.
 Las salidas del modelo se observarán; no se promete un texto exacto.
 
 | Momento | Acción | Memoria / evento que queremos observar | Afirmación defendible |
 | --- | --- | --- | --- |
-| 0:00–0:20 | Presentar al facilitador y su grupo sintético | Estado inicial y una fuente del problema | Caso inspirado en un trabajo comunitario documentado |
-| 0:20–0:45 | Enviar una hoja o abrir una práctica ya preparada, claramente indicado | Material revisado y sesión existente | La práctica tiene un origen identificable |
-| 0:45–1:10 | Escribir «No entiendo, explícamelo de otra forma» en una sesión abierta | Intención de pedir explicación; explicación registrada; intentos evaluados sin aumentar | Pedir ayuda conserva su significado y no se convierte en una respuesta incorrecta |
-| 1:10–1:35 | Responder al ejercicio | Resultado o revisión pendiente, episodio/turno y progreso aplicables a esta ruta | La observación se conserva con su contexto |
-| 1:35–2:05 | Abrir una dificultad compartida de tres familias sintéticas | Evidencia por caso, con fechas; historia preparada identificada | Un facilitador puede inspeccionar una necesidad del grupo |
-| 2:05–2:35 | Revisar y confirmar una intervención que esté implementada | Decisión persistida y efecto real en la familia | La decisión humana modifica el siguiente paso |
-| 2:35–3:00 | Mostrar la nueva práctica o el envío y refrescar la vista | Cambio leído de almacenamiento y estado de entrega | El resultado persiste fuera del chat |
+| 0:00-0:20 | Presentar al facilitador y su grupo sintético | Estado inicial y una fuente del problema | Caso inspirado en un trabajo comunitario documentado |
+| 0:20-0:45 | Enviar una hoja o abrir una práctica ya preparada, claramente indicado | Material revisado y sesión existente | La práctica tiene un origen identificable |
+| 0:45-1:10 | Escribir «No entiendo, explícamelo de otra forma» en una sesión abierta | Intención de pedir explicación; explicación registrada; intentos evaluados sin aumentar | Pedir ayuda conserva su significado y no se convierte en una respuesta incorrecta |
+| 1:10-1:35 | Responder al ejercicio | Resultado o revisión pendiente, episodio/turno y progreso aplicables a esta ruta | La observación se conserva con su contexto |
+| 1:35-2:05 | Abrir una dificultad compartida de tres familias sintéticas | Evidencia por caso, con fechas; historia preparada identificada | Un facilitador puede inspeccionar una necesidad del grupo |
+| 2:05-2:35 | Revisar y confirmar una intervención que esté implementada | Decisión persistida y efecto real en la familia | La decisión humana modifica el siguiente paso |
+| 2:35-3:00 | Mostrar la nueva práctica o el envío y refrescar la vista | Cambio leído de almacenamiento y estado de entrega | El resultado persiste fuera del chat |
 
 Si la intervención del coordinador no está terminada, mostrar la decisión adulta
 que sí existe y declarar ese alcance. No simular un botón docente que no ejecuta

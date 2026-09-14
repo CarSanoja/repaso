@@ -1,4 +1,4 @@
-# Repaso — School Community Memory
+# Repaso - School Community Memory
 
 **A learner should not have to start from zero every time they ask for help.**
 
@@ -8,7 +8,7 @@ Built for the **Good Neighbor Agents** track with the **Strands Agents SDK** and
 
 **Contributing back to Strands:** this project led to two upstream bug-fix pull requests: [model ID telemetry through the public model configuration API](https://github.com/strands-agents/harness-sdk/pull/4207) and [custom model streaming signatures aligned with runtime arguments](https://github.com/strands-agents/harness-sdk/pull/4208). Both include regression tests; both were **open, not merged**, when verified on September 14, 2026. [Contribution evidence](docs/submission/upstream-contributions.md).
 
-[Try it locally](#try-it-locally) · [Five-minute judging guide](docs/submission/judging.md) · [Architecture](#architecture) · [Live evidence](docs/submission/memory-live-check-2026-09-14.md) · [Deployment](deploy/README.md) · [MIT license](LICENSE)
+[Try it locally](#try-it-locally) · [Five-minute judging guide](docs/submission/judging.md) · [Published Builder Center story](https://builder.aws.com/content/3JL6ZEQTNgN6UIDQBfmjuHqjxoN/agents-for-humans-school-community-memory-with-repaso) · [Architecture](#architecture) · [Live evidence](docs/submission/memory-live-check-2026-09-14.md) · [Deployment](deploy/README.md) · [MIT license](LICENSE)
 
 ## See the memory at work
 

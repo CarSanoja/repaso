@@ -1,75 +1,103 @@
-# Release record
+# Release record - September 14, 2026
 
-Two lists. The first is finished inside the repository and can be checked by
-anyone with a checkout. The second cannot be finished from a checkout at all: it
-needs an account, a deployment, a person or a decision. Nothing in the second
-list is ticked because a local file exists.
+The product release is public and merged. The final video and Devpost submission
+remain separate delivery steps. This record distinguishes published source,
+verified execution and submission items that still need a public link or receipt.
 
-## Finished in the repository
+## Public source and release validation
 
-| Item | Where it is, and what it printed |
+| Item | Verified state |
 | --- | --- |
-| Both adult decisions run end to end and change the next session | `scripts/run_demo_scenario.py`; 24 of 24 and 23 of 23 beats as expected |
-| A judge can see the product with no account and no keys | [`judging.md`](judging.md); `scripts/run_judge_demo.py` |
-| Offline gate | `1518 passed, 83 skipped` on the `[dev]` extra, `1642 passed, 56 skipped` with `[deploy]`; `ruff check .` clean; `check_repo_hygiene.py` clean |
-| Evidence register with an explicit claim-boundaries section | [`../evidence/README.md`](../evidence/README.md) |
-| Fourteen-day continuity under nine scenario gates | [`clock-14-days.json`](../evidence/clock-14-days.json); 420 sessions, 1,037 responses |
-| Real Amazon Textract on a new printed Spanish page | [`live-ocr.json`](../evidence/live-ocr.json); confidence 0.9957 |
-| Every configured model answers and fills its schema | [`live-conformance-2026-09-12.json`](../evidence/live-conformance-2026-09-12.json); 27 of 27 across all four model ids, and [`live-conformance-routing-2026-09-12.json`](../evidence/live-conformance-routing-2026-09-12.json); 45 of 45 on the routing that ships |
-| Six stacks synthesize; both ARM64 images build and serve their routes | `infra/`; [`container-smoke.json`](../evidence/container-smoke.json) |
-| Deployment runbook, every command marked `[run]` or `[unverified]` | [`../../deploy/README.md`](../../deploy/README.md) |
-| Independent evaluation kit, labels deliberately blank | [`../../evaluation/README.md`](../../evaluation/README.md) |
-| Three-day family observation protocol, template empty | [`../pilot/README.md`](../pilot/README.md) |
-| Submission copy, three article drafts, narration and captions | this directory |
-| MIT license and declared dependencies | `LICENSE`, `pyproject.toml`, `requirements.lock` |
+| Public repository | [CarSanoja/repaso](https://github.com/CarSanoja/repaso), public, with MIT license |
+| Product release | [PR #8](https://github.com/CarSanoja/repaso/pull/8) merged September 14 at 23:25:06 UTC |
+| Released commit | [`e04f7ff6d5cdc088b7c707a51fd006e9e5dd6fb6`](https://github.com/CarSanoja/repaso/commit/e04f7ff6d5cdc088b7c707a51fd006e9e5dd6fb6); GitHub reports a valid verified signature |
+| Security follow-up | [PR #9](https://github.com/CarSanoja/repaso/pull/9), commit [`119e8ca`](https://github.com/CarSanoja/repaso/commit/119e8ca39f2ed0d9ac01fb412a6f9bf7c4562ce2), merged at 23:34:42 UTC; constant asset paths and diagnostic-only hygiene output |
+| Local release suite | **2,134 passed, 66 skipped** |
+| Latest CI application suite | **2,011 passed, 93 skipped** after the security follow-up; environment-dependent skips are reported separately from local validation |
+| CI infrastructure suite | **128 passed** |
+| CI quality and security checks | Lint, hygiene, infrastructure, tests, analysis and CodeQL passed; [latest CI run](https://github.com/CarSanoja/repaso/actions/runs/34909231486) |
+| Installed distribution | Wheel built and installed; the two installed-package journeys passed **24/24** and **23/23** checks |
+| Dependency correction | Build dependency updated to `setuptools` 83 |
+| GitHub alerts | **0 open Dependabot, 0 open CodeQL/code-scanning and 0 open secret-scanning alerts**, checked after the default-branch analysis of `119e8ca`; both CodeQL findings automatically marked fixed at 23:35:41 UTC |
+| Documentation | README, MIT license, declared dependencies, architecture diagram, deployment guidance and judge instructions are present |
 
-The evidence register's own base points are the September 6 implementation
-commit `08826b26f8df5dbd3a125539666cbf7058f3f9cd` and evaluation commit
-`42d7096fe349a741ac174f6ec5e00513ec98ae03`. Both predate the deployment and
-judging work; the register says which of its rows were re-measured after them.
+The product commit above is the release reference, not a claim that the Devpost
+form has been submitted. Article, cover and final submission-document updates can
+follow in a separate pull request.
 
-## Submission handoff — checked September 14, 2026
+The first default-branch CodeQL analysis found two issues in existing judge
+tooling. PR #9 addressed both without dismissing or suppressing alerts. The
+subsequent default-branch analysis reported zero findings. Alert counts describe
+the observed scan state; they are not a guarantee that every possible flaw has
+been eliminated.
 
-| Item | State |
+## Main branch controls
+
+Changes to `main` require a pull request. The required approval count is **zero**
+for the solo-maintainer workflow; this does not mean an independent approval was
+received. Required status checks are `lint`, `test`, `infra`, `hygiene`, `analyze`
+and `CodeQL`, with strict up-to-date checking.
+
+Protection also applies to administrators. Verified signatures, linear history
+and resolved review conversations are required. Force pushes and branch deletion
+are disabled. Merged feature branches are deleted automatically.
+
+## Working product and retained evidence
+
+| Item | Verified state and evidence |
 | --- | --- |
-| Final submitted commit and source archive SHA-256 | Record when freezing the public submission |
-| Public repository, MIT license, anonymous access | `gh repo view` still reports `CarSanoja/repaso` private. MIT license exists; public source access remains pending. |
-| Deployed runtime | AgentCore version 13 is deployed. Two live Telegram explanations, memory retrieval and transport links verified; see the September 14 live record. |
-| Judge testing access | Loopback observer runs locally; not a public URL. A local test build and instructions exist in [`judging.md`](judging.md). Select and verify the testing path supplied in the form. |
-| Public video URL, at most five minutes, English or translated | No public video URL is recorded in the submission package. The existing MP4 is a local preview; record the current working interface and publish the final video. |
-| Builder ID email for submission | Owner supplies privately |
-| Primary category | Good Neighbor Agents: School Community Memory. Description updated to distinguish the implemented family/observer flow from proposed school integrations. |
-| Construction, provenance and individual eligibility | [`provenance.md`](provenance.md); owner verification pending |
-| Three Builder Center URLs | Drafts prepared; not published |
-| Availability operator through October 8 | Unassigned |
-| Live evidence | Real Telegram help → retrieval → different explanation → saved memory → delivery verified twice. A scheduled practice also ran with its own correlation. Additional runs are validation options, not invented contest requirements. |
-| Family pilot and independent teacher review | Not performed; both kits prepared and empty |
+| Deployed runtime | Amazon Bedrock AgentCore version 13 deployed; [live verification record](memory-live-check-2026-09-14.md) |
+| Real Telegram interaction | Two successful requests for explanations produced different retained approaches. The second retrieved the previous approach; AWS memory and delivery records were linked to the replies. |
+| Learning evidence boundary | The assessed count remained at three during those help requests. The earlier assessments repeated the same content; one day of activity does not establish learning improvement. |
+| School Community Memory interface | Family/learner/topic/day filters, daily and cumulative evidence, stored review dates and human decisions; linked conversation, memory and topic evidence; explicit Replay mode |
+| Browser verification | Dashboard and episode flows checked at desktop, divided-screen and mobile widths; source failure/recovery and retained-state rereads tested |
+| Adult decision follow-through | Separate local rehearsal verifies that reducing practice changes the next scheduled capsule. Its family, model responses, transport and clock are explicitly synthetic. |
+| Test build | [Judge instructions](judging.md) and [episode recording runbook](episode-demo-runbook.md); the loopback AWS observer is not a public hosted testing URL |
+| Educational impact | No family pilot, independently reviewed learning gain or measured staff time saving is claimed; [evaluation kit](../../evaluation/README.md) and [pilot protocol](../pilot/README.md) remain available for that next work |
 
-Before freezing: verify the official deadline and rules, run the candidate
-checks, record their outputs, open every public link in a signed-out browser and
-submit. Retain the exact submitted commit, archive, captions, video and form
-receipt.
+Earlier evidence remains useful with its original dates and conditions:
+[Textract check](../evidence/live-ocr.json),
+[September 12 model conformance](../evidence/live-conformance-2026-09-12.json),
+[container smoke checks](../evidence/container-smoke.json), and the
+[evidence register](../evidence/README.md). Historical test totals and synthetic
+scenarios are not substituted for the release checks above.
 
-Official sources: [submission requirements](https://agentsforhumans.devpost.com/),
-[rules](https://agentsforhumans.devpost.com/rules),
-[FAQ](https://agentsforhumans.devpost.com/details/faqs). The September 6 review
-recorded September 14, 17:00 PDT / 20:00 Caracas as the deadline, and free judge
-access through October 8.
+## Submission handoff
 
+| Item | Current state |
+| --- | --- |
+| Primary category | **Good Neighbor Agents - School Community Memory**; the community facilitator use case is proposed, while the demonstrated access model remains family scoped |
+| Public code URL | Ready: [github.com/CarSanoja/repaso](https://github.com/CarSanoja/repaso) |
+| README and architecture | Ready in the public repository; [architecture diagram](../media/architecture.svg) |
+| Video narration | Ready: [annotated recording script](video-script.txt), [narration only for ElevenLabs](video-narration.txt), and [formatted script with sources](video-script.md); 519 spoken words, target 4:20 |
+| Final video | The owner is generating it. **Public YouTube/Vimeo URL pending.** Confirm final duration is at most five minutes and the English narration matches the recorded evidence. |
+| Builder Center article | **Published:** [Agents for Humans: School Community Memory with Repaso](https://builder.aws.com/content/3JL6ZEQTNgN6UIDQBfmjuHqjxoN/agents-for-humans-school-community-memory-with-repaso). [Article source](builder-post.md) retains its architecture link and literal hashtags. |
+| Judge testing access | Supply the verified test-build instructions or an available project-access path in the form. Do not present `127.0.0.1` as a remotely accessible service. |
+| AWS Builder ID and eligibility | Owner supplies the Builder ID email privately and confirms eligibility and [provenance](provenance.md) |
+| Devpost form and receipt | **No completed submission is recorded.** Complete the form, attach the public source/video and testing instructions, then retain the submitted URL, receipt and final source reference. |
+| Availability during judging | Maintain the testing path supplied in the form through the required judging period, including October 8. |
 
-## Latest requirements audit
+## Requirements audit
 
-The [official rules](https://agentsforhumans.devpost.com/rules) were opened again
-on September 14. The deadline is September 14 at 17:00 PDT (20:00 Caracas).
-Required materials include a public code repository with MIT or Apache licensing,
-README, architecture diagram, description, public YouTube/Vimeo demonstration
-video of at most five minutes, and AWS Builder ID. Submission materials must be
-English or accompanied by English translations. Provide working project access
-or a test build with usable instructions. A live demo link is optional.
+The [official rules](https://agentsforhumans.devpost.com/rules) specify the
+September 14 deadline at **17:00 PDT / 20:00 Caracas**. Required materials include
+a public MIT- or Apache-licensed code repository, README, architecture diagram,
+project description, public YouTube/Vimeo demonstration video of at most five
+minutes, AWS Builder ID and usable project access or test-build instructions.
+Submission materials must be English or accompanied by English translations.
+A live demonstration link and AgentCore deployment strengthen the presentation
+but are not mandatory submission requirements.
 
-The architecture assets already exist in `docs/media/architecture.svg` and
-`architecture.png`. The live record and episode runbook replace earlier statements
-that nothing was deployed. Do not mark the submission complete merely because the
-local frontend works: verify the public code/video links and the completed form.
-No repository visibility change, publication or Devpost submission was performed
-by this audit.
+The rules update dated August 12 removed the literal `#AgentsforHumans` hashtag
+requirement for eligible Builder Center articles. The prepared article title
+contains **Agents for Humans**; its tags and hashtags remain useful publication
+metadata. Builder Center articles are optional bonus material, not evidence that
+the Devpost entry has been submitted.
+
+Before clicking Submit, open the final public links while signed out, check the
+video duration and testing instructions, and confirm the form describes the
+released implementation. Retain the exact submitted materials and receipt.
+
+Official references: [challenge overview](https://agentsforhumans.devpost.com/),
+[rules](https://agentsforhumans.devpost.com/rules), and
+[FAQ](https://agentsforhumans.devpost.com/details/faqs).
