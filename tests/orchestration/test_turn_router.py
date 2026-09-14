@@ -1,3 +1,4 @@
+import json
 from uuid import uuid4
 
 from repaso.config.models import ModelRole
@@ -184,7 +185,7 @@ async def test_an_explanation_is_remembered_and_never_offered_twice(settings):
     window = read_window(services, family.id, session.id)
     assert [entry.explained for entry in window.notes] == ["bar split", "number line"]
     prompt = services.models[EXPLAIN_ROLE].prompts[-1]
-    assert "- bar split" in prompt
+    assert json.loads(prompt)["already_tried"] == ["bar split"]
 
 
 async def test_what_happened_earlier_tonight_reaches_the_next_turn(settings):
@@ -219,7 +220,8 @@ async def test_an_explanation_asked_before_answering_is_not_told_the_answer(sett
     await says(services, family, "no entiendo")
 
     prompt = services.models[EXPLAIN_ROLE].prompts[-1]
-    assert "has NOT answered this question yet" in prompt
+    assert json.loads(prompt)["answered"] is False
+    assert "answer_key" not in json.loads(prompt)
     assert "Las dos nombran la mitad." not in prompt
 
 
@@ -238,8 +240,8 @@ async def test_an_explanation_after_a_wrong_answer_carries_the_written_reason(se
 
     prompt = services.models[EXPLAIN_ROLE].prompts[-1]
     assert "Las dos nombran la mitad." in prompt
-    assert "was not the expected one" in prompt
-    assert "What the child answered" not in prompt
+    assert json.loads(prompt)["was_correct"] is False
+    assert not json.loads(prompt)["answer_given"]
 
 
 async def test_mid_capsule_the_explanation_is_about_the_question_now_on_screen(settings):
@@ -259,7 +261,8 @@ async def test_mid_capsule_the_explanation_is_about_the_question_now_on_screen(s
 
     prompt = services.models[EXPLAIN_ROLE].prompts[-1]
     assert "¿Cuánto es 1/4 + 1/4?" in prompt
-    assert "has NOT answered this question yet" in prompt
+    assert json.loads(prompt)["answered"] is False
+    assert "answer_key" not in json.loads(prompt)
 
 
 async def test_an_explanation_that_fails_falls_back_to_the_written_reason(settings):

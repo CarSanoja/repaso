@@ -48,6 +48,12 @@ def apply_adaptation(
     services.store.put_record(
         OperationRecord(scope=family.id, key=key, payload=state.model_dump(mode="json"))
     )
+    services.telemetry.trace(
+        "memory",
+        "adaptation.saved",
+        family_id=family.id,
+        record_ref=sha256(key.encode()).hexdigest()[:24],
+    )
 
 
 def active_adaptations(services, family, student_id):

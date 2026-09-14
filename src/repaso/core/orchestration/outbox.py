@@ -1,6 +1,7 @@
 from hashlib import sha256
 from uuid import uuid4
 
+from repaso.core.telemetry.context import invocation_context
 from repaso.schemas.channel import OutboundMessage
 from repaso.schemas.operation import OperationRecord
 
@@ -27,6 +28,7 @@ def deliver(
         )
         services.store.put_record(record)
     payload = record.payload
+    parent = (invocation_context.get() or {}).get("correlation_id", "")
     for raw in payload["messages"][len(payload["receipts"]) :]:
         payload["attempts"] += 1
         services.store.put_record(record)
@@ -35,6 +37,7 @@ def deliver(
             "attempted",
             family_id=scope,
             correlation_id=sha256(key.encode()).hexdigest()[:24],
+            parent_correlation_id=parent,
         )
         try:
             receipt = services.sender.send(OutboundMessage.model_validate(raw))
@@ -45,6 +48,7 @@ def deliver(
                 status="failed",
                 family_id=scope,
                 correlation_id=sha256(key.encode()).hexdigest()[:24],
+                parent_correlation_id=parent,
             )
             raise
         payload["receipts"].append(receipt)
@@ -54,5 +58,6 @@ def deliver(
             "acknowledged",
             family_id=scope,
             correlation_id=sha256(key.encode()).hexdigest()[:24],
+            parent_correlation_id=parent,
         )
     return list(payload["receipts"])

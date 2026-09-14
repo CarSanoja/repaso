@@ -1,7 +1,9 @@
-# Reproducible checks and demonstrations
+# Run, inspect and verify Repaso
 
 | Script | Current use | Evidence boundary |
 | --- | --- | --- |
+| `run_memory_observer.py --rehearsal --port 8870` | School Community Memory dashboard and three-column episode; code REPASO-VIEW | Scripted model replies, temporary local state and delivery; controlled clock; no Telegram or paid inference |
+| `run_memory_observer.py --profile YOUR_PROFILE --family-id AUTHORIZED_FAMILY_ID` | Read-only local observer of the AWS deployment on localhost:8767 | Explicit family allowlist; DynamoDB state and correlated CloudWatch events; no Telegram sends or work publication |
 | `run_judge_demo.py` | Start the isolated browser experience on localhost:8766; code REPASO-DEMO | Recorded model outputs, local data and delivery |
 | `run_demo_scenario.py` | Run either teacher-note or reduced-load choice across four labeled dates; `--report` exports seven checkpoints | 24 or 23 assertions; day one replays the recorded cassette and the days after it are authored; no live AI or Telegram |
 | `record_demo_cassette.py` | Record the demonstration journey against Amazon Bedrock into a cassette and its provenance; needs credentials and spends money | One recording, one day: the cassette replays those answers and is not evidence the models would answer so again |
@@ -19,6 +21,30 @@
 | `preflight_deploy.py` | Read the account before deploying: caller, region, bootstrap qualifier, the four inference profiles, one bounded model call, Docker, the three secrets and every name the stacks claim | Reads only, exits non-zero on a blocker; a clean run says nothing about whether a deployment succeeds |
 | `infra_toggle.py` | Pause/resume the named Repaso routing and schedule resources | External mutation: inspect target account/resources first |
 | `teardown.py` | Plan or perform removal of this project's deployment; dry run by default, `--apply` needs a typed confirmation | Only names inside the `repaso` prefix carrying its tag; aborts on anything else. Dry run is read-only; `--apply` has never been run |
+
+## Start the product rehearsal
+
+From the repository root, after installing `.[dev]` with `requirements.lock`:
+
+```bash
+python scripts/run_memory_observer.py --rehearsal --port 8870
+```
+
+Open **http://127.0.0.1:8870/judge/memory/** with **`REPASO-VIEW`**. Run the four
+labeled steps in order, then explore family, learner, topic and recorded-day
+views. The rehearsal's temporary state resets when the process stops.
+
+For real AWS observation, supply your own authorized profile and family ID:
+
+```bash
+python scripts/run_memory_observer.py --profile YOUR_PROFILE --region us-east-1 --family-id AUTHORIZED_FAMILY_ID --port 8767
+```
+
+This binds to loopback and reads the deployment; it is not a public hosted URL.
+The initial log lookback defaults to 24 hours and can be changed with
+`--history-minutes` (1–10080). Missing log links remain labeled as missing.
+See the [episode runbook](../docs/submission/episode-demo-runbook.md) and
+[deployment guide](../deploy/README.md) for prerequisites and evidence boundaries.
 
 A run must have its own output directory. The family CLI refuses to replace an existing nonempty directory. Keep private transcripts and observations under `private/` or `.local_data/`, both excluded from release.
 

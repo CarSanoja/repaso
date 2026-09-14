@@ -1,16 +1,27 @@
 # Deployment runbook
 
-Nothing in this repository has ever been deployed. This is the ordered procedure
-for the first deployment and for every one after it.
+**Current status, September 14, 2026:** Repaso is deployed to AWS. AgentCore
+runtime version 13 completed a real Telegram explanation exchange with correlated
+retrieval, generation, saved memory and delivery evidence. The School Community
+Memory interface currently observes that deployment from a local read-only
+server. This is a technical trial, not a completed school or family pilot. See
+the [dated deployment and live acceptance record](../docs/submission/memory-live-check-2026-09-14.md).
 
-Every command below is marked. **[run]** means it was executed against the
-authorized account while this runbook was written and the output shown is real.
-**[unverified]** means it mutates AWS, was deliberately not executed, and its
-timing is an estimate rather than a measurement. Nothing here claims a stack is
-deployed; a template, an image, or a green preflight is preparation.
+This runbook contains the provisioning procedure and historical command captures.
+**[run]** labels output captured when that section was written; those snapshots
+do not describe the account's current state. **[unverified]** labels a command
+that was not executed in that original check, not a claim that deployment has
+never occurred. Use the dated live record for the latest verified runtime state.
 
-Use only the authorized profile and `us-east-1`. Deploy only resources prefixed
-`repaso`. The account id belongs in your shell, not in this file.
+Use your own authorized AWS profile and `us-east-1`. The `quanta` profile in
+historical examples is specific to the development environment; replace it with
+your profile. Deploy only this project's `repaso` resources. Account IDs and
+secret values belong in your environment, not in committed documentation.
+
+The verified demonstration uses the existing `ephemeral` deployment mode. That
+is not a recommendation for participant data: use `durable` for a family-facing
+deployment and inspect the current mode before updating an existing stack. See
+[retention modes](../infra/README.md#deployment-modes).
 
 ## What gets created
 
@@ -26,7 +37,7 @@ repaso-agentcore
 repaso-observability
 ```
 
-| Stack | What it creates | Survives teardown |
+| Stack | What it creates | Retained on teardown in durable mode |
 | --- | --- | --- |
 | `repaso-foundation` | KMS key `alias/repaso`, media bucket (SSE-KMS, 90-day expiry), curriculum bucket, DynamoDB table `repaso` with `gsi1` and PITR, three Secrets Manager entries, two monthly budget alarms | the key but not its alias, the media bucket, the table |
 | `repaso-messaging` | Event bus `repaso`, three work queues with their dead letter queues, the schedule tick dead letter queue, three routing rules, schedule group `repaso`, role `repaso-scheduler` | nothing |
@@ -35,9 +46,11 @@ repaso-observability
 | `repaso-agentcore` | The AgentCore runtime `repaso`, its execution role, the ARM64 runtime image, `/repaso/agentcore/runtime-arn`, seven-day log retention | nothing |
 | `repaso-observability` | SNS topic `repaso-alerts`, eleven alarms, one dashboard | nothing |
 
-A stack that imports another stack's output cannot be updated independently of
-it. `repaso-agentcore` imports from all four stacks above it, so deploy and tear
-down in the order `cdk ls` prints.
+Provision dependencies before the stacks that import their outputs, and remove
+dependent stacks before removing their providers. For an existing deployment,
+a reviewed runtime-only image update can deploy `repaso-agentcore --exclusively`
+without redeploying unchanged dependencies; preserve the deployment's existing
+context flags. The version 13 update is documented in the dated live record.
 
 ## What you must supply
 

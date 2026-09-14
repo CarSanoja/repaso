@@ -97,3 +97,14 @@ def test_recently_seen_is_read_from_the_review_the_harness_already_wrote():
     ]
     assert last_seen(states[0]) == date(2026, 9, 13)
     assert seen_recently(states, TODAY, days=2) == frozenset({"yesterday"})
+
+
+def test_distinct_content_collapses_ids_whitespace_case_and_option_order():
+    original = make_item("a", stem="¿Cuál equivale a 1/2?", options=["2/4", "1/3"])
+    copy = make_item("b", stem="  ¿CUÁL equivale\na 1/2?  ", options=["1/3", "2/4"])
+    different = make_item("c", stem="¿Cuál equivale a 2/3?", options=["4/6", "1/3"])
+    items = [copy, different, original]
+    query = BankQuery(distinct_content=True, limit=3)
+    assert [item.id for item in query_bank(items, query)] == ["a", "c"]
+    query = BankQuery(distinct_content=True, exclude=frozenset({"a"}), limit=3)
+    assert [item.id for item in query_bank(items, query)] == ["c"]

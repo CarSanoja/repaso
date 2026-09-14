@@ -39,5 +39,6 @@ def available_items(
             grade=student.grade,
             exclude=frozenset(exclude),
             limit=limit,
+            distinct_content=True,
         ),
     )
