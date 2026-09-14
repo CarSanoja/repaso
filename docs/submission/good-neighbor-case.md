@@ -13,7 +13,7 @@ the facilitator sees evidence, pending decisions, and what happened after an
 intervention. Begin with fourth-grade mathematics, supported printed material,
 an adult contact, and internet access.
 
-Proposed pitch: **Repaso keeps a community's learning support connected—from the
+Proposed pitch: **Repaso keeps a community's learning support connected-from the
 school page, through practice at home, to the next human intervention.**
 
 The distinctive hypothesis is continuity of action: source → practice → observed
@@ -55,7 +55,7 @@ though they were product users.
 | Case | Strength | Main gap | Decision |
 | --- | --- | --- | --- |
 | Extra practice for families unable to afford tutoring | Clear access concern; close to existing family flow | No verified local affordability count or tutoring-equivalence result; collective workflow less visible | Supporting motivation |
-| General school–parent messaging | Direct experimental precedent | Broad integration scope; messaging alone gives a weak originality argument | Mechanism, not whole product |
+| General school-parent messaging | Direct experimental precedent | Broad integration scope; messaging alone gives a weak originality argument | Mechanism, not whole product |
 | Community catch-up group with persistent follow-up | Documented facilitator workflow; clear group benefit; memory has an observable consequence | Coordinator permissions and decision-return path need implementation | Selected case |
 
 ## Smallest convincing demonstration
@@ -84,7 +84,7 @@ are secondary inspectable details, not the main experience.
    boundaries, then expose existing learning evidence and cohort signals.
 3. Implement one authorised coordinator decision through to a visible,
    recoverable family effect. This is new work: existing cohort notes are routed
-   through a parent, and a full school–family coordinator loop is not implemented.
+   through a parent, and a full school-family coordinator loop is not implemented.
 4. Record the working slice, correct submission claims, publish the required
    assets, and submit before the official deadline. Protect time for delivery;
    reduce scope if the group loop cannot be verified.

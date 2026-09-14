@@ -182,7 +182,7 @@ SSM, API Gateway, CloudWatch, ECR, Budgets, SNS, Bedrock and BedrockAgentCore.
 Check after: re-run the preflight. The `cdk bootstrap` line turns `ok`.
 
 If it fails: an `AlreadyExistsException` on `CDKToolkit-repaso` means a previous
-attempt left a stack in `ROLLBACK_COMPLETE` — delete that stack and run again. A
+attempt left a stack in `ROLLBACK_COMPLETE` - delete that stack and run again. A
 qualifier mismatch shows up later, not here, as `BootstrapVersion` resolving to
 no value during the first `cdk deploy`.
 
@@ -210,7 +210,7 @@ created the stacks, every stack outputs the `DeploymentMode` it was built from,
 and the foundation stack outputs `RetainedOnDelete`. Changing mode means
 deploying again with the other flag.
 
-The CLI prompts before every stack that creates or widens a role — foundation,
+The CLI prompts before every stack that creates or widens a role - foundation,
 messaging, api and agentcore. Answer each prompt, or pass
 `--require-approval never` once you have read the diff.
 
@@ -242,7 +242,7 @@ What to check after each:
 - **foundation**: `aws secretsmanager list-secrets --query "SecretList[?starts_with(Name,'repaso/')].Name"` returns three names. `aws dynamodb describe-table --table-name repaso --query 'Table.TableStatus'` returns `ACTIVE`. Two budgets exist.
 - **messaging**: `aws sqs list-queues --queue-name-prefix repaso` returns seven queues, four of them dead letter queues.
 - **guardrails**: `aws ssm get-parameter --name /repaso/guardrail/version` returns a number, not `DRAFT`.
-- **api**: the stack output `HttpApiUrl`. `curl <url>/health` must return `{"status":"ok"}`. If it returns `{"ok": true}` the application raised and the handler downgraded the failure to an acknowledgement — the route is up and the app is broken. Read the function's log group.
+- **api**: the stack output `HttpApiUrl`. `curl <url>/health` must return `{"status":"ok"}`. If it returns `{"ok": true}` the application raised and the handler downgraded the failure to an acknowledgement - the route is up and the app is broken. Read the function's log group.
 - **agentcore**: `aws ssm get-parameter --name /repaso/agentcore/runtime-arn`, then `aws bedrock-agentcore-control get-agent-runtime --agent-runtime-id <id> --query 'status'` must be `READY`. A `CREATE_FAILED` here is almost always the image: wrong architecture, or a container that does not answer `/ping` on 8080 within the startup window.
 - **observability**: the `repaso` dashboard renders and the eleven alarms are `OK` or `INSUFFICIENT_DATA`, not `ALARM`. Open the confirmation mail SNS sends to the alert address: until it is confirmed the topic has no subscriber and every alarm fires into nothing.
 
@@ -346,8 +346,8 @@ twenty for the inference line.
 | Textract | $1.50 per 1,000 pages, one page per material upload | $0.01 | $0.18 |
 | API Gateway, SQS, EventBridge, Scheduler, SNS, X-Ray, S3 | $1.00/M HTTP requests, $0.40/M queue requests, $1.00/M custom events, first 14M scheduled invocations free, first 100,000 traces free, $0.023 per GB-month | $0.02 | $0.05 |
 | **Infrastructure, summing the rows above** | | **$27.98** | **$51.04** |
-| Bedrock inference | Measured, not estimated: one student-day cost $0.162886 over 29 live calls on the routing that ships. A month is bounded and not known — $0.37 a student if the item bank is built once, $3.26 if every day rebuilds it from a fresh page — because nobody has observed how often a family photographs a page. [The model profile](../docs/evidence/model-profile-2026-09-12.md) carries both bounds and the calls behind them | $0.37–$3.26 | $11.21–$97.73 |
-| **Total** | infrastructure plus the inference range | **$28–$31** | **$62–$149** |
+| Bedrock inference | Measured, not estimated: one student-day cost $0.162886 over 29 live calls on the routing that ships. A month is bounded and not known - $0.37 a student if the item bank is built once, $3.26 if every day rebuilds it from a fresh page - because nobody has observed how often a family photographs a page. [The model profile](../docs/evidence/model-profile-2026-09-12.md) carries both bounds and the calls behind them | $0.37-$3.26 | $11.21-$97.73 |
+| **Total** | infrastructure plus the inference range | **$28-$31** | **$62-$149** |
 
 Three things about that table are worth more than the total.
 
@@ -358,8 +358,8 @@ metrics, and CloudWatch charges $0.30 per distinct metric name per month whether
 it receives one datapoint or a million. At one family that is most of the bill.
 The same sink already writes every event as a JSON line into the runtime log
 group, where the whole month costs about a penny at $0.50 per GB ingested. The
-cheaper shape is to publish a small fixed set of metrics — token counts,
-estimated cost, delivery outcome, decision counts — and answer everything else
+cheaper shape is to publish a small fixed set of metrics - token counts,
+estimated cost, delivery outcome, decision counts - and answer everything else
 with a Logs Insights query over the lines that are already there. That is a
 design decision about observability, so it is named here and not made here.
 
@@ -393,7 +393,7 @@ isolation argument in [isolation and reversal](../docs/operations/isolation.md).
 
 `scripts/teardown.py` removes this project and refuses everything else. It
 discovers only names inside the `repaso` prefix, checks the `project=repaso` tag
-on each one, and aborts the entire run — deleting nothing — if any candidate is
+on each one, and aborts the entire run - deleting nothing - if any candidate is
 inside the prefix without the tag or carries the tag outside the prefix. It
 reads the deployment mode from the stack tags rather than from a flag, so it
 cannot erase data that was deployed durable.
@@ -407,17 +407,17 @@ AWS_PROFILE=quanta python scripts/teardown.py --region us-east-1 --apply    # re
 A dry run reads and prints; it never mutates. `--apply` prints the same plan,
 then requires the operator to type `remove repaso` before anything is deleted;
 any other answer stops the run. It then empties whatever has to be empty before
-it can go, deletes the stacks in the reverse of their dependency order —
-observability, agentcore, api, guardrails, messaging, foundation — waiting for
+it can go, deletes the stacks in the reverse of their dependency order -
+observability, agentcore, api, guardrails, messaging, foundation - waiting for
 each, and finally removes what the stacks leave behind.
 
 What each mode leaves behind after `--apply`:
 
-- **durable** — the key, the media bucket with its objects and the state table
+- **durable** - the key, the media bucket with its objects and the state table
   with its records stay, and are reported by name as deliberately kept, along
   with any project secret or log group still present. Re-deploying into the same
   account will adopt or collide with them; that is the point of the mode.
-- **ephemeral** — the media bucket is emptied of every object version and delete
+- **ephemeral** - the media bucket is emptied of every object version and delete
   marker before its stack goes, and after the stacks are gone the script removes
   what CloudFormation cannot remove on its own: the AgentCore runtime and helper
   log groups that outlive their stacks, and the project secrets, deleted without
@@ -454,7 +454,7 @@ bucket is retained under a generated name. So a redeploy does not collide with
 either: it mints a fresh key, takes the free `alias/repaso`, and creates a new
 bucket. The old key keeps costing a dollar a month, the old bucket keeps holding
 the pilot's material, and the only thing that still links them is that the data
-in one is encrypted by the other. Nothing reports this — not CloudFormation, not
+in one is encrypted by the other. Nothing reports this - not CloudFormation, not
 the preflight, which sees the alias as free because it is. After such a teardown
 you must decide about them by hand: `aws kms list-aliases`, `aws s3 ls`, then
 either schedule the key for deletion (minimum seven days, and it takes the

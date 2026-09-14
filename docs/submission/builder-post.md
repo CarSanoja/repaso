@@ -26,7 +26,7 @@ In our deployed Telegram demonstration, the learner asked for a different explan
 
 That last detail matters. Asking for help should not become an incorrect answer. And those three earlier assessments repeated the same question content: the interface exposes the repetition instead of presenting three correct responses as proof of learning improvement.
 
-![Repaso architecture: Telegram, Strands Agents on AgentCore Runtime, durable learning memory and the read-only observer](https://raw.githubusercontent.com/CarSanoja/repaso/main/docs/media/architecture.png)
+Explore the [architecture diagram](https://github.com/CarSanoja/repaso/blob/main/docs/media/architecture.png): Telegram transport, Strands Agents on AgentCore Runtime, durable learning memory in DynamoDB, and a separate read-only School Community Memory observer.
 
 ## What the demonstration establishes
 
@@ -39,3 +39,5 @@ The current access model is an explicit family allowlist. A complete school rost
 Explore the [MIT-licensed source and architecture](https://github.com/CarSanoja/repaso), follow the [local judging guide](https://github.com/CarSanoja/repaso/blob/main/docs/submission/judging.md), or inspect the [dated live demonstration evidence](https://github.com/CarSanoja/repaso/blob/main/docs/submission/memory-live-check-2026-09-14.md). The local rehearsal runs without AWS credentials or a Telegram token.
 
 The conversation ends. The next step stays on record.
+
+#AgentsforHumans #StrandsAgents #AmazonBedrock #AgentCore #GoodNeighborAgents

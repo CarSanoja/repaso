@@ -1,50 +1,44 @@
-# Submission package
+# Submission package: School Community Memory
 
-**Pitch direction under development, September 14:** Good Neighbor Agents,
-connecting school/community facilitators and families through persistent learning
-follow-up. Start with [the pitch research and decision record](pitch-research.md),
-[the selected documented case](good-neighbor-case.md), and
-[the implemented memory demo and recording runbook](memory-demo-runbook.md).
-The new episode interaction and its recording sequence are tracked in
-[the episode runbook](episode-demo-runbook.md) and
-[the experience direction](experience-direction.md).
-The School Community Memory family dashboard, synchronized episode observer and
-isolated rehearsal are implemented and tested. The
-community coordinator workflow remains proposed; no organisational partnership
-is claimed.
+Repaso targets **Good Neighbor Agents**: community learning support that connects
+a family's Telegram conversation with persistent memory and traceable learning
+evidence. The family dashboard, synchronized episode observer and isolated
+rehearsal are implemented. A school-wide coordinator workflow and organizational
+partnership are not claimed.
 
-The existing submission drafts below describe **Everyday Agents**. The parent is
-the main user in that implemented flow; the teacher is a possible beneficiary of
-a parent-forwarded note. Update the final category and copy to match the
-community workflow actually demonstrated.
-
-Start at [`judging.md`](judging.md). It is the only file here written for someone who has never seen the project, and every command in it was executed on the way in.
+Start with the [five-minute judging guide](judging.md), the
+[public source repository](https://github.com/CarSanoja/repaso), and the
+[published AWS Builder Center article](https://builder.aws.com/content/3JL6ZEQTNgN6UIDQBfmjuHqjxoN/agents-for-humans-school-community-memory-with-repaso).
+The [release record](release-checklist.md) distinguishes the published product
+from the final video and Devpost form, which remain separate submission steps.
 
 | Artifact | Purpose | State |
 | --- | --- | --- |
-| `pitch-research.md` | Sources, positioning, decisions, judging criteria and candidate pitch | Current research; proposals explicitly distinguished from implemented behavior |
-| `good-neighbor-case.md` | Selected community facilitator case and build priorities | Proposed case grounded in documented programmes; no partnership claimed |
-| `memory-demo-runbook.md` | Four wow moments, startup commands, recording script and validation | Two real Telegram explanations, retrieval, persistence and delivery verified |
-| `episode-demo-runbook.md` | Three-column episode experience, replay, metrics and recording sequence | Integration and acceptance recorded in its verification section |
-| `memory-live-check-2026-09-14.md` | Actual Telegram incident diagnosis, deployment and evidence | Version 13; both explanation approaches confirmed in AWS |
-| `live-memory-demo.md` | Original specification, event/memory sources and acceptance gates | Observer implemented; group coordinator loop remains proposed |
-| `judging.md` | Five-minute path for a judge with no account | Current; commands run and output pasted |
-| `project-description.md` | English submission copy | Review-ready draft |
-| `video-script.md` and `captions.en.srt` | A 4:40 narrative with visible simulation labels | Local preview; replace the live-evidence section only after an actual deployed journey |
-| `article-1-family-routine.md` | Family problem and completed workflow | Builder Center draft |
-| `article-2-durable-agents.md` | Strands, tools and recoverable effects | Builder Center draft |
-| `article-3-evidence.md` | Tests that changed the product and honest limits | Builder Center draft |
-| `provenance.md` | Rights, prior work and eligibility inputs | Owner facts needed |
-| `release-checklist.md` | What is finished here and what only the owner can finish | Second list open |
+| [Project description](project-description.md) | English Good Neighbor Agents submission copy | Ready for the submission form |
+| [Devpost fields](devpost-fields.txt) | Testing instructions, elevator pitch, project story and build tags | Copy-ready text; the account email is supplied privately |
+| [Judging guide](judging.md) | Local test build with no AWS credentials or Telegram token | Complete journeys and explicit replay labels |
+| [Episode recording runbook](episode-demo-runbook.md) | Dashboard, three-column episode, live/replay and recording sequence | Implemented and browser tested |
+| [Memory demonstration](memory-demo-runbook.md) | Help, retrieval, evaluation and adult follow-through | Real Telegram evidence and synthetic rehearsal distinguished |
+| [Live verification record](memory-live-check-2026-09-14.md) | Deployment, incidents, fixes and actual AWS observations | AgentCore version 13; two live explanation approaches verified |
+| [Pitch research](pitch-research.md) and [community case](good-neighbor-case.md) | Sources and audience rationale | Documented context, not partnership or measured impact |
+| [Builder article source](builder-post.md) | Source for the published article | [Published on AWS Builder Center](https://builder.aws.com/content/3JL6ZEQTNgN6UIDQBfmjuHqjxoN/agents-for-humans-school-community-memory-with-repaso) |
+| [Upstream contributions](upstream-contributions.md) | Two Strands bug-fix pull requests and their evidence | Open, not merged, when verified September 14 |
+| [Annotated video script](video-script.txt) | Narration, timestamps and screen directions | Current target: 4:20; final public video URL pending |
+| [Narration only](video-narration.txt) | English speech synthesis input | Spoken text without recording directions |
+| [Formatted video script](video-script.md) | Recording narrative with sources | Current live evidence and limitations |
+| [Provenance](provenance.md) | Rights, prior work and eligibility inputs | Owner confirms final eligibility facts |
+| [Release record](release-checklist.md) | Public source, validation, protections and remaining steps | Current release handoff |
 
-The local preview is a captioned reconstruction of simulation checkpoints, not a
-screen recording of Telegram or a deployed Bedrock execution. It is suitable for
-reviewing narrative and timing. Keep its simulation disclosure in any use. The
-September 14 account inspection found six deployed stacks; older claims here
-that nothing has ever been deployed are stale. Deployment health, the running
-code version, and a complete recorded journey still require verification. See
-the dated observations in `pitch-research.md`.
+The older `article-1-family-routine.md`, `article-2-durable-agents.md` and
+`article-3-evidence.md` remain unpublished historical drafts. Earlier captions and
+the local video preview describe simulation checkpoints; they are not the final
+recording of the current interface.
 
-Do not submit placeholder URLs or represent these drafts as published articles. The original review recorded three Builder Center posts, each with literal “Agents for Humans” in its title, as the bonus opportunity. Check current [official rules](https://agentsforhumans.devpost.com/rules) before publication.
+The live demonstration establishes retained context and changed explanations.
+Its one-day sample does not establish educational improvement. The local
+rehearsal's family, model replies, transport and advanced clock are synthetic.
+A loopback observer URL is not remotely accessible judge access.
 
-- [Narration only for speech synthesis](video-narration.txt) — spoken English text without screen directions or timestamps.
+Before submitting, verify the final YouTube/Vimeo video, use the public source
+and test-build instructions, and retain the completed Devpost submission receipt.
+See the [official rules](https://agentsforhumans.devpost.com/rules).

@@ -1,4 +1,4 @@
-# Repaso — School Community Memory
+# Repaso - School Community Memory
 
 A community educator can support many families through messages. Keeping track
 of what each learner tried, where they needed help, and what should happen next

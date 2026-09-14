@@ -1,6 +1,6 @@
 # Judge Repaso in five minutes
 
-**Repaso — School Community Memory** connects a family's Telegram practice to a learning record an adult can inspect. The proposed **Good Neighbor Agents** audience is a community facilitator supporting families between meetings. The demonstration focuses on continuity: a request for another explanation retrieves the approach already tried, changes the example and leaves usable memory.
+**Repaso - School Community Memory** connects a family's Telegram practice to a learning record an adult can inspect. The proposed **Good Neighbor Agents** audience is a community facilitator supporting families between meetings. The demonstration focuses on continuity: a request for another explanation retrieves the approach already tried, changes the example and leaves usable memory.
 
 The project uses the Strands Agents SDK and a deployed Amazon Bedrock AgentCore Runtime. Two related upstream Strands bug-fix PRs were submitted with regression tests: [model telemetry](https://github.com/strands-agents/harness-sdk/pull/4207) and [custom model streaming compatibility](https://github.com/strands-agents/harness-sdk/pull/4208). Both were open, not merged, when verified on September 14, 2026; see [contribution evidence](upstream-contributions.md).
 
@@ -36,12 +36,12 @@ python scripts/run_memory_observer.py --rehearsal --port 8870
 
 Open **http://127.0.0.1:8870/judge/memory/** and enter **`REPASO-VIEW`**.
 
-1. **0:00–0:45 — A family, a topic, an evidence trail.** Inspect the family dashboard. Its daily and cumulative views describe recorded activity, with empty history labeled honestly. Select the learner and fractions topic.
-2. **0:45–1:30 — Ask for help.** Use **1. Ask for help**, then **Open learning episode**. The three columns show retained conversation, recorded agent/memory activity and topic evidence.
-3. **1:30–2:30 — Ask again.** Use **2. Explain another way**. The next turn retrieves one prior approach, saves another and presents both in the memory comparison. The assessed-answer count remains zero: asking for help is not a wrong answer.
-4. **2:30–3:15 — Look for learning evidence.** Use **3. Answer**. An actual assessed result appears. Distinct content and difficulty coverage are separate from raw attempt count. A stored mastery estimate is not presented as proof of improvement.
-5. **3:15–4:15 — Make a human decision matter.** Use **4. Choose less practice**. Under **Inspect the evidence → Decisions / Practice**, inspect the resolved choice, saved adaptation and next practice with one question. This step explicitly advances the rehearsal clock.
-6. **4:15–5:00 — Reopen the evidence.** Return to **Family dashboard**, select the recorded day and follow its episode. Replay moves through stored turns; the right column still labels current topic totals. **Verify saved memory** reads storage again.
+1. **0:00-0:45 - A family, a topic, an evidence trail.** Inspect the family dashboard. Its daily and cumulative views describe recorded activity, with empty history labeled honestly. Select the learner and fractions topic.
+2. **0:45-1:30 - Ask for help.** Use **1. Ask for help**, then **Open learning episode**. The three columns show retained conversation, recorded agent/memory activity and topic evidence.
+3. **1:30-2:30 - Ask again.** Use **2. Explain another way**. The next turn retrieves one prior approach, saves another and presents both in the memory comparison. The assessed-answer count remains zero: asking for help is not a wrong answer.
+4. **2:30-3:15 - Look for learning evidence.** Use **3. Answer**. An actual assessed result appears. Distinct content and difficulty coverage are separate from raw attempt count. A stored mastery estimate is not presented as proof of improvement.
+5. **3:15-4:15 - Make a human decision matter.** Use **4. Choose less practice**. Under **Inspect the evidence → Decisions / Practice**, inspect the resolved choice, saved adaptation and next practice with one question. This step explicitly advances the rehearsal clock.
+6. **4:15-5:00 - Reopen the evidence.** Return to **Family dashboard**, select the recorded day and follow its episode. Replay moves through stored turns; the right column still labels current topic totals. **Verify saved memory** reads storage again.
 
 The server uses temporary local state and resets when stopped. Controls do not send Telegram messages or call a paid model. The [episode runbook](episode-demo-runbook.md) explains reconstruction, retention, event links and the recording sequence.
 
