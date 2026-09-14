@@ -52,6 +52,7 @@ def snapshot(
     result["events"] = []
     rehearsal = getattr(request.app.state, "memory_rehearsal", None)
     result["rehearsal"] = bool(rehearsal)
+    result["rehearsal_reset_available"] = callable(getattr(request.app.state, "memory_reset", None))
     result["rehearsal_completed"] = list(rehearsal.completed) if rehearsal else []
     result["events_status"] = "not_configured"
     if feed is not None:
@@ -76,6 +77,12 @@ async def rehearsal(step: str, request: Request, x_judge_code: str | None = Head
     run = getattr(request.app.state, "memory_rehearsal", None)
     if not container.settings.local_mode or run is None:
         raise HTTPException(404)
+    if step == "reset":
+        reset = getattr(request.app.state, "memory_reset", None)
+        if not callable(reset):
+            raise HTTPException(404)
+        async with run.lock:
+            return await reset()
     if step not in {"help", "another", "answer", "reduce"}:
         raise HTTPException(422, "unsupported_step")
     try:

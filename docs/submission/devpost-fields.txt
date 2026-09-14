@@ -6,6 +6,13 @@
 
 Public source: https://github.com/CarSanoja/repaso
 
+Public interactive demo: https://mwn2zjxcm2sz7jtrpj3y6ttblq0svgru.lambda-url.us-east-1.on.aws/judge/memory/
+Access code: REPASO-LIVE
+
+No installation is needed for the hosted demo. Follow Ask for help, Explain another way, Answer, and Choose less practice. Inspect the three-column learning episode and family dashboard. Reset demo restarts your isolated session. This dedicated AWS Lambda endpoint uses synthetic learners, scripted replies and temporary state; it sends no Telegram messages and reads no production family data. Cold starts or cache eviction can reset the demo.
+
+Local alternative:
+
 Use Python 3.12 or newer. The local demonstrations need no AWS credentials, Telegram token or paid model calls. Install the test build:
 
 ```bash

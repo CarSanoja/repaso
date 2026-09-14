@@ -4,11 +4,17 @@
 
 The project uses the Strands Agents SDK and a deployed Amazon Bedrock AgentCore Runtime. Two related upstream Strands bug-fix PRs were submitted with regression tests: [model telemetry](https://github.com/strands-agents/harness-sdk/pull/4207) and [custom model streaming compatibility](https://github.com/strands-agents/harness-sdk/pull/4208). Both were open, not merged, when verified on September 14, 2026; see [contribution evidence](upstream-contributions.md).
 
+## Open the public demo
+
+**[Launch School Community Memory](https://mwn2zjxcm2sz7jtrpj3y6ttblq0svgru.lambda-url.us-east-1.on.aws/judge/memory/)**, code **`REPASO-LIVE`**. Follow the four numbered controls, inspect the linked learning episode, and use **Reset demo** to start again. No installation is needed.
+
+This AWS-hosted path runs the same synthetic rehearsal described below: scripted model replies, local delivery and an advanced clock. Browser sessions are isolated; cold starts or cache eviction can reset temporary state. It sends no Telegram messages and reads no production records.
+
 ## Choose an evidence path
 
 | Path | What you can inspect | Boundary |
 | --- | --- | --- |
-| Local School Community Memory rehearsal | Family dashboard, three-column episode, retained approaches, answer and adult follow-through | Scripted model replies, isolated local state and delivery, controlled clock |
+| Hosted or local School Community Memory rehearsal | Family dashboard, three-column episode, retained approaches, answer and adult follow-through | Scripted model replies, isolated local state and delivery, controlled clock |
 | Local seven-stage judge journey | Ingestion, practice, uncertain-answer review, teacher note versus reduced workload | Recorded Bedrock outputs for day one; authored later days |
 | Dated live Telegram record | Two successful explanations, prior-context retrieval and AWS delivery evidence on AgentCore v13 | Developer-operated technical trial, not a family pilot or learning-gain evaluation |
 
