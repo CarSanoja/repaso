@@ -53,11 +53,16 @@ def test_scheduler_fires_the_enrolled_student_of_the_family(lambda_env):
     assert event.occurred_at.tzinfo is not None
 
 
-def test_scheduler_keys_the_event_on_the_student_and_the_day(lambda_env):
+def test_scheduler_keys_the_event_on_the_student_and_the_family_day(lambda_env, monkeypatch):
     seed_student()
+    # UTC has crossed midnight while the family's Caracas date is still September 14.
+    now = datetime(2026, 9, 15, 0, 10, tzinfo=UTC)
+    monkeypatch.setattr(scheduler.SystemClock, "now", lambda self: now)
     scheduler.handler(TICK, None)
     event = published_events()[0]
-    expected = job_key("daily_session", "s1", event.occurred_at.date().isoformat())
+    assert event.occurred_at == now
+    assert bootstrap.store().get_family("f1").timezone == "America/Caracas"
+    expected = job_key("daily_session", "s1", "2026-09-14")
     assert event.idempotency_key == expected
     assert expected.startswith("job#daily_session#s1#")
 

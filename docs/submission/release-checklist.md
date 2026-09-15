@@ -69,8 +69,8 @@ scenarios are not substituted for the release checks above.
 | Primary category | **Good Neighbor Agents - School Community Memory**; the community facilitator use case is proposed, while the demonstrated access model remains family scoped |
 | Public code URL | Ready: [github.com/CarSanoja/repaso](https://github.com/CarSanoja/repaso) |
 | README and architecture | Ready in the public repository; [architecture diagram](../media/architecture.svg) |
-| Video narration | Ready: [annotated recording script](video-script.txt), [narration only for ElevenLabs](video-narration.txt), and [formatted script with sources](video-script.md); 519 spoken words, target 4:20 |
-| Final video | The owner is generating it. **Public YouTube/Vimeo URL pending.** Confirm final duration is at most five minutes and the English narration matches the recorded evidence. |
+| Video narration | Ready: [annotated recording script](video-script.txt), [narration only for ElevenLabs](video-narration.txt), and [formatted script with sources](video-script.md); 317 spoken words, target 2:40, maximum 3:00 |
+| Final video | The owner is generating it. **Public YouTube/Vimeo URL pending.** For the owner-reported three-minute judging window, confirm the complete export is no longer than 3:00, including titles and outro. Target 2:40; align captions to the final English audio and recorded evidence. |
 | Builder Center article | **Published:** [Agents for Humans: School Community Memory with Repaso](https://builder.aws.com/content/3JL6ZEQTNgN6UIDQBfmjuHqjxoN/agents-for-humans-school-community-memory-with-repaso). [Article source](builder-post.md) retains its architecture link and literal hashtags. |
 | Judge testing access | Supply the verified test-build instructions or an available project-access path in the form. Do not present `127.0.0.1` as a remotely accessible service. |
 | AWS Builder ID and eligibility | Owner supplies the Builder ID email privately and confirms eligibility and [provenance](provenance.md) |
@@ -84,6 +84,9 @@ September 14 deadline at **17:00 PDT / 20:00 Caracas**. Required materials inclu
 a public MIT- or Apache-licensed code repository, README, architecture diagram,
 project description, public YouTube/Vimeo demonstration video of at most five
 minutes, AWS Builder ID and usable project access or test-build instructions.
+The owner subsequently reported a 30-minute extension and that judges will watch
+only three minutes. The revised recording therefore targets 2:40 with a strict
+3:00 export maximum; this does not assert that the published rules were amended.
 Submission materials must be English or accompanied by English translations.
 A live demonstration link and AgentCore deployment strengthen the presentation
 but are not mandatory submission requirements.

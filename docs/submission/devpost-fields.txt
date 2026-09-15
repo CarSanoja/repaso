@@ -34,7 +34,7 @@ Follow the four controls in order:
 
 Return to the family dashboard, select a learner, topic and day, then follow its episode. Try Replay and Verify saved memory. This rehearsal uses synthetic learners, scripted model replies, local delivery and an explicitly advanced clock. It sends no Telegram messages and resets when stopped.
 
-Alternative: run `python scripts/run_judge_demo.py`, open http://127.0.0.1:8766/judge/ and enter REPASO-DEMO. Compare the teacher-note and reduced-practice scenarios. These local addresses run on your computer. The submitted video and dated evidence document the separate real Telegram interaction on AWS. Full instructions: docs/submission/judging.md.
+Alternative: run `python scripts/run_judge_demo.py`, open http://127.0.0.1:8766/judge/ and enter REPASO-DEMO. Compare the teacher-note and reduced-practice scenarios. These local addresses run on your computer. The short video follows the family dashboard into a recorded Telegram episode, shows the cake-to-paper explanation change and its saved memory, and closes with the architecture and community use case. The video and dated evidence document the separate real Telegram interaction on AWS. Full instructions: docs/submission/judging.md.
 
 3. Elevator pitch
 

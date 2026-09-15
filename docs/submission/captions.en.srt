@@ -1,55 +1,196 @@
 1
-00:00:00,000 --> 00:00:20,000
-The parent already has school material. Repaso is designed to turn it into a short daily practice, then follow what happens next.
+00:00:00,000 --> 00:00:03,409
+Tomorrow's explanation should remember
+today's struggle.
 
 2
-00:00:20,000 --> 00:00:40,000
-The family uses an alias and chooses a daily time. Enrollment creates a timezone-aware alarm. Pause, resume and schedule changes update that routine.
+00:00:03,409 --> 00:00:07,386
+In Venezuela, UNICEF's twenty twenty-five
+report estimated
 
 3
-00:00:40,000 --> 00:01:00,000
-In this recorded case, five questions survive review. They belong to this family. A correct guess by the options-only probe cannot veto a valid exercise.
+00:00:07,386 --> 00:00:11,932
+two point seven million children needing
+educational support
 
 4
-00:01:00,000 --> 00:01:20,000
-A short reminder arrives with a recognition question and reasoning practice. The session becomes delivered only after the transport acknowledges the message.
+00:00:11,932 --> 00:00:16,477
+and one point five million out of school.
 
 5
-00:01:20,000 --> 00:01:40,000
-The child says that adding the same number to the top and bottom keeps a fraction equal. The response explains why that rule changes the value.
+00:00:16,477 --> 00:00:21,591
+Its education response required
+twenty-three point seven million dollars,
 
 6
-00:01:40,000 --> 00:02:00,000
-An ambiguous explanation is held for the parent. The parent can mark it correct, incorrect, or say they do not know yet. Waiting is not approval.
+00:00:21,591 --> 00:00:25,000
+with a seventy-seven percent funding gap.
 
 7
-00:02:00,000 --> 00:02:20,000
-The parent approves this synthetic example. A final human assessment supersedes the provisional grade. A rejected answer also becomes a final outcome.
+00:00:25,000 --> 00:00:28,000
+We built Repaso, School Community Memory,
 
 8
-00:02:20,000 --> 00:02:40,000
-The additional guide claims that two thirds equals four ninths. Its generated exercises are rejected. The family is asked for a better source page.
+00:00:28,000 --> 00:00:31,500
+to keep learning support connected between
+meetings.
 
 9
-00:02:40,000 --> 00:03:00,000
-After nine reviewed answers, persistent difficulty reaches the configured threshold. The parent receives evidence and two choices with concrete consequences.
+00:00:31,500 --> 00:00:37,500
+Building it also led to two upstream
+Strands Agents bug-fix pull requests,
 
 10
-00:03:00,000 --> 00:03:20,000
-Choosing the teacher note delivers the actual draft to the parent. Repaso does not contact the teacher automatically. The next routine continues.
+00:00:37,500 --> 00:00:40,500
+covering model telemetry and streaming
+compatibility.
 
 11
-00:03:20,000 --> 00:03:40,000
-The alternative choice saves a seven-day workload reduction. The next practice contains one exercise instead of three. The choice changes the plan.
+00:00:40,500 --> 00:00:43,000
+Both remain open for review.
 
 12
-00:03:40,000 --> 00:04:00,000
-The worker invokes AgentCore through SSM. DynamoDB transactions protect learning updates; journals and delivery receipts support recovery. Lost Telegram acknowledgments can still duplicate messages.
+00:00:43,000 --> 00:00:47,125
+Start with a family, a topic and a day.
 
 13
-00:04:00,000 --> 00:04:20,000
-Ten full adapter simulations passed with injected failures. A real Textract call read a new printed page, and every configured model answered its schema. None of it proves model quality or family benefit.
+00:00:47,125 --> 00:00:51,250
+See assessed answers, distinct questions
+and stored review dates.
 
 14
-00:04:20,000 --> 00:04:40,000
-The candidate covers fourth-grade math and printed material. Deployed acceptance, teacher review and a family pilot remain open. This preview reconstructs a recorded journey and the authored days that follow it.
+00:00:51,250 --> 00:00:54,000
+Open the episode. Three synchronized
+columns
+
+15
+00:00:54,000 --> 00:00:55,833
+reveal the retained conversation,
+
+16
+00:00:55,833 --> 00:00:59,958
+the agent's actions and memory, and the
+learning evidence.
+
+17
+00:00:59,958 --> 00:01:05,000
+This is our recorded Telegram interaction,
+connected to its AWS records.
+
+18
+00:01:05,000 --> 00:01:09,286
+The learner asks for help with equivalent
+fractions.
+
+19
+00:01:09,286 --> 00:01:14,107
+Repaso explains with a cake and remembers
+that approach.
+
+20
+00:01:14,107 --> 00:01:18,393
+Then: “I still don't understand. Use
+another example.”
+
+21
+00:01:18,393 --> 00:01:23,214
+Watch the memory column. One previous
+approach was retrieved.
+
+22
+00:01:23,214 --> 00:01:26,429
+The new explanation uses folded paper.
+
+23
+00:01:26,429 --> 00:01:33,393
+Its approach is saved, and the reply is
+linked to its delivery record.
+
+24
+00:01:33,393 --> 00:01:37,143
+Two successful help requests. Two
+remembered explanations.
+
+25
+00:01:37,143 --> 00:01:40,357
+The assessed-answer count stays at three.
+
+26
+00:01:40,357 --> 00:01:45,179
+Asking for help does not become a wrong
+answer.
+
+27
+00:01:45,179 --> 00:01:50,000
+Select either message. The evidence
+follows that exact turn.
+
+28
+00:01:50,000 --> 00:01:53,387
+Those three earlier answers repeated one
+question.
+
+29
+00:01:53,387 --> 00:01:56,290
+They do not prove learning improvement.
+
+30
+00:01:56,290 --> 00:01:59,194
+Read the memory again. It persists.
+
+31
+00:01:59,194 --> 00:02:03,548
+Strands coordinates the agent workflows on
+Amazon Bedrock AgentCore.
+
+32
+00:02:03,548 --> 00:02:06,935
+Four workflows handle material intake,
+practice planning,
+
+33
+00:02:06,935 --> 00:02:10,806
+responses and daily review, with explicit
+state transitions.
+
+34
+00:02:10,806 --> 00:02:14,194
+DynamoDB preserves application memory and
+learning evidence.
+
+35
+00:02:14,194 --> 00:02:16,613
+The demonstrated gain is continuity:
+
+36
+00:02:16,613 --> 00:02:20,000
+the next explanation uses what happened
+before.
+
+37
+00:02:20,000 --> 00:02:24,186
+Our Good Neighbor proposal supports
+community facilitators and families
+
+38
+00:02:24,186 --> 00:02:26,977
+between meetings, starting with
+fourth-grade mathematics.
+
+39
+00:02:26,977 --> 00:02:31,628
+A human can follow the evidence,
+understand what was tried,
+
+40
+00:02:31,628 --> 00:02:33,953
+and choose the next step.
+
+41
+00:02:33,953 --> 00:02:35,814
+Try the public demo.
+
+42
+00:02:35,814 --> 00:02:40,000
+Repaso keeps the conversation connected to
+what comes next.
