@@ -23,16 +23,19 @@ from the final video and Devpost form, which remain separate submission steps.
 | [Pitch research](pitch-research.md) and [community case](good-neighbor-case.md) | Sources and audience rationale | Documented context, not partnership or measured impact |
 | [Builder article source](builder-post.md) | Source for the published article | [Published on AWS Builder Center](https://builder.aws.com/content/3JL6ZEQTNgN6UIDQBfmjuHqjxoN/agents-for-humans-school-community-memory-with-repaso) |
 | [Upstream contributions](upstream-contributions.md) | Two Strands bug-fix pull requests and their evidence | Open, not merged, when verified September 14 |
-| [Annotated video script](video-script.txt) | Narration, timestamps and screen directions | Current target: 4:20; final public video URL pending |
+| [Annotated video script](video-script.txt) | Narration, timestamps and screen directions | 317 spoken words; target 2:40; maximum 3:00; final public video URL pending |
 | [Narration only](video-narration.txt) | English speech synthesis input | Spoken text without recording directions |
 | [Formatted video script](video-script.md) | Recording narrative with sources | Current live evidence and limitations |
+| [English captions](captions.en.srt) | Matching short-video narration | Draft timing through 2:40; align to final generated audio before upload |
 | [Provenance](provenance.md) | Rights, prior work and eligibility inputs | Owner confirms final eligibility facts |
 | [Release record](release-checklist.md) | Public source, validation, protections and remaining steps | Current release handoff |
 
 The older `article-1-family-routine.md`, `article-2-durable-agents.md` and
-`article-3-evidence.md` remain unpublished historical drafts. Earlier captions and
-the local video preview describe simulation checkpoints; they are not the final
-recording of the current interface.
+`article-3-evidence.md` remain unpublished historical drafts. The older local
+video preview describes simulation checkpoints; it is not the final recording
+of the current interface. The current narration, screen directions and captions
+replace the longer script. The owner reported a three-minute judging window;
+the new recording targets 2:40 to leave room for pauses.
 
 The live demonstration establishes retained context and changed explanations.
 Its one-day sample does not establish educational improvement. The local
