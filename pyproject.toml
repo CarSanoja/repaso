@@ -18,7 +18,7 @@ dependencies = [
     "httpx>=0.27",
     "pillow>=10.3",
     "mangum>=0.17",
-    "pypdf==6.16.1",
+    "pypdf==6.18.1",
 ]
 
 [project.optional-dependencies]
@@ -28,8 +28,8 @@ dev = [
     "anyio>=4.4",
     "ruff>=0.5",
     "uvicorn>=0.30",
-    "moto[events,sqs,dynamodb,s3,scheduler]==5.1.12",
-    "build==1.3.0",
+    "moto[events,sqs,dynamodb,s3,scheduler]==5.2.3",
+    "build==1.6.1",
     "setuptools==83.0.0",
 ]
 runtime = [
